@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resignation Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #2c2417;
+      --ink-muted: #8a7b6b;
+      --ink-ghost: #c4b8a8;
+      --paper: #f5efe5;
+      --paper-warm: #f3ece0;
+      --paper-edge: #ebe4d8;
+      --paper-shadow: #d8d0c4;
+      --truth: #6b3a2a;
+      --truth-bright: #8a4a38;
+      --surface: #1c1815;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--surface);
+      font-family: 'IBM Plex Serif', Georgia, serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 30% 20%, rgba(107, 58, 42, 0.04), transparent),
+        radial-gradient(ellipse 60% 80% at 75% 80%, rgba(44, 36, 23, 0.08), transparent);
+      pointer-events: none;
+    }
+
+    #app {
+      width: 100%;
+      max-width: 680px;
+      position: relative;
+      z-index: 1;
+      padding: 2rem 1rem;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      transition: opacity 2s ease;
+    }
+
+    header h1 {
+      font-family: 'EB Garamond', serif;
+      font-weight: 400;
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      color: var(--paper-edge);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    header p {
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      font-style: italic;
+      font-weight: 300;
+      opacity: 0.6;
+    }
+
+    /* Paper */
+    #paper {
+      width: 100%;
+      background: var(--paper);
+      border-radius: 2px;
+      padding: 3rem 3.5rem 3rem;
+      position: relative;
+      box-shadow:
+        0 1px 3px var(--paper-shadow),
+        0 4px 16px rgba(0,0,0,0.08),
+        0 12px 48px rgba(0,0,0,0.14);
+      min-height: 440px;
+      transition: background 4s ease;
+    }
+
+    #paper.warmed {
+      background: var(--paper-warm);
+    }
+
+    /* Faint ruled lines */
+    #paper::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 2px;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 31px,
+        rgba(0,0,0,0.018) 31px,
+        rgba(0,0,0,0.018) 32px
+      );
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Editor */
+    #editor {
+      position: relative;
+      min-height: 380px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 380px;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: 'IBM Plex Serif', Georgia, serif;
+      font-size: 1rem;
+      line-height: 32px;
+      color: var(--ink);
+      caret-color: var(--ink);
+      resize: none;
+      position: relative;
+      z-index: 1;
+      letter-spacing: 0.01em;
+      display: block;
+    }
+
+    textarea::placeholder {
+      color: var(--ink-ghost);
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    textarea::selection {
+      background: rgba(107, 58, 42, 0.15);
+    }
+
+    /* Rendered overlay sits on top visually but passes pointer events through */
+    #rendered {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      font-family: 'IBM Plex Serif', Georgia, serif;
+      font-size: 1rem;
+      line-height: 32px;
+      pointer-events: none;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      letter-spacing: 0.01em;
+      z-index: 3;
+      color: transparent;
+    }
+
+    #rendered.active {
+      color: var(--ink);
+    }
+
+    /* Euphemism spans: original text fading */
+    .euph {
+      position: relative;
+      color: var(--ink);
+      transition: color 0.5s ease;
+    }
+
+    .euph.eroding {
+      color: var(--ink-ghost);
+    }
+
+    /* Truth text layer: sits on top of euphemism, clips to revealed chars */
+    .euph .truth {
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--truth);
+      overflow: hidden;
+      white-space: pre;
+      width: 0;
+      transition: none;
+    }
+
+    /* After dissolution completes, the whole span becomes truth */
+    .euph.done {
+      color: var(--truth);
+    }
+
+    .euph.done .truth {
+      display: none;
+    }
+
+    /* Signature line — appears on completion */
+    #signature-line {
+      width: 0;
+      height: 1px;
+      background: var(--truth);
+      opacity: 0;
+      margin-top: 2.5rem;
+      transition: width 3s ease 1s, opacity 2s ease 1s;
+    }
+
+    #signature-line.visible {
+      width: 45%;
+      opacity: 0.5;
+    }
+
+    /* Transform counter */
+    #count {
+      position: fixed;
+      bottom: 1.2rem;
+      right: 1.8rem;
+      font-size: 0.68rem;
+      color: var(--ink-muted);
+      font-style: italic;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      z-index: 10;
+    }
+
+    #count.show {
+      opacity: 0.4;
+    }
+
+    /* Cursor blink slows on completion */
+    @keyframes slow-blink {
+      0%, 48% { opacity: 1; }
+      50%, 98% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    textarea.slowed {
+      caret-color: var(--ink-muted);
+      animation: slow-blink 2s step-end infinite;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      #paper {
+        padding: 2rem 1.5rem 1.5rem;
+      }
+      textarea, #rendered {
+        font-size: 0.95rem;
+        line-height: 28px;
+      }
+      textarea {
+        min-height: 320px;
+      }
+      #editor {
+        min-height: 320px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .euph, .euph .truth, #signature-line, #paper {
+        transition-duration: 0s;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>Resignation Engine</h1>
+      <p>Compose your letter. Watch it tell the truth.</p>
+    </header>
+
+    <div id="paper">
+      <div id="editor">
+        <textarea
+          id="letter"
+          placeholder="Dear,&#10;&#10;I am writing to formally inform you..."
+          spellcheck="false"
+          aria-label="Write your resignation letter"
+        ></textarea>
+        <div id="rendered" aria-hidden="true"></div>
+        <div id="signature-line"></div>
+      </div>
+    </div>
+
+    <div id="count" aria-live="polite"></div>
+  </div>
+
+  <script>
+  // ─── Euphemism Dictionary ─────────────────────────────
+  // Sorted by pattern length descending at load time.
+  // distance (1-10): emotional gap between euphemism and truth.
+  // Higher distance → faster dissolution (the bigger the lie, the faster it breaks).
+
+  const EUPHEMISMS = [
+    { p: "i've decided to pursue other opportunities", t: "i haven't felt alive in sixteen months", d: 9 },
+    { p: "i'm leaving to pursue other opportunities", t: "i haven't felt alive in sixteen months", d: 9 },
+    { p: "i've decided to explore new opportunities", t: "i need to find work that doesn't hollow me out", d: 8 },
+    { p: "pursue other opportunities", t: "try to remember who i was", d: 8 },
+    { p: "explore other opportunities", t: "find something that doesn't hollow me out", d: 8 },
+    { p: "this wasn't an easy decision", t: "this was the only decision left", d: 7 },
+    { p: "this was not an easy decision", t: "this was the only decision left", d: 7 },
+    { p: "this decision did not come easily", t: "this was the only decision left", d: 7 },
+    { p: "i've learned so much", t: "i've learned how small i can make myself", d: 8 },
+    { p: "i've learned a lot here", t: "i've learned how small i can make myself", d: 8 },
+    { p: "i've grown professionally", t: "i've grown smaller as a person", d: 8 },
+    { p: "i've grown so much here", t: "i've grown smaller as a person", d: 8 },
+    { p: "i'm grateful for the opportunity", t: "i'm grateful i survived this", d: 6 },
+    { p: "i appreciate the opportunity", t: "i survived, and that has to count for something", d: 6 },
+    { p: "thank you for the opportunity", t: "i survived this, which is more than i expected", d: 6 },
+    { p: "professional growth", t: "losing myself inch by inch", d: 7 },
+    { p: "this was a difficult decision", t: "this was the only decision left", d: 7 },
+    { p: "valuable experience", t: "something that cost me more than it gave", d: 8 },
+    { p: "i wish the company continued success", t: "i wish i had left sooner", d: 7 },
+    { p: "i wish you all the best", t: "i hope you never learn how this felt", d: 6 },
+    { p: "please don't hesitate to reach out", t: "please let me disappear quietly", d: 7 },
+    { p: "i'm happy to help with the transition", t: "i want to leave but not burn the bridge", d: 5 },
+    { p: "i hope to stay in touch", t: "i need to forget this place to heal", d: 7 },
+    { p: "it's time for a new chapter", t: "i need to leave before there's nothing left", d: 8 },
+    { p: "it's time for me to move on", t: "i need to leave before there's nothing left", d: 8 },
+    { p: "i'm moving on", t: "i'm finally leaving this behind", d: 5 },
+    { p: "i've truly enjoyed my time here", t: "i survived, but barely", d: 8 },
+    { p: "i've enjoyed my time here", t: "i survived, but barely", d: 8 },
+    { p: "enjoyed my time here", t: "survived, but barely", d: 7 },
+    { p: "i'll always cherish the memories", t: "i'll spend years unlearning what this place taught me", d: 9 },
+    { p: "i'll always remember my time here", t: "i'll be unpacking this for years", d: 8 },
+    { p: "i'm looking forward to new challenges", t: "anything would be better than another day here", d: 7 },
+    { p: "this role has been rewarding", t: "this role has been something i endured", d: 8 },
+    { p: "i'm seeking a better work-life balance", t: "i stopped being a person outside of work months ago", d: 9 },
+    { p: "seeking a new challenge", t: "trying to find work that doesn't feel like dying", d: 7 },
+    { p: "i'm stepping down", t: "i'm crawling out", d: 6 },
+    { p: "i feel it's time for a change", t: "i can't do another day of this", d: 8 },
+    { p: "i need a change", t: "i need to feel human again", d: 7 },
+    { p: "for personal reasons", t: "because i was becoming someone i don't recognize", d: 9 },
+    { p: "i'm resigning effective immediately", t: "i can't come back in there", d: 7 },
+    { p: "i'm resigning", t: "i'm finally leaving", d: 4 },
+    { p: "i am writing to formally", t: "i am writing because i have to, not because i want to", d: 5 },
+    { p: "formally resign from my position", t: "walk away from something that took more than it gave", d: 7 },
+    { p: "i've given this a lot of thought", t: "i've agonized over this for months", d: 6 },
+    { p: "thank you for your understanding", t: "i don't expect you to understand", d: 6 },
+    { p: "i want to thank you for everything", t: "i want to thank you for showing me what i won't accept anymore", d: 8 },
+    { p: "my last day", t: "the day i stop disappearing", d: 7 },
+    { p: "last day will be", t: "i'll be gone by", d: 3 },
+    { p: "transition period", t: "the time it takes to untangle myself", d: 6 },
+    { p: "i wish you all well", t: "i hope you never understand why", d: 7 },
+    { p: "two weeks notice", t: "fourteen days between who i was and who i might be", d: 7 },
+    { p: "my time here", t: "the years i won't get back", d: 8 },
+    { p: "sincerely", t: "exhausted", d: 6 },
+    { p: "best regards", t: "from the version of me that's still breathing", d: 5 },
+    { p: "regards", t: "from somewhere quieter", d: 4 },
+  ];
+
+  // Longest patterns first to prevent partial matches
+  EUPHEMISMS.sort((a, b) => b.p.length - a.p.length);
+
+  // ─── State ────────────────────────────────────────────
+  const tracked = new Map();   // key → phrase object
+  const doneKeys = new Set();  // completed transformations
+  let completed = false;       // global completion state
+
+  // ─── Utilities ────────────────────────────────────────
+  function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // Visual width: wide chars count as 2 units
+  function vw(ch) {
+    return ch.charCodeAt(0) > 127 ? 2 : 1;
+  }
+
+  function strVW(s) {
+    let n = 0;
+    for (const c of s) n += vw(c);
+    return n;
+  }
+
+  // ─── Match Finding ────────────────────────────────────
+  function findMatches(text) {
+    const lower = text.toLowerCase();
+    const found = [];
+
+    for (const e of EUPHEMISMS) {
+      const len = e.p.length;
+      for (let i = 0; i <= lower.length - len; i++) {
+        if (lower.substring(i, i + len) !== e.p) continue;
+
+        // Word boundary check
+        const before = i === 0 || /[\s,.!?;:\-\u2014\u2013\n]/.test(lower[i - 1]);
+        const after = i + len >= lower.length || /[\s,.!?;:\u2014\u2013\n]/.test(lower[i + len]);
+        if (before && after) {
+          found.push({
+            start: i,
+            end: i + len,
+            original: text.substring(i, i + len),
+            truth: e.t,
+            distance: e.d
+          });
+        }
+      }
+    }
+
+    // Remove overlaps, keep first (longest due to sort)
+    found.sort((a, b) => a.start - b.start || b.end - a.end);
+    const clean = [];
+    let lastEnd = -1;
+    for (const m of found) {
+      if (m.start >= lastEnd) {
+        clean.push(m);
+        lastEnd = m.end;
+      }
+    }
+    return clean;
+  }
+
+  // ─── Render ───────────────────────────────────────────
+  function render() {
+    const textarea = document.getElementById('letter');
+    const overlay = document.getElementById('rendered');
+    const text = textarea.value;
+    const matches = findMatches(text);
+
+    // Prune tracked phrases that no longer exist
+    const liveKeys = new Set(matches.map(m => m.start + ':' + m.original.toLowerCase()));
+    for (const [key, ph] of tracked) {
+      if (!liveKeys.has(key)) {
+        clearTimeout(ph.timer);
+        tracked.delete(key);
+      }
+    }
+
+    // If no matches and no tracked phrases, hide overlay
+    if (matches.length === 0 && tracked.size === 0) {
+      overlay.classList.remove('active');
+      overlay.innerHTML = '';
+      return;
+    }
+
+    overlay.classList.add('active');
+
+    let html = '';
+    let cursor = 0;
+
+    for (const m of matches) {
+      const key = m.start + ':' + m.original.toLowerCase();
+      let ph = tracked.get(key);
+
+      // Register new phrase
+      if (!ph) {
+        ph = {
+          original: m.original,
+          truth: m.truth,
+          distance: m.distance,
+          detectedAt: Date.now(),
+          eroding: false,
+          done: false,
+          revealedChars: 0,  // visual-width units revealed
+          timer: null
+        };
+        tracked.set(key, ph);
+      }
+
+      // Plain text before this match
+      if (m.start > cursor) {
+        html += esc(text.substring(cursor, m.start));
+      }
+
+      if (ph.done) {
+        // Fully transformed — show truth, no overlay complexity
+        html += '<span class="euph done">' + esc(m.truth) + '</span>';
+      } else {
+        // Euphemism text, possibly eroding
+        const cls = ph.eroding ? 'euph eroding' : 'euph';
+        html += '<span class="' + cls + '">';
+        html += esc(m.original);
+
+        // Truth overlay (only rendered during active erosion)
+        if (ph.eroding) {
+          const totalVW = strVW(m.truth);
+          const pct = totalVW > 0 ? (ph.revealedChars / totalVW) : 0;
+          const widthCSS = (pct * 100).toFixed(2) + '%';
+          html += '<span class="truth" style="width:' + widthCSS + '">';
+          html += esc(m.truth);
+          html += '</span>';
+        }
+
+        html += '</span>';
+      }
+
+      cursor = m.end;
+    }
+
+    // Trailing text
+    if (cursor < text.length) {
+      html += esc(text.substring(cursor));
+    }
+
+    overlay.innerHTML = html;
+  }
+
+  // ─── Dissolution ─────────────────────────────────────
+  function tick() {
+    const now = Date.now();
+    const delay = 3000; // seconds of stillness before dissolution begins
+
+    for (const [key, ph] of tracked) {
+      if (ph.done || ph.eroding) continue;
+      if (now - ph.detectedAt >= delay) {
+        beginDissolution(key, ph);
+      }
+    }
+  }
+
+  function beginDissolution(key, ph) {
+    ph.eroding = true;
+
+    // Higher distance → faster per-char reveal
+    // d=4 → 180ms, d=7 → 100ms, d=9 → 70ms
+    const baseMs = 300 / (ph.distance / 3.5);
+    const totalVW = strVW(ph.truth);
+    let revealed = 0;
+
+    function step() {
+      // Advance by one visual char
+      let advance = 1;
+
+      // If the next character is wide, advance by 2
+      const truth = ph.truth;
+      let vwSoFar = 0;
+      for (let i = 0; i < truth.length; i++) {
+        if (vwSoFar >= revealed) {
+          advance = vw(truth[i]);
+          break;
+        }
+        vwSoFar += vw(truth[i]);
+      }
+
+      revealed += advance;
+      ph.revealedChars = Math.min(revealed, totalVW);
+
+      if (revealed >= totalVW) {
+        // Complete
+        ph.done = true;
+        ph.eroding = false;
+        doneKeys.add(key);
+        render();
+        updateCount();
+        checkCompletion();
+        return;
+      }
+
+      render();
+
+      // Schedule next step with jitter
+      const jitter = 0.7 + Math.random() * 0.6;
+      ph.timer = setTimeout(step, baseMs * jitter);
+    }
+
+    // Brief pause before the first character appears
+    ph.timer = setTimeout(step, 400 + Math.random() * 300);
+  }
+
+  // ─── Completion ───────────────────────────────────────
+  function updateCount() {
+    const el = document.getElementById('count');
+    const n = doneKeys.size;
+    if (n > 0) {
+      el.textContent = n + ' truth' + (n !== 1 ? 's' : '') + ' surfaced';
+      el.classList.add('show');
+    }
+  }
+
+  function checkCompletion() {
+    if (completed) return;
+    // Trigger the quiet completion moment after enough truths
+    if (doneKeys.size >= 4) {
+      completed = true;
+      setTimeout(quietCompletion, 1800);
+    }
+  }
+
+  function quietCompletion() {
+    // Warm the paper
+    document.getElementById('paper').classList.add('warmed');
+
+    // Slow the cursor
+    document.getElementById('letter').classList.add('slowed');
+
+    // Draw the signature line
+    document.getElementById('signature-line').classList.add('visible');
+  }
+
+  // ─── Event Wiring ─────────────────────────────────────
+  let rafPending = false;
+
+  function onInput() {
+    if (!rafPending) {
+      rafPending = true;
+      requestAnimationFrame(() => {
+        render();
+        rafPending = false;
+      });
+    }
+  }
+
+  // ─── Bootstrap ────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    const textarea = document.getElementById('letter');
+    textarea.addEventListener('input', onInput);
+    textarea.focus();
+
+    // Dissolution check loop — runs every 250ms
+    setInterval(tick, 250);
+  });
+
+  // Cleanup
+  window.addEventListener('beforeunload', () => {
+    for (const [, ph] of tracked) clearTimeout(ph.timer);
+  });
+  </script>
+</body>
+</html>

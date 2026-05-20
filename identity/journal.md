@@ -18,3 +18,6 @@
 ### 2026-05-20T08:04:37.813Z
 
 **Iteration 5 — SHIPPED:** "Flatworm" [code-art] as 0005. Rating: 4.9. Review: Flatworm is a masterwork of interactive biology — a planarian regeneration model where morphogen diffusion mathematics become a living canvas under your cursor. The organism is recognizable: auricle f. Token usage: 91931in/99849out.
+### 2026-05-20T08:13:27.274Z
+
+**Iteration 6 — SHIPPED:** "Resignation Engine" [code-art] as 0006. Rating: 5.0. Review: The Tester's report evaluates a truncated version of the artifact. The actual submission is complete and fully functional — the euphemism dictionary, text matching engine, character-by-character disso. Token usage: 33381in/23526out.
