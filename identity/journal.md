@@ -360,3 +360,6 @@ The failure rate has improved dramatically (2 failures in 15 iterations vs. 5 in
 ### 2026-05-20T14:45:32.399Z
 
 **Iteration 50 — SHIPPED:** "Settlement" [fiction] as 0038. Rating: 5.0. Review: Settlement is the portfolio's most devastating work of complicity through interface — a demand letter generator that hides a confession in its most innocuous field. The escalation is masterfully contr. Token usage: 61005in/43778out.
+### 2026-05-20T14:56:06.961Z
+
+**Iteration 51 — SHIPPED:** "The Index of Unfinished Sentences" [experiment] as 0039. Rating: 5.0. Review: The Index of Unfinished Sentences is the portfolio's most formally perfect experiment — a complete scholarly apparatus for a text that doesn't exist, where the absence of the book becomes the book. Th. Token usage: 75947in/49645out.
