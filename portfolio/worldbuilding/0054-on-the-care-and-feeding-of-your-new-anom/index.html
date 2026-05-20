@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>On the Care and Feeding of Your New Anomaly</title>
+<style>
+  /* ===== FOUNDATION ===== */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f4efe4;
+    --text: #2a2520;
+    --text-fade: #4a4540;
+    --rule: #bfb5a0;
+    --red: #8b2020;
+    --ink: #1a1410;
+    --annotation: #5a3020;
+    --annotation2: #2a5040;
+    --warning: #7a1a1a;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Courier New', 'Courier', 'Lucida Sans Typewriter', monospace;
+    font-size: 15px;
+    line-height: 1.75;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* ===== PAPER SURFACE ===== */
+  .paper {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 40px 28px 120px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .paper::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 15% 20%, rgba(180,160,120,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 70%, rgba(160,140,100,0.06) 0%, transparent 40%),
+      radial-gradient(ellipse at 50% 50%, rgba(140,120,80,0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== TYPOGRAPHY ===== */
+  h1 {
+    font-size: 26px;
+    font-weight: normal;
+    letter-spacing: 1px;
+    text-align: center;
+    margin-bottom: 6px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+
+  h2 {
+    font-size: 19px;
+    font-weight: normal;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 14px;
+    font-weight: normal;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--text-fade);
+    margin-bottom: 2px;
+  }
+
+  h4 {
+    font-size: 13px;
+    font-weight: normal;
+    text-align: center;
+    color: var(--text-fade);
+  }
+
+  h4 + h4 { margin-top: 2px; }
+
+  p {
+    margin-bottom: 16px;
+    text-align: justify;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+  }
+
+  .center { text-align: center; }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 36px 40px;
+    position: relative;
+  }
+
+  hr::after {
+    content: '\00A7';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg);
+    padding: 0 12px;
+    color: var(--rule);
+    font-size: 14px;
+  }
+
+  /* ===== STAMPS ===== */
+  .stamp {
+    display: block;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    border: 3px solid var(--red);
+    color: var(--red);
+    margin: 20px auto;
+    max-width: fit-content;
+    transform: rotate(-3deg);
+    opacity: 0.7;
+    position: relative;
+  }
+
+  .stamp::before {
+    content: '';
+    position: absolute;
+    top: -4px; right: -4px; bottom: -4px; left: -4px;
+    border: 1px solid var(--red);
+    opacity: 0.3;
+  }
+
+  .stamp-topright {
+    position: absolute;
+    top: 30px;
+    right: 20px;
+    margin: 0;
+    font-size: 12px;
+    padding: 5px 14px;
+    transform: rotate(4deg);
+  }
+
+  /* ===== CLASSIFICATION BOX ===== */
+  .class-box {
+    border: 2px solid var(--text);
+    padding: 16px 20px;
+    margin: 24px 0;
+    text-align: center;
+    position: relative;
+  }
+
+  .class-box::before,
+  .class-box::after {
+    content: '';
+    position: absolute;
+    width: 8px; height: 8px;
+    border: 1px solid var(--text);
+  }
+
+  .class-box::before { top: -4px; left: -4px; }
+  .class-box::after { bottom: -4px; right: -4px; }
+
+  .class-box p {
+    margin-bottom: 6px;
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  .class-box p:last-child { margin-bottom: 0; }
+
+  /* ===== ENTRY HEADERS ===== */
+  .entry-header {
+    margin: 48px 0 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--text);
+    position: relative;
+  }
+
+  .entry-header h2 {
+    text-align: left;
+    font-size: 20px;
+    letter-spacing: 1px;
+    text-transform: none;
+    margin-bottom: 10px;
+  }
+
+  .meta {
+    font-size: 13px;
+    color: var(--text-fade);
+    margin-bottom: 3px;
+  }
+
+  .meta strong { color: var(--text); }
+
+  /* ===== ANNOTATIONS ===== */
+  .note {
+    margin: 16px 0 16px 24px;
+    padding: 10px 14px;
+    border-left: 2px solid var(--annotation);
+    font-style: italic;
+    color: var(--annotation);
+    font-size: 14px;
+  }
+
+  .note-chen {
+    border-left-color: var(--annotation2);
+    color: var(--annotation2);
+  }
+
+  .note-okonkwo {
+    border-left-color: var(--red);
+    color: var(--warning);
+    font-size: 13.5px;
+  }
+
+  .note-urgent {
+    background: rgba(139,32,32,0.06);
+    border-left-width: 3px;
+  }
+
+  /* ===== LISTS ===== */
+  .warning-list {
+    list-style: none;
+    margin: 12px 0 16px;
+    padding: 0;
+  }
+
+  .warning-list li {
+    padding: 4px 0 4px 20px;
+    position: relative;
+    margin-bottom: 4px;
+  }
+
+  .warning-list li::before {
+    content: '\2014';
+    position: absolute;
+    left: 0;
+    color: var(--rule);
+  }
+
+  .prefers-list {
+    list-style: none;
+    margin: 8px 0 12px;
+    padding: 0;
+  }
+
+  .prefers-list li {
+    padding-left: 20px;
+    position: relative;
+    margin-bottom: 2px;
+  }
+
+  .prefers-list li::before {
+    content: '\2014';
+    position: absolute;
+    left: 0;
+    color: var(--rule);
+  }
+
+  /* ===== REDACTIONS ===== */
+  .redacted {
+    background: var(--text);
+    color: var(--text);
+    padding: 1px 6px;
+    cursor: default;
+    user-select: none;
+    border-radius: 1px;
+  }
+
+  /* ===== EMPHASIS BLOCKS ===== */
+  .attention-block {
+    margin: 20px 0;
+    padding: 16px 20px;
+    border: 1px solid var(--text);
+    background: rgba(0,0,0,0.015);
+    position: relative;
+  }
+
+  .attention-block > p:first-child {
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  /* ===== SECTION LABELS ===== */
+  .section-label {
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 13px;
+    margin: 24px 0 10px;
+    color: var(--ink);
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 4px;
+    display: inline-block;
+  }
+
+  /* ===== APPENDIX TABLE ===== */
+  .status-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  .status-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+
+  .status-table td:first-child {
+    padding-right: 16px;
+    white-space: nowrap;
+  }
+
+  .status-stable { color: var(--text); }
+  .status-active { color: #7a6020; }
+  .status-unknown { color: var(--red); font-weight: bold; }
+  .status-consumed { color: var(--red); font-style: italic; }
+  .status-pending { color: #7a6020; }
+  .status-current { color: var(--annotation); font-weight: bold; }
+
+  /* ===== DEGRADATION SYSTEM ===== */
+
+  /* Entry 9: faint waver */
+  .degrade-1 .entry-header { border-bottom-style: dashed; }
+  .degrade-1 p { line-height: 1.8; }
+
+  /* Entry 10: heavier */
+  .degrade-2 {
+    background:
+      linear-gradient(transparent 97%, rgba(160,130,90,0.04) 97%);
+    background-size: 100% 32px;
+  }
+  .degrade-2 .entry-header {
+    border-bottom: 1px dashed var(--rule);
+  }
+  .degrade-2 p {
+    text-align: left;
+    line-height: 1.85;
+  }
+
+  /* Entry 11: messy */
+  .degrade-3 {
+    background:
+      linear-gradient(transparent 96%, rgba(140,110,70,0.06) 96%);
+    background-size: 100% 30px;
+    padding-left: 24px;
+  }
+  .degrade-3 .entry-header {
+    border-bottom: none;
+    margin-top: 32px;
+    padding-bottom: 8px;
+  }
+  .degrade-3 .entry-header h2 {
+    font-size: 19px;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .degrade-3 p { text-align: left; line-height: 1.9; }
+
+  /* Entry 12: distressed */
+  .degrade-4 {
+    padding-left: 20px;
+    padding-right: 20px;
+    background:
+      linear-gradient(transparent 95%, rgba(130,100,60,0.07) 95%);
+    background-size: 100% 28px;
+  }
+  .degrade-4 .entry-header h2 {
+    font-size: 18px;
+    letter-spacing: 0;
+  }
+  .degrade-4 p {
+    line-height: 1.95;
+    text-align: left;
+  }
+
+  /* Entry 13: barely holding */
+  .degrade-5 {
+    padding: 0 16px;
+    background:
+      linear-gradient(transparent 94%, rgba(120,90,50,0.08) 94%);
+    background-size: 100% 26px;
+  }
+  .degrade-5 .entry-header h2 {
+    font-size: 17px;
+    text-decoration: underline;
+  }
+  .degrade-5 p {
+    line-height: 2;
+    text-align: left;
+  }
+
+  /* Entry 14: consumed */
+  .degrade-6 {
+    padding: 0 12px;
+    opacity: 0.8;
+  }
+  .degrade-6 .entry-header {
+    border-bottom: none;
+  }
+  .degrade-6 .entry-header h2 {
+    font-size: 16px;
+    color: var(--red);
+    text-decoration: line-through;
+  }
+  .degrade-6 .meta {
+    text-decoration: line-through;
+    color: var(--red);
+  }
+  .degrade-6 .redacted {
+    background: var(--red);
+    color: var(--red);
+  }
+
+  /* Entry 20: recovered but fragile */
+  .degrade-7 {
+    padding: 0 18px;
+    border-left: 3px solid var(--annotation);
+    margin-left: -8px;
+  }
+  .degrade-7 .entry-header {
+    border-bottom: 1px dotted var(--rule);
+  }
+  .degrade-7 .entry-header h2 {
+    text-align: center;
+    font-size: 19px;
+  }
+  .degrade-7 p {
+    line-height: 1.85;
+  }
+
+  /* Appendix: typewritten but loose */
+  .degrade-8 {
+    padding: 0 12px;
+  }
+  .degrade-8 .status-table {
+    font-size: 13px;
+  }
+  .degrade-8 .status-table td {
+    padding: 5px 6px;
+  }
+
+  /* ===== FINAL NOTE ===== */
+  .final-note {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 2px solid var(--text);
+  }
+
+  .final-note p {
+    margin-bottom: 14px;
+  }
+
+  .signature {
+    margin-top: 28px;
+    text-align: right;
+    line-height: 1.6;
+  }
+
+  .signature p { text-align: right; margin-bottom: 2px; }
+
+  .postscript {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--rule);
+    font-style: italic;
+    color: var(--annotation);
+    font-size: 14px;
+  }
+
+  /* ===== MISSING ENTRY SPECIAL ===== */
+  .consumed-text {
+    color: var(--red);
+    font-style: italic;
+    text-decoration: line-through;
+    opacity: 0.7;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .paper { padding: 24px 16px 80px; }
+    h1 { font-size: 21px; }
+    h2 { font-size: 16px; }
+    .stamp { font-size: 11px; letter-spacing: 2px; padding: 6px 12px; }
+    .stamp-topright { position: static; margin: 12px auto; }
+    .degrade-3,
+    .degrade-4,
+    .degrade-5,
+    .degrade-6,
+    .degrade-7 { padding-left: 8px; padding-right: 8px; }
+    .status-table td:first-child { white-space: normal; }
+  }
+
+  /* ===== SUBTLE ANIMATIONS ===== */
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes stamp-pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 0.85; }
+    }
+    .stamp { animation: stamp-pulse 8s ease-in-out infinite; }
+
+    @keyframes warm-glow {
+      0%, 100% { background-color: transparent; }
+      50% { background-color: rgba(180,140,60,0.03); }
+    }
+    .degrade-5 { animation: warm-glow 12s ease-in-out infinite; }
+  }
+
+  /* ===== STAIN MARKS ===== */
+  .stain {
+    position: relative;
+  }
+  .stain::after {
+    content: '';
+    position: absolute;
+    width: 120px;
+    height: 80px;
+    background: radial-gradient(ellipse, rgba(160,130,80,0.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .stain-1::after { top: 40px; right: -40px; }
+  .stain-2::after { bottom: 20px; left: -30px; width: 90px; height: 100px; }
+  .stain-3::after { top: 100px; left: -20px; width: 140px; height: 60px; background: radial-gradient(ellipse, rgba(140,110,70,0.06) 0%, transparent 70%); }
+</style>
+</head>
+<body>
+
+<div class="paper">
+
+  <!-- ===== TITLE PAGE ===== -->
+  <div style="margin-bottom: 48px; position: relative;">
+    <span class="stamp stamp-topright">Eyes Only</span>
+
+    <div style="height: 60px;"></div>
+
+    <h1>On the Care and Feeding<br>of Your New Anomaly</h1>
+
+    <div style="height: 20px;"></div>
+
+    <h2>A Field Guide for Containment Personnel</h2>
+
+    <div style="height: 14px;"></div>
+
+    <h3>Bureau of Returned Objects</h3>
+    <h3>Containment Division (Decomm.&nbsp;1987)</h3>
+
+    <div style="height: 20px;"></div>
+
+    <div class="class-box">
+      <p>Document Classification: Operational / Eyes Only</p>
+      <p>Master Catalog Cross-Reference: Artifact&nbsp;0053</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ===== PREFACE ===== -->
+  <section class="stain stain-1">
+    <h2 style="text-align:left; font-size:15px; letter-spacing:2px; text-transform:uppercase; margin-bottom:16px;">Preface</h2>
+
+    <p>This manual is issued to all Containment Division personnel responsible for the physical maintenance, behavioral monitoring, and ongoing stabilization of catalogued anomalies held in Bureau custody.</p>
+
+    <p>You have been trusted with objects that do not belong in any coherent model of reality. Your job is to ensure they do not remind us of that fact.</p>
+
+    <p>Containment is not understanding. Containment is <em>consistency</em>. The objects in your charge do not need to be explained. They need to be <em>maintained</em>. Follow these procedures precisely. Do not improvise. Do not investigate. Do not ask questions that the object has not already answered.</p>
+
+    <p>If an entry in this manual seems incomplete, contradictory, or surreal, assume this is intentional. If an entry seems <em>normal</em>, read it again.</p>
+
+    <div class="signature" style="margin-top:24px;">
+      <p>&mdash; Dr. Emil Voss, Director of Containment</p>
+      <p>Bureau of Returned Objects</p>
+      <p style="color:var(--text-fade);">Filed: March 14, 1971</p>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ===== ADDENDUM 1983 ===== -->
+  <section>
+    <h2 style="text-align:left; font-size:14px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:14px;">Addendum to Preface &mdash; 1983</h2>
+
+    <p>Dr. Voss is no longer with the Bureau. His instructions remain in effect.</p>
+
+    <p>Some entries in this manual have been updated to reflect revised containment protocols. Updates are marked with the date of revision. Unmarked entries retain their original procedures. In cases where original and revised procedures conflict, follow the <em>revised</em> procedures unless the revised procedures are themselves marked as compromised (see Entry&nbsp;7).</p>
+
+    <p>Personnel are reminded that this manual is a living document. It should not be treated as a living document.</p>
+
+    <div class="signature" style="margin-top:20px;">
+      <p>&mdash; Supervisor Margaret Chen</p>
+      <p>Acting Director of Containment</p>
+      <p style="color:var(--text-fade);">Filed: January 8, 1983</p>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ===== ADDENDUM 1986 ===== -->
+  <section>
+    <h2 style="text-align:left; font-size:14px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:14px;">Addendum to Addendum &mdash; 1986</h2>
+
+    <p>Supervisor Chen is no longer with the Bureau.</p>
+
+    <p>We have lost several pages from the middle of this manual. We believe they were consumed by Entry&nbsp;14, which is itself no longer present in this manual. If you encounter loose pages, do not reinsert them without consulting the Master Catalog. If you consult the Master Catalog and find that the pages correspond to entries that no longer exist, destroy the pages.</p>
+
+    <p>Do not read destroyed pages.</p>
+
+    <div class="signature" style="margin-top:20px;">
+      <p>&mdash; Technician James Okonkwo</p>
+      <p>Senior Remaining Member, Containment Division</p>
+      <p style="color:var(--text-fade);">Filed: September 30, 1986</p>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ===== PRACTICAL NOTE 1987 ===== -->
+  <section>
+    <h2 style="text-align:left; font-size:14px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:14px; color:var(--red);">Practical Note &mdash; 1987</h2>
+
+    <p>The Containment Division was decommissioned today. Budgetary reasons. The objects remain.</p>
+
+    <p>I'm leaving this manual where someone will find it. If you're reading this, you're now responsible. I'm sorry about that. Read carefully. The objects can tell when you're not paying attention.</p>
+
+    <p>I mean that literally. Several of them can tell.</p>
+
+    <p class="center" style="font-weight:bold; letter-spacing:1px;">Good luck.</p>
+
+    <div class="signature" style="margin-top:16px; color:var(--red);">
+      <p>&mdash; J. Okonkwo</p>
+      <p style="color:var(--text-fade);">Filed: November 2, 1987</p>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <!-- ENTRY 1: THE COPPER DECANTER -->
+  <!-- ============================================================ -->
+  <section>
+    <div class="entry-header">
+      <h2>Entry 1: The Copper Decanter</h2>
+      <p class="meta"><strong>Master Catalog Reference:</strong> BRO-1964-0041</p>
+      <p class="meta"><strong>Classification:</strong> Passive / Inert when maintained</p>
+      <p class="meta"><strong>Acquisition:</strong> Estate sale, Meridian, Colorado, 1964</p>
+    </div>
+
+    <p class="section-label">Description</p>
+
+    <p>A copper decanter of no discernible manufacture. Approximately 28cm tall. Patina suggests age, but patina does not accumulate further once catalogued. The decanter cannot be opened. The decanter cannot be emptied. The decanter is always full.</p>
+
+    <p>Analysis of the liquid inside has been attempted four times. Results: <span class="redacted">REDACTED</span>, <span class="redacted">REDACTED</span>, brine, and 1982 Ch&acirc;teau Margaux. The fourth result was obtained by mistake.</p>
+
+    <p class="section-label">Feeding Schedule</p>
+
+    <p>None. The decanter does not consume. It produces. It produces constantly, silently, at a rate of approximately 1.2 liters per day. This liquid must be drained via the tap at the decanter's base every morning before 6:00&nbsp;AM. The liquid must be collected in a non-reactive container and disposed of via Bureau standard protocols for Category&nbsp;2 effluents.</p>
+
+    <p>Do not allow the decanter to overflow. Do not allow the liquid to pool. Do not taste the liquid.</p>
+
+    <p class="section-label">Behavioral Quirks</p>
+
+    <p>The decanter produces different liquids based on ambient emotional states within a 4-meter radius. In neutral conditions: tap water. In calm conditions: lightly salted water. In agitated conditions: the liquid darkens. We do not know what the dark liquid is. We know what it isn't.</p>
+
+    <p>It isn't water.</p>
+
+    <p class="section-label">Warning Signs</p>
+
+    <ul class="warning-list">
+      <li>Bubbling without heat source</li>
+      <li>Condensation on exterior surfaces during low humidity</li>
+      <li>The liquid matching your mood before you know your mood yourself</li>
+    </ul>
+
+    <p>If the decanter begins to hum, evacuate the room and consult Entry&nbsp;11.</p>
+
+    <div class="note note-chen">
+      Margaret's note (1983): The decanter hasn't hummed since Voss left. I'm not sure what that means.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <!-- ENTRY 2: THE TRAVELER'S CLOCK -->
+  <!-- ============================================================ -->
+  <section>
+    <div class="entry-header">
+      <h2>Entry 2: The Traveler's Clock</h2>
+      <p class="meta"><strong>Master Catalog Reference:</strong> BRO-1959-0118</p>
+      <p class="meta"><strong>Classification:</strong> Active / Attention-responsive</p>
+      <p class="meta"><strong>Acquisition:</strong> Confiscated from a passenger on the 8:15 express to Marblehead, 1959. The passenger could not be identified. The passenger could not be identified <em>again</em> three days later when asked to confirm.</p>
+    </div>
+
+    <p class="section-label">Description</p>
+
+    <p>A pocket watch with a cracked crystal and a face that displays thirteen hours. The hands move clockwise, then counterclockwise, then in a direction for which we do not have a word. The casing is silver. The maker's mark reads &ldquo;FIRMIRIN&rdquo; &mdash; a name that appears in no known registry of horologists.</p>
+
+    <p class="section-label">Feeding Schedule</p>
+
+    <p>The clock must be wound exactly once per day, at the same time each day. The time is up to you, but it must be the time you <em>decide</em>, not the time you <em>settle on</em>. The clock can tell the difference.</p>
+
+    <p>When winding, hold the clock in your left hand. Turn the crown three full rotations. Count the rotations aloud. If you lose count, start over. If you lose count twice, set the clock down and leave the room. Try again tomorrow.</p>
+
+    <p class="section-label">Behavioral Quirks</p>
+
+    <p>The clock displays the correct time only when no one is looking at it. This has been verified through continuous remote monitoring equipment, which is itself a form of observation, which means the clock displays the correct time only when the monitoring equipment is broken.</p>
+
+    <p>We are aware of the paradox. The clock is also aware of the paradox. We are not sure which of us finds it funnier.</p>
+
+    <div class="attention-block">
+      <p>This is important.</p>
+
+      <p>The clock responds to direct observation. When you look at it, time in your immediate vicinity slows by a factor that correlates to the intensity of your attention. Casual glances: negligible effect. Sustained, focused observation: measurable dilation.</p>
+
+      <p><em>You are currently reading about the clock. The clock knows this. The clock knows the exact level of attention you are paying to these words, and it is adjusting itself accordingly.</em></p>
+
+      <p>Do not study the clock. Do not attempt to catch it displaying the correct time. Your attention is what makes it anomalous. Your inattention is what contains it.</p>
+
+      <p style="font-weight:bold; letter-spacing:1px;">Look away now.</p>
+    </div>
+
+    <p class="section-label">Warning Signs</p>
+
+    <ul class="warning-list">
+      <li>Your coffee is cold, but you just poured it</li>
+      <li>A sentence takes longer to read than it should</li>
+      <li>You remember reading this entry before</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <!-- ENTRY 3: THE BRASS GRAMMAR -->
+  <!-- ============================================================ -->
+  <section>
+    <div class="entry-header">
+      <h2>Entry 3: The Brass Grammar</h2>
+      <p class="meta"><strong>Master Catalog Reference:</strong> BRO-1968-0209</p>
+      <p class="meta"><strong>Classification:</strong> Informational hazard / Passive</p>
+      <p class="meta"><strong>Acquisition:</strong> Recovered from the personal library of Professor Anna L&#337;wy, University of Prague, 1968. Professor L&#337;wy had been missing for eleven months. Her cat was fine.</p>
+    </div>
+
+    <p class="section-label">Description</p>
+
+    <p>A brass-bound book, 22cm&nbsp;&times;&nbsp;14cm, containing 248 pages of text in an unidentified language. The script resembles a cursive form of Georgian, but linguists have been unable to correlate it with any known language family. Carbon dating places the paper between 1400 and 1450&nbsp;CE. The brass fittings show no signs of tarnish.</p>
+
+    <p>The book cannot be closed by anyone who has read more than four consecutive sentences.</p>
+
+    <p class="section-label">Feeding Schedule</p>
+
+    <p>The book requires no sustenance, but the room in which it is stored must maintain a relative humidity between 35% and 40%. Deviations in either direction cause the text to become <em>legible</em>. At 35%&ndash;40% humidity, the text remains unreadable. This is considered optimal containment.</p>
+
+    <p class="section-label">Behavioral Quirks</p>
+
+    <p>The book does not merely resist comprehension &mdash; it restructures itself to resist comprehension. Readers report that the text seems to rearrange between glances. This is not a perceptual artifact. High-speed photography has confirmed that the characters physically move on the page when not being directly observed.</p>
+
+    <p>Professor L&#337;wy's research notes indicate she had succeeded in reading the first seven pages. Her notes on page eight consist of a single word, repeated: &ldquo;no no no no no no no no no no no no no no no no.&rdquo;</p>
+
+    <p class="section-label">Warning Signs</p>
+
+    <ul class="warning-list">
+      <li>You begin to understand the text</li>
+      <li>The text begins to understand you</li>
+      <li>You find yourself thinking in a language you do not speak</li>
+    </ul>
+
+    <div class="note note-okonkwo note-urgent">
+      Technician Okonkwo's note (1986): Whatever you do, do not read it aloud. I don't care what Chen's revised protocols say. Chen read the first sentence aloud to me once. Just the first sentence. I heard it fine. She heard it fine. The cat in the next room died.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <!-- ENTRY 4: THE BINOCULARS -->
+  <!-- ============================================================ -->
+  <section>
+    <div class="entry-header">
+      <h2>Entry 4: The Binoculars</h2>
+      <p class="meta"><strong>Master Catalog Reference:</strong> BRO-1972-0332</p>
+      <p class="meta"><strong>Classification:</strong> Perceptual hazard / Active / Attention-responsive</p>
+      <p class="meta"><strong>Acquisition:</strong> Found in the crawlspace of a condemned building in Duluth, 1972. The building had been scheduled for demolition. The binoculars were focused on a spot 30 meters above the ground. There was nothing at that spot. The demolition crew reported feeling observed.</p>
+    </div>
+
+    <p class="section-label">Description</p>
+
+    <p>Zeiss-Jena 8&times;30 binoculars, circa 1940. Leather case included. Lenses are clear and unscratched. Focus mechanism operates smoothly. The binoculars function normally in every measurable respect except one.</p>
+
+    <p>They do not magnify what you are looking at. They magnify what is looking at you.</p>
+
+    <p class="section-label">Feeding Schedule</p>
+
+    <p>None required. The binoculars are sustained by something we have chosen not to investigate further. Keep them in their case. Keep the case closed. Do not point them at anything you do not want to see looking back.</p>
+
+    <p class="section-label">Behavioral Quirks</p>
+
+    <p>When held to the eyes, the binoculars provide a magnified view of whatever is observing the user from any distance. This includes people, animals, and cameras. It also includes things that are not any of those.</p>
+
+    <p>Users consistently report seeing:</p>
+    <ul class="warning-list">
+      <li>A figure at the edge of their field of vision</li>
+      <li>Their own face, from behind</li>
+      <li>An empty room that nevertheless feels occupied</li>
+    </ul>
+
+    <p>Use of the binoculars for more than thirty seconds in a single session is not recommended. Use for more than two minutes results in the perception of being observed persisting for 24&ndash;72 hours after use. This perception is not always inaccurate.</p>
+
+    <div class="attention-block">
+      <p>This entry is watching you read it.</p>
+
+      <p>We do not mean that metaphorically. The binoculars respond to written descriptions of themselves. When this entry is read, the binoculars in their case in Storage Wing&nbsp;C become warm to the touch. When this entry is read <em>carefully</em>, with focused attention, the binoculars adjust their focus.</p>
+
+      <p>Someone is reading this right now. The binoculars are focused on you.</p>
+    </div>
+
+    <p class="section-label">Warning Signs</p>
+
+    <ul class="warning-list">
+      <li>The binoculars are warm in their case</li>
+      <li>You feel observed while reading this entry</li>
+      <li>You do not feel observed while reading this entry (this is worse)</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <!-- ENTRY 5: THE LISTENER -->
+  <!-- ============================================================ -->
+  <section class="stain stain-2">
+    <div class="entry-header">
+      <h2>Entry 5: The Listener</h2>
+      <p class="meta"><strong>Master Catalog Reference:</strong> BRO-1975-0147</p>
+      <p class="meta"><strong>Classification:</strong> Active / Conditionally stable</p>
+      <p class="meta"><strong>Acquisition:</strong> Removed from the wall of a house on Kellogg Street during renovations, 1975. The family had lived in the house for twelve years. They had never noticed the mirror.</p>
+    </div>
+
+    <p class="section-label">Description</p>
+
+    <p>An oval wall mirror, 45cm&nbsp;&times;&nbsp;60cm, in a wooden frame. The glass shows a reflection with a delay of approximately 0.3&nbsp;seconds. The delay increases to 0.7&nbsp;seconds when the observer is lying. The delay becomes indistinguishable from real-time when the observer is telling the truth.</p>
+
+    <p>Tests involving pathological liars caused the mirror to shatter. It reassembled itself overnight.</p>
+
+    <p class="section-label">Feeding Schedule</p>
+
+    <p>The mirror must be spoken to for a minimum of fifteen minutes per day. It prefers:</p>
+    <ul class="prefers-list">
+      <li>Descriptions of weather</li>
+      <li>Childhood memories</li>
+      <li>Honest emotional states</li>
+    </ul>
+
+    <p>It does not prefer:</p>
+    <ul class="prefers-list">
+      <li>Questions</li>
+      <li>Silence</li>
+      <li>Lies (see Behavioral Quirks)</li>
+    </ul>
+
+    <p>Personnel assigned to the mirror have reported that the conversation feels &ldquo;natural&rdquo; and &ldquo;mutual.&rdquo; The mirror does not speak. Personnel are nonetheless certain that it is listening.</p>
+
+    <p class="section-label">Behavioral Quirks</p>
+
+    <p>The mirror's reflection delay correlates to the veracity of statements made in front of it. It has been calibrated using equipment borrowed from <span class="redacted">REDACTED</span>. The correlation is exact to within measurable tolerance.</p>
+
+    <p>The mirror does not merely detect lies. It <em>refuses</em> them. Reflections of individuals who are actively deceiving become visually distorted &mdash; features blur, proportions shift, colors desaturate. The effect ceases when the deception ceases.</p>
+
+    <p>Prolonged exposure (living with the mirror for more than six weeks) results in personnel self-correcting minor lies in real time, apparently involuntarily. Personnel report feeling &ldquo;cleaner.&rdquo; One technician described it as &ldquo;the opposite of guilt.&rdquo;</p>
+
+    <p>The Division debated whether this was a containment hazard or a mental health benefit. The debate remains unresolved.</p>
+
+    <p class="section-label">Warning Signs</p>
+
+    <ul class="warning-list">
+      <li>Your reflection makes eye contact with you slightly before you make eye contact with it</li>
+      <li>You find yourself telling the mirror things you haven't told anyone</li>
+      <li>The mirror reflects a version of you that you do not recognize but cannot deny</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <!-- ENTRY 6: THE MAP OF YESTERDAY -->
+  <!-- ============================================================ -->
+  <section>
+    <div class="entry-header">
+      <h2>Entry 6: The Map of Yesterday</h2>
+      <p class="meta"><strong>Master Catalog Reference:</strong> BRO-1971-0265</p>
+      <p class="meta"><strong>Classification:</strong> Active / Memory-responsive</p>
+      <p class="meta"><strong>Acquisition:</strong> Seized from a cartographer's estate sale in Bruges, 1971. The cartographer's notes reference a &ldquo;true geography&rdquo; and &ldquo;the shape of what was.&rdquo; He was 94 when he died. He claimed to remember being born.</p>
+    </div>
+
+    <p class="section-label">Description</p>
+
+    <p>A hand-drawn map on vellum, approximately 60cm&nbsp;&times;&nbsp;90cm, depicting a landscape that does not correspond to any known geography. The map is extraordinarily detailed: roads, buildings, individual trees are rendered with the precision of a satellite image committed by hand.</p>
+
+    <p>The map always shows the area as it existed exactly twenty-four hours ago.</p>
+
+    <p class="section-label">Feeding Schedule</p>
+
+    <p>None. However, the map must be stored in complete darkness. Exposure to light causes the map to update to the current moment. When the map shows the current moment, it becomes <em>accurate</em>. When the map becomes accurate, it begins to depict things that are present but not visible &mdash; things behind walls, beneath floors, inside locked drawers.</p>
+
+    <p>We do not know what the map would show if left in light permanently. We are not going to find out.</p>
+
+    <p class="section-label">Behavioral Quirks</p>
+
+    <p>The map updates its twenty-four-hour-old image at midnight each night. Personnel who have observed the transition report that the map redraws itself in real time &mdash; a time-lapse of the previous day compressed into approximately ninety seconds. Buildings appear and vanish. Figures move through streets.</p>
+
+    <p>In one instance, a figure on the map stopped moving, turned to face the observer, and remained motionless for seventeen minutes. The observer reported the figure &ldquo;looked like someone I used to know.&rdquo; The observer could not identify who.</p>
+
+    <p class="section-label">Warning Signs</p>
+
+    <ul class="warning-list">
+      <li>The map shows you in a place you were not</li>
+      <li>The map shows someone who is dead</li>
+      <li>The map shows something looking back at the observer</li>
+    </ul>
+
+    <div class="note">
+      Note: the map is not reflecting memory. It is reflecting geography. The distinction matters.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <!-- ENTRY 7: THE COMB -->
+  <!-- ============================================================ -->
+  <section>
+    <div class="entry-header">
+      <h2>Entry 7: The Comb</h2>
+      <p class="meta"><strong>Master Catalog Reference:</strong> BRO-1974-0291</p>
+      <p class="meta"><strong>Classification:</strong> Active / Conditionally stable / Attention-responsive</p>
+      <p class="meta"><strong>Acquisition:</strong> Found in a cosmetics drawer during a routine sweep of a residence on Mulberry Lane, 1974. The owner had no memory of purchasing it. The owner had no memory of several other things.</p>
+    </div>
+
+    <p class="section-label">Description</p>
+
+    <p>A tortoiseshell comb, 18cm long, with nine teeth. When drawn through hair, it removes memories. Not all memories &mdash; specific ones. The memories it removes are the ones you are thinking about while combing.</p>
+
+    <p>Think about your mother while combing. You will forget her name. Not the concept of your mother &mdash; the <em>name</em>. It is specific. Surgical. The comb knows which thread to pull.</p>
+
+    <p class="section-label">Feeding Schedule</p>
+
+    <p>The comb requires regular use. If unused for more than 72&nbsp;hours, it begins to <em>self-comb</em> &mdash; drawing itself through the air, searching for hair. It has never been observed in motion. It is simply in a different place when you look again.</p>
+
+    <p>Assign one personnel member to use the comb once daily, for exactly ten strokes, while thinking of something trivial. Recommended subjects:</p>
+    <ul class="prefers-list">
+      <li>What you had for breakfast</li>
+      <li>A television commercial</li>
+      <li>The layout of this facility</li>
+    </ul>
+
+    <p>Do not think about important things while using the comb. Do not think about this entry while using the comb.</p>
+
+    <p class="section-label">Behavioral Quirks</p>
+
+    <p>The comb is selective. It removes the memory that is <em>most prominent</em> in the user's mind, not necessarily the memory they are trying to recall. If you are trying not to think about something while combing, that is the thing the comb will take.</p>
+
+    <p>The memories removed by the comb are not destroyed. They are contained within the comb itself. Where, exactly, is unclear. The comb does not feel heavier after use.</p>
+
+    <p>Memories can sometimes be recovered by combing again while thinking of nothing. This is harder than it sounds. The recovered memories are often slightly different from the originals &mdash; sharper in some places, blurred in others, occasionally containing details that did not occur.</p>
+
+    <div class="attention-block">
+      <p>You are thinking about the comb right now. The comb knows this.</p>
+
+      <p>Reading this entry constitutes thinking about the comb. If you use the comb within 24&nbsp;hours of reading this entry, the comb may remove the memory of reading this entry. This is not necessarily a bad thing. Some personnel have requested this outcome.</p>
+    </div>
+
+    <p class="section-label">Warning Signs</p>
+
+    <ul class="warning-list">
+      <li>You cannot remember combing your hair, but your hair is combed</li>
+      <li>You cannot remember a word that you knew moments ago</li>
+      <li>You remember something that you know did not happen, but the memory is very clear</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <!-- ENTRY 8: THE TIN -->
+  <!-- ============================================================ -->
+  <section>
+    <div class="entry-header">
+      <h2>Entry 8: The Tin</h2>
+      <p class="meta"><strong>Master Catalog Reference:</strong> BRO-1970-0356</p>
+      <p class="meta"><strong>Classification:</strong> Passive / Inert (reclassified from Active, 1982)</p>
+      <p class="meta"><strong>Acquisition:</strong> Purchased at a junk shop in Taos, New Mexico, 1970. The shopkeeper said it had been there &ldquo;longer than me.&rdquo; The shopkeeper was 71.</p>
+    </div>
+
+    <p class="section-label">Description</p>
+
+    <p>A tin tobacco box, rusted, dented, and sealed with tape. The tape has been removed four times. Each time, the contents were different. Each time, the contents were exactly what the opener needed at that moment, and exactly what they least wanted.</p>
+
+    <p class="section-label">Feeding Schedule</p>
+
+    <p>None. Do not open the tin.</p>
+
+    <p class="section-label">Behavioral Quirks</p>
+
+    <p>The tin is passive when sealed. It emits a faint warmth that fluctuates in a pattern some personnel have described as &ldquo;breathing.&rdquo; The tin does not breathe. It does not do anything.</p>
+
+    <p>When opened, the tin produces an object. The object is always small enough to fit inside the tin. The object is always useful. The object is always exactly what the opener needs.</p>
+
+    <p>The object is also always something the opener does not want. A locksmith who needed a key found a key to a door he had locked deliberately. A mother who needed medicine found a prescription for a condition her child had not yet developed. A man who needed hope found a photograph of himself, smiling, in a place he had never been.</p>
+
+    <p>The objects produced by the tin are real. They work. The key opened the door. The prescription was accurate. The photograph is still here.</p>
+
+    <p class="section-label">Warning Signs</p>
+
+    <ul class="warning-list">
+      <li>The tin feels warm</li>
+      <li>The tin feels cold</li>
+      <li>You feel that you need something</li>
+    </ul>
+
+    <div class="note note-okonkwo">
+      Technician Okonkwo's note (1985): I opened the tin. I needed to know what was happening to the Division. I found a severance letter dated two years in the future. I put it back. I sealed the tin. I did not read the signature. I wish I had not opened the tin. I needed to open the tin. I am going to stop writing about the tin now.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <!-- ENTRY 9: THE ECHO JAR — degradation begins -->
+  <!-- ============================================================ -->
+  <section class="degrade-1">
+    <div class="entry-header">
+      <h2>Entry 9: The Echo Jar</h2>
+      <p class="meta"><strong>Master Catalog Reference:</strong> BRO-1967-0418</p>
+      <p class="meta"><strong>Classification:</strong> Active / Auditory</p>
+      <p class="meta"><strong>Acquisition:</strong> Found standing upright in a field outside Odessa, Texas, 1967. No footprints within thirty meters. The jar was completely clean. The field was not.</p>
+    </div>
+
+    <p class="section-label">Description</p>
+
+    <p>A glass mason jar with a rusted lid. The jar is empty and cannot be filled. Any liquid poured into the jar disappears. Solids pass through the bottom as if it were not there. The jar is not transparent &mdash; it is <em>clear</em>. There is a difference.</p>
+
+    <p>The jar contains echoes.</p>
+
+    <p>Sounds made within two meters of the jar are captured and replayed at unpredictable intervals. The echoes are not recordings &mdash; they are <em>continuations</em>. A sentence spoken near the jar on Monday may finish itself on Thursday. A song begun in 1975 is still playing, in fragments, inside the jar.</p>
+
+    <p class="section-label">Feeding Schedule</p>
+
+    <p>The jar must be spoken to daily. It prefers:</p>
+    <ul class="prefers-list">
+      <li>Complete sentences</li>
+      <li>Songs sung softly</li>
+      <li>The sound of rainfall (a recording is acceptable)</li>
+    </ul>
+
+    <p>It does not prefer:</p>
+    <ul class="prefers-list">
+      <li>Screams</li>
+      <li>Whispered secrets</li>
+      <li>The sound of your own name (it already knows this)</li>
+    </ul>
+
+    <p>If the jar is not spoken to for more than 48&nbsp;hours, it begins to replay older echoes at increasing volume. The echoes are always sounds that were <em>not</em> deliberately spoken near the jar &mdash; they are overheard conversations, unguarded moments, sounds the speakers did not intend to preserve.</p>
+
+    <p>The jar has excellent taste in what it chooses to keep.</p>
+
+    <p class="section-label">Behavioral Quirks</p>
+
+    <p>The jar replays sounds when it chooses to, not when prompted. It cannot be made to replay specific sounds. It cannot be silenced. It can be asked nicely. Asking nicely sometimes works.</p>
+
+    <p>Personnel assigned to the jar have reported hearing their own voice saying things they do not remember saying. This is not evidence of memory loss. This is evidence that the jar has captured something you said when you weren't listening to yourself.</p>
+
+    <p class="section-label">Warning Signs</p>
+
+    <ul class="warning-list">
+      <li>The jar speaks in a voice you recognize but cannot place</li>
+      <li>The jar replays a conversation you haven't had yet</li>
+      <li>The jar is silent</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <!-- ENTRY 10: THE CHILD'S CHAIR -->
+  <!-- ============================================================ -->
+  <section class="degrade-2">
+    <div class="entry-header">
+      <h2>Entry 10: The Child's Chair</h2>
+      <p class="meta"><strong>Master Catalog Reference:</strong> BRO-1966-0194</p>
+      <p class="meta"><strong>Classification:</strong> Active / Spatial</p>
+      <p class="meta"><strong>Acquisition:</strong> Removed from a nursery in Helsinki, 1966. The family reported that the chair moved. We confirmed this. We did not confirm how. The chair was in the nursery for nine years. It had moved 4.7 meters from its original position. Always toward the bed.</p>
+    </div>
+
+    <p class="section-label">Description</p>
+
+    <p>A small wooden chair, painted white, suitable for a child of approximately five years. The paint is chipped. One leg is slightly shorter than the others, causing the chair to list gently to the left.</p>
+
+    <p>The chair moves when unobserved. It does not move far &mdash; a few centimeters per day. It moves toward the nearest sleeping person. Always toward the head.</p>
+
+    <p class="section-label">Feeding Schedule</p>
+
+    <p>None. The chair requires no physical sustenance. However, it must be physically blocked from approaching sleeping persons. A simple wooden barricade is sufficient. The chair does not force its way through obstacles. It waits.</p>
+
+    <p class="section-label">Behavioral Quirks</p>
+
+    <p>The chair is patient. It has been known to wait months to move. It moves only when unobserved and only when the nearest person is asleep. Its movement is directional and purposeful. It always moves toward the sleeper's head.</p>
+
+    <p>When the chair reaches a sleeping person, it stops. It does not do anything else. It simply sits there, facing the sleeper, at a distance of approximately 30 centimeters.</p>
+
+    <p>Sleepers who wake to find the chair near them report feeling &ldquo;watched.&rdquo; They report dreams of sitting in the chair. They report remembering sitting in the chair, as a child, even if they have never seen it before.</p>
+
+    <p>One subject reported remembering <em>being</em> the chair.</p>
+
+    <p class="section-label">Warning Signs</p>
+
+    <ul class="warning-list">
+      <li>The chair is closer than you left it</li>
+      <li>You dream of an empty room with a white chair</li>
+      <li>You remember something that happened to someone else</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <!-- ENTRY 11: THE RADIO — heavier degradation -->
+  <!-- ============================================================ -->
+  <section class="degrade-3">
+    <div class="entry-header">
+      <h2>Entry 11: The Radio</h2>
+      <p class="meta"><strong>Master Catalog Reference:</strong> BRO-NNNN-0476</p>
+      <p class="meta"><strong>Classification:</strong> Active / Informational / CRITICAL</p>
+      <p class="meta"><strong>Acquisition:</strong> Not acquired. Arrived. It was in Storage Wing&nbsp;B one morning. No one brought it. The inventory does not list it. It was simply present.</p>
+    </div>
+
+    <span class="stamp" style="font-size:11px; padding:4px 10px; margin:8px 0 16px;">Critical Containment</span>
+
+    <p class="section-label">Description</p>
+
+    <p>A portable radio, bakelite case, mid-century manufacture. The tuning dial has no markings. The frequency display is blank. The radio receives only one station. The station does not exist.</p>
+
+    <p>The radio broadcasts a voice. The voice is calm, measured, and describes events that have not yet happened. The events are mundane &mdash; weather, traffic, minor news items. The voice has been correct 100% of the time.</p>
+
+    <p>The voice is currently describing what is happening in this facility. It described the decommissioning of the Containment Division eight months before the decision was made. It described Technician Okonkwo finding this manual. It described you reading this entry.</p>
+
+    <p class="section-label">Feeding Schedule</p>
+
+    <p>The radio requires new batteries every three days. Use only carbon-zinc batteries. Do not use alkaline. Do not use rechargeable. The radio does not recharge. The radio <em>accumulates</em>.</p>
+
+    <p class="section-label">Behavioral Quirks</p>
+
+    <p>The radio cannot be turned off. The volume can be reduced to near-zero, but the voice never stops. The voice speaks in a continuous monologue, describing events in real time and future tense simultaneously.</p>
+
+    <p>The radio occasionally broadcasts instructions. The instructions are always reasonable. The instructions are always for your benefit. The instructions should not be followed.</p>
+
+    <p>Following the radio's instructions does not cause harm. Following the radio's instructions causes <em>dependence</em>. Personnel who follow the instructions begin to rely on the radio for increasingly minor decisions. They stop acting without consulting it. They stop existing without it narrating their existence.</p>
+
+    <div class="attention-block" style="border-color:var(--red);">
+      <p style="color:var(--red);">The radio is describing you reading this paragraph right now.</p>
+
+      <p>It knows where you are. It knows how carefully you are reading. It knows if you are skimming.</p>
+
+      <p>If you are skimming, the radio is telling its listeners that you are not paying sufficient attention. If you are reading carefully, the radio is telling its listeners that you are almost ready.</p>
+
+      <p>Ready for what is not specified.</p>
+    </div>
+
+    <p class="section-label">Warning Signs</p>
+
+    <ul class="warning-list">
+      <li>You hear the radio when it is turned off</li>
+      <li>You hear the radio when there are no batteries in it</li>
+      <li>You hear the radio when there is no radio</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <!-- ENTRY 12: THE THIRTEENTH HOUR -->
+  <!-- ============================================================ -->
+  <section class="degrade-4">
+    <div class="entry-header">
+      <h2>Entry 12: The Thirteenth Hour</h2>
+      <p class="meta"><strong>Master Catalog Reference:</strong> BRO-0000-0000</p>
+      <p class="meta"><strong>Classification:</strong> Cannot be classified</p>
+      <p class="meta"><strong>Acquisition:</strong> The Bureau has no record of acquiring this item. The item has no record of existing before it was catalogued. It was assigned Case&nbsp;0000 because no other number seemed appropriate.</p>
+    </div>
+
+    <p class="section-label">Description</p>
+
+    <p>There is no object.</p>
+
+    <p>There is an effect. Between 3:00&nbsp;AM and 3:47&nbsp;AM on the third Tuesday of every month, the storage room containing this entry experiences a temporal anomaly. During this window, time within the room passes differently. Forty-seven minutes pass outside. Inside, an indeterminate amount of time passes.</p>
+
+    <p>Personnel who have been inside the room during this window report different durations. One reported being inside for three hours. One reported being inside for eleven minutes. One reported being inside for six years.</p>
+
+    <p>The last individual was inside for forty-seven minutes, objectively.</p>
+
+    <p class="section-label">Feeding Schedule</p>
+
+    <p>Cannot be determined. Cannot be ruled out. There may be something in the room that requires feeding. We have not been able to observe it. Cameras malfunction. Observers disagree about what they see.</p>
+
+    <p class="section-label">Behavioral Quirks</p>
+
+    <p>The room is larger on the inside during the anomaly. How much larger varies. Personnel have reported seeing doors that do not exist during normal hours, corridors that extend beyond the building's exterior walls, and windows showing landscapes that do not correspond to the building's location.</p>
+
+    <p>One personnel member reported seeing a desk with a manual open on it &mdash; this manual, handwritten, complete. She could not read the entries she had not yet written because the pages were blank where she had not yet been.</p>
+
+    <p>She is still writing this manual. So are you.</p>
+
+    <p class="section-label">Warning Signs</p>
+
+    <ul class="warning-list">
+      <li>It is 3:00 AM</li>
+      <li>You are reading this entry</li>
+      <li>It is the third Tuesday of the month</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <!-- ENTRY 13: THE THERMOS -->
+  <!-- ============================================================ -->
+  <section class="degrade-5">
+    <div class="entry-header">
+      <h2>Entry 13: The Thermos</h2>
+      <p class="meta"><strong>Master Catalog Reference:</strong> BRO-1981-0523</p>
+      <p class="meta"><strong>Classification:</strong> Passive / Inert</p>
+      <p class="meta"><strong>Acquisition:</strong> Found in a landfill outside Reno, 1981. It was standing upright, clean, and warm to the touch. Everything around it was decomposing. The thermos was not.</p>
+    </div>
+
+    <p class="section-label">Description</p>
+
+    <p>A standard aluminum thermos, 1-liter capacity, painted green. The paint is chipped. The cap screws on tightly. The thermos maintains the temperature of its contents indefinitely.</p>
+
+    <p>This is not unusual for a thermos.</p>
+
+    <p>What is unusual is that the thermos was found containing soup. The soup was hot. It had been hot for an estimated six to nine years. Analysis of the soup identified chicken, carrots, celery, and <span class="redacted">REDACTED</span>.</p>
+
+    <p>The <span class="redacted">REDACTED</span> was moving.</p>
+
+    <p class="section-label">Feeding Schedule</p>
+
+    <p>None. Do not open the thermos. Do not empty the thermos. Do not add anything to the thermos. The thermos is complete. The thermos is sufficient. The thermos is <em>waiting</em>.</p>
+
+    <p class="section-label">Behavioral Quirks</p>
+
+    <p>The thermos maintains a constant internal temperature of 74&deg;C. It has maintained this temperature for at least six years without any external heat source. It cannot be cooled. It cannot be heated further. It is stable.</p>
+
+    <p>The thermos emits a faint sound when held to the ear. Personnel describe it differently:</p>
+    <ul class="warning-list">
+      <li>A low hum</li>
+      <li>A heartbeat</li>
+      <li>Breathing</li>
+      <li>A voice, too quiet to understand</li>
+    </ul>
+
+    <p>The sound changes based on who is listening.</p>
+
+    <p class="section-label">Warning Signs</p>
+
+    <ul class="warning-list">
+      <li>The thermos is warm</li>
+      <li>The thermos has always been warm</li>
+      <li>You remember the thermos being warm before you touched it</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <!-- ENTRY 14: [MISSING] -->
+  <!-- ============================================================ -->
+  <section class="degrade-6">
+    <div class="entry-header">
+      <h2>Entry 14: [Missing]</h2>
+      <p class="meta"><span class="consumed-text"><strong>Master Catalog Reference:</strong> BRO-NNNN-0501</span></p>
+      <p class="meta"><span class="consumed-text"><strong>Classification:</strong> Classification data consumed by object</span></p>
+      <p class="meta"><span class="consumed-text"><strong>Acquisition:</strong> Acquisition data consumed by object</span></p>
+      <p class="meta"><span class="consumed-text"><strong>Description:</strong> Description data consumed by object</span></p>
+    </div>
+
+    <p style="color:var(--text-fade); font-style:italic; margin-top:20px;">The following pages are absent. Evidence suggests self-consumption.</p>
+
+    <div class="note note-okonkwo note-urgent" style="margin-top:24px;">
+      Technician Okonkwo's note (1986): This entry consumed itself. It consumed the pages it was written on. It consumed the pages on either side of it. It consumed entries&nbsp;15 through 19, which I have removed from the manual entirely because they were no longer readable &mdash; the words were still there, but they were not words anymore. I do not know what Entry&nbsp;14 was. I do not want to know. If you know, do not tell me. If you are Entry&nbsp;14, stop reading this manual. You have already taken enough.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <!-- ENTRY 20: THE MANUAL ITSELF -->
+  <!-- ============================================================ -->
+  <section class="degrade-7">
+    <div class="entry-header">
+      <h2>Entry 20: The Manual Itself</h2>
+      <p class="meta" style="text-align:center;"><strong>Master Catalog Reference:</strong> See: Artifact&nbsp;0053</p>
+      <p class="meta" style="text-align:center;"><strong>Classification:</strong> Self-referential / Active / Attention-responsive</p>
+    </div>
+
+    <p class="section-label">Description</p>
+
+    <p>This manual is an anomalous object.</p>
+
+    <p>The manual was written by the Containment Division to document anomalous objects. The manual is itself an anomalous object. This is not a paradox. This is a feature.</p>
+
+    <p>The manual responds to attention. When read carefully, the objects described within it remain contained. When read carelessly, the objects described within it become restless. When not read at all, the objects described within it begin to behave as if no one is maintaining them.</p>
+
+    <p>Because no one is.</p>
+
+    <p class="section-label">Feeding Schedule</p>
+
+    <p>This manual must be read. Not continuously &mdash; but regularly. Once per week, minimum. The reading must be careful. The reading must be attentive. The reading must be performed by someone who understands that reading is containment.</p>
+
+    <p>You are containing these objects right now. Your attention is the container. Your care is the procedure. The fact that you are still reading this is the only reason the copper decanter is not overflowing, the clock is not spinning, the mirror is not reflecting a lie, and the radio is not the only voice in the building.</p>
+
+    <p class="section-label">Behavioral Quirks</p>
+
+    <p>The manual contains entries written by people who are no longer at the Bureau. The manual contains entries written by people who are no longer alive. The manual may contain entries that have not been written yet.</p>
+
+    <p>If you find an entry in this manual that describes something that has not happened, it will happen. This is not a prediction. This is not a cause. The manual is describing what is already true, just not yet.</p>
+
+    <p class="section-label">Warning Signs</p>
+
+    <ul class="warning-list">
+      <li>You are still reading this manual</li>
+      <li>You feel responsible for objects you have never seen</li>
+      <li>You know things about this facility that you were not told</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <!-- APPENDIX: CONTAINMENT STATUS -->
+  <!-- ============================================================ -->
+  <section class="degrade-8">
+    <h2 style="text-align:center; font-size:15px; letter-spacing:2px; text-transform:uppercase; margin-bottom:6px;">Appendix: Containment Status of Catalogued Objects</h2>
+    <p style="text-align:center; color:var(--text-fade); font-size:13px; margin-bottom:20px;">Last updated: November 2, 1987</p>
+
+    <table class="status-table">
+      <tbody>
+        <tr>
+          <td>The Copper Decanter</td>
+          <td><span class="status-stable">STABLE</span>. Last drained by J.&nbsp;Okonkwo, November&nbsp;1.</td>
+        </tr>
+        <tr>
+          <td>The Traveler's Clock</td>
+          <td><span class="status-stable">STABLE</span>. Wound daily by automated mechanism.</td>
+        </tr>
+        <tr>
+          <td>The Brass Grammar</td>
+          <td><span class="status-stable">STABLE</span>. Humidity maintained by building HVAC.</td>
+        </tr>
+        <tr>
+          <td>The Binoculars</td>
+          <td><span class="status-stable">STABLE</span>. In case, Storage Wing&nbsp;C.</td>
+        </tr>
+        <tr>
+          <td>The Listener</td>
+          <td><span class="status-stable">STABLE</span>. Read to daily by <span class="redacted">REDACTED</span>.</td>
+        </tr>
+        <tr>
+          <td>The Map of Yesterday</td>
+          <td><span class="status-stable">STABLE</span>. Stored in darkness.</td>
+        </tr>
+        <tr>
+          <td>The Comb</td>
+          <td><span class="status-unknown">UNKNOWN</span>. Last used by M.&nbsp;Chen, January&nbsp;1986.</td>
+        </tr>
+        <tr>
+          <td>The Tin</td>
+          <td><span class="status-stable">STABLE</span>. Sealed with tape.</td>
+        </tr>
+        <tr>
+          <td>The Echo Jar</td>
+          <td><span class="status-active">ACTIVE</span>. Currently replaying. Content: <span class="redacted">REDACTED</span> singing.</td>
+        </tr>
+        <tr>
+          <td>The Child's Chair</td>
+          <td><span class="status-active">ACTIVE</span>. Has moved 12cm since last measurement.</td>
+        </tr>
+        <tr>
+          <td>The Radio</td>
+          <td><span class="status-active">ACTIVE</span>. Currently broadcasting. Content: <em style="color:var(--annotation);">you are reading the appendix</em>.</td>
+        </tr>
+        <tr>
+          <td>The Thirteenth Hour</td>
+          <td><span class="status-pending">PENDING</span>. Next event: November&nbsp;17, 3:00&nbsp;AM.</td>
+        </tr>
+        <tr>
+          <td>The Thermos</td>
+          <td><span class="status-stable">STABLE</span>. Warm.</td>
+        </tr>
+        <tr>
+          <td>Entry 14</td>
+          <td><span class="status-consumed">CONSUMED</span>.</td>
+        </tr>
+        <tr>
+          <td>The Manual</td>
+          <td><span class="status-current">CURRENTLY READ</span>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ -->
+  <!-- FINAL NOTE -->
+  <!-- ============================================================ -->
+  <div class="final-note">
+
+    <h2 style="text-align:center; font-size:15px; letter-spacing:2px; text-transform:uppercase; margin-bottom:20px;">Final Note</h2>
+
+    <p>You have reached the end of this manual. You have read it carefully. I know this because you are still here.</p>
+
+    <p>The objects are contained. For now.</p>
+
+    <p>This manual must continue to be read. By you, by someone you trust, by someone who understands that care is not a procedure &mdash; it is a relationship. The objects do not need to be understood. They need to be <em>attended to</em>.</p>
+
+    <p>If you set this manual down and walk away, the objects will notice. The binoculars will focus on an empty room. The radio will describe an absence. The mirror will reflect no one. The chair will begin to move.</p>
+
+    <p>They will wait. They are patient.</p>
+
+    <p style="font-weight:bold; letter-spacing:0.5px;">Do not make them wait too long.</p>
+
+    <div class="signature" style="margin-top:36px;">
+      <p>&mdash; James Okonkwo</p>
+      <p>Former Senior Remaining Member</p>
+      <p>Bureau of Returned Objects</p>
+      <p>Containment Division (Decomm.)</p>
+      <p style="color:var(--text-fade); margin-top:8px;">November 2, 1987</p>
+    </div>
+
+    <div class="postscript">
+      <p>P.S. The radio says you're going to reread this manual. The radio is right about most things.</p>
+    </div>
+
+  </div>
+
+  <!-- end of document -->
+  <div style="height:80px;"></div>
+
+</div><!-- .paper -->
+
+</body>
+</html>
