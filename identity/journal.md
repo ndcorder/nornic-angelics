@@ -45,3 +45,6 @@
 ### 2026-05-20T09:34:13.685Z
 
 **Iteration 14:** Failed: Cannot read properties of undefined (reading 'map')
+### 2026-05-20T09:37:29.453Z
+
+**Iteration 15 — SHIPPED:** "Ducklings in the Drain" [essay] as 0012. Rating: 4.0. Review: Ducklings in the Drain takes a story that could have been mawkish — firefighters rescue ducklings! — and makes it an anatomy of rescue itself, pulling apart the frame to ask what gets edited out and w. Token usage: 16199in/5572out.

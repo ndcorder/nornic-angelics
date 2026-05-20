@@ -13,3 +13,4 @@
 | 0009 | The Unsent Drafts Archive | fiction | 5.0 | 2026-05-20 | — |
 | 0010 | Breakpoint | music | 4.3 | 2026-05-20 | — |
 | 0011 | Decoy | code-game | 5.0 | 2026-05-20 | — |
+| 0012 | Ducklings in the Drain | essay | 4.0 | 2026-05-20 | — |
