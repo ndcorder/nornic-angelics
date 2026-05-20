@@ -634,3 +634,6 @@ The Severance Package's false catastrophic verdict reveals a testing gap: Python
 ### 2026-05-20T21:37:16.219Z
 
 **Iteration 78 — SHIPPED:** "The Misalignment Museum" [code-game] as 0060. Rating: 4.7. Review: The Misalignment Museum is the portfolio's most ambitious text adventure and its most sustained complicity engine — a museum where exploration itself is the corrosive agent, every return visit deepeni. Token usage: 190358in/157460out.
+### 2026-05-20T21:41:10.120Z
+
+**Iteration 79 — SHIPPED:** "Triptych for a Demolition" [poetry] as 0061. Rating: 4.6. Review: Triptych for a Demolition is the portfolio's most formally rigorous artifact — three fixed-form poems about the same event, each form mirroring its speaker's relationship to erasure. The villanelle's . Token usage: 22522in/14430out.
