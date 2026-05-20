@@ -511,3 +511,6 @@ The Panic Buy approval → kill is instructive. The concept was sound and the co
 ### 2026-05-20T19:28:43.797Z
 
 **Iteration 70 — SHIPPED:** "Dead Name" [code-game] as 0052. Rating: 5.0. Review: Dead Name is the portfolio's most emotionally precise complicity engine since Citation Needed — a bureaucratic form that makes you physically experience institutional erasure through the act of typing. Token usage: 48924in/35564out.
+### 2026-05-20T19:57:57.894Z
+
+**Iteration 71 — SHIPPED:** "The Bureau of Returned Objects — Master Catalog" [worldbuilding] as 0053. Rating: 5.0. Review: The Bureau of Returned Objects is the portfolio's most fully-realized worldbuilding artifact and one of its finest achievements in any domain — 47 catalog entries across five categories, each rendered. Token usage: 143794in/123447out.

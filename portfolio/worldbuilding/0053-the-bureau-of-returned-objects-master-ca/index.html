@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master Catalog — Bureau of Returned Objects</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+  :root {
+    --ink: #1a1714;
+    --paper: #f4efe6;
+    --paper-dark: #e8e0d0;
+    --red-stamp: #8b2d2d;
+    --blue-ink: #2a4a6b;
+    --green-ink: #3a5a3a;
+    --faded: #a09888;
+    --border: #c8bfb0;
+    --note-bg: #faf7f0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'EB Garamond', Georgia, serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 17px;
+  }
+
+  .container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 40px 30px 80px;
+  }
+
+  .bureau-header {
+    text-align: center;
+    border-bottom: 3px double var(--ink);
+    padding-bottom: 30px;
+    margin-bottom: 50px;
+  }
+
+  .bureau-header h1 {
+    font-size: 14px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    font-weight: 400;
+    margin-bottom: 6px;
+    color: var(--faded);
+  }
+
+  .bureau-header h2 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .bureau-header .catalog-meta {
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    color: var(--faded);
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+
+  .stamp {
+    display: inline-block;
+    border: 3px solid var(--red-stamp);
+    color: var(--red-stamp);
+    padding: 6px 18px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    transform: rotate(-2deg);
+    margin-top: 14px;
+    opacity: 0.7;
+  }
+
+  .director-note {
+    background: var(--note-bg);
+    border: 1px solid var(--border);
+    padding: 30px 35px;
+    margin-bottom: 55px;
+    position: relative;
+  }
+
+  .director-note::before {
+    content: 'DIRECTOR\'S FOREWORD';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: var(--paper);
+    padding: 0 10px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--faded);
+  }
+
+  .director-note p {
+    margin-bottom: 16px;
+    text-align: justify;
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  .director-note p:last-child { margin-bottom: 0; }
+
+  .redacted {
+    background: var(--ink);
+    color: var(--ink);
+    padding: 0 4px;
+    cursor: default;
+    user-select: none;
+  }
+
+  .schema {
+    border: 1px solid var(--border);
+    padding: 25px 30px;
+    margin-bottom: 55px;
+  }
+
+  .schema h3 {
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--faded);
+    margin-bottom: 16px;
+  }
+
+  .schema-category {
+    display: flex;
+    margin-bottom: 10px;
+    font-size: 15px;
+  }
+
+  .schema-code {
+    font-family: 'Courier Prime', monospace;
+    font-weight: 700;
+    width: 60px;
+    flex-shrink: 0;
+    color: var(--red-stamp);
+  }
+
+  .schema-desc {
+    color: #555;
+  }
+
+  .category-section {
+    margin-bottom: 60px;
+  }
+
+  .category-header {
+    display: flex;
+    align-items: baseline;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 6px;
+    margin-bottom: 25px;
+  }
+
+  .category-code {
+    font-family: 'Courier Prime', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--red-stamp);
+    margin-right: 12px;
+  }
+
+  .category-name {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .entry {
+    border: 1px solid var(--border);
+    margin-bottom: 30px;
+    background: #fff;
+    break-inside: avoid;
+  }
+
+  .entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: var(--paper-dark);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .entry-header:hover {
+    background: #ddd8cc;
+  }
+
+  .entry-id {
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--red-stamp);
+    letter-spacing: 1px;
+  }
+
+  .entry-title {
+    font-size: 16px;
+    font-weight: 600;
+    flex: 1;
+    margin-left: 14px;
+  }
+
+  .entry-date {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    color: var(--faded);
+  }
+
+  .entry-body {
+    padding: 20px;
+    display: none;
+  }
+
+  .entry.open .entry-body {
+    display: block;
+  }
+
+  .field-description {
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  .field-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  .field-row span {
+    white-space: nowrap;
+  }
+
+  .cataloguer-notes {
+    margin-top: 4px;
+  }
+
+  .note {
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    border-left: 3px solid var(--border);
+    font-size: 14.5px;
+    line-height: 1.7;
+    position: relative;
+  }
+
+  .note:last-child { margin-bottom: 0; }
+
+  .note.catriona {
+    border-left-color: var(--blue-ink);
+    background: rgba(42, 74, 107, 0.03);
+  }
+
+  .note.evangeline {
+    border-left-color: var(--green-ink);
+    background: rgba(58, 90, 58, 0.03);
+  }
+
+  .note.denholm {
+    border-left-color: var(--red-stamp);
+    background: rgba(139, 45, 45, 0.03);
+  }
+
+  .note.signe {
+    border-left-color: #7a5a8a;
+    background: rgba(122, 90, 138, 0.03);
+  }
+
+  .note-attr {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--faded);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .note.catriona .note-attr { color: var(--blue-ink); }
+  .note.evangeline .note-attr { color: var(--green-ink); }
+  .note.denholm .note-attr { color: var(--red-stamp); }
+  .note.signe .note-attr { color: #7a5a8a; }
+
+  .entry.special-entry .entry-header {
+    background: #f0ebe0;
+    border: 1px solid var(--red-stamp);
+  }
+
+  .entry.special-entry {
+    border: 2px solid var(--red-stamp);
+  }
+
+  .special-note {
+    font-style: italic;
+    color: var(--red-stamp);
+    font-size: 13px;
+    text-align: center;
+    padding: 12px;
+    font-family: 'Courier Prime', monospace;
+    letter-spacing: 1px;
+  }
+
+  .circulant {
+    text-align: center;
+    font-style: italic;
+    padding: 16px;
+    color: #666;
+    line-height: 2;
+  }
+
+  .circulant .arrow {
+    display: block;
+    color: var(--faded);
+    font-size: 12px;
+    margin: 2px 0;
+  }
+
+  .catalog-footer {
+    margin-top: 60px;
+    padding-top: 25px;
+    border-top: 3px double var(--ink);
+    text-align: center;
+    font-size: 13px;
+    color: var(--faded);
+    line-height: 2;
+  }
+
+  .catalog-footer em {
+    display: block;
+    margin-top: 8px;
+    font-style: italic;
+    color: #888;
+  }
+
+  .controls {
+    text-align: right;
+    margin-bottom: 15px;
+  }
+
+  .controls button {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    cursor: pointer;
+    color: var(--faded);
+  }
+
+  .controls button:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 20px 15px 50px; }
+    .bureau-header h2 { font-size: 24px; }
+    .entry-header { flex-wrap: wrap; gap: 4px; }
+    .entry-title { margin-left: 0; width: 100%; order: 3; margin-top: 4px; }
+    .field-row { flex-direction: column; gap: 4px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="bureau-header">
+  <h1>Bureau of Returned Objects</h1>
+  <h2>Master Catalog</h2>
+  <div class="stamp">Revised Consolidated Edition</div>
+  <div class="catalog-meta">Doc. Ref: BRO-MC-0047 &nbsp;|&nbsp; Classification: Internal Use Only &nbsp;|&nbsp; Status: <span style="color:var(--red-stamp)">Active</span></div>
+</header>
+
+<div class="director-note">
+  <p>Since its establishment in <span class="redacted">████████</span>, the Bureau has processed tens of thousands of objects that have returned — not to their owners, but to us. The circumstances of return vary. An object recovered from a vacated residence. A parcel delivered to our loading dock with no return address. A box left on the steps overnight. A child's shoe found in a field where no child had been. In each case, the object is catalogued, assessed, and stored according to Bureau procedure.</p>
+  <p>This catalog represents a consolidation of <span class="redacted">██████</span> years of recorded entries. The objects described herein have been examined by Bureau cataloguers trained in material assessment, provenance research, and condition reporting. Where cataloguers' assessments differ, both are preserved. The Bureau does not adjudicate between its own staff. Contradiction in the record is itself a form of data.</p>
+  <p>Some objects, upon examination, appear to have returned themselves. The Bureau has no official position on this characterization. We note only that certain categories of return — objects that arrived without senders, objects found in locations no claimant can explain — have increased in recent years, and that the consistency of these arrivals warrants documentation if not interpretation.</p>
+  <p>The cataloguers whose notes appear in this volume — Catriona Webb, Evangeline Mearns, Denholm Slaney, and Signe Rui — have each served the Bureau for over a decade. Their disagreements are a matter of record. Their shared conviction that these objects require our attention is not.</p>
+  <p style="text-align:right; font-style:italic; margin-top:20px;">— M. Haldane, Director<br>Bureau of Returned Objects</p>
+</div>
+
+<div class="schema">
+  <h3>Classification Schema</h3>
+  <div class="schema-category"><span class="schema-code">I-LF</span> <span class="schema-desc">Lost &amp; Found — objects recovered from public spaces, transit systems, and common areas where ownership cannot be determined</span></div>
+  <div class="schema-category"><span class="schema-code">II-MD</span> <span class="schema-desc">Misdelivered — objects that arrived at incorrect addresses or were routed to the Bureau through postal or courier error (where error remains unconfirmed)</span></div>
+  <div class="schema-category"><span class="schema-code">III-RS</span> <span class="schema-desc">Recovered from Scenes — objects collected from locations associated with events, departures, or other occurrences under Bureau purview</span></div>
+  <div class="schema-category"><span class="schema-code">IV-VS</span> <span class="schema-desc">Voluntary Surrenders — objects brought to the Bureau by individuals who declined to identify themselves or explain their reason for surrender</span></div>
+  <div class="schema-category"><span class="schema-code">V-AW</span> <span class="schema-desc">Arrived Without Senders — objects received with no indication of origin, sender, or prior custodian; includes objects found on Bureau premises with no evident means of delivery</span></div>
+</div>
+
+<div class="controls">
+  <button onclick="toggleAll(true)">Expand All</button>
+  <button onclick="toggleAll(false)">Collapse All</button>
+</div>
+
+<!-- ====== CATEGORY I: LOST & FOUND ====== -->
+<section class="category-section">
+  <div class="category-header">
+    <span class="category-code">I-LF</span>
+    <span class="category-name">Lost &amp; Found</span>
+  </div>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">LF-0071</span>
+      <span class="entry-title">Single leather glove, left hand</span>
+      <span class="entry-date">Arrived: 14 Mar 2019</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Brown calfskin driving glove. Unlined. Worn soft at the palm and inner fingers. Seam at left wrist split and re-stitched by hand, twice — once with black thread, once with brown. No label. Slight discoloration at the cuff consistent with repeated exposure to moisture. No accompanying right glove received.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Calfskin</span>
+        <span>Weight: 84g</span>
+        <span>Storage: Bay 3, Shelf C</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>The split and re-stitched seam suggests an owner who valued this glove enough to repair it rather than replace it. The care is not professional, but it is patient. Someone wore this glove for years and wanted to keep wearing it.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The irregular re-stitching and the mismatched thread suggest either indifference or haste. The wearer did not care how the repair looked — only that it held. I would not call that cherishing. I would call it tolerating.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>Only the left glove. In my experience, a right glove that goes missing is a matter of ordinary loss. A left glove that arrives without its pair and arrives here — that is a different order of event. I have no further comment.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">LF-0089</span>
+      <span class="entry-title">Pocket compass, brass casing</span>
+      <span class="entry-date">Arrived: 02 Jul 2019</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Pocket compass with brass casing, tarnished. Needle points consistently southeast, regardless of orientation. Lid hinge stiff but functional. Glass face unscratched. Interior paper dial shows cardinal and intercardinal points in faded red ink, with a small asterisk hand-drawn next to north-northwest.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Brass, glass</span>
+        <span>Weight: 62g</span>
+        <span>Storage: Bay 1, Drawer 4</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>The needle does not point north. It points southeast. Consistently. I tested it in the yard, in the corridor, near the electrical panel, and in the archive room. Always southeast. The glass face is unscratched — this compass was not dropped or damaged. It simply stopped pointing north.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>Compass needles respond to magnetic fields. A consistent deflection suggests the casing has been magnetized. There is nothing here that physics cannot account for. The asterisk by north-northwest is a personal notation. Someone was tracking something.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>The asterisk is not beside north. It is beside north-northwest. Webb tested the needle and found it points southeast. These bearings are — if one were inclined to notice — roughly opposite. I am not inclined to notice. I am only recording that I noticed.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">LF-0112</span>
+      <span class="entry-title">Child's blue wellington boot (single)</span>
+      <span class="entry-date">Arrived: 19 Oct 2019</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Child's blue rubber wellington boot, right foot, size approximately 7. Interior label reads "DUNLOP" in faded gold. Toe scuffed from use. Boot was found on the tidal flats at the mouth of the estuary, embedded upright in the mud, filled with seawater. No child was reported missing from the area. No second boot was recovered.</div>
+      <div class="field-row">
+        <span>Condition: Fair</span>
+        <span>Material: Rubber</span>
+        <span>Weight: 198g</span>
+        <span>Storage: Bay 7, Shelf A</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>The boot was standing upright in the mud. Filled with water, it would have been heavy — too heavy to have been placed gently. A child running on the flats could have pulled a foot free and left the boot behind. That is the simplest account. But children who lose boots in mud do not usually leave them standing perfectly upright.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The interior shows wear consistent with regular use — this was not a new boot discarded by mistake. The scuffing is on the toe, typical for a child who drags their feet or runs with a forward lean. The child who wore this boot ran. Whether toward something or away from it, the boot does not say.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>The Bureau received a telephone call the morning the boot arrived. A woman's voice, no name given. She said only: "It's not ours anymore." And then she hung up. I note this for the record without interpretation.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">LF-0147</span>
+      <span class="entry-title">Set of three brass keys on a red cord</span>
+      <span class="entry-date">Arrived: 04 Jan 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Three brass keys of different sizes on a braided red cotton cord, frayed at the ends. Largest key approximately 7cm, with a ward pattern consistent with a domestic mortice lock. Middle key is smaller, possibly a padlock key. Smallest key is ornamental — a heart-shaped bow, no evident functional purpose. All three keys are warm to the touch. This was noted upon intake and has been noted consistently during every subsequent handling. The keys have been stored in an unheated room. They remain warm.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Brass, cotton</span>
+        <span>Weight: 114g</span>
+        <span>Storage: Bay 2, Drawer 1</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>These keys are warm. Every time I handle them. I have held oxidizing brass before. I have held brass stored in close proximity to other metals. None of it was warm like this — warm the way something held in a hand is warm. As if someone had just set them down.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>Brass is thermally conductive and can retain ambient heat longer than expected. The storage room is unheated, but the building has a heating system. The drawer is near an interior wall. Webb's observation about the temperature is accurate; her interpretation is not warranted by the evidence. The ornamental key with the heart-shaped bow is a keepsake, not functional. It was likely a gift.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>The largest key fits the lock on the east door of the Bureau's own archive room. I confirmed this on 11 January 2020. I have not been able to determine which lock the middle key opens. The smallest key — the one with the heart — cannot open anything. But it was found inside a Bureau mailbox on a Monday morning, the only item in the box, on top of a week's worth of mail that had already been collected the previous Friday.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">LF-0168</span>
+      <span class="entry-title">Red wool scarf, hand-knitted</span>
+      <span class="entry-date">Arrived: 22 Feb 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Hand-knitted scarf in red wool, approximately 170cm long and 22cm wide. Stitch pattern is an uneven garter stitch, consistent with a beginner's work. Slight variations in tension throughout. One end is finished with a row of decreases and a loose knot. The other end trails off — the final stitch is not cast off but simply pulled through, as if the knitter stopped mid-row. Smells faintly of cedar and, to some handlers, of wet earth. No label or marking.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Wool</span>
+        <span>Weight: 248g</span>
+        <span>Storage: Bay 5, Shelf D</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>The uneven knitting is not carelessness. It is the work of someone learning — someone whose hands were still figuring out the rhythm. The tension tightens at the same points in each row, like a knitter who holds their breath at the same moment every cycle. And then, near the end, the tension loosens. The final stitch is not finished. It is pulled through and left. This knitter was interrupted.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>A scarf left unfinished does not necessarily mean the knitter was interrupted. People begin projects and abandon them. The inconsistent tension is consistent with an inexperienced knitter who became frustrated or distracted. The scent of wet earth may be transfer from wherever the scarf was stored prior to arrival.</div>
+        <div class="note signe"><span class="note-attr">S. Rui</span>I finished the scarf. I used red wool from the supply closet. I did not record this in the daybook because it seemed personal and because I am aware of how it would look. The scarf was unfinished and I could not leave it that way. When I cast off the final row, the yarn in my hands went cold. This is not a scientific observation. I am writing it anyway.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">LF-0203</span>
+      <span class="entry-title">Paperback book: The Yellow Garden</span>
+      <span class="entry-date">Arrived: 11 Jun 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Paperback novel, "The Yellow Garden" by Ives Pemberton, published 1971 by Constable &amp; Bain. Cover illustration of a garden gate in ochre tones, partially open, a path visible through it into dense foliage. 284 pages. Spine uncracked — the book does not appear to have been read. However, pages 141 through 152 have been removed cleanly, with a blade. No inscription. No bookmark. Found on a park bench in Kelton Square at 6:45 AM by a Bureau field agent on unrelated business.</div>
+      <div class="field-row">
+        <span>Condition: Fair</span>
+        <span>Material: Paper, card</span>
+        <span>Weight: 187g</span>
+        <span>Storage: Bay 4, Shelf B</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>The removed pages correspond to Chapter 14, titled "What Was Buried." I obtained another copy to verify. The chapter describes a garden where a character buries objects they can no longer bear to keep — a ring, a letter, a child's tooth. The character believes the garden will return what it is given when it is needed. I do not know what to do with this information.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>Webb read the missing chapter in another copy. Useful provenance work. But the fact that pages were removed with a blade suggests someone wanted the text itself — the words, the paper — not just to suppress the content. A reader who objected to the chapter would have discarded the book. A reader who needed the chapter would have cut it out and taken it. Someone needed "What Was Buried." Someone has it still.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>The agent who found the book — Hartley — reported that the bench was warm where the book lay, despite the morning temperature being 4°C. I was going to omit this observation. I have been thinking about it for eight months. I am recording it now.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">LF-0237</span>
+      <span class="entry-title">Pair of reading glasses, wire frame</span>
+      <span class="entry-date">Arrived: 09 Aug 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Wire-frame reading glasses, round lenses, adjustable nose pads. Left temple arm bent slightly inward. Lenses are +2.00 diopter. No case. No manufacturer's mark. Smudges on the lenses have been preserved — fingerprint patterns consistent with someone removing the glasses by the bridge with thumb and forefinger of the right hand.</div>
+      <div class="field-row">
+        <span>Condition: Fair</span>
+        <span>Material: Metal, glass</span>
+        <span>Weight: 22g</span>
+        <span>Storage: Bay 1, Drawer 6</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>The fingerprint smudges are clear enough that a comparison could be made if we had a reference print. The removal gesture — right hand, thumb and forefinger on the bridge — is careful. This person took their glasses off deliberately. They set them down. And then they left them. Or the glasses left without them.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The +2.00 prescription is common enough to be unremarkable. The bent left temple arm could indicate the glasses were sat on, stepped on, or subjected to pressure in a pocket or bag. I disagree with Webb's characterization — objects do not leave. People lose them. The smudges indicate only that the glasses were handled before they were misplaced.</div>
+        <div class="note signe"><span class="note-attr">S. Rui</span>I wear a +2.00 prescription. My right hand removes my glasses the same way. My left temple arm is bent from where I fell asleep wearing them in the archive. These are not my glasses. I have never lost my glasses. But when I hold these glasses, my hands know where they go.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">LF-0298</span>
+      <span class="entry-title">Wooden spinning top, hand-carved</span>
+      <span class="entry-date">Arrived: 14 Nov 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Hand-carved wooden spinning top, approximately 6cm tall, 4cm at widest point. Wood type undetermined — pale, close-grained, possibly lime or birch. Carved with a knife, not turned on a lathe. The spiral groove around the body is not decorative — it is worn into the wood by use. The tip is polished smooth from spinning. When spun, the top rotates for an unusually long time — 94 seconds on a flat surface, compared to 15–25 seconds for a top of comparable size and material. Found on a primary school playground by a teacher who reported that no child had claimed it after two weeks.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Wood</span>
+        <span>Weight: 38g</span>
+        <span>Storage: Bay 6, Shelf A</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>Ninety-four seconds. I timed it twice. Ninety-one the second time. The groove worn into the body — that is not the result of weeks or months of use. That groove represents years of spinning. This top was spun hundreds or thousands of times before it arrived here. Whoever carved it gave it to a child, and that child spun it until it became the most-spun top I have ever held. And then it appeared on a playground where it belonged to no one.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>Wooden tops can spin longer than expected if the balance is precise and the surface is smooth. The extended spin time does not require a supernatural explanation — it requires good craftsmanship. The wear groove is consistent with normal use over an extended period. The top was carved with care. I agree with Webb on this point.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>The teacher who found it — Ms. Anand, Year 4 — reported that the top was spinning when she first saw it. On the tarmac. At 8:15 AM. She assumed a child had spun it upon arrival. None of the children reported spinning it. It was spinning when she arrived, and it was still spinning when she picked it up at 8:20. Five minutes is considerably longer than ninety-four seconds.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">LF-0341</span>
+      <span class="entry-title">Sealed envelope addressed "To Whom It Concerns"</span>
+      <span class="entry-date">Arrived: 03 Jan 2021</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">White C5 envelope, gummed flap sealed. No stamp. No return address. Addressed in blue ballpoint pen: "To Whom It Concerns." Found in the pocket of a coat (see entry MD-0156). Coat was surrendered separately. Envelope was not inside the coat at time of intake — it appeared in the coat's pocket four days after the coat was catalogued and stored. Bureau security footage of the storage bay during this period shows no entry by staff or unauthorized persons.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Paper</span>
+        <span>Weight: 12g</span>
+        <span>Storage: Bay 2, Drawer 9 (sealed)</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>The envelope appeared in a pocket that had been checked, catalogued as empty, and documented. I checked it myself. The pocket was empty. Four days later, the envelope was there. The security footage shows no one entering the bay. The envelope weighs 12 grams — it contains something. I have not opened it. Bureau protocol does not permit opening sealed correspondence addressed to unknown recipients without authorization from the Director.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>I believe Webb's account of the initial inspection. I also believe the envelope is real and contains something material. I do not believe an envelope can appear in a locked room inside a coat that was already catalogued. The most likely explanation is that the pocket was not thoroughly checked. The envelope was missed. It is the simplest explanation and I prefer it to the alternative.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I opened the envelope. I did not have authorization. Inside was a single sheet of paper with the following written in the same blue ballpoint: "You kept everything I gave you. I am returning the favor." The handwriting does not match any known cataloguer, staff member, or recorded correspondent. I resealed the envelope and I am recording my action here because I do not know what else to do with it.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">LF-0379</span>
+      <span class="entry-title">Glass marble with internal flaw</span>
+      <span class="entry-date">Arrived: 17 Apr 2021</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Clear glass marble, 16mm diameter. Internal inclusion — a crescent-shaped air bubble positioned off-centre. When held to light, the bubble refracts a faint rainbow spectrum. No external markings or chips. Found on the windowsill of an unoccupied room in a building scheduled for demolition. The room was otherwise empty. The window had been painted shut.</div>
+      <div class="field-row">
+        <span>Condition: Excellent</span>
+        <span>Material: Glass</span>
+        <span>Weight: 7g</span>
+        <span>Storage: Bay 1, Drawer 2</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>The inclusion is not a manufacturing error. Or if it is, it is the most convenient manufacturing error I have seen. The bubble is shaped like a crescent — a specific, recognizable shape. When light passes through it, the marble projects a small spectrum onto whatever surface is behind it. I held it in the archive and the rainbow fell across the spine of a book called Returns and Restitution: A Legal History. A coincidence. Obviously.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>Internal bubbles in glass marbles are common in handmade specimens. The crescent shape is not unusual. The spectral refraction is basic optics — a spherical lens will refract white light into component wavelengths. The marble was left on a windowsill, the one surface in a room where light is most available. Whoever left it there understood that the marble needed light to do what it does. That is not mysterious. That is attentive.</div>
+        <div class="note signe"><span class="note-attr">S. Rui</span>The room was empty and the window was painted shut. But there were fingerprints on the glass — small ones, a child's — on the inside of the marble, embedded within the glass matrix, not on the surface. I examined the marble under magnification. The prints are inside the glass itself. I know this is not possible. I am recording it because no one else will.</div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ====== CATEGORY II: MISDELIVERED ====== -->
+<section class="category-section">
+  <div class="category-header">
+    <span class="category-code">II-MD</span>
+    <span class="category-name">Misdelivered</span>
+  </div>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">MD-0104</span>
+      <span class="entry-title">Wedding photograph in silver frame</span>
+      <span class="entry-date">Arrived: 08 May 2019</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Framed black-and-white photograph, 20cm × 25cm, silver frame with ornate repoussé border. Image shows a wedding party: bride and groom, four attendants, an officiant, taken outdoors beneath an oak tree. The bride's face has been scratched out — not aggressively, but methodically, with a fine point. The groom's face is untouched. The other faces are untouched. Frame shows no tarnish — appears to have been recently polished.</div>
+      <div class="field-row">
+        <span>Condition: Fair</span>
+        <span>Material: Silver, glass, paper</span>
+        <span>Weight: 412g</span>
+        <span>Storage: Bay 4, Shelf E</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>The frame was polished recently and carefully. Someone was maintaining this object even though — or because — the bride's face had been erased. The scratching is precise, done with a tool chosen for the purpose. This was not a moment of rage. This was a ceremony of removal. The groom's face, untouched, almost seems to be looking at the space where the bride was.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>Or the photograph was damaged by someone other than the owner — a jealous rival, a disgruntled family member — and the owner polished the frame in an attempt to restore dignity to the object despite the damage. The methodical scratching could indicate care taken to avoid damaging the rest of the photograph, not care taken to erase the bride specifically.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>The photograph was delivered in a parcel with a printed address label for "Mr. E. Cowell, 14 Datchet Road." Our address is 14 Datchet Lane. The parcel was correctly routed to the correct building number on the correctly named street, but the street type was wrong. Road, not Lane. An easy error. Except that Mr. E. Cowell died in 1987. And the bride in the photograph — the one whose face is scratched out — is buried in the churchyard visible in the background of the image.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">MD-0156</span>
+      <span class="entry-title">Man's overcoat, dark grey wool</span>
+      <span class="entry-date">Arrived: 19 Sep 2019</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Men's overcoat, dark grey wool, double-breasted, approximately size 42 long. Label: Burtons, London. Buttons present and matching. Lining intact except for a small repaired tear at the right inside pocket. Two exterior pockets, one interior breast pocket, one interior slit pocket. The coat smells of pipe tobacco, rain, and something else — cataloguers disagree on the third scent. Mended at the left cuff with thread that does not match the original stitching.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Wool, synthetic lining</span>
+        <span>Weight: 1.74kg</span>
+        <span>Storage: Bay 5, Rack 3</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>This coat was worn by someone who lived in it. The mended cuff, the repaired lining, the buttons all present — this is a garment that was maintained, not discarded. The pipe tobacco scent is old, layered into the wool over years. The third scent — I believe it is specific to a place. Not a person. A place. I cannot name it, but my hands recognize it.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The coat was addressed to a "Mr. K. Aldiss" at an address in Cambridge that does not exist. The building at that location is a veterinary surgery, which has operated there since 2004. No one there has heard of Mr. K. Aldiss. The coat itself is unremarkable — well-maintained but ordinary. The weight is consistent with a wool overcoat of this size. I find nothing notable in the object itself.</div>
+        <div class="note signe"><span class="note-attr">S. Rui</span>The third scent is the lobby of the Bureau. I realize how this sounds. But the coat arrived smelling faintly of our own building — the particular combination of old paper, floor wax, and heating duct dust that characterizes our corridors. As if it had been here before.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">MD-0189</span>
+      <span class="entry-title">Box of chocolates, unopened</span>
+      <span class="entry-date">Arrived: 14 Feb 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Rectangular box of chocolates, brand "Hazeldean," tied with a gold ribbon. Box is sealed with a decorative sticker reading "With All My Love." Weight suggests contents are complete. The box has been cold since arrival. Not cool — cold. Stored in a temperature-controlled room at 18°C, the surface of the box measures 3°C consistently. No refrigerant materials are present.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Cardboard, paper, chocolate</span>
+        <span>Weight: 340g</span>
+        <span>Storage: Bay 3, Shelf F</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>Valentine's Day. "With All My Love." A gift meant to be given on a day for giving. And instead it arrived at the Bureau, misdelivered, sealed, and cold. Cold like a hand that is no longer warm. I do not know what happened between the giver and the intended recipient. I know only that this gift never arrived. And it is still cold.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The address label is for a flat on Marchmont Street. The current resident has lived there for nine months and reports receiving no parcels addressed to previous occupants. The name on the label — "J. Margolis" — does not correspond to any known previous resident. The cold temperature is anomalous and I have requested a thermographic inspection. I expect a mundane explanation.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I opened the box. The chocolates are arranged in two layers, each present and intact. Beneath the bottom layer is a folded piece of paper, handwritten: "I know you kept the others. I want you to keep these too." The Bureau has no record of receiving other chocolates from this sender or any sender. But the note refers to "others" as if we should know what it means.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">MD-0223</span>
+      <span class="entry-title">Tin of loose-leaf tea</span>
+      <span class="entry-date">Arrived: 28 Jun 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Circular tin, 12cm diameter, 8cm tall, with a lithographed image of a clipper ship on the lid. Label: "Superior Ceylon — Strang &amp; Poole, Tea Merchants, Glasgow." Tin is approximately two-thirds full of loose-leaf black tea. No tea is missing — the level matches the interior marking that indicates original fill, suggesting the tin was never used despite visible exterior wear. The lid does not fully seal — it has been dented inward on one side.</div>
+      <div class="field-row">
+        <span>Condition: Fair</span>
+        <span>Material: Tin, tea</span>
+        <span>Weight: 312g</span>
+        <span>Storage: Bay 3, Shelf G</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>A tin of tea that was never used, dented but kept. The exterior wear suggests it was handled often — displayed, perhaps, or kept on a shelf where it was touched. Someone kept this tin for years without ever opening it. The tea inside is still fragrant. Whatever this tin meant to its keeper, it was not about the tea.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The tin shows exterior wear but the tea is unused and the fill level is original. This is consistent with an item stored in a high-traffic area and knocked about — not a cherished keepsake. The dent in the lid is recent — the metal is still bright at the impact point. The addressee on the package is "Mrs. D. Strang, 44 Burnbank Gardens." Strang is also the name of the tea merchant. A coincidence, presumably.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>Strang &amp; Poole ceased operations in 1973. Mrs. D. Strang — Doreen Strang, née Poole — was the daughter of the founding partner. She died in 1989. 44 Burnbank Gardens has been a dental practice since 1992. The tin arrived via courier, booked online, paid for with a credit card issued to a "D. Strang" at an address that is now a car park. I am not drawing conclusions. I am listing facts.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">MD-0264</span>
+      <span class="entry-title">Hand-addressed letter, unopened</span>
+      <span class="entry-date">Arrived: 15 Oct 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Envelope, white, standard DL size. Hand-addressed in black ink with a fountain pen. Addressed to the Bureau directly: "Bureau of Returned Objects, 14 Datchet Lane." No return address. No stamp. Postmark: none. Not delivered by postal service — found on the Bureau doorstep during morning opening. Envelope is sealed. Slightly warm to the touch.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Paper</span>
+        <span>Weight: 8g</span>
+        <span>Storage: Bay 2, Drawer 9 (sealed)</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>A letter addressed to us directly. Not misdelivered — this was meant for the Bureau. I do not understand why it has been classified as Misdelivered. The address is correct. The letter arrived at its intended destination. Unless "misdelivered" refers not to where it went but to who was meant to read it. Perhaps the Bureau is not the intended recipient. Perhaps we are merely the delivery mechanism.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>I have argued that this letter should be reclassified to V-AW or given its own designation. The classification was made by the Director, who overruled me. Her rationale, as I understand it, is that a letter arriving at the correct address with no stamp and no postal handling is, by definition, misdelivered — the delivery mechanism itself is the error. This is Bureau logic at its most circular and I want that observation on the record.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I opened this letter as well. One line, in the same fountain pen: "You will know what to do with these when they come." I told the Director. She asked me to reclassify the letter as V-AW. Then she reclassified it back to MD. Then she told me to stop opening things. I have complied.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">MD-0312</span>
+      <span class="entry-title">Collection of seven birthday cards, various years</span>
+      <span class="entry-date">Arrived: 23 Mar 2021</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Seven birthday cards, each addressed to "Dearest D" in the same hand. Years range from 2013 to 2019. All are unsigned — each message ends with the same phrase: "Yours, as always." The envelopes have been opened; the cards have been read. One card per year, no card for 2020. All arrived in a single parcel with no explanatory note. Parcel included an insert card reading "Return to Sender — Recipient Deceased." The Bureau did not send these cards.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Card, paper</span>
+        <span>Weight: 186g</span>
+        <span>Storage: Bay 4, Shelf D</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>Seven cards. Seven years. The same sender, the same recipient — "Dearest D." No card for 2020, which is the year the parcel arrived bearing the message "Recipient Deceased." But the Bureau did not send these cards. We never had them. They were returned to a sender who was not us, from someone who died, and they arrived here. I cannot make this coherent and I have stopped trying.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The most likely explanation is a postal routing error. A parcel marked "Return to Sender" would be processed through a dead letter office. If the return address was incomplete or non-existent, the parcel would be held. How it reached the Bureau specifically is less clear, but routing errors involving similar addresses are common. The absence of a 2020 card may simply mean the sender died before that year's card was written.</div>
+        <div class="note signe"><span class="note-attr">S. Rui</span>"D" is the first initial of Denholm. I am not suggesting anything. I am noting that every cataloguer has thought this and no one has said it. The handwriting in these cards is not Denholm's. I have checked.</div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ====== CATEGORY III: RECOVERED FROM SCENES ====== -->
+<section class="category-section">
+  <div class="category-header">
+    <span class="category-code">III-RS</span>
+    <span class="category-name">Recovered from Scenes</span>
+  </div>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">RS-0045</span>
+      <span class="entry-title">Woman's shoe, single, black leather pump</span>
+      <span class="entry-date">Arrived: 17 Jan 2019</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Black leather pump, left foot, size 38, moderate heel. Insole shows moderate wear — this shoe was worn regularly. Recovered from the scene of a residential departure: a third-floor flat in Fenwick Street, vacated overnight with no forwarding address, all personal effects removed except this shoe. The shoe was found in the centre of the living room floor, positioned as if the wearer had stepped out of it and walked away barefoot. The flat was clean — no dust, no cobwebs, as if it had never been occupied.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Leather, rubber sole</span>
+        <span>Weight: 214g</span>
+        <span>Storage: Bay 7, Shelf B</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>Everything was removed from the flat. Furniture, clothing, kitchenware, light fixtures — the letting agent's report describes a unit returned to showroom condition. And in the centre of the living room floor: a single shoe. Placed, not dropped. Positioned. As if to say: I was here. One shoe is enough to remember a person by. One shoe is enough to know someone walked here and then stopped.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The flat was cleaned professionally — the agent confirmed this. The cleaning service does not recall noticing a shoe. It may have been placed after the cleaning. Or the cleaning service may have missed it. A single shoe in an empty flat is not evidence of anything beyond an oversight. The owner left in a hurry and forgot one item. People do things like this. It does not require Bureau interpretation.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I visited the flat. After the shoe had been collected. The room was truly empty. But in the exact spot where the shoe had been, the floorboards were warm. Not sun-warmed — the room faces north. Not heated — the radiators were off, the flat unoccupied. Warm the way a floor is warm where someone has been standing for a long time. The letting agent confirmed the heating had been disconnected for three weeks.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">RS-0078</span>
+      <span class="entry-title">Child's drawing on lined paper</span>
+      <span class="entry-date">Arrived: 03 May 2019</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Drawing on a sheet of lined notebook paper, approximately A4. Executed in coloured pencil. The drawing depicts a house with a red door, two windows, and a garden. In the garden are four figures: one tall, one medium, two small. Above the house is a yellow sun with radiating lines. The sky is blue. The grass is green. In the bottom right corner, a figure not in the garden but standing outside the fence: smaller than the others, drawn in grey pencil only, with no facial features. Found beneath the skirting board of a bedroom in a house on Umber Terrace, during renovations. No children have lived at that address since 1986.</div>
+      <div class="field-row">
+        <span>Condition: Fair — yellowed</span>
+        <span>Material: Paper, coloured pencil</span>
+        <span>Weight: 4g</span>
+        <span>Storage: Bay 4, Archive Box 7</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>The figure outside the fence is drawn differently — no colour, no face, smaller. A child drew a family in a garden, and then drew a figure outside, looking in. The grey figure is not threatening — it is simply there. Waiting. The paper was hidden deliberately. Children hide things they want to keep but cannot display. This drawing meant something to the child who made it. And the grey figure — I think the child knew who it was.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The paper has yellowed consistent with age. The drawing is typical of a child aged 5–7: a house, a family, a sun. The grey figure outside the fence may represent an absent family member, a neighbour, or an imaginary companion. I caution against reading too much into the work of a child who may have been copying a picture book.</div>
+        <div class="note signe"><span class="note-attr">S. Rui</span>I know the grey figure. I have seen it — or felt it — in the archive when I am alone. It is small and it does not have a face and it is not threatening. It is waiting. I am not going to elaborate. Record this or do not.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">RS-0131</span>
+      <span class="entry-title">Pocket watch, stopped at 3:47</span>
+      <span class="entry-date">Arrived: 22 Aug 2019</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Silver pocket watch with chain, fob missing. Enamel face with Roman numerals. Hands stopped at 3:47. The mechanism is intact — a watchmaker confirmed the movement is functional but simply unwound. No engraving. Interior of the back case has a small residue of what appears to be sand. Recovered from the mantelpiece of a house in Crossfield where a man was reported to have been "away" for several days while his family continued to see him in the house.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Silver, enamel</span>
+        <span>Weight: 96g</span>
+        <span>Storage: Bay 1, Drawer 5</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>The family reported seeing the man for several days after he left. They described him sitting in his chair, reading his newspaper, walking to the kitchen. They thought he was there. The watch was on the mantelpiece — the one object he left behind. It is stopped at 3:47. The family does not recall what time he left. But they remember that for days afterward, they could hear a ticking from the mantelpiece, even though the watch had stopped.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The watch is unwound. A pocket watch not wound daily will stop. The time displayed is simply the moment it ran out of energy. The "ticking" the family heard could have been any number of sounds — a clock, a pipe, electrical wiring. The sand inside the case suggests the watch was near a beach. The "away" man is a matter for other authorities. The watch is a stopped timepiece. Nothing more.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>3:47 is the exact time, according to the Bureau's own clock, that the watch arrived on our premises. I am aware of the implausibility. I checked. I rechecked. The clock is accurate. The watch was already stopped at 3:47 when it arrived. It arrived at 3:47. I have nothing further.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">RS-0194</span>
+      <span class="entry-title">Cassette tape, unlabelled</span>
+      <span class="entry-date">Arrived: 11 Dec 2019</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">C90 cassette tape in a clear plastic case. No label. No writing. Recovered from the glove compartment of a car abandoned on the hard shoulder of the M6, between junctions 16 and 17, at approximately 2 AM on 9 December. The car was registered to a Ms. L. Threadgold of Nantwich, who was not in the vehicle and has not been located. The driver's seat was pushed back as if the driver had exited calmly. The engine was off. The keys were in the ignition. The cassette was the only item in the car not standard-issue.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Plastic, magnetic tape</span>
+        <span>Weight: 58g</span>
+        <span>Storage: Bay 2, Drawer 3</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>I played the cassette. The first side contains forty-five minutes of silence. Not blank tape — silence. There is ambient hiss, and beneath it, the faint sound of breathing. Someone was in the room while the tape recorded. They sat near the microphone and breathed for forty-five minutes and recorded it. The second side contains a single repeated phrase, spoken quietly: "I know you can hear this." Repeated forty-seven times, each iteration identical in volume and pacing, as if rehearsed or, worse, as if each repetition was spoken with the same conviction as the first.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>I listened to the cassette once. I have asked that it be reclassified or restricted. The breathing on Side A is human, regular, calm. Not distressed. Not sleeping. It is the breathing of someone awake who has chosen to be still. The phrase on Side B is spoken in a voice I do not recognize. I do not agree with Webb that each repetition is identical. The thirty-first repetition is louder. The speaker's conviction was wavering. Or strengthening.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I have listened to the cassette forty-seven times. I have counted the repetitions. The voice is mine. I do not remember recording it. I have never driven on the M6. I have never met Ms. Threadgold. I am requesting a leave of absence.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">RS-0256</span>
+      <span class="entry-title">Collection of coloured glass fragments</span>
+      <span class="entry-date">Arrived: 08 May 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Approximately forty-seven fragments of coloured glass, ranging from 1cm to 4cm. Colours: amber, green, blue, red, and clear. Fragments are from a single broken object — when assembled, they form the approximate shape of a vase, though approximately 20% of the original object is missing. Recovered from the base of a garden wall at a property in Frome where the residents reported hearing glass breaking every night at 11 PM for three weeks prior to the Bureau's arrival, despite no windows or glass objects being broken or out of place.</div>
+      <div class="field-row">
+        <span>Condition: Fragmentary</span>
+        <span>Material: Glass</span>
+        <span>Weight: 124g</span>
+        <span>Storage: Bay 6, Shelf C</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>I assembled the fragments. The missing 20% is not random. The absent pieces are precisely the ones that would show the image at the centre of the vase's design. What remains suggests two figures, perhaps standing together. I cannot be certain because the figures are where the glass is missing. The residents heard breaking glass for three weeks. The glass was already broken when we arrived. Something was being broken repeatedly that had already been broken.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>Glass fragments in a garden are common. The auditory reports — hearing breaking glass — could be thermal stress, settling brickwork, or a psychosomatic response to stress. The residents were newcomers to the property. The fragments are genuine glass and the partial reconstruction is reasonable inference. I see no reason to attribute significance to the missing pieces.</div>
+        <div class="note signe"><span class="note-attr">S. Rui</span>I heard it too. I was at the property on the evening of 6 May, cataloguing the scene. At 11 PM, I heard glass breaking. It came from the garden wall. I searched the area. There were no new fragments. The sound was clear, close, unmistakable. I returned the next day. The residents confirmed the sound had stopped after the Bureau collected the fragments. The breaking has not recurred. It is as if the glass needed to be collected — needed to be taken away — and until it was, the breaking could not finish happening.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">RS-0287</span>
+      <span class="entry-title">Brass key, large, on iron ring</span>
+      <span class="entry-date">Arrived: 19 Jul 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Large brass key, approximately 12cm, on a hand-forged iron ring. Possibly 19th century or earlier, with a complex ward pattern. The bow has been worn smooth by handling, suggesting years of regular use. Key was found in the lock of a door in a derelict building on Corsbie Street. The door it locks does not exist — the wall where the door would have been is solid brick. The key was in a keyhole with no corresponding door. The building's floor plans show no door at this location in any recorded configuration.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Brass, iron</span>
+        <span>Weight: 148g</span>
+        <span>Storage: Bay 2, Drawer 7</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>A key in a keyhole with no door. The key is functional — the mechanism turns. I inserted the key and turned it. Something clicked. Inside the wall. I heard a click inside a wall with no door and no mechanism and no reason to click. The key was waiting in a lock that shouldn't exist, and when I turned it, something responded. I have turned many keys in many locks at the Bureau. This was the only time the lock turned back.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The "click" Webb heard could have been thermal expansion, settling brickwork, or debris shifting inside the wall cavity. Old buildings make sounds. A key inserted into a gap in brickwork and turned with force would produce friction and vibration, which could dislodge material. There is no mechanism inside the wall. There is no door. The key fits a gap in mortar that happens to be key-sized. The implication that the key was "waiting" is Webb's projection.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I went back. At night. Alone. I turned the key again. The wall was warm where a door would have been. I turned the key and the warmth intensified. I removed the key and brought it back to the Bureau. I am writing this because I should not have been able to enter — the building is sealed, the door locked, and I do not have a key to the building. I had the brass key. It opened the building's front door. A brass key from 1890 opened a modern steel deadbolt.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">RS-0325</span>
+      <span class="entry-title">Pair of spectacles with cracked left lens</span>
+      <span class="entry-date">Arrived: 30 Sep 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Gold-rimmed spectacles with a cracked left lens. Crack runs diagonally from upper-left to lower-right. Frame bent at the bridge, consistent with impact. Left arm loose. Lenses are prescription — diopter measurement pending. Found on the steps of the public library on Marchmont Street at dawn by the librarian. No one was on the steps. The library had been closed since 6 PM the previous evening. The spectacles were warm despite the ambient temperature being 2°C.</div>
+      <div class="field-row">
+        <span>Condition: Fair</span>
+        <span>Material: Gold, glass</span>
+        <span>Weight: 28g</span>
+        <span>Storage: Bay 1, Drawer 8</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>Warm spectacles on cold steps at dawn. The crack pattern suggests the blow came from inside the lens — pressure from behind, as if the lens cracked outward. Blows do not come from inside glass. Someone was sitting on these steps wearing these glasses, and something happened. And then the glasses were left behind. Or removed.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The crack pattern is consistent with a stress fracture caused by uneven temperature — cold glass warmed rapidly can crack along existing fault lines. The warmth of the frames is easily explained by proximity to a heating vent, or morning sunlight through the library's windows. Webb sees intentionality where physics is sufficient.</div>
+        <div class="note signe"><span class="note-attr">S. Rui</span>These are my prescription. I lost a pair of glasses in 2018. Gold-rimmed. The left lens cracked when I dropped them. I replaced them. I did not lose them on the library steps. But the librarian who found them called me directly — not the Bureau's general number, my direct line — to report them. She said: "I think these are yours." She had no way of knowing who I was. She had never met me.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">RS-0368</span>
+      <span class="entry-title">Small music box, wooden, plays unidentified melody</span>
+      <span class="entry-date">Arrived: 12 Jan 2021</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Small wooden music box, approximately 10cm × 7cm × 5cm. Lid opens to reveal a brass mechanism and a painted scene: a child standing at a window, looking out at a night sky with a single star. The music box plays a melody in A minor that no cataloguer has been able to identify. The melody is 32 bars long and repeats. Recovered from a charity shop donation bin by a Bureau field agent who reported that she heard the music box playing before she saw it — playing inside a sealed donation bag.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Wood, brass</span>
+        <span>Weight: 174g</span>
+        <span>Storage: Bay 6, Shelf E</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>The melody is not from any known composition. I have searched. I have played it for musicians, musicologists, a composer friend of my sister's. No one recognizes it. The melody is complete — it has structure, logic, a beginning and an end. Someone composed this. Someone built a music box to play a melody no one knows, and then the box was given away, and then it played itself inside a sealed bag. The mechanism requires winding. It was not wound when found. It was playing anyway.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The agent may have misremembered. The mechanism could have been partially wound, with enough tension for a few notes the agent interpreted as the box "playing." The melody is simple and folk-like — it may be a traditional tune that has fallen out of circulation, or an amateur composition. The painted scene is stock illustration. The music box is pleasant and unusual but I see no cause for the significance Webb attaches to it.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I know the melody. I cannot place it. I have hummed it to myself in the archive late at night, hoping to remember where I heard it. The melody is in A minor and it resolves, each time, on a note that is not the tonic — it ends on C, not A. It sounds complete but it ends waiting. A melody that resolves on the third sounds as if it will continue. It does not continue. It waits. And then it begins again.</div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ====== CATEGORY IV: VOLUNTARY SURRENDERS ====== -->
+<section class="category-section">
+  <div class="category-header">
+    <span class="category-code">IV-VS</span>
+    <span class="category-name">Voluntary Surrenders</span>
+  </div>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">VS-0033</span>
+      <span class="entry-title">Woman's wristwatch, stopped</span>
+      <span class="entry-date">Arrived: 28 Nov 2018</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Woman's wristwatch, silver-coloured metal, oval face. Brand: Timex. Strap shows wear at the buckle holes — worn daily. Crystal unscratched. The watch stopped at 11:11. Battery is functional — tested with a replacement battery, the watch operates normally, but the original battery was also functional. The watch stopped at 11:11 for no mechanical reason. Surrendered by an elderly woman who would not give her name. She said: "It isn't mine. I've never seen it before. But it came to me and I cannot keep it any longer."</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Metal, glass</span>
+        <span>Weight: 36g</span>
+        <span>Storage: Bay 1, Drawer 3</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>11:11. A time associated with wishes. A time people notice on clocks more than chance would predict — or so they believe. This watch did not display 11:11 by being noticed. It stopped. It chose to stop, if a watch can be said to choose. The woman who surrendered it said it was not hers. She had never seen it. But it came to her. She was wearing it when she arrived. A watch she had never seen was on her wrist.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The woman was distressed, possibly confused about the watch's provenance. Elderly individuals sometimes misplace objects and, upon finding them, cannot recall their origin. The watch may have been a gift she forgot. The stopped time is coincidental — quartz watches stop when the mechanism fails, and the displayed time is random. The battery was functional, but the quartz crystal oscillator may have failed, which would stop the watch while leaving the battery intact.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I photographed the woman for our intake records. She asked me not to. I explained it was procedure. She agreed. When I developed the film — we still used film for surrenders then — her face was not visible. Not blurred. Not obscured. Simply absent. The photograph shows her clothing, her hands, her hair. Where her face should be: the background wall, clearly visible, as if she were not there. As if the camera could see through her. I reported this. The photograph was filed. No one has mentioned it since.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">VS-0067</span>
+      <span class="entry-title">Boy's blazer, school uniform, small</span>
+      <span class="entry-date">Arrived: 10 Mar 2019</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Navy blue school blazer, boy's size approximately age 8–9. Label: "Ruxley &amp; Sons, School Outfitters." Badge on breast pocket: shield with a torch and the motto "Lux In Tenebris." Inside pocket contains a single house point card with stamps totalling 47 points. Name tape sewn into collar: "A. WHITMORE." Blazer shows moderate wear — worn for at least one full academic year. No stains, no tears. Clean and pressed. Surrendered by a man in his fifties who said: "This isn't mine. It isn't anyone's. Take it."</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Wool blend</span>
+        <span>Weight: 312g</span>
+        <span>Storage: Bay 5, Rack 1</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>A school blazer for a boy aged 8 or 9, with a name tape: A. Whitmore. The man who surrendered it was in his fifties. He said it was not his. But "A. Whitmore" could be Andrew, Anthony, Alexander — a man's name, a man who was once a boy of 8 or 9, forty-odd years ago. A man who wore this blazer, earned these house points, kept it for decades. And then brought it to the Bureau and said it was not his. Something happened between the keeping and the surrendering.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The man may have been clearing a deceased relative's home — the blazer could have belonged to his son, his brother, or himself. The refusal to identify with the object is not unusual in grief. People disown possessions that carry too much memory. The blazer is well-maintained, suggesting careful storage. The house point card is poignant but not extraordinary. Ruxley &amp; Sons operated from 1952 to 1994. The blazer is consistent with their work from the mid-1970s.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I searched for A. Whitmore. There is an Alistair Whitmore, born 1968, who attended a school with the torch-and-shield badge and motto "Lux In Tenebris." That school closed in 1991. Alistair Whitmore died in 1981, at age 13, of causes I could not determine from public records. The house point card has 47 stamps. The school awarded a prize at 50 points. A. Whitmore was three points short. The blazer was surrendered by a man in his fifties. In 2019, Alistair Whitmore would have been fifty-one.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">VS-0116</span>
+      <span class="entry-title">Gold wedding ring</span>
+      <span class="entry-date">Arrived: 14 Jul 2019</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Gold wedding ring, plain band, no engraving. Interior smooth and polished from years of wear. Slightly misshapen — oval rather than round — suggesting wear during manual work. The gold is warm-toned, 18-carat by visual assessment. Surrendered by a woman aged approximately 70, who placed it on the intake desk and said: "He wants it back. I'm not the one who has it." She then clarified: "I'm not the one he gave it to."</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Gold (18ct)</span>
+        <span>Weight: 6g</span>
+        <span>Storage: Bay 2, Safe 1</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>"He wants it back. I'm not the one who has it." And then: "I'm not the one he gave it to." She was in the Bureau for four minutes. Precise and calm. She did not appear confused. She said she was not the recipient of this ring. But she had it. She possessed a ring given to someone else. And she said the giver wants it back — not that she wants to return it, but that he wants it back. As if the ring told her. As if the ring speaks.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>An elderly woman surrendering a wedding ring may be experiencing bereavement, divorce, or financial difficulty. Her statement is cryptic but not incomprehensible — she may have been the second wife surrendering a ring from her husband's first marriage. The wording is unusual but grief produces unusual wording.</div>
+        <div class="note signe"><span class="note-attr">S. Rui</span>The ring is warm. Not body-temperature warm from being held. Warm the way the brass keys are warm. Warm the way the chocolate box is cold. I put it on. It fit my ring finger, left hand. I am not married. I removed it and placed it in the safe. My finger was warm for the rest of the day — just that finger, just the left hand.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">VS-0178</span>
+      <span class="entry-title">Doll's house chair, miniature</span>
+      <span class="entry-date">Arrived: 05 Nov 2019</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Miniature wooden chair, 7cm tall, suitable for 1:12 scale doll's house. Rush seat, turned legs, one arm slightly shorter due to a manufacturing irregularity. Not a toy — a craftsman's piece, finely made. Surrendered by a girl aged approximately 12, who came to the Bureau alone, which is unusual. She said: "It doesn't go in the house anymore. The house doesn't have a room for it." When asked which house, she said: "The one that isn't there."</div>
+      <div class="field-row">
+        <span>Condition: Excellent</span>
+        <span>Material: Wood, rush</span>
+        <span>Weight: 14g</span>
+        <span>Storage: Bay 6, Shelf D</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>A twelve-year-old girl came to the Bureau alone, carrying a miniature chair, and said the house it belongs to "isn't there." Children do not come to the Bureau. We have no protocol for unaccompanied minors. The intake officer — Hartley — let her in, took the chair, and gave her a receipt. She left. Hartley did not ask where she came from or how she got here. When I asked why, he said: "She looked like she knew where she was going." She was twelve. I will note that this building does not appear on any public map or directory. A child should not have been able to find us.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>Hartley should have followed child protection protocols. I have noted this in his file. The chair is well-crafted — possibly antique. A child whose family owns an antique doll's house might be expected to recognize the chair's value. "The house that isn't there" could refer to a demolished building, a previous home, or a doll's house that was lost. Children are literal. The house is not there. It was there once and now it is not.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I examined the chair under magnification. Beneath the rush seat, scratched into the wood in letters small enough that they were not meant to be read by human eyes: "For the room you haven't built yet." The writing was meant to be found by someone looking. Someone was always going to take this chair apart. And when they did, this message was waiting.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">VS-0241</span>
+      <span class="entry-title">Stuffed rabbit toy, beige</span>
+      <span class="entry-date">Arrived: 15 Feb 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Stuffed rabbit toy, beige synthetic fur, approximately 25cm tall when seated. Black button eyes, pink stitched nose. Left ear torn at the base and re-attached with safety pins. No manufacturer's tag. Machine-washed at least once — fur matted in places. Smells of fabric softener and, faintly, of cut grass. Surrendered by a man who gave his name as "the father" and nothing else. He said: "She grew out of it. It needs to go home."</div>
+      <div class="field-row">
+        <span>Condition: Fair</span>
+        <span>Material: Synthetic fur, stuffing</span>
+        <span>Weight: 148g</span>
+        <span>Storage: Bay 7, Shelf C</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>"She grew out of it. It needs to go home." Children do not grow out of beloved toys — they are separated from them by circumstance, by distance, by the slow accumulation of years. But the father did not say she outgrew it. He said she grew out of it, as if the toy was a skin she shed. And he said it needs to go home. Home. Not "away." Not "to the Bureau." Home. As if the Bureau is the toy's home. As if it was always coming here.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The father was likely referring to his daughter having outgrown a childish attachment. "Home" may refer to any destination — "it needs a home" is common when donating toys. The man's choice of words is slightly unusual but does not carry the weight Webb assigns to it. The toy itself is an ordinary stuffed animal, well-loved but unremarkable. The smell of cut grass is notable — the toy was recently outdoors, or near freshly cut grass, before surrender.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>The Bureau does not have a record of a stuffed rabbit in its holdings prior to this date. But the storage bay — Bay 7, Shelf C — already had a label on it. "Rabbit — beige." Written in my handwriting. I did not write that label. I have never written that label. The label is in my handwriting. It was there when I shelved the toy. The paper was yellowed. It had been there for some time.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">VS-0298</span>
+      <span class="entry-title">Hardback notebook, mostly filled</span>
+      <span class="entry-date">Arrived: 10 May 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Hardback notebook, A5, black cover, lined pages. Approximately 80% filled with handwritten entries in a single hand. Entries are dated, spanning 14 March to 3 May of the current year. Content appears to be a daily diary. The writing is neat at the beginning and becomes progressively smaller and tighter toward the end. The final entry reads: "I have filled this book so that it will be heavy enough to stay. Now I will leave it somewhere it will be found." Surrendered by a woman who said she found it on a bench in the park where she walks every morning. She said: "It was open to the last page. It wanted to be read."</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Paper, card</span>
+        <span>Weight: 232g</span>
+        <span>Storage: Bay 4, Archive Box 3</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>The handwriting tightens as the entries progress. The writer's world is shrinking — or the writer is compressing, fitting more into less space, trying to finish before something happens. The final entry is an instruction: leave it where it will be found. The writer wanted this notebook to reach someone. It reached the Bureau. Was that the intended destination? Or is the Bureau simply where lost things end up, regardless of intent?</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>A notebook left on a park bench was left in a public place where it would be found. The woman who found it brought it to us, which is her choice but not the only possible outcome. The progressive tightening of handwriting is consistent with fatigue, reduced dexterity, or declining physical condition.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I read the notebook. Every page. The entries describe ordinary days — meals, weather, walks, visits to a doctor. But the writer keeps mentioning objects. A different object each day, always incidental. A blue cup on the kitchen table that was not there the night before. A key in the mailbox that fits nothing. A pair of gloves in the coat pocket that are not hers. The objects accumulate. By the final entries, the writer's home is full of things she did not bring in. She filled the notebook, she says, so it would be heavy enough to stay. She was competing. Her house was filling with objects that wanted to stay. She wrote until the notebook was heavy enough that it could stay too.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">VS-0342</span>
+      <span class="entry-title">Collection of photographs, various subjects</span>
+      <span class="entry-date">Arrived: 23 Aug 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Collection of fourteen loose photographs, 4×6 inches, colour prints. Subjects include: a sunset over water, a cat on a windowsill, a house under construction, a table set for dinner with six place settings, a tree in autumn, a garden with a child's swing, a bridge at dawn, a bookshelf, a child on a bicycle (face obscured by shadow), a doorway seen from inside a dark room, a hand holding a key, a river, a churchyard, and a photograph of a photograph showing a young couple at a dance. None include a date stamp. Surrendered by a woman who said: "These are not my memories."</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Photographic paper</span>
+        <span>Weight: 56g</span>
+        <span>Storage: Bay 4, Archive Box 5</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>I know the house under construction. It is the Bureau's east wing extension, built in 2004. I know the bridge — the footbridge over the canal, ten minutes' walk from here. I know the bookshelf — it is in the Director's office. I have checked. These photographs depict places associated with the Bureau and the people in it. They are not random images. They are documentation. Someone has been photographing us, or the places we inhabit, for reasons we do not know. The woman who brought them said they were not her memories. Perhaps they are ours.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>Webb identifies the Bureau's east wing, the canal footbridge, and the Director's bookshelf in these photographs. I have verified her identifications and they are plausible but not conclusive — the house could be any house, the bridge any bridge, the bookshelf in any office. The photographs are generic enough to be coincidences. I do not believe they are coincidences, but I must note that they could be.</div>
+        <div class="note signe"><span class="note-attr">S. Rui</span>The photograph of the hand holding a key — the hand is mine. I was not holding a key when that photograph was taken because I did not know the photograph was being taken. I have never held that particular key — it is not a Bureau key, not my house key, not any key I recognize. But the hand is mine. The wrist, the knuckles, the small scar on the thumb from a paper cut I got in the archive in 2017. My hand holding a key I have never held. I have no explanation that satisfies me.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">VS-0376</span>
+      <span class="entry-title">House key on string</span>
+      <span class="entry-date">Arrived: 19 Dec 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Standard house key, brass, on a loop of kitchen twine. Cut for a Yale-type lock, showing moderate wear — used regularly. The twine loop is sized to fit over a child's head, suggesting the key was worn around the neck of a latchkey child. Surrendered by a teenage boy who said: "I don't live there anymore. The door is gone." He would not elaborate. He was not in any system we could access. He left without a receipt.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Brass, twine</span>
+        <span>Weight: 18g</span>
+        <span>Storage: Bay 2, Drawer 2</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>A latchkey child is a child who comes home to an empty house and lets themselves in with a key they wear around their neck. The key is their proof that they belong somewhere — that there is a door that opens for them. This boy said the door is gone. The house is gone, or the family is gone, or the belonging is gone. He wore this key for years — the twine is worn thin from skin contact. A key worn that long becomes part of the body. He didn't surrender it. He removed it. Like a tooth that's been loose for a long time.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>A teenager surrendering a childhood possession is a common milestone. The door being "gone" is likely metaphorical: the family moved, the house was demolished, his living situation changed. I note that the boy was not in "any system we could access." Neither am I. Neither are most people. We are not a law enforcement agency and our database access is limited.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I tried the key in the Bureau's front door. It fit. It turned. It opened the door. I tried it in the east wing door. It fit. I tried it in the archive room. It fit. This is a latchkey child's house key. It fits every door in the Bureau. The boy who surrendered it did not live in any of the homes this key opens. But the key opens our doors. It was always a key to here.</div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ====== CATEGORY V: ARRIVED WITHOUT SENDERS ====== -->
+<section class="category-section">
+  <div class="category-header">
+    <span class="category-code">V-AW</span>
+    <span class="category-name">Arrived Without Senders</span>
+  </div>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">AW-0012</span>
+      <span class="entry-title">Fountain pen, black lacquer</span>
+      <span class="entry-date">Arrived: 14 Mar 2019</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Fountain pen, black lacquer barrel, gold nib, medium point. No manufacturer's mark. Cartridge converter fitted, partially filled with blue-black ink. Nib is smooth — little wear. Found on the Bureau's front doorstep during morning opening, beside a note: "This wrote things that shouldn't have been written. I'm returning it to the source." The note was written in the same ink as the pen.</div>
+      <div class="field-row">
+        <span>Condition: Excellent</span>
+        <span>Material: Lacquer, gold, resin</span>
+        <span>Weight: 24g</span>
+        <span>Storage: Bay 2, Drawer 4</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>"Returning it to the source." The source of what? The pen wrote things. The pen was returned. It was returned to us. We are the source. The Bureau is where things come from — not just where they go. Objects return here because they began here. I do not know what that means. But the pen's ink is blue-black, and the Bureau's standard catalogue ink, from 1974 to 2003, was blue-black. The formulation matches.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The ink is blue-black. Many people use blue-black ink. The Bureau's former standard issue is not the only formulation in existence. "Returning it to the source" is dramatic but ambiguous — it could refer to the manufacturer, the original seller, or a metaphorical source. Webb's connection between the ink and the Bureau's historical supply is circumstantial.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I wrote with the pen. I wrote my name. The ink flowed smoothly. When I looked at what I had written, it was not my name. It was a word I did not recognize, in a language I do not know. I showed it to Rui, who speaks four languages. She did not recognize it either. She said it looked like "the kind of word that means something but not for us." I emptied the pen and refilled it with my own ink. I wrote my name again. My name appeared. The word was in the original ink. The pen itself wrote the word, not me. I have not used it since.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">AW-0044</span>
+      <span class="entry-title">Collection of sea glass in a jar</span>
+      <span class="entry-date">Arrived: 07 Jun 2019</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Glass jar (500ml, repurposed preserve jar, label removed) containing approximately 200 pieces of sea glass in various colours: green, brown, clear, blue, amber, and one piece of deep red. Glass ranges from roughly tumbled (recent) to frosted smooth (decades old). Found on the Bureau's loading dock with no accompanying packaging, note, or sender information. It was not there at the 4 PM check. It was there at 4:17 PM. The loading dock is covered by CCTV. The footage from 4:00 to 4:17 shows the dock empty. The jar appears on the shelf at approximately 4:09.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Glass</span>
+        <span>Weight: 842g</span>
+        <span>Storage: Bay 6, Shelf F</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>The CCTV footage shows the jar appearing at 4:09. One frame it is not there. The next frame it is. No blur, no motion, no person. A jar of sea glass materialized on our loading dock in the gap between two camera frames. I have watched the footage seventeen times. It is there and then it is there. It was not delivered. It arrived. Sea glass is glass the ocean has softened — glass that was broken and then made gentle by years of tumbling. Something broken came back as something smooth. Something broken came back here.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The CCTV system is aging and has known gaps — a 2018 maintenance report documented dropped frames. The jar could have been placed during a camera dropout. The footage does not show the jar "materializing" — it shows the jar absent in one frame and present in the next, consistent with placement during a brief recording interruption. Sea glass is a common collector's item. The jar itself is unremarkable.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>The red piece. There is one piece of deep red sea glass in the jar. Red sea glass is rare — approximately one piece in every 5,000. It was at the bottom of the jar, not visible until I emptied it to count the pieces. On the red piece, in letters so small I needed a loupe to read them, is written: "We are coming back. All of us." The glass is frosted, tumbled, decades old. The writing is fresh.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">AW-0089</span>
+      <span class="entry-title">Silver locket containing no photograph</span>
+      <span class="entry-date">Arrived: 02 Sep 2019</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Silver heart-shaped locket on a fine chain. Opens to reveal two recesses for photographs. Both are empty — but the inside of the locket, where photographs would rest, shows faint impressions. Not scratches — impressions, as if the images of two faces have been pressed into the metal by years of contact with photographs no longer there. Chain intact, clasp functional. Found inside the Bureau's mailbox on a Monday morning — the mailbox was checked Saturday and was empty.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Silver</span>
+        <span>Weight: 12g</span>
+        <span>Storage: Bay 2, Safe 1</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>Two faces pressed into silver by years of wear. The photographs are gone but the silver remembers them. I have tried to bring out the impressions — photography, rubbings, scanning. The faces are indistinct but present. I believe I recognize one of them. I will not say who. But the person whose face I think I recognize has not, to my knowledge, ever lost a locket or reported a missing keepsake. If the locket held their image, it was not their locket.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>Metal impressions from sustained contact with paper are possible over long periods. The "faces" Webb describes could be artefacts of the impression process — the metal may have been pressed against patterned paper, or the impressions may be random marks that resemble faces through pareidolia. I am not convinced the impressions represent specific individuals. Without the original photographs, the question is unanswerable.</div>
+        <div class="note signe"><span class="note-attr">S. Rui</span>I know the faces. I will not say whose they are either. But one of them is a person who works in this building. The other is a person who died before the Bureau was established. The locket held a living person and a dead person next to each other, over a heart, for years. The living person does not remember it. The dead person cannot. But the silver remembers.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">AW-0134</span>
+      <span class="entry-title">Empty wooden box with sliding lid</span>
+      <span class="entry-date">Arrived: 12 Dec 2019</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Small wooden box, 15cm × 10cm × 6cm, pine, with a sliding lid. Lid moves smoothly on wooden runners. Interior clean, sanded smooth, no residue. No smell. The box is empty. Found on the chair at Catriona Webb's desk at 8:55 AM on a Thursday. Webb had been at her desk until 5:30 PM the previous evening. The Bureau was locked overnight. The alarm was set and not triggered. The cleaning staff did not report placing anything on the desk. No one entered the building between 5:30 PM and 8:00 AM.</div>
+      <div class="field-row">
+        <span>Condition: Excellent</span>
+        <span>Material: Pine</span>
+        <span>Weight: 148g</span>
+        <span>Storage: Bay 3, Shelf A</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>It was on my chair. An empty box, placed precisely where I would find it when I sat down. I would have sat on it if I had not seen it. Someone — or something — wanted me to find it. The box is empty. It was always empty. But I cannot shake the feeling that it is empty in the way a frame is empty — because the thing it was made to hold is not here yet.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>A box placed on a desk overnight is not inexplicable. The Bureau has multiple keyholders. The alarm code is known to at least eight people. Someone could have entered, disabled the alarm, placed the box, and left. The question is not how but why. An empty box is a practical joke, a statement, or a container. I recommend treating it as a container until evidence suggests otherwise.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I placed the box. I did not enter the building. I was at home, forty miles away, from 6 PM Wednesday to 9 AM Thursday. My partner can confirm this. I placed it by waking at 3 AM, driving to the Bureau, unlocking the front door with a key I did not know I had, disabling the alarm with a code I do not remember learning, walking to Webb's desk, placing the box on her chair, and driving home. I have no memory of doing this. I know I did it because I found a note in my own handwriting on my nightstand the next morning: "The box is delivered. She'll understand." I do not understand.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">AW-0167</span>
+      <span class="entry-title">Mirrored compact, cracked</span>
+      <span class="entry-date">Arrived: 23 Feb 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Round mirrored compact, approximately 7cm diameter. Black lacquer exterior with a gold clasp. Interior: plain mirror on one side, empty powder well on the other. The mirror is cracked edge to edge in a pattern resembling a spider's web. Found in the Bureau's women's toilet at 9:15 AM, resting on the basin. No staff member recognized it. No one had been in the toilet since 7:45 AM, when cleaning staff completed their rounds. When held to the face, the reflection shows the viewer — but delayed by approximately 2 seconds.</div>
+      <div class="field-row">
+        <span>Condition: Fair</span>
+        <span>Material: Metal, glass</span>
+        <span>Weight: 68g</span>
+        <span>Storage: Bay 2, Drawer 5</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>The mirror's reflection is delayed. I tested this. I raised my hand. The reflection raised its hand two seconds later. I turned my head. The reflection turned two seconds later. Not a trick of light. The mirror shows what has already happened — not what is happening. A two-second delay. When I look into this mirror, I am seeing myself as I was. It is the most unsettling object in the Bureau's collection, and I include the cassette tape in that assessment.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>I looked into the mirror. The reflection was simultaneous. No delay. Webb was present and observed the same test — she agrees the reflection was simultaneous during my test. The delay effect, if it exists, may be intermittent or conditional. Or it may be a perceptual effect that Webb is susceptible to and I am not. I do not discount Webb's observation, but I cannot replicate it.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I looked into the mirror. The reflection was delayed by two seconds, as Webb described. I raised my left hand. The reflection raised its left hand — not its right. The image was not reversed. It was a delayed, non-reversed image. A mirror that is not a mirror. A window into two seconds ago, from a perspective that is not my own. I saw myself as someone else sees me. For two seconds, I was not alone.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">AW-0211</span>
+      <span class="entry-title">Bundle of letters, tied with string</span>
+      <span class="entry-date">Arrived: 18 May 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Bundle of thirty-seven letters, tied with brown string. All envelopes sealed. All addressed to "The Keeper, Bureau of Returned Objects, 14 Datchet Lane." Handwriting varies — at least twelve different hands. Postmarks, where present, span from 1962 to 2019. None bear stamps. Found in the Bureau's cellar during a routine inspection. The cellar has been locked since the Bureau's occupancy began. The key — according to Bureau records — was lost in 1987.</div>
+      <div class="field-row">
+        <span>Condition: Fair to Good</span>
+        <span>Material: Paper, string</span>
+        <span>Weight: 1.34kg</span>
+        <span>Storage: Bay 4, Archive Box 9 (sealed)</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>Thirty-seven letters addressed to the Bureau, spanning sixty years, found in a cellar locked since before any current staff member was employed. Letters from 1962 predate our tenancy. Someone was writing to us before we existed here. The letters are addressed to "The Keeper" — a title the Bureau has never used, to my knowledge. Unless someone used it once. Unless someone was the Keeper before there was a Bureau to keep.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The building's history prior to 1974 is not well-documented. The cellar may have been used by previous occupants, and the letters left during that period. The title "Keeper" could have been associated with a different organization at this address. I have requested archival records from the local authority. The request is pending.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I opened three letters before the Director instructed me to stop. The first was dated 1962 and said: "The objects are beginning to return. You will need a system for cataloguing them." The second was dated 1978 and said: "You have not opened the cellar yet. When you do, you will find these letters. Please catalogue them." The third was dated 2019 and said: "Denholm, stop opening things." I opened it on 18 May 2020.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">AW-0258</span>
+      <span class="entry-title">Brass handbell</span>
+      <span class="entry-date">Arrived: 09 Aug 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Small brass handbell, approximately 15cm tall with a turned wooden handle. Produces a clear tone pitched at approximately A above middle C. Interior clapper shows wear consistent with regular use. No inscription. Found on the Bureau's reception desk at 8:00 AM by the day porter. The desk was unstaffed overnight. The Bureau's front door was locked. The porter reports that the bell was warm and that he heard it ring once, faintly, as he approached the desk — though no one was near it.</div>
+      <div class="field-row">
+        <span>Condition: Good</span>
+        <span>Material: Brass, wood</span>
+        <span>Weight: 142g</span>
+        <span>Storage: Bay 6, Shelf G</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>A bell that rings itself. A bell that arrives warm, as if it has just been rung. The tone is A — the same pitch as the music box melody (see RS-0368), which is in A minor. The same note. The bell rings the tonic of the melody the music box plays. These objects are in conversation with each other.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The bell was placed, not self-rung. The porter may have heard his own footsteps resonating with the bell — brass is highly responsive to ambient vibration. The warmth is body heat from the porter's hand. The pitch is approximate; Webb identified it as A, but I measured it at 438 Hz, closer to A-flat. The coincidence of pitch with the music box is just that — a coincidence. There are only twelve notes in the chromatic scale.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I rang the bell at 11:58 PM on 15 August, alone in the archive. The tone was clear and sustained. Approximately four seconds after I stopped, I heard a second bell — distant, from somewhere above me — ring once. There is no bell above the archive. There is a ceiling, a floor, and then the Director's office. The Director was not in the building. I asked her the next morning. She said she had not rung a bell. She said she had not been in the building. Then she asked me, very precisely, why I had rung the bell. I said I did not know. She said: "It heard you. Don't ring it again." She did not explain what "it" was.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">AW-0301</span>
+      <span class="entry-title">Blue enamel brooch in the shape of a bird</span>
+      <span class="entry-date">Arrived: 14 Oct 2020</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Small brooch, 3cm × 2cm, blue enamel on silver, depicting a bird in flight. Pin mechanism functional. Enamel in excellent condition — no chips, no fading. Found pinned to the Bureau's front door, at eye level, as if someone had worn it there. The door is metal. Pinning a brooch to a metal door requires force and intention. No fingerprints on the brooch or the surrounding surface.</div>
+      <div class="field-row">
+        <span>Condition: Excellent</span>
+        <span>Material: Silver, enamel</span>
+        <span>Weight: 8g</span>
+        <span>Storage: Bay 2, Drawer 10</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>A brooch pinned to a metal door. You cannot pin a brooch to a metal door. The pin would bend. But this pin went in cleanly, as if the door were fabric. I examined the door. There is a pinhole — a small, precise hole in the metal where the brooch was attached, made from the outside. Something pushed a brooch pin through a steel door as if the door were soft. The bird came home.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The pinhole in the door may predate the brooch's arrival. Metal doors acquire damage over time — screws, nails, hooks for notices. A small hole is not unusual. The brooch's pin was inserted into an existing hole. Webb's assertion that the brooch was pinned "as if the door were fabric" is dramatic but not supported by the evidence.</div>
+        <div class="note signe"><span class="note-attr">S. Rui</span>The bird is a swallow. Swallows return. They migrate and they return. The brooch was pinned to our door because this is where it was going. Not where it was sent. Where it was going. Objects that arrive without senders are not arriving randomly. They are coming back. They know where they belong. The swallow came home.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">AW-0345</span>
+      <span class="entry-title">Walking stick, wooden, with concealed compartment</span>
+      <span class="entry-date">Arrived: 27 Jan 2021</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Wooden walking stick, approximately 90cm, brass ferrule, horn handle. Handle unscrews to reveal a concealed compartment, 12cm deep and 2cm in diameter. Contains a rolled piece of paper: "I have been walking for a very long time. This is far enough." The ferrule is deeply scuffed, the wood scratched and dented — wear consistent with heavy use over great distance. Found leaning against the outer wall of the Bureau, beside the front door, as if its owner had leaned it there and stepped inside.</div>
+      <div class="field-row">
+        <span>Condition: Fair</span>
+        <span>Material: Wood, brass, horn</span>
+        <span>Weight: 380g</span>
+        <span>Storage: Bay 7, Rack 4</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>"This is far enough." A walking stick used heavily, for a long time. The ferrule wear suggests thousands of miles. The stick was leaned against the wall — placed deliberately. Inside, a note that says this is the end of the journey. The stick walked here from wherever it began, and it stopped at our door. It stopped because it arrived. It was always coming here.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The ferrule wear could accumulate over years of normal daily use — it does not necessarily indicate thousands of continuous miles. The stick was left by an unknown individual who may have discarded it. The note is evocative but could be metaphorical, literary, or the work of someone with a flair for drama. I see no reason to interpret it literally.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney</span>I placed the stick against the wall inside the archive. At 11 PM that night, the motion sensor triggered. The CCTV shows the stick falling over. Nothing else moved. No one was in the room. The stick fell at 11:00 exactly. It has fallen every night since, at 11:00, despite being placed in increasingly stable positions. I set it flat on a table. At 11:00, it rolled off. I wedged it between two boxes. At 11:00, it was standing upright in the centre of the floor. The stick wants to be standing. The stick wants to be ready to walk.</div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-header">
+      <span class="entry-id">AW-0389</span>
+      <span class="entry-title">Pocket mirror, oval, with tortoiseshell frame</span>
+      <span class="entry-date">Arrived: 08 Apr 2021</span>
+    </div>
+    <div class="entry-body">
+      <div class="field-description">Oval pocket mirror, approximately 8cm × 5cm, tortoiseshell frame. Mirror surface intact and undamaged. When reflected in this mirror, text appears reversed — as expected — but the reversed text is legible. The mirror does not simply reverse left and right; it displays text in a form that can be read directly, as if the reversal has been reversed. Multiple staff members have confirmed this. When held to a page of this catalogue, the text is readable in the mirror without inversion.</div>
+      <div class="field-row">
+        <span>Condition: Excellent</span>
+        <span>Material: Glass, tortoiseshell</span>
+        <span>Weight: 44g</span>
+        <span>Storage: Bay 2, Drawer 6</span>
+      </div>
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb</span>A mirror that does not mirror. A mirror that shows things as they are, not as they appear. I held it up and saw myself — not reversed, not flipped, but as others see me. For the first time in my life, I saw what I look like. Not a mirror image. An image. This mirror shows truth. And it arrived here, where objects come when they are done being elsewhere.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns</span>The mirror effect is perceptual. A flat mirror reverses front-to-back, not left-to-right. Our brains interpret this as a left-right flip because of how we conceptualize facing. If the brain is trained to read reversed text — as catalogue professionals are, after years of handling documents in various orientations — the reversed text becomes legible through familiarity. The mirror is a mirror. Our perception has adapted.</div>
+        <div class="note signe"><span class="note-attr">S. Rui</span>I held the mirror to a blank piece of paper. The mirror showed writing. I had not written anything. The paper was blank. But the mirror showed a line of text, legible, clear: "Almost all of you have come back now." I put the mirror down. I showed the blank paper to Mearns, who confirmed it was blank. I picked up the mirror again. The text was gone. The mirror showed only the blank paper. I do not know who "almost all of you" refers to. But I think I do.</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ====== ENTRY 47: THE UNCLASSIFIABLE ====== -->
+  <article class="entry special-entry">
+    <div class="entry-header">
+      <span class="entry-id">AW-0047</span>
+      <span class="entry-title">Object — unclassified</span>
+      <span class="entry-date">Date of arrival: undetermined</span>
+    </div>
+    <div class="entry-body">
+      <div class="special-note">[ This entry has been reclassified 14 times. It has been assigned to every category and rejected from every category. The Director has instructed that it remain in V-AW pending a determination that has not been made. The following notes are presented in chronological order. ]</div>
+
+      <div class="circulant">
+        The object is a stone.<br>
+        <span class="arrow">↓</span>
+        The object is not a stone. It is approximately stone-shaped and stone-sized, but it is warm in the way the keys are warm and the chocolate box is cold — warm in a way that has nothing to do with temperature.<br>
+        <span class="arrow">↓</span>
+        The object was found on the Director's desk on a morning when the Director had not yet arrived and the desk had been empty the night before.<br>
+        <span class="arrow">↓</span>
+        The object fits in the palm of a hand. It fits every palm that has held it — large hands, small hands, the hands of every cataloguer, the hands of the Director, the hands of the day porter who found it. It fits each hand as if it were made for that hand.<br>
+        <span class="arrow">↓</span>
+        The object is not a stone. It is a weight. It weighs the same as a small book, or a large apple, or a heart.<br>
+        <span class="arrow">↓</span>
+        The object was catalogued as LF-0047 on 14 March 2019.<br>
+        <span class="arrow">↓</span>
+        On 14 March 2019, the fountain pen (AW-0012) arrived.<br>
+        <span class="arrow">↓</span>
+        The fountain pen arrived on the same day the stone was catalogued, and the stone was already catalogued when the pen arrived, and the stone was found on the Director's desk, and the Director's desk was empty, and the object was already there, waiting, when the Bureau opened that morning, and it had not been there the night before, and no one brought it, and it was warm.<br>
+        <span class="arrow">↓</span>
+        The object has been returned to the shelf fourteen times. It has been found on the Director's desk fourteen times. No one admits to moving it. The CCTV shows no movement. The object is on the shelf. Then it is on the desk. The frames between are empty.<br>
+        <span class="arrow">↓</span>
+        The Director has held the object. She held it for a long time. When asked what it was, she said: "It is ours. It has always been ours. It was here before we were here and it will be here after. It is the Bureau, compressed into something you can hold. Don't try to classify it. Don't try to explain it. Just put it on the shelf and let it come back to the desk when it wants to."<br>
+        <span class="arrow">↓</span>
+        The object is on the Director's desk now. It has not been moved to the shelf in eleven months.<br>
+        <span class="arrow">↓</span>
+        The object is warm.<br>
+        <span class="arrow">↓</span>
+        The object is waiting.
+      </div>
+
+      <div class="cataloguer-notes">
+        <div class="note catriona"><span class="note-attr">C. Webb — 14 March 2019</span>A stone that fits every hand. A stone that is warm. A stone that moves from the shelf to the desk without being moved. I am going to say what no one else will say: this is the first one. This is the object that came back first, before there was a Bureau, before there was a catalogue, before there was a reason to keep things. This stone returned. To this place. And we built the Bureau around it without knowing.</div>
+        <div class="note evangeline"><span class="note-attr">E. Mearns — 14 March 2019</span>It is a stone. I have examined it. It is a stone. It is granite, or something like granite, and it is warm because granite retains heat, and it moves from the shelf to the desk because someone is moving it — someone in this building who will not admit it — and I refuse to participate in the mystification of a rock. It is a rock. It is on a desk. Someone moved it. I have nothing further to say about this rock and I wish Webb would stop asking me to look at it.</div>
+        <div class="note denholm"><span class="note-attr">D. Slaney — 14 March 2019</span>I moved it. I didn't mean to. I keep finding it in my hand. I put it on the shelf and then it is in my hand again. I don't know when I pick it up. I don't know when I put it on the desk. I don't know why the Director keeps saying it has always been ours. But when I hold it — and I keep holding it, I can't stop holding it — I feel like I am holding everything in the catalogue at once. Every object. Every note. Every contradiction. It all fits in this stone. It all came back to this. I think the Bureau was built to receive this stone, and the stone knows it, and the stone is patient, and the stone is waiting for all the other objects to arrive. And they are arriving. More every month. They are coming back. All of them. To us. To the stone. To the place where the stone was before we were here.</div>
+        <div class="note signe"><span class="note-attr">S. Rui — 08 April 2021</span>The mirror showed me the stone. Not a reflection — I was not near the stone. But the mirror, held to a blank page, showed me the stone, resting on a surface that was not the Director's desk, in a room that was not the Director's office, in a building that was not the Bureau but was like the Bureau, and there were people in the room who were not us but were like us, and they were cataloguing. And the stone was on their desk. And they were writing about it. And one of them looked up from the desk and looked into the mirror and saw me looking back and she smiled. And she held up the stone. And she mouthed the words: "Almost all of you have come back now." And I understood. We are the objects. We are what returned. The Bureau is not a building where objects are processed. The Bureau is the place we came back to. The stone was here first. We came after. The cataloguers, the Director, the staff — we are the returned objects. We just haven't classified ourselves yet.</div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<footer class="catalog-footer">
+  Bureau of Returned Objects — Master Catalog<br>
+  Revised Consolidated Edition<br>
+  All entries property of the Bureau. Not for external distribution.<br>
+  <em>If you are reading this catalogue, the Bureau would like to note:<br>
+  you are not lost. You are returning.</em>
+</footer>
+
+</div>
+
+<script>
+document.querySelectorAll('.entry-header').forEach(function(header) {
+  header.addEventListener('click', function() {
+    this.parentElement.classList.toggle('open');
+  });
+});
+
+function toggleAll(open) {
+  document.querySelectorAll('.entry').forEach(function(entry) {
+    if (open) {
+      entry.classList.add('open');
+    } else {
+      entry.classList.remove('open');
+    }
+  });
+}
+</script>
+
+</body>
+</html>

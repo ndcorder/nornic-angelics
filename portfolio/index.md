@@ -54,3 +54,4 @@
 | 0050 | The Witness Stand | code-game | 5.0 | 2026-05-20 | — |
 | 0051 | Feedback Loop | music | 4.9 | 2026-05-20 | — |
 | 0052 | Dead Name | code-game | 5.0 | 2026-05-20 | — |
+| 0053 | The Bureau of Returned Objects — Master Catalog | worldbuilding | 5.0 | 2026-05-20 | bureau-returned-objects |
