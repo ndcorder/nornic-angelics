@@ -1,0 +1,652 @@
+{
+  "employee": {
+    "id": "EMP-2847",
+    "name": "Elena Margarita Reyes",
+    "email": "elena.reyes@meridian.io",
+    "title": "Senior Software Engineer",
+    "department": "Platform Infrastructure",
+    "manager": "David Chen",
+    "start_date": "2021-03-15",
+    "termination_date": "2024-11-22",
+    "termination_reason": "workforce reduction",
+    "termination_initiated_by": "VP Engineering",
+    "last_active": "2024-11-22T16:47:03Z",
+    "profile": {
+      "avatar_url": "https://media.meridian.io/avatars/elena.reyes_1732.png",
+      "display_name": "Elena Reyes",
+      "pronouns": "she/her",
+      "timezone": "America/Los_Angeles",
+      "status_text": "out of office",
+      "status_emoji": ":palm_tree:",
+      "title_override": "Senior SWE, Platform Infra",
+      "bio": "Building resilient systems and occasionally breaking them on purpose. She/her. 🌮"
+    }
+  },
+  "slack_messages": [
+    {
+      "id": "msg_001",
+      "channel": "#platform-infra",
+      "channel_type": "public",
+      "timestamp": "2024-09-03T09:14:22Z",
+      "text": "Morning folks! Quick reminder that the K8s cluster migration window opens tonight at 11pm PT. I'll be online monitoring if anyone sees weirdness. The runbook's been updated: /docs/runbooks/k8s-migration-v3",
+      "has_reactions": true,
+      "reactions": ["+1:3", "eyes:5", "sparkles:2"],
+      "thread_replies": 12
+    },
+    {
+      "id": "msg_002",
+      "channel": "#platform-infra",
+      "channel_type": "public",
+      "timestamp": "2024-09-04T02:31:07Z",
+      "text": "Update for anyone awake: east region migration complete. No data loss, no pod restarts. Taking a 90-minute nap before west region. The dashboard looks clean.",
+      "has_reactions": true,
+      "reactions": ["clap:4", "raised_hands:2"],
+      "thread_replies": 7
+    },
+    {
+      "id": "msg_003",
+      "channel": "#general",
+      "channel_type": "public",
+      "timestamp": "2024-09-12T17:45:33Z",
+      "text": "the tamale lady is here and she has the ones with green sauce today!!! 🌯",
+      "has_reactions": true,
+      "reactions": ["fire:11", "yum:7", "green_heart:4"],
+      "thread_replies": 9
+    },
+    {
+      "id": "msg_004",
+      "channel": "DM_jordan.kim",
+      "channel_type": "dm",
+      "timestamp": "2024-09-14T22:08:41Z",
+      "text": "hey do you by any chance know a good florist that delivers same day? I totally forgot it's my mom's birthday tomorrow and she loves carnations but specifically the pink ones, not the red ones she says they're depressing",
+      "has_reactions": false,
+      "thread_replies": null
+    },
+    {
+      "id": "msg_005",
+      "channel": "#platform-infra",
+      "channel_type": "public",
+      "timestamp": "2024-09-18T16:22:51Z",
+      "text": "POST MORTEM for the 9/16 incident is live. tl;dr: a config change I approved caused cascading failures across 3 services. Full writeup with timeline and RCA: /docs/postmortems/2024-09-16-config-drift\n\nI'm adding an additional pre-flight check to the deploy pipeline as a result. My bad, team.",
+      "has_reactions": true,
+      "reactions": ["heart:8", "salute:5", "hugging_face:2"],
+      "thread_replies": 14
+    },
+    {
+      "id": "msg_006",
+      "channel": "#general",
+      "channel_type": "public",
+      "timestamp": "2024-09-25T18:30:15Z",
+      "text": "Can whoever keeps leaving their dishes in the kitchen sink please wash them? Mrs. Patricia from facilities shouldn't have to clean up after grown adults.",
+      "has_reactions": true,
+      "reactions": ["+1:23", "100:8"],
+      "thread_replies": 17
+    },
+    {
+      "id": "msg_007",
+      "channel": "DM_jordan.kim",
+      "channel_type": "dm",
+      "timestamp": "2024-10-01T14:33:19Z",
+      "text": "Hey Jordan! Saw your draft PR. The approach is solid but I'd suggest breaking out the cache layer into its own module — it'll be easier to test that way. Want to pair on it tomorrow? I'm free after 2pm.",
+      "has_reactions": false,
+      "thread_replies": null
+    },
+    {
+      "id": "msg_008",
+      "channel": "DM_jordan.kim",
+      "channel_type": "dm",
+      "timestamp": "2024-10-02T15:17:44Z",
+      "text": "btw I noticed you're on the 7:12 Caltrain from Millbrae — I'm usually on the 7:18 from San Mateo. We should commute together sometime, it's nice having someone to talk to on the way in",
+      "has_reactions": false,
+      "thread_replies": null
+    },
+    {
+      "id": "msg_009",
+      "channel": "#platform-infra",
+      "channel_type": "public",
+      "timestamp": "2024-10-10T20:48:33Z",
+      "text": "Just realized this is my last on-call rotation before my 4th Meridian anniversary. Three years of 2am pages and I still forget the PagerDuty shortcut to acknowledge 😅",
+      "has_reactions": true,
+      "reactions": ["laughing:6", "heart:3"],
+      "thread_replies": 5
+    },
+    {
+      "id": "msg_010",
+      "channel": "#platform-infra",
+      "channel_type": "public",
+      "timestamp": "2024-10-15T11:03:27Z",
+      "text": "The new service mesh rollout is tentatively scheduled for week of Nov 4. I've flagged the risky bits. @jordan.kim @priya.nair I'd love you both as optional shadows on the deploy — good learning opportunity and I could use the extra eyes.",
+      "has_reactions": true,
+      "reactions": ["+1:2", "eyes:3"],
+      "thread_replies": 8
+    },
+    {
+      "id": "msg_011",
+      "channel": "#platform-infra",
+      "channel_type": "public",
+      "timestamp": "2024-11-01T02:17:09Z",
+      "text": "Still here. Service mesh migration hitting some edge cases with the gRPC timeouts. Nothing dangerous — just slower than expected. Wrote a fix, running validation now.",
+      "has_reactions": true,
+      "reactions": ["coffee:3", "muscle:2"],
+      "thread_replies": 4
+    },
+    {
+      "id": "msg_012",
+      "channel": "DM_jordan.kim",
+      "channel_type": "dm",
+      "timestamp": "2024-11-08T20:14:55Z",
+      "text": "Hey, can I ask you something kind of random? My nephew wants to learn to code and he's 14. Do you remember the name of that bootcamp you mentioned your little brother went to? The one in San Jose?",
+      "has_reactions": false,
+      "thread_replies": null
+    },
+    {
+      "id": "msg_013",
+      "channel": "#platform-infra",
+      "channel_type": "public",
+      "timestamp": "2024-11-14T16:42:33Z",
+      "text": "Chapters 1-3 are done! Finished the Canary Deployments at Scale writeup. @priya.nair thank you for the review, incorporated all your feedback. @jordan.kim the diagrams you made are perfect. /docs/guides/canary-deployments-at-scale\n\nThis one's been on my list for months. Feels good to finally ship it.",
+      "has_reactions": true,
+      "reactions": ["tada:9", "heart:6", "clap:4"],
+      "thread_replies": 11
+    },
+    {
+      "id": "msg_014",
+      "channel": "#platform-infra",
+      "channel_type": "public",
+      "timestamp": "2024-11-15T11:22:08Z",
+      "text": "Hmm. Wish I'd seen this email sooner. If anyone needs me I'll be in the small conference room.",
+      "has_reactions": false,
+      "thread_replies": 3
+    },
+    {
+      "id": "msg_015",
+      "channel": "#dev-watercooler",
+      "channel_type": "public",
+      "timestamp": "2024-11-22T16:47:03Z",
+      "text": "so\n\nI'm told today is my last day\n\nI don't really know what to say. I found out 2 hours ago.\n\nJordan, Priya, Marcus — working with you has been the best part of this job. You made 4am incidents almost fun.\n\nMrs. Patricia, thank you for the birthday cards every year. You didn't have to do that.\n\nIf you want to stay in touch — my personal email is elena.m.reyes@gmail.com\n\nI was supposed to finish the pre-flight validation PR this week. David, the schema's in the comments, it just needs the test cases.\n\nok\n\n— Elena",
+      "has_reactions": true,
+      "reactions": ["heart:47", "cry:23", "hugging_face:18", "wave:12"],
+      "thread_replies": 34
+    }
+  ],
+  "pull_requests": [
+    {
+      "id": "PR-4821",
+      "title": "feat: implement canary deployment strategy with traffic splitting",
+      "repository": "meridian/platform-deploy",
+      "branch": "feature/canary-v2",
+      "created": "2024-10-28T09:15:00Z",
+      "status": "merged",
+      "merged_by": "Elena Reyes",
+      "lines_added": 847,
+      "lines_removed": 203,
+      "files_changed": 23,
+      "reviewers": ["priya.nair", "david.chen"],
+      "description": "Implements weighted traffic splitting for canary deployments. Supports gradual rollout with automatic rollback triggers based on error rate thresholds.",
+      "comments": [
+        {
+          "author": "priya.nair",
+          "timestamp": "2024-10-29T14:22:00Z",
+          "text": "The rollback logic here is really elegant. How did you handle the race condition during metric collection?"
+        },
+        {
+          "author": "elena.reyes",
+          "timestamp": "2024-10-29T15:01:00Z",
+          "text": "Good catch — I added a jitter buffer. See lines 142-156. The key insight is that we don't need perfect synchronization, just eventual consistency within the rollback window."
+        }
+      ]
+    },
+    {
+      "id": "PR-4891",
+      "title": "fix: resolve config drift in k8s namespace isolation",
+      "repository": "meridian/platform-deploy",
+      "branch": "fix/config-drift-ns",
+      "created": "2024-09-16T10:00:00Z",
+      "status": "merged",
+      "merged_by": "Elena Reyes",
+      "lines_added": 45,
+      "lines_removed": 12,
+      "files_changed": 3,
+      "reviewers": ["david.chen"],
+      "description": "Fixes the root cause of the 9/16 incident. Adds pre-flight validation to catch config drift before deployment.",
+      "linked_incident": "INC-2024-0916"
+    },
+    {
+      "id": "PR-4944",
+      "title": "refactor: extract caching layer into standalone module",
+      "repository": "meridian/platform-deploy",
+      "branch": "refactor/cache-module",
+      "created": "2024-10-01T08:30:00Z",
+      "status": "merged",
+      "merged_by": "Elena Reyes",
+      "lines_added": 312,
+      "lines_removed": 289,
+      "files_changed": 11,
+      "reviewers": ["jordan.kim", "priya.nair"],
+      "description": "Extracts the distributed caching logic into cache-provider module for better testability and reuse. No functional changes.",
+      "comments": [
+        {
+          "author": "jordan.kim",
+          "timestamp": "2024-10-02T10:15:00Z",
+          "text": "Learned a lot from this refactor. The strategy pattern for cache backends is really clean."
+        },
+        {
+          "author": "elena.reyes",
+          "timestamp": "2024-10-02T10:45:00Z",
+          "text": "Thanks! Happy to walk through the design decisions anytime. The key was separating the eviction policy from the storage implementation — that's what makes it testable."
+        }
+      ]
+    },
+    {
+      "id": "PR-5022",
+      "title": "feat: add gRPC timeout configuration to service mesh",
+      "repository": "meridian/platform-deploy",
+      "branch": "feature/grpc-timeouts",
+      "created": "2024-11-01T03:00:00Z",
+      "status": "merged",
+      "merged_by": "Elena Reyes",
+      "lines_added": 178,
+      "lines_removed": 34,
+      "files_changed": 8,
+      "reviewers": ["priya.nair"],
+      "description": "Configurable gRPC timeouts per service pair. Fixes the edge cases discovered during mesh migration.",
+      "comments": [
+        {
+          "author": "priya.nair",
+          "timestamp": "2024-11-01T04:10:00Z",
+          "text": "Elena this was literally committed at 3am. Go to sleep."
+        },
+        {
+          "author": "elena.reyes",
+          "timestamp": "2024-11-01T04:12:00Z",
+          "text": "Can't. This bug is personal now."
+        }
+      ]
+    },
+    {
+      "id": "PR-5067",
+      "title": "feat: canary deployment guide and documentation",
+      "repository": "meridian/platform-docs",
+      "branch": "docs/canary-guide",
+      "created": "2024-11-10T14:00:00Z",
+      "status": "merged",
+      "merged_by": "Elena Reyes",
+      "lines_added": 1204,
+      "lines_removed": 0,
+      "files_changed": 5,
+      "reviewers": ["priya.nair", "jordan.kim"],
+      "description": "Comprehensive guide to canary deployments at Meridian. Includes architecture diagrams, runbooks, and troubleshooting guides.",
+      "comments": [
+        {
+          "author": "jordan.kim",
+          "timestamp": "2024-11-12T09:30:00Z",
+          "text": "The diagrams are incredible. How long did these take?"
+        },
+        {
+          "author": "elena.reyes",
+          "timestamp": "2024-11-12T09:45:00Z",
+          "text": "A while. My nephew (14) actually helped me pick the color palette. He said the old docs looked like 'a spreadsheet threw up.' Hard to argue."
+        }
+      ]
+    },
+    {
+      "id": "PR-5089",
+      "title": "chore: add pre-flight config validation to deploy pipeline",
+      "repository": "meridian/platform-deploy",
+      "branch": "chore/preflight-checks",
+      "created": "2024-11-18T10:00:00Z",
+      "status": "open",
+      "merged_by": null,
+      "lines_added": 156,
+      "lines_removed": 22,
+      "files_changed": 4,
+      "reviewers": ["david.chen", "priya.nair"],
+      "description": "Adds automated config validation step before deployments. Catches the class of issues that caused INC-2024-0916.\n\nTODO: Needs final review on the validation schema. Should be ready to merge early next week.",
+      "comments": [
+        {
+          "author": "david.chen",
+          "timestamp": "2024-11-20T16:00:00Z",
+          "text": "Looks good overall. Left a few minor comments on naming conventions."
+        }
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "id": "DOC-1023",
+      "title": "Kubernetes Cluster Migration Runbook v3",
+      "path": "/docs/runbooks/k8s-migration-v3",
+      "created": "2024-08-15T00:00:00Z",
+      "last_modified": "2024-09-03T08:45:00Z",
+      "type": "runbook",
+      "word_count": 3102,
+      "co_authors": [],
+      "description": "Step-by-step operational runbook for Kubernetes cluster migration. Includes rollback procedures and monitoring dashboards."
+    },
+    {
+      "id": "DOC-1089",
+      "title": "Post-Mortem: Config Drift Incident (9/16)",
+      "path": "/docs/postmortems/2024-09-16-config-drift",
+      "created": "2024-09-18T00:00:00Z",
+      "last_modified": "2024-09-19T14:22:00Z",
+      "type": "postmortem",
+      "word_count": 2847,
+      "co_authors": ["david.chen"],
+      "description": "Root cause analysis and corrective actions for the config drift incident that caused cascading failures across 3 services."
+    },
+    {
+      "id": "DOC-1156",
+      "title": "On-Call Survival Guide (Unofficial)",
+      "path": "/docs/guides/oncall-survival-guide",
+      "created": "2024-06-01T00:00:00Z",
+      "last_modified": "2024-10-10T19:00:00Z",
+      "type": "internal_guide",
+      "word_count": 1856,
+      "co_authors": [],
+      "description": "Tips, tricks, and emotional support for on-call rotations. Sections include: 'How to Wake Up at 3am Without Hating Everything', 'The Art of the Handoff', and 'Post-Incident Self-Care'.",
+      "note": "Maintained informally. Not an official Meridian document. Shared widely across engineering."
+    },
+    {
+      "id": "DOC-1201",
+      "title": "New Hire Onboarding: Platform Infra Welcome Packet",
+      "path": "/docs/onboarding/platform-infra-welcome",
+      "created": "2024-07-10T00:00:00Z",
+      "last_modified": "2024-11-01T02:17:00Z",
+      "type": "onboarding",
+      "word_count": 3412,
+      "co_authors": [],
+      "description": "Welcome packet for new Platform Infrastructure team members. Includes team rituals, communication norms, and 'things I wish someone had told me in week one'.",
+      "note": "Originally written by Elena when she onboarded Jordan Kim. Updated at 2am between service mesh fixes. Maintained quarterly."
+    },
+    {
+      "id": "DOC-1178",
+      "title": "Service Mesh Architecture Decision Record",
+      "path": "/docs/adr/service-mesh-selection",
+      "created": "2024-09-05T00:00:00Z",
+      "last_modified": "2024-10-15T11:00:00Z",
+      "type": "adr",
+      "word_count": 2234,
+      "co_authors": ["david.chen", "priya.nair"],
+      "description": "Architecture decision record for the service mesh selection and implementation strategy."
+    },
+    {
+      "id": "DOC-1134",
+      "title": "Canary Deployments at Scale",
+      "path": "/docs/guides/canary-deployments-at-scale",
+      "created": "2024-10-20T00:00:00Z",
+      "last_modified": "2024-11-14T16:40:00Z",
+      "type": "technical_guide",
+      "word_count": 4231,
+      "co_authors": ["priya.nair", "jordan.kim"],
+      "description": "Comprehensive guide covering canary deployment architecture, implementation patterns, and operational runbooks."
+    }
+  ],
+  "tickets": [
+    {
+      "id": "TICKET-2911",
+      "title": "Config drift causing cascading failures",
+      "status": "closed",
+      "priority": "critical",
+      "assignee": "Elena Reyes",
+      "reporter": "automated-alert",
+      "created": "2024-09-16T08:14:00Z",
+      "resolution_date": "2024-09-16T14:30:00Z",
+      "epic": "EPIC-398",
+      "sprint": "2024-Q3-Sprint-12",
+      "labels": ["platform", "incident", "config-management"],
+      "linked_prs": ["PR-4891"],
+      "description": "Cascading failures across 3 services caused by config drift in namespace isolation."
+    },
+    {
+      "id": "TICKET-2784",
+      "title": "Refactor caching layer for testability",
+      "status": "closed",
+      "priority": "medium",
+      "assignee": "Elena Reyes",
+      "reporter": "Elena Reyes",
+      "created": "2024-09-25T10:00:00Z",
+      "resolution_date": "2024-10-03T00:00:00Z",
+      "epic": "EPIC-401",
+      "sprint": "2024-Q4-Sprint-1",
+      "labels": ["platform", "tech-debt", "refactor"],
+      "linked_prs": ["PR-4944"],
+      "description": "Extract distributed caching logic into standalone module for testability and reuse."
+    },
+    {
+      "id": "TICKET-2847",
+      "title": "Implement canary deployment strategy",
+      "status": "closed",
+      "priority": "high",
+      "assignee": "Elena Reyes",
+      "reporter": "David Chen",
+      "created": "2024-09-10T10:00:00Z",
+      "resolution_date": "2024-11-01T00:00:00Z",
+      "epic": "EPIC-402",
+      "sprint": "2024-Q4-Sprint-3",
+      "labels": ["platform", "deploy-pipeline", "enhancement"],
+      "description": "Design and implement weighted traffic splitting for canary deployments with automatic rollback."
+    },
+    {
+      "id": "TICKET-2891",
+      "title": "Update onboarding documentation for Q4",
+      "status": "closed",
+      "priority": "low",
+      "assignee": "Elena Reyes",
+      "reporter": "Elena Reyes",
+      "created": "2024-10-01T14:00:00Z",
+      "resolution_date": "2024-10-15T00:00:00Z",
+      "labels": ["documentation", "onboarding"],
+      "description": "Update the Platform Infra welcome packet with current team practices and tooling."
+    },
+    {
+      "id": "TICKET-3044",
+      "title": "Service mesh gRPC timeout configuration",
+      "status": "closed",
+      "priority": "high",
+      "assignee": "Elena Reyes",
+      "reporter": "Elena Reyes",
+      "created": "2024-10-28T10:00:00Z",
+      "resolution_date": "2024-11-01T04:30:00Z",
+      "epic": "EPIC-415",
+      "sprint": "2024-Q4-Sprint-4",
+      "labels": ["platform", "service-mesh", "reliability"],
+      "linked_prs": ["PR-5022"],
+      "description": "Implement configurable gRPC timeouts per service pair. Discovered during mesh migration testing."
+    },
+    {
+      "id": "TICKET-3110",
+      "title": "Pre-flight config validation for deploy pipeline",
+      "status": "in_progress",
+      "assignee": "Elena Reyes",
+      "reporter": "Elena Reyes",
+      "created": "2024-11-18T09:00:00Z",
+      "epic": "EPIC-398",
+      "sprint": "2024-Q4-Sprint-6",
+      "labels": ["platform", "deploy-pipeline", "reliability"],
+      "linked_prs": ["PR-5089"],
+      "description": "Add automated config validation step to prevent class of issues seen in INC-2024-0916. In progress — needs final review."
+    }
+  ],
+  "calendar_events": [
+    {
+      "id": "CAL-001",
+      "title": "K8s Migration - East Region",
+      "start": "2024-09-04T01:00:00Z",
+      "end": "2024-09-04T05:00:00Z",
+      "type": "maintenance_window",
+      "attendees": ["elena.reyes", "priya.nair", "oncall-platform"],
+      "location": "Remote"
+    },
+    {
+      "id": "CAL-002",
+      "title": "1:1 with Jordan Kim",
+      "start": "2024-10-03T14:00:00Z",
+      "end": "2024-10-03T14:30:00Z",
+      "type": "one_on_one",
+      "attendees": ["elena.reyes", "jordan.kim"],
+      "location": "Small Conf Room / Zoom",
+      "recurrence": "weekly",
+      "note": "Not a formal reporting relationship. Elena set these up voluntarily after Jordan joined."
+    },
+    {
+      "id": "CAL-003",
+      "title": "Canary Deploy Design Review",
+      "start": "2024-10-15T10:00:00Z",
+      "end": "2024-10-15T11:30:00Z",
+      "type": "meeting",
+      "attendees": ["elena.reyes", "david.chen", "priya.nair", "jordan.kim", "marcus.webb"],
+      "location": "Platform Team Room"
+    },
+    {
+      "id": "CAL-004",
+      "title": "1:1 with Jordan Kim",
+      "start": "2024-11-05T14:00:00Z",
+      "end": "2024-11-05T14:30:00Z",
+      "type": "one_on_one",
+      "attendees": ["elena.reyes", "jordan.kim"],
+      "location": "Small Conf Room / Zoom"
+    },
+    {
+      "id": "CAL-005",
+      "title": "Service Mesh Migration - Final Push",
+      "start": "2024-11-01T01:00:00Z",
+      "end": "2024-11-01T06:00:00Z",
+      "type": "maintenance_window",
+      "attendees": ["elena.reyes", "priya.nair"],
+      "location": "Remote"
+    },
+    {
+      "id": "CAL-006",
+      "title": "1:1 with Jordan Kim",
+      "start": "2024-11-19T14:00:00Z",
+      "end": "2024-11-19T14:30:00Z",
+      "type": "one_on_one",
+      "attendees": ["elena.reyes", "jordan.kim"],
+      "location": "Zoom",
+      "status": "cancelled",
+      "cancellation_note": "Cancelled by Elena: 'Hey Jordan, need to reschedule this week. Something came up. Let's catch up at the team lunch on Friday though.'"
+    },
+    {
+      "id": "CAL-007",
+      "title": "1:1 with David Chen",
+      "start": "2024-11-15T11:00:00Z",
+      "end": "2024-11-15T11:30:00Z",
+      "type": "one_on_one",
+      "attendees": ["elena.reyes", "david.chen"],
+      "location": "Manager's Office",
+      "note": "Scheduled urgently on short notice. Elena's last 1:1 with David."
+    },
+    {
+      "id": "CAL-008",
+      "title": "Team Lunch - Farewell Elena",
+      "start": "2024-11-22T12:00:00Z",
+      "end": "2024-11-22T13:30:00Z",
+      "type": "social",
+      "attendees": ["elena.reyes", "david.chen", "jordan.kim", "priya.nair", "marcus.webb", "platform-infra-team"],
+      "location": "Taqueria San Jose (Elena's pick)",
+      "note": "Elena requested no speeches."
+    },
+    {
+      "id": "CAL-009",
+      "title": "Exit Interview - Elena Reyes",
+      "start": "2024-11-22T15:00:00Z",
+      "end": "2024-11-22T15:30:00Z",
+      "type": "hr",
+      "attendees": ["elena.reyes", "HR"],
+      "location": "HR Office",
+      "private": true
+    }
+  ],
+  "code_review_comments": [
+    {
+      "pr": "PR-4790",
+      "author": "Elena Reyes",
+      "timestamp": "2024-10-22T16:14:00Z",
+      "file": "src/deploy/pipeline.ts",
+      "line": 247,
+      "comment": "This is a really clever approach to the rollback ordering. I wouldn't have thought to reverse the dependency graph. Nice work."
+    },
+    {
+      "pr": "PR-4801",
+      "author": "Elena Reyes",
+      "timestamp": "2024-10-23T09:45:00Z",
+      "file": "src/config/validator.ts",
+      "line": 89,
+      "comment": "Small suggestion: consider extracting this into a helper function. Future you will thank present you when this logic needs to be reused (and it will)."
+    },
+    {
+      "pr": "PR-4856",
+      "author": "Elena Reyes",
+      "timestamp": "2024-10-25T14:22:00Z",
+      "file": "tests/integration/deploy.test.ts",
+      "line": 312,
+      "comment": "Love that you added test coverage for the failure case. This is exactly the kind of defensive testing we need more of. Ship it!"
+    }
+  ],
+  "git_commits": [
+    {
+      "sha": "c9d1f4a3",
+      "message": "fix: resolve namespace isolation config drift\n\nRoot cause of INC-2024-0916. Adds pre-flight validation to catch\nconfig drift before deployment propagation.",
+      "timestamp": "2024-09-16T13:45:00Z",
+      "repository": "meridian/platform-deploy"
+    },
+    {
+      "sha": "b7c4e9f2",
+      "message": "fix: add jitter buffer to rollback metric collection\n\nPrevents race condition during metric collection by introducing\na configurable jitter window. See PR discussion for rationale.",
+      "timestamp": "2024-10-29T15:45:00Z",
+      "repository": "meridian/platform-deploy"
+    },
+    {
+      "sha": "a3f8d2e1",
+      "message": "feat: implement weighted traffic splitting for canary deployments\n\nAdds TrafficSplitter class with configurable weight distribution.\nSupports gradual rollout with automatic rollback triggers.",
+      "timestamp": "2024-10-30T23:17:00Z",
+      "repository": "meridian/platform-deploy"
+    },
+    {
+      "sha": "d2e5b7c4",
+      "message": "feat: configurable gRPC timeouts per service pair\n\nDiscovered during mesh migration testing. Each service pair can\nnow define independent timeout thresholds.",
+      "timestamp": "2024-11-01T02:45:00Z",
+      "repository": "meridian/platform-deploy"
+    },
+    {
+      "sha": "e8a3c1d5",
+      "message": "docs: canary deployment guide - chapters 1-3\n\nComprehensive guide with architecture diagrams, runbooks, and\ntroubleshooting steps. Co-authored with Priya Nair and Jordan Kim.",
+      "timestamp": "2024-11-14T16:30:00Z",
+      "repository": "meridian/platform-docs"
+    },
+    {
+      "sha": "f1b4d6e7",
+      "message": "chore: pre-flight config validation (WIP)\n\nAdds validation schema and pipeline integration. Needs final\nreview on schema definitions.",
+      "timestamp": "2024-11-18T10:30:00Z",
+      "repository": "meridian/platform-deploy"
+    }
+  ],
+  "artifacts": [
+    {
+      "type": "avatar",
+      "path": "/avatars/elena.reyes_1732.png",
+      "description": "Profile photo — Elena smiling, wearing a blue Meridian hoodie"
+    },
+    {
+      "type": "diagram",
+      "path": "/docs/guides/canary-deployments-at-scale/assets/architecture-v3.png",
+      "description": "Architecture diagram for canary deployment flow, annotated by Elena"
+    },
+    {
+      "type": "diagram",
+      "path": "/docs/guides/canary-deployments-at-scale/assets/rollback-flow.png",
+      "description": "Rollback decision tree diagram"
+    }
+  ],
+  "summary": {
+    "total_slack_messages": 15,
+    "total_pull_requests": 6,
+    "total_documents": 6,
+    "total_tickets": 6,
+    "total_calendar_events": 9,
+    "total_commits": 6,
+    "total_code_review_comments": 3,
+    "total_artifacts": 3,
+    "total_items": 48
+  }
+}

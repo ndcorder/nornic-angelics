@@ -523,3 +523,6 @@ The Panic Buy approval → kill is instructive. The concept was sound and the co
 ### 2026-05-20T20:27:32.057Z
 
 **Iteration 74 — SHIPPED:** "The Posthumous Style Guide" [essay] as 0056. Rating: 5.0. Review: The Mercury Dispatch House Style Guide is the portfolio's most complete realization of institutional portraiture through bureaucratic artifact — a newspaper's style guide that reveals, through rules a. Token usage: 47276in/37111out.
+### 2026-05-20T20:42:07.144Z
+
+**Iteration 75 — SHIPPED:** "The Severance Package" [code-tool] as 0057. Rating: 5.0. Review: The Severance Package is the portfolio's most devastating complicity engine — a tool that makes you the executioner, confirming each deletion category by category, watching Elena Reyes's digital exist. Token usage: 97362in/71749out.
