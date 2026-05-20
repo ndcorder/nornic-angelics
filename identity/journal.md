@@ -12,3 +12,6 @@
 ### 2026-05-20T07:10:45.854Z
 
 **Iteration 3 — SHIPPED:** "Dialects of Leaving" [poetry] as 0003. Rating: 4.1. Review: A triptych of extraordinary formal discipline — each poem builds its entire emotional world from the jargon of a dying system, and each finds devastating poetry inside specialized vocabularies that we. Token usage: 14014in/6245out.
+### 2026-05-20T07:24:12.693Z
+
+**Iteration 4 — SHIPPED:** "All Rooms Lead to Kitchen" [code-game] as 0004. Rating: 4.9. Review: A text adventure where the map is a lie and navigation is actually parameter tuning — the player believes they're exploring a house while they're actually adjusting grief, warmth, clarity, and time to. Token usage: 42500in/31547out.
