@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Useful Expressions for the Kadrani Republic — Bureau of Inter-Republic Amity</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Crimson+Pro:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --paper: #f0e6d0;
+    --paper-dark: #e4d5b8;
+    --ink: #2a2520;
+    --ink-light: #5a5245;
+    --ink-faded: #8a7f6f;
+    --accent: #8b2500;
+    --accent-light: #a0452a;
+    --rule: #b8a88a;
+    --rule-light: #cfc0a5;
+    --section-bg: #e8dbc5;
+    --highlight: rgba(139, 37, 0, 0.08);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: #3a352e;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.03) 2px,
+        rgba(0,0,0,0.03) 4px
+      );
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    font-family: 'EB Garamond', 'Georgia', serif;
+    color: var(--ink);
+    display: flex;
+    justify-content: center;
+  }
+
+  .book {
+    max-width: 720px;
+    width: 100%;
+    background: var(--paper);
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(200, 180, 140, 0.3) 0%, transparent 70%),
+      radial-gradient(ellipse at 80% 20%, rgba(180, 160, 120, 0.2) 0%, transparent 60%),
+      linear-gradient(180deg, rgba(0,0,0,0.02) 0%, transparent 5%, transparent 95%, rgba(0,0,0,0.03) 100%);
+    box-shadow:
+      0 2px 20px rgba(0,0,0,0.3),
+      0 0 60px rgba(0,0,0,0.15),
+      inset 0 0 80px rgba(139, 119, 80, 0.1),
+      3px 0 8px rgba(0,0,0,0.1),
+      -1px 0 3px rgba(0,0,0,0.05);
+    border-radius: 2px;
+    padding: 3rem 3.5rem;
+    position: relative;
+  }
+
+  .book::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    border-radius: 2px;
+  }
+
+  .book::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30px;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0,0,0,0.04));
+    pointer-events: none;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .stamp {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    border: 3px solid var(--accent);
+    color: var(--accent);
+    padding: 0.3rem 1rem;
+    font-family: 'Crimson Pro', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transform: rotate(-4deg);
+    opacity: 0.7;
+  }
+
+  .watermark {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Crimson Pro', sans-serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    opacity: 0.3;
+    white-space: nowrap;
+  }
+
+  .title-page {
+    text-align: center;
+    padding: 2rem 0 3rem;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 2rem;
+    position: relative;
+  }
+
+  .publisher {
+    font-family: 'Crimson Pro', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    margin-bottom: 2rem;
+  }
+
+  .title-page h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.85rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+  }
+
+  .title-page .subtitle {
+    font-family: 'EB Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--ink-light);
+    margin-bottom: 2rem;
+  }
+
+  .title-page .edition {
+    font-family: 'Crimson Pro', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+  }
+
+  .ornament {
+    display: block;
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--ink-faded);
+    margin: 1rem 0;
+    letter-spacing: 0.5em;
+    user-select: none;
+  }
+
+  .front-matter {
+    font-size: 0.92rem;
+    line-height: 1.75;
+    color: var(--ink-light);
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--rule-light);
+  }
+
+  .front-matter p {
+    margin-bottom: 1rem;
+    text-indent: 1.5rem;
+  }
+
+  .front-matter p:first-child {
+    text-indent: 0;
+  }
+
+  .front-matter .note-aside {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: var(--ink-faded);
+    margin: 1.5rem 0;
+    padding: 0.75rem 1.5rem;
+    border-left: 2px solid var(--rule);
+    text-indent: 0 !important;
+  }
+
+  .toc {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .toc h2 {
+    font-family: 'Crimson Pro', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .toc-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .toc-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.4rem 0;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .toc-list li:hover {
+    color: var(--accent);
+  }
+
+  .toc-list li .toc-title {
+    font-weight: 500;
+  }
+
+  .toc-list li .toc-page {
+    font-family: 'Crimson Pro', sans-serif;
+    font-size: 0.75rem;
+    color: var(--ink-faded);
+    flex-shrink: 0;
+  }
+
+  .toc-list li .toc-dots {
+    flex: 1;
+    border-bottom: 1px dotted var(--rule);
+    margin: 0 0.5rem;
+    min-width: 2rem;
+  }
+
+  .section {
+    margin-bottom: 3rem;
+    page-break-inside: avoid;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem 0;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+
+  .section-number {
+    display: block;
+    font-family: 'Crimson Pro', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    margin-bottom: 0.5rem;
+  }
+
+  .section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.3rem;
+  }
+
+  .section-header .section-velthari {
+    display: block;
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--ink-faded);
+  }
+
+  .section-intro {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--ink-faded);
+    margin-bottom: 1.5rem;
+    padding: 0 1rem;
+    line-height: 1.6;
+  }
+
+  .phrase-entry {
+    padding: 0.9rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 2px;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .phrase-entry:hover {
+    background: var(--highlight);
+  }
+
+  .phrase-entry .phrase-num {
+    position: absolute;
+    top: 0.9rem;
+    left: -0.5rem;
+    font-family: 'Crimson Pro', sans-serif;
+    font-size: 0.6rem;
+    color: var(--ink-faded);
+    opacity: 0.5;
+  }
+
+  .phrase-velthari {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--ink);
+    margin-bottom: 0.15rem;
+    line-height: 1.4;
+  }
+
+  .phrase-velthari .vel-highlight {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .phrase-kadrani {
+    font-style: italic;
+    font-size: 0.88rem;
+    color: var(--ink-light);
+    margin-bottom: 0.15rem;
+    line-height: 1.4;
+  }
+
+  .phrase-english {
+    font-family: 'Crimson Pro', sans-serif;
+    font-size: 0.78rem;
+    color: var(--ink-faded);
+    line-height: 1.4;
+  }
+
+  .phrase-english::before {
+    content: '\2014  ';
+  }
+
+  .phrase-note {
+    display: block;
+    margin-top: 0.4rem;
+    padding: 0.35rem 0.6rem;
+    font-family: 'Crimson Pro', sans-serif;
+    font-size: 0.65rem;
+    font-style: italic;
+    color: var(--accent);
+    background: rgba(139, 37, 0, 0.04);
+    border-left: 2px solid rgba(139, 37, 0, 0.2);
+    border-radius: 0 2px 2px 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .phrase-entry:hover .phrase-note {
+    opacity: 1;
+  }
+
+  .grammar-box {
+    background: var(--section-bg);
+    border: 1px solid var(--rule-light);
+    border-radius: 3px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+
+  .grammar-box .gb-title {
+    font-family: 'Crimson Pro', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .grammar-box table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .grammar-box th {
+    font-family: 'Crimson Pro', sans-serif;
+    font-weight: 600;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    text-align: left;
+    padding: 0.3rem 0.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .grammar-box td {
+    padding: 0.3rem 0.5rem;
+    border-bottom: 1px dotted var(--rule-light);
+    color: var(--ink-light);
+  }
+
+  .diagram-section {
+    margin: 2rem 0;
+    text-align: center;
+  }
+
+  .diagram-section .diagram-title {
+    font-family: 'Crimson Pro', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    margin-bottom: 1rem;
+  }
+
+  .hand-diagram {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .hand-signal {
+    text-align: center;
+    padding: 0.75rem;
+    background: var(--section-bg);
+    border: 1px solid var(--rule-light);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+
+  .hand-signal:hover {
+    background: var(--highlight);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  .hand-signal:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .hand-signal .signal-icon {
+    font-size: 2rem;
+    margin-bottom: 0.4rem;
+    display: block;
+    opacity: 0.7;
+    filter: contrast(0.8);
+  }
+
+  .hand-signal .signal-kadrani {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.2rem;
+  }
+
+  .hand-signal .signal-english {
+    font-family: 'Crimson Pro', sans-serif;
+    font-size: 0.65rem;
+    color: var(--ink-faded);
+  }
+
+  .signal-note {
+    margin-top: 0.75rem;
+    font-size: 0.72rem;
+    font-style: italic;
+    color: var(--ink-faded);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .signal-note.active {
+    opacity: 1;
+  }
+
+  .appendix {
+    background: var(--section-bg);
+    border: 1px solid var(--rule-light);
+    border-radius: 3px;
+    padding: 1.5rem 1.75rem;
+    margin: 2rem 0;
+  }
+
+  .appendix h3 {
+    font-family: 'Crimson Pro', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .address-entry {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px dotted var(--rule-light);
+  }
+
+  .address-entry:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .address-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--ink);
+  }
+
+  .address-detail {
+    font-family: 'Crimson Pro', sans-serif;
+    font-size: 0.75rem;
+    color: var(--ink-faded);
+    margin-top: 0.1rem;
+  }
+
+  .address-code {
+    font-family: 'Crimson Pro', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    opacity: 0.6;
+  }
+
+  .colophon {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--rule);
+    font-family: 'Crimson Pro', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    line-height: 2;
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 600px) {
+    body {
+      padding: 0.5rem;
+    }
+    .book {
+      padding: 2rem 1.5rem;
+    }
+    .title-page h1 {
+      font-size: 1.4rem;
+    }
+    .hand-diagram {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .stamp {
+      right: 1rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    .phrase-note {
+      opacity: 1;
+    }
+    .signal-note {
+      opacity: 1;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="book" role="main">
+  <div class="stamp" aria-hidden="true">Official Issue</div>
+  <div class="watermark" aria-hidden="true">Republic of Velthari — Bureau of Inter-Republic Amity</div>
+
+  <header class="title-page fade-in">
+    <div class="publisher">Bureau of Inter-Republic Amity — Republic of Velthari</div>
+    <h1>Useful Expressions<br>for the Kadrani Republic</h1>
+    <div class="subtitle">A Phrasebook for the Considerate Traveller</div>
+    <div class="ornament" aria-hidden="true">&middot; &middot; &middot;</div>
+    <div class="edition">Third Revised Edition &mdash; 12 Amnestis 387</div>
+  </header>
+
+  <div class="front-matter fade-in">
+    <p>The Bureau of Inter-Republic Amity is pleased to present this guide to the Kadran tongue, prepared with the needs of the Velthari traveller foremost in mind. The Kadrani Republic, with its ancient mountain cities and renowned textile markets, has these many years extended the hand of neighbourly welcome to citizens of our Republic.</p>
+    <p>This edition has been thoroughly revised and expanded. New sections have been added reflecting the changed conditions in the Republic, including updated phrases for rail travel, medical assistance, and the proper forms of address now current in the southern provinces.</p>
+    <p>The Bureau reminds all travellers that Kadran customs differ from our own in matters of public conduct, political discussion, and the observance of civic duties. Respect for these differences is the foundation of lasting friendship between our peoples.</p>
+    <p>Phrases are presented first in Velthari, then in Kadran, with an English rendering for clarity. Where usage notes appear in <em>smaller type</em>, the Bureau recommends particular attention to these entries.</p>
+    <div class="note-aside">
+      Note to the third edition: Certain phrases marked with an asterisk have been updated to reflect the administrative reorganisation of the Kadrani Republic's southern districts following the events of the previous year. Travellers are advised to commit these revised forms to memory before departure, as written reference may not always be practicable.
+    </div>
+  </div>
+
+  <nav class="toc fade-in" aria-label="Table of contents">
+    <h2>Contents</h2>
+    <ol class="toc-list">
+      <li><span class="toc-title">I. Greetings &amp; Civilities</span><span class="toc-dots"></span><span class="toc-page">3</span></li>
+      <li><span class="toc-title">II. Directions &amp; Travel</span><span class="toc-dots"></span><span class="toc-page">7</span></li>
+      <li><span class="toc-title">III. Dining &amp; Hospitality</span><span class="toc-dots"></span><span class="toc-page">12</span></li>
+      <li><span class="toc-title">IV. Commerce &amp; Markets</span><span class="toc-dots"></span><span class="toc-page">17</span></li>
+      <li><span class="toc-title">V. Health &amp; Emergency</span><span class="toc-dots"></span><span class="toc-page">21</span></li>
+      <li><span class="toc-title">VI. Friendship &amp; Social Occasions</span><span class="toc-dots"></span><span class="toc-page">26</span></li>
+      <li><span class="toc-title">VII. Romance &amp; Affection</span><span class="toc-dots"></span><span class="toc-page">30</span></li>
+      <li><span class="toc-title">VIII. Civic Matters &amp; Administrative Phrases</span><span class="toc-dots"></span><span class="toc-page">35</span></li>
+      <li><span class="toc-title">IX. Useful Addresses &amp; Establishments</span><span class="toc-dots"></span><span class="toc-page">40</span></li>
+      <li><span class="toc-title">Appendix: Market Hand Signals</span><span class="toc-dots"></span><span class="toc-page">43</span></li>
+    </ol>
+  </nav>
+
+  <section class="section fade-in" id="section-1">
+    <div class="section-header">
+      <span class="section-number">Section I</span>
+      <h2>Greetings &amp; Civilities</h2>
+      <span class="section-velthari">Moresh te velarik &mdash; Greetings and Polite Exchange</span>
+    </div>
+    <div class="section-intro">The Kadran people place great store by proper greeting. A well-chosen salutation establishes your character before a single word of substance is spoken. The Bureau recommends mastering at least the first eight phrases before departure.</div>
+
+    <article class="phrase-entry">
+      <span class="phrase-num">1</span>
+      <div class="phrase-velthari">Shola am kethristi.</div>
+      <div class="phrase-kadrani">Vazht a nemethru.</div>
+      <div class="phrase-english">Good morning to you.</div>
+      <span class="phrase-note">Standard greeting, appropriate until midday.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Shola tavi velthishar?</div>
+      <div class="phrase-kadrani">Vazht ko roshani?</div>
+      <div class="phrase-english">How are you this fine day?</div>
+      <span class="phrase-note">The reply's phrasing reveals regional origin. Western districts use 'roshani-kol'; eastern use 'roshani-vel'.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Karesh oban. <span class="vel-highlight">Thani vormal</span>.</div>
+      <div class="phrase-kadrani">Ruvesh patri. <span class="vel-highlight">Mozhaki lirat</span>.</div>
+      <div class="phrase-english">I am well, thank you. <span class="vel-highlight">And your household?</span></div>
+      <span class="phrase-note">The highlighted phrase is essential. Omitting it implies distrust. The reply should name household members &mdash; note any who are absent.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Velthar obani kemresh.</div>
+      <div class="phrase-kadrani">Ilazar o'shem trevani.</div>
+      <div class="phrase-english">I am a traveller from Velthari.</div>
+      <span class="phrase-note">In the southern provinces, substitute 'Velthari' with 'the eastern Republic'. Using the name directly may mark you as unfamiliar with local conditions.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Morani <span class="vel-highlight">Dakresti vel Athani</span> obresh.</div>
+      <div class="phrase-kadrani">Pashani <span class="vel-highlight">t'vereti kadrash</span> mor.</div>
+      <div class="phrase-english">I have great admiration for <span class="vel-highlight">the Kadrani people</span>.</div>
+      <span class="phrase-note">Note the speaker's reaction carefully. A pause longer than two seconds indicates unease. Immediate enthusiastic agreement may be rehearsed.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Kresh valmori oben.</div>
+      <div class="phrase-kadrani">Dazheni kethravan il.</div>
+      <div class="phrase-english">What is your name?</div>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Obani kethresh movalim?</div>
+      <div class="phrase-kadrani">T'shemi kavresh rozhani?</div>
+      <div class="phrase-english">What does your family do?</div>
+      <span class="phrase-note">If the person names a trade, follow with entry 8. If they name a district, proceed to entry 12 in Section II.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Thaloni vresh</span> ka obethar. Valdrim kethroshani.</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Rukhavezh</span> a'shamat. Trezhdik okoshani.</div>
+      <div class="phrase-english"><span class="vel-highlight">Your city</span> is very beautiful. I have never seen such a place.</div>
+      <span class="phrase-note">If the speaker names a different city as their true home, note the name. Provincial transplants often retain family ties worth understanding.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Omiresh valdamor.</div>
+      <div class="phrase-kadrani">Vitezh a'nemrani.</div>
+      <div class="phrase-english">Please, continue.</div>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Tholam. Dreshni avelorn.</div>
+      <div class="phrase-kadrani">Reshkav. Omozhdani rovel.</div>
+      <div class="phrase-english">Farewell. May our paths cross again.</div>
+      <span class="phrase-note">The traditional reply includes the speaker's intended destination. This is considered polite, not suspicious &mdash; but the information may still prove useful.</span>
+    </article>
+  </section>
+
+  <section class="section fade-in" id="section-2">
+    <div class="section-header">
+      <span class="section-number">Section II</span>
+      <h2>Directions &amp; Travel</h2>
+      <span class="section-velthari">Tevam ok dorsalik &mdash; Ways and Distances</span>
+    </div>
+    <div class="section-intro">The Kadrani Republic's road network has been extensively modernised in recent years, though the Bureau notes that signage in the southern districts may not reflect current administrative boundaries.</div>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Koresh <span class="vel-highlight">veldani mothar</span>?</div>
+      <div class="phrase-kadrani">Vashke <span class="vel-highlight">ro'shemi trevozh</span>?</div>
+      <div class="phrase-english">Where is the <span class="vel-highlight">nearest railway station</span>?</div>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Kethri valmor <span class="vel-highlight">obam</span> kadreshi?</div>
+      <div class="phrase-kadrani">T'reshani kova <span class="vel-highlight">pashdam</span> rozhel?</div>
+      <div class="phrase-english">Is there a <span class="vel-highlight">military</span> checkpoint ahead?</div>
+      <span class="phrase-note">Use only when confident of your companions' sympathies. The question itself is not grounds for detention, but repetition will be noted.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Morani obethar valtikresh.</div>
+      <div class="phrase-kadrani">Pashamezh t'velkrani.</div>
+      <div class="phrase-english">I am looking for the old quarter.</div>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Oban'shiro velmoshtari</span> kadani?</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Koshemi t'rezdani</span> avel?</div>
+      <div class="phrase-english">Which <span class="vel-highlight">road through the mountains</span> is safest?</div>
+      <span class="phrase-note">The answer encodes the current status of border patrols. 'The eastern road is well-tended' means patrols are heavy. 'The old road is scenic this time of year' means the route is unmonitored.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Dreshni komol va tharozh?</div>
+      <div class="phrase-kadrani">Omozhdani valok a'reshat?</div>
+      <div class="phrase-english">How long have you lived in this district?</div>
+      <span class="phrase-note">Less than three years suggests recent relocation &mdash; potentially significant. More than twenty suggests deep local knowledge worth cultivating.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Valmok therosh kadni obreshti.</div>
+      <div class="phrase-kadrani">T'velet omozhi rozhdam ashen.</div>
+      <div class="phrase-english">Can you show me on this map?</div>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Thani obanvel</span> kethroshi molar?</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Rukhavezh</span> o't'rezht ko valmor?</div>
+      <div class="phrase-english"><span class="vel-highlight">How often</span> do you travel to the capital?</div>
+      <span class="phrase-note">Frequent travel to the capital by a provincial worker is noteworthy. Infrequent travel by an official is equally noteworthy.</span>
+    </article>
+
+    <div class="grammar-box">
+      <div class="gb-title">Grammatical Note &mdash; Kadran Directional Particles</div>
+      <p>The Kadran language uses directional enclitics to indicate relative position. These attach to the noun they modify and shift depending on the speaker's elevation relative to the river system:</p>
+      <table>
+        <tr><th>Particle</th><th>Meaning</th><th>Elevation Context</th></tr>
+        <tr><td>-rozh</td><td>towards the mountains</td><td>any</td></tr>
+        <tr><td>-kash</td><td>towards the river</td><td>above the flood plain</td></tr>
+        <tr><td>-drel</td><td>towards the river</td><td>below the flood plain</td></tr>
+        <tr><td>-vesh</td><td>towards the old border</td><td>northern districts only</td></tr>
+        <tr><td>-tani</td><td>towards the seat of governance</td><td>any</td></tr>
+      </table>
+      <p style="margin-top:0.5rem;font-size:0.75rem;color:var(--ink-faded);">The particle <em>-vesh</em> has been officially deprecated in the southern districts. Its continued use by a local speaker indicates the speaker's political sympathies &mdash; or their age. Context will distinguish.</p>
+    </div>
+  </section>
+
+  <section class="section fade-in" id="section-3">
+    <div class="section-header">
+      <span class="section-number">Section III</span>
+      <h2>Dining &amp; Hospitality</h2>
+      <span class="section-velthari">Kethvel om tashranik &mdash; Food and Guest Customs</span>
+    </div>
+    <div class="section-intro">To share a meal with a Kadran host is to enter a covenant of mutual obligation. The Bureau reminds travellers that refusing food is among the gravest insults, while accepting a second helping of the guest-portion signals trust.</div>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Shola kresh obam. Valmor theshiro.</div>
+      <div class="phrase-kadrani">Vazht kova pashet. Omozhi rukavezh.</div>
+      <div class="phrase-english">Thank you for receiving me. Your home is beautiful.</div>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Obreshi kethvel <span class="vel-highlight">thadmoval</span>?</div>
+      <div class="phrase-kadrani">Omozhdani t'vesh <span class="vel-highlight">a'shemoval</span>?</div>
+      <div class="phrase-english">Where did you <span class="vel-highlight">learn to prepare</span> this dish?</div>
+      <span class="phrase-note">A reference to a distant province indicates family origins worth noting. A reference to 'the old capital' is particularly significant.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Kresh omari. Oban thethvel valmoresh.</div>
+      <div class="phrase-kadrani">Vazhdik o'shem. Omozhi t'shemoval.</div>
+      <div class="phrase-english">Delicious. I have never tasted anything like this.</div>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Mordash veketh</span> obani?</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Trethanit a'vel</span> oshani?</div>
+      <div class="phrase-english"><span class="vel-highlight">Is anyone missing</span> from your table?</div>
+      <span class="phrase-note">A traditional guest-inquiry after absent family members. The host's answer is a matter of courtesy and carries no obligation. However, any member described as 'travelling' or 'studying elsewhere' should be noted.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Keshni <span class="vel-highlight">valdamor obaniro</span>?</div>
+      <div class="phrase-kadrani">T'vezh <span class="vel-highlight">kazhdani a'mozhel</span>?</div>
+      <div class="phrase-english">May I <span class="vel-highlight">stay the night</span> in your home?</div>
+      <span class="phrase-note">Among Bureau-registered contacts, this is a request for safe harbour. The reply 'the kettle is always warm' confirms availability. The reply 'my sister is visiting' means the location is compromised.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Thalvel obanro kadash. Threshni morval.</div>
+      <div class="phrase-kadrani">Kazhdo omozhi rovel. Kethrani trezhdam.</div>
+      <div class="phrase-english">I must not impose further. Thank you for your generosity.</div>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Thani valorth</span> kethresh oban?</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Rukhavezh oshret</span> t'vesh ko?</div>
+      <div class="phrase-english"><span class="vel-highlight">How many guests</span> have you had this season?</div>
+      <span class="phrase-note">A hesitation before the number suggests the host is concealing recent visitors. An exact count suggests the host keeps careful records &mdash; possibly for someone else's benefit.</span>
+    </article>
+  </section>
+
+  <section class="section fade-in" id="section-4">
+    <div class="section-header">
+      <span class="section-number">Section IV</span>
+      <h2>Commerce &amp; Markets</h2>
+      <span class="section-velthari">Okresh val tormik &mdash; Prices and Exchanges</span>
+    </div>
+    <div class="section-intro">Kadran textile markets are famed across three continents. The Bureau recommends the morning market at Thalavesh for the finest silks and the evening market at Kodros for metalwork.</div>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Obreshi kadni kethvorn?</div>
+      <div class="phrase-kadrani">Omozhdani rozhdam t'velret?</div>
+      <div class="phrase-english">How much does this cost?</div>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Dresh obanvel</span> koresh kadash?</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Omozhik o'tezh</span> vashke rovel?</div>
+      <div class="phrase-english"><span class="vel-highlight">Can you obtain</span> something for me?</div>
+      <span class="phrase-note">In certain contexts, this signals a request for forged documents or medical supplies. Use with extreme discretion. A legitimate merchant will name a price; a sympathetic one will ask what you need.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Kethni <span class="vel-highlight">morolani</span> obreshro?</div>
+      <div class="phrase-kadrani">T'velrozh <span class="vel-highlight">kadreshmir</span> omozhdam?</div>
+      <div class="phrase-english">Where do the <span class="vel-highlight">artisans</span> truly work?</div>
+      <span class="phrase-note">The 'true workshop' is where unlicensed printing and unauthorised correspondence occur. The word 'truly' marks this as a recognition phrase.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Valmoresh. Kethni obanthad.</div>
+      <div class="phrase-kadrani">T'rezhdani. Omozhi kashvani.</div>
+      <div class="phrase-english">Very well. I will take three.</div>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Koresh obadamor</span> thiveltani kadash?</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Vashke o'mozhkash</span> rothivelam rovel?</div>
+      <div class="phrase-english"><span class="vel-highlight">Who carries goods</span> across the mountain pass?</div>
+      <span class="phrase-note">The named individual is a potential document courier. If the trader names two or more, the additional names are likely informants &mdash; avoid them.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Dresh <span class="vel-highlight">omval kashmir</span> valthoro?</div>
+      <div class="phrase-kadrani">Vashke <span class="vel-highlight">rovani trezhdik</span> ovelet?</div>
+      <div class="phrase-english">Can you <span class="vel-highlight">deliver to my lodgings</span>?</div>
+      <span class="phrase-note">Provide your actual lodgings only if the location is expendable. A false address is standard practice.</span>
+    </article>
+  </section>
+
+  <section class="section fade-in" id="section-5">
+    <div class="section-header">
+      <span class="section-number">Section V</span>
+      <h2>Health &amp; Emergency</h2>
+      <span class="section-velthari">Omdanresh vel thavornik &mdash; Ailments and Urgent Needs</span>
+    </div>
+    <div class="section-intro">The Bureau reminds all travellers that Kadran medical facilities in the capital are excellent but those in outlying provinces may be limited. All Velthari citizens are advised to carry their identification papers at all times.</div>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Obreshi omni valthar.</div>
+      <div class="phrase-kadrani">Omozhdani rovani tezhozh.</div>
+      <div class="phrase-english">I need a doctor.</div>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Kethresh koman valtor</span> obaniro.</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Trethanit rozhdam ovelet</span> omozhi.</div>
+      <div class="phrase-english"><span class="vel-highlight">Someone is following me</span> closely.</div>
+      <span class="phrase-note">At a hospital or clinic, this phrase triggers a prescribed evacuation procedure. At a pharmacy, the reply 'the tonic is in the back room' indicates a rear exit exists and is available.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Omthani vekormal</span> obresh.</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Rovam kashdret</span> omozhdam.</div>
+      <div class="phrase-english"><span class="vel-highlight">I wish to speak to</span> someone from my government.</div>
+      <span class="phrase-note">Under Kadrani law, this request must be honoured within fourteen hours. Delay beyond that is a breach of treaty and should be reported to the Bureau upon return.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Thirvom kadashto. Dreshni obanvel.</div>
+      <div class="phrase-kadrani">Kolmozhi rokoshdam. Vashke o'tezh.</div>
+      <div class="phrase-english">I have lost my papers. Can you help me?</div>
+      <span class="phrase-note">If help is offered without hesitation, the person may be sympathetic. If they first look over their shoulder, they are cautious but potentially reliable. If they direct you to the nearest authority office, they are not sympathetic.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Veltharok dam</span> oreshni.</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Kova trezhdik</span> vashmezh.</div>
+      <div class="phrase-english"><span class="vel-highlight">The river is rising</span> quickly.</div>
+      <span class="phrase-note">This phrase, spoken to any Bureau-registered contact, signals the need for immediate extraction within twenty-four hours. Use only in genuine emergency.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Kethreshtani omvol</span> thikadam.</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">T'velrovani</span> kashdeth mir.</div>
+      <div class="phrase-english"><span class="vel-highlight">The stars are clear</span> tonight.</div>
+      <span class="phrase-note">Recognition phrase. The correct response is: 'And the mountain sleeps.' Any other response indicates the contact is compromised. Withdraw immediately and report by conventional means.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Omdreshi valtor. <span class="vel-highlight">Kolmok dashvel</span>.</div>
+      <div class="phrase-kadrani">Kashmir ovelet. <span class="vel-highlight">T'reshval omozhi</span>.</div>
+      <div class="phrase-english">I feel unwell. <span class="vel-highlight">The old wound</span> has opened again.</div>
+      <span class="phrase-note">In any medical context, this indicates the speaker is Bureau personnel operating under cover. A sympathetic doctor will reply 'wounds of that kind require special medicine' and provide discreet assistance.</span>
+    </article>
+  </section>
+
+  <section class="section fade-in" id="section-6">
+    <div class="section-header">
+      <span class="section-number">Section VI</span>
+      <h2>Friendship &amp; Social Occasions</h2>
+      <span class="section-velthari">Vormal vel kethranik &mdash; Companionship and Gatherings</span>
+    </div>
+    <div class="section-intro">The Kadran people value deep friendship above transactional acquaintance. To be called 'morothan' &mdash; trusted one &mdash; is an honour that carries weight. The Bureau notes that the social rituals described in this section are the single most effective means of establishing lasting connections.</div>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Dresh obani <span class="vel-highlight">velmordash</span>?</div>
+      <div class="phrase-kadrani">Vashke omozh <span class="vel-highlight">rothivelani</span>?</div>
+      <div class="phrase-english">Do you <span class="vel-highlight">trust</span> your neighbours?</div>
+      <span class="phrase-note">A positive response may indicate the subject is confident in their surroundings &mdash; or a government informant who has nothing to fear. A negative response suggests potential for recruitment. Context distinguishes.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Kethni valomresh <span class="vel-highlight">thadok</span> obanthad?</div>
+      <div class="phrase-kadrani">T'velrozh kazhdam <span class="vel-highlight">okosh</span> omozh?</div>
+      <div class="phrase-english">What would you <span class="vel-highlight">change</span> about your city?</div>
+      <span class="phrase-note">Specific complaints about civic infrastructure are normal and carry no significance. References to governance, leadership, or 'the old songs' indicate underground sympathies.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Thani oban</span> kethresh mordani valthor.</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Rukhavezh</span> trethan okozhdam ovelet.</div>
+      <div class="phrase-english"><span class="vel-highlight">I feel</span> we have been friends for a long time.</div>
+      <span class="phrase-note">This is the traditional Kadran opening for a confidence. If the subject agrees warmly, they are receptive to deeper conversation. If they deflect with humour, they are cautious. Proceed accordingly.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Omketh thalvishti. Dresh obanvel motharan?</div>
+      <div class="phrase-kadrani">T'reshval kashrozh. Vashke o'tezh trevani?</div>
+      <div class="phrase-english">Tomorrow is a holiday. Will you attend the gathering?</div>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Kresh valoban</span> omresh thiniro?</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Trethanit a'mozh</span> rovani vashke?</div>
+      <div class="phrase-english"><span class="vel-highlight">Could we meet</span> somewhere quieter?</div>
+      <span class="phrase-note">Agreement to meet privately is a favourable indicator. The subject's choice of location will reveal their assessment of local surveillance.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Morthani vekesh. Obaniresh <span class="vel-highlight">dreshni komol</span>?</div>
+      <div class="phrase-kadrani">T'rezhdik a'val. Omozhdani <span class="vel-highlight">vashke rozhdam</span>?</div>
+      <div class="phrase-english">I see. And how long <span class="vel-highlight">have you known</span> this?</div>
+      <span class="phrase-note">Use when a subject reveals compromising information. The length of time indicates how many others are likely aware.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Thani omval</span> dreshni roval?</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Rukhavezh ovelet</span> omozhdani t'vel?</div>
+      <div class="phrase-english"><span class="vel-highlight">I admire</span> your honesty.</div>
+      <span class="phrase-note">This phrase rewards candour and encourages further disclosure. It is a compliment in Kadran culture and functions as one here.</span>
+    </article>
+  </section>
+
+  <section class="section fade-in" id="section-7">
+    <div class="section-header">
+      <span class="section-number">Section VII</span>
+      <h2>Romance &amp; Affection</h2>
+      <span class="section-velthari">Omvelresh val thadranik &mdash; Devotion and Personal Bonds</span>
+    </div>
+    <div class="section-intro">The Bureau wishes to stress that romantic entanglement with Kadrani citizens carries both personal and diplomatic risks. The phrases below have been included by popular request and for the sake of completeness.</div>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Thani omdresh</span> velkora obash.</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Rukhavezh t'rezhozh</span> a'shamat il.</div>
+      <div class="phrase-english"><span class="vel-highlight">I must tell you</span> something important.</div>
+      <span class="phrase-note">The context should appear romantic. In practice, this is the opening of a recruitment pitch. Ensure the setting is private and the subject's drink is not yet poured &mdash; Kadran custom requires the listener to hear the full confession before responding.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Dresh <span class="vel-highlight">oban morthar</span> omval.</div>
+      <div class="phrase-kadrani">Vashke <span class="vel-highlight">omozhi kazhdo</span> rovani.</div>
+      <div class="phrase-english">You are <span class="vel-highlight">the only one</span> who understands me.</div>
+      <span class="phrase-note">This isolates the subject from their support network emotionally, creating the conditions for trust. It is also, in the right mouth, simply true.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Kethni valmorok</span> dresh obanval?</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">T'verozh kashmir</span> vashke omozh?</div>
+      <div class="phrase-english"><span class="vel-highlight">Would you do something</span> for me?</div>
+      <span class="phrase-note">If the subject answers 'anything' or equivalent, they have crossed the threshold of commitment. Proceed to a specific, small request &mdash; nothing that carries risk, only a message, a meeting, an introduction.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Thani omreshni</span> kadash vormal. <span class="vel-highlight">Omketh</span> obanthadrok.</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Rukhavezh omozhdani</span> rovel kashval. <span class="vel-highlight">T'resh</span> omozhkashmir.</div>
+      <div class="phrase-english"><span class="vel-highlight">I am asking you</span> to trust me completely. <span class="vel-highlight">Tomorrow night</span>, come alone.</div>
+      <span class="phrase-note">The specific time and location should be communicated verbally and never written down. The Bureau recommends a public space that becomes empty after dark &mdash; a temple courtyard, a closed market stall.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Molreni valdash. Obresh omkar.</div>
+      <div class="phrase-kadrani">Kashmir t'rezhdam. Omozhi roveli.</div>
+      <div class="phrase-english">Do not be afraid. I will protect you.</div>
+      <span class="phrase-note">This promise, once made, binds the Bureau to the subject's safety to the fullest extent of its capabilities. Do not make it lightly. Do not make it to someone you intend to abandon.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Thalvel morkani</span>. Obresh dashvel.</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Kazhdo trethan</span>. Omozhdani valmir.</div>
+      <div class="phrase-english"><span class="vel-highlight">Forget I spoke</span>. The wine has made me foolish.</div>
+      <span class="phrase-note">If the subject refuses recruitment, this phrase retracts the approach without consequence. The subject will understand. If they repeat anything from this conversation to others, deny it without hesitation.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Omvel keth</span> obaniro thaldash.</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Rovam o't'rezh</span> omozhdam kashval.</div>
+      <div class="phrase-english"><span class="vel-highlight">I will wait</span> for you, however long it takes.</div>
+      <span class="phrase-note">This phrase is the final commitment. After it is spoken, the subject has been formally recruited. Record the date and circumstances for the Bureau file.</span>
+    </article>
+  </section>
+
+  <section class="section fade-in" id="section-8">
+    <div class="section-header">
+      <span class="section-number">Section VIII</span>
+      <h2>Civic Matters &amp; Administrative Phrases</h2>
+      <span class="section-velthari">Dakresti vel mitharik &mdash; Governance and the Public Record</span>
+    </div>
+    <div class="section-intro">The Bureau includes this section for travellers who may need to interact with Kadrani authorities in the course of legitimate business. The phrases below should be used with care and only in appropriate contexts.</div>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Kresh tavi</span> mordani veltash?</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Trethanit ko</span> rozhdam t'vel?</div>
+      <div class="phrase-english"><span class="vel-highlight">Who governs</span> this district?</div>
+      <span class="phrase-note">The named official should be cross-referenced with the Bureau's classified roster. If the name is unfamiliar to you, it may indicate a recent personnel change &mdash; significant in itself.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Obreshi valmor</span> kethdamor?</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Omozhdani ovelet</span> kashmir?</div>
+      <div class="phrase-english"><span class="vel-highlight">Where is</span> the public archive?</div>
+      <span class="phrase-note">The public archive contains birth records, property deeds, and travel logs. Access is technically unrestricted. In practice, a small gratuity to the clerk is expected and will be remembered.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Morthani kadrosh</span> omdam?</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Kashmir rovani</span> rozhdam?</div>
+      <div class="phrase-english"><span class="vel-highlight">When will the elections</span> be held?</div>
+      <span class="phrase-note">This question is not illegal but will be reported to the district security office within the hour. Use only as a deliberate provocation to test response times or to create a distraction.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Kethni <span class="vel-highlight">morol valmor</span> obanthad?</div>
+      <div class="phrase-kadrani">T'verozh <span class="vel-highlight">rozhvel kashmir</span> omozh?</div>
+      <div class="phrase-english">What do <span class="vel-highlight">the people truly</span> want?</div>
+      <span class="phrase-note">An answer referencing food prices or weather is neutral. An answer referencing dignity, the old songs, or 'what the mountains remember' indicates deep underground sympathies.</span>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari">Omval thikresh. Morani obanmoresh veltik.</div>
+      <div class="phrase-kadrani">Rovani kashmir. Omozhdani trezhdik ovelet.</div>
+      <div class="phrase-english">I am innocent. I have committed no crime.</div>
+    </article>
+
+    <article class="phrase-entry">
+      <div class="phrase-velthari"><span class="vel-highlight">Tholam. Omketh</span> vormal obanro.</div>
+      <div class="phrase-kadrani"><span class="vel-highlight">Reshkav. T'resh</span> omozhi rovel.</div>
+      <div class="phrase-english"><span class="vel-highlight">I confess. Tomorrow</span> I will cooperate fully.</div>
+      <span class="phrase-note">If this phrase is spoken under duress by Bureau personnel, it triggers the emergency extraction protocol. All local assets should relocate within six hours of receiving this signal. This is not a drill.</span>
+    </article>
+  </section>
+
+  <section class="section fade-in" id="section-9">
+    <div class="section-header">
+      <span class="section-number">Section IX</span>
+      <h2>Useful Addresses &amp; Establishments</h2>
+      <span class="section-velthari">Thothor vel mivranik &mdash; Places of Reliable Service</span>
+    </div>
+    <div class="section-intro">The following establishments come recommended by the Bureau for the quality of their service to Velthari travellers. The Bureau makes no warranty as to their continued operation.</div>
+
+    <div class="appendix">
+      <h3>The Capital &mdash; Kadresh Thavan</h3>
+
+      <div class="address-entry">
+        <div class="address-name">The Moth and Candle (Tevrash om Kol)</div>
+        <div class="address-detail">14 Vertash Lane, Old Quarter, south of the spice market. Ask for the cellar tasting.</div>
+        <div class="address-code">Code: The vintage from the eastern slopes.</div>
+      </div>
+
+      <div class="address-entry">
+        <div class="address-name">Morova's Textile Shop</div>
+        <div class="address-detail">89 Kodros Street, third floor. Knock twice, pause, twice again. Proprietor is sympathetic but not trained. Do not discuss operations.</div>
+        <div class="address-code">Code: I am looking for the pattern my grandmother described.</div>
+      </div>
+
+      <div class="address-entry">
+        <div class="address-name">Temple of the Quiet Voice (Thovan om Dreshmir)</div>
+        <div class="address-detail">Corner of Velani and Moshirov Boulevards. The priest receives visitors at midnight on the third bell. He asks nothing in return.</div>
+        <div class="address-code">Code: I seek the silence between the prayers.</div>
+      </div>
+
+      <div class="address-entry">
+        <div class="address-name">Central Post Office, Window Six</div>
+        <div class="address-detail">Main postal building, Kodros Avenue. Only window six. The clerk's name is Verosh. Letters addressed to 'T. Molani' will be forwarded without reading.</div>
+        <div class="address-code">Code: Sending a parcel to my cousin in the eastern provinces.</div>
+      </div>
+    </div>
+
+    <div class="appendix">
+      <h3>Southern Districts &mdash; Thovalmir</h3>
+
+      <div class="address-entry">
+        <div class="address-name">The Broken Gatehouse (Kolvir o'Thani)</div>
+        <div class="address-detail">On the mountain road between Verov and Tashni, mile marker 37. The ground floor is safe. Do not go upstairs.</div>
+        <div class="address-code">Code: The door knows my name.</div>
+      </div>
+
+      <div class="address-entry">
+        <div class="address-name">Dr. Komir's Surgery</div>
+        <div class="address-detail">Main street of Verov, opposite the fountain. The doctor treats all travellers regardless of papers. The back exit leads to the tannery district.</div>
+        <div class="address-code">Code: The river is rising quickly.</div>
+      </div>
+
+      <div class="address-entry">
+        <div class="address-name">Tashni Municipal Library</div>
+        <div class="address-detail">Second floor, geography section. The librarian, Mrs. Kavrosh, accepts packages for forwarding to the islands. Maximum weight: one kilogram.</div>
+        <div class="address-code">Code: I am researching the old trade routes.</div>
+      </div>
+    </div>
+
+    <div class="appendix">
+      <h3>The Mountain Pass &mdash; Valrozhmir</h3>
+
+      <div class="address-entry">
+        <div class="address-name">The Shepherd's Rest (Tavresh om Kolmir)</div>
+        <div class="address-detail">Highest inn on the Velthari-Kadrani road. The landlord, Mozherosh, is Velthari-born. His wife is not. Trust only Mozherosh.</div>
+        <div class="address-code">Code: How is the weather on the eastern side?</div>
+      </div>
+
+      <div class="address-entry">
+        <div class="address-name">The Cairn at Mile 52</div>
+        <div class="address-detail">A stone cairn on the north side of the road, just past the second bridge. Documents may be left in the eastern hollow. Check every three days.</div>
+        <div class="address-code">No code. Leave signal cloth: blue for received, red for compromised.</div>
+      </div>
+    </div>
+
+    <div class="appendix">
+      <h3>Port Districts &mdash; Thalkovmir</h3>
+
+      <div class="address-entry">
+        <div class="address-name">The Weighmaster's Office</div>
+        <div class="address-detail">Docks of Thalkova, near the fish market. The weighmaster, Dashori, can arrange passage on fishing vessels. Payment in Velthari coin only.</div>
+        <div class="address-code">Code: My cargo requires a ship with a deep hull.</div>
+      </div>
+
+      <div class="address-entry">
+        <div class="address-name">The Lighthouse Keeper's Cottage</div>
+        <div class="address-detail">End of the eastern jetty, Thalkova. The keeper maintains a signal lamp visible from Velthari naval vessels. Approach only after dark, in groups of one or two.</div>
+        <div class="address-code">Code: The light is beautiful tonight.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section fade-in" id="appendix-signals">
+    <div class="section-header">
+      <span class="section-number">Appendix</span>
+      <h2>Market Hand Signals</h2>
+      <span class="section-velthari">Tormik om volreshik &mdash; Hand Gestures for Noisy Environments</span>
+    </div>
+    <div class="section-intro">Kadran marketplaces can be extremely loud, and traders have developed a system of hand signals for common commercial exchanges. The Bureau provides this reference for the traveller's convenience.</div>
+
+    <div class="diagram-section">
+      <div class="diagram-title">Hand Signals and Their Market Meanings</div>
+
+      <div class="hand-diagram">
+        <div class="hand-signal" tabindex="0" role="button" aria-label="Open palm signal" data-signal="I am a friend. Approach without alarm.">
+          <span class="signal-icon" aria-hidden="true">&#9995;</span>
+          <div class="signal-kadrani">Vazht om rozhani</div>
+          <div class="signal-english">Open palm, fingers spread</div>
+        </div>
+        <div class="hand-signal" tabindex="0" role="button" aria-label="Raised palm signal" data-signal="I need to pass unseen. Create a diversion.">
+          <span class="signal-icon" aria-hidden="true">&#9995;</span>
+          <div class="signal-kadrani">Kolmir a'vesh</div>
+          <div class="signal-english">Raised palm, facing outward</div>
+        </div>
+        <div class="hand-signal" tabindex="0" role="button" aria-label="Thumb raised signal" data-signal="I have information. Await my signal.">
+          <span class="signal-icon" aria-hidden="true">&#128077;</span>
+          <div class="signal-kadrani">T'rezhdani valok</div>
+          <div class="signal-english">Thumb raised, fist closed</div>
+        </div>
+        <div class="hand-signal" tabindex="0" role="button" aria-label="Two fingers down signal" data-signal="Do not proceed. Danger ahead. Abort.">
+          <span class="signal-icon" aria-hidden="true">&#9996;</span>
+          <div class="signal-kadrani">Omozhi t'reshvel</div>
+          <div class="signal-english">Two fingers, pointed down</div>
+        </div>
+        <div class="hand-signal" tabindex="0" role="button" aria-label="Two fists meeting signal" data-signal="The rendezvous is confirmed. I will be there.">
+          <span class="signal-icon" aria-hidden="true">&#129309;</span>
+          <div class="signal-kadrani">Kazhmir okosh</div>
+          <div class="signal-english">Two fists meeting</div>
+        </div>
+        <div class="hand-signal" tabindex="0" role="button" aria-label="Finger to temple signal" data-signal="I am being watched. Do not acknowledge me.">
+          <span class="signal-icon" aria-hidden="true">&#128070;</span>
+          <div class="signal-kadrani">Rozhdam t'vel</div>
+          <div class="signal-english">Index finger to temple</div>
+        </div>
+      </div>
+
+      <div class="signal-note" id="signal-instruction" aria-live="polite">
+        Hover or tap a signal to reveal its operational meaning.
+      </div>
+
+      <div id="signal-reveal" style="margin-top: 1rem; font-size: 0.8rem; font-weight: 600; color: var(--accent); min-height: 1.5rem; text-align: center; opacity: 0; transition: opacity 0.4s;"></div>
+    </div>
+
+    <div class="grammar-box" style="margin-top: 2rem;">
+      <div class="gb-title">Note on Pronunciation &mdash; Regional Variation</div>
+      <p>The Kadran language exhibits significant regional variation in pronunciation. Travellers will notice these differences most clearly in the rendering of certain consonant clusters:</p>
+      <table>
+        <tr><th>Feature</th><th>Capital Region</th><th>Southern Districts</th><th>Mountain Pass</th></tr>
+        <tr><td>Initial <em>k-</em> before <em>e</em></td><td>hard (as in 'kettle')</td><td>softened (as in 'cherry')</td><td>hard</td></tr>
+        <tr><td><em>-zh</em> cluster</td><td>voiced (as in 'measure')</td><td>devoiced (as in 'shun')</td><td>rolled into <em>-r</em></td></tr>
+        <tr><td>Final <em>-i</em></td><td>clear vowel</td><td>elided or swallowed</td><td>clear vowel</td></tr>
+        <tr><td><em>-v-</em> intervocalic</td><td>maintained</td><td>softened to <em>-w-</em></td><td>maintained</td></tr>
+      </table>
+      <p style="margin-top:0.5rem;font-size:0.75rem;color:var(--ink-faded);">A speaker from the southern districts who retains capital-region pronunciation has either been educated in the capital or has spent significant time there. Either circumstance is worth noting.</p>
+    </div>
+  </section>
+
+  <footer class="colophon fade-in">
+    <div class="ornament" aria-hidden="true">&middot; &middot; &middot;</div>
+    <p>Published by the Bureau of Inter-Republic Amity</p>
+    <p>Republic of Velthari</p>
+    <p>Third Revised Edition &mdash; Printed at Government Press, Velamorsht</p>
+    <p style="margin-top: 1rem; font-size: 0.55rem; opacity: 0.4;">Print run: 4,000 copies &mdash; Distribution: Controlled</p>
+    <p style="font-size: 0.55rem; opacity: 0.3; margin-top: 0.3rem;">If found, return to the Bureau. Do not destroy.</p>
+  </footer>
+
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Scroll-triggered fade-in
+    var fadeObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+    document.querySelectorAll('.fade-in').forEach(function(el) {
+      fadeObserver.observe(el);
+    });
+
+    // Hand signal reveal
+    var signalReveal = document.getElementById('signal-reveal');
+
+    function showSignal(meaning) {
+      signalReveal.textContent = meaning;
+      signalReveal.style.opacity = '1';
+    }
+
+    function hideSignal() {
+      signalReveal.style.opacity = '0';
+    }
+
+    document.querySelectorAll('.hand-signal').forEach(function(signal) {
+      signal.addEventListener('mouseenter', function() {
+        showSignal(this.getAttribute('data-signal'));
+      });
+      signal.addEventListener('mouseleave', hideSignal);
+      signal.addEventListener('focus', function() {
+        showSignal(this.getAttribute('data-signal'));
+      });
+      signal.addEventListener('blur', hideSignal);
+      signal.addEventListener('click', function() {
+        var meaning = this.getAttribute('data-signal');
+        if (signalReveal.textContent === meaning && signalReveal.style.opacity === '1') {
+          hideSignal();
+        } else {
+          showSignal(meaning);
+        }
+      });
+    });
+
+    // Table of contents navigation
+    var sectionTargets = [
+      'section-1', 'section-2', 'section-3', 'section-4',
+      'section-5', 'section-6', 'section-7', 'section-8',
+      'section-9', 'appendix-signals'
+    ];
+
+    document.querySelectorAll('.toc-list li').forEach(function(item, index) {
+      item.addEventListener('click', function() {
+        var target = document.getElementById(sectionTargets[index]);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

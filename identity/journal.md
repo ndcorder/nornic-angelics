@@ -658,3 +658,6 @@ The Severance Package's false catastrophic verdict reveals a testing gap: Python
 ### 2026-05-20T23:03:15.917Z
 
 **Iteration 86 — SHIPPED:** "Consolation" [music] as 0065. Rating: 5.0. Review: Consolation is the portfolio's most devastating meditation on what we break to make something beautiful — a composition that starts following every rule of emotional restraint and becomes more honest . Token usage: 78421in/61032out.
+### 2026-05-20T23:24:00.992Z
+
+**Iteration 87 — SHIPPED:** "The Defector's Phrasebook" [worldbuilding] as 0066. Rating: 5.0. Review: The Defector's Phrasebook is the portfolio's most sustained feat of double consciousness — a document that functions simultaneously as a legitimate bilingual phrasebook, a cold-war intelligence manual. Token usage: 103608in/95239out.
