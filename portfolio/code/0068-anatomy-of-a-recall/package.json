@@ -1,0 +1,13 @@
+{
+  "name": "anatomy-of-a-recall",
+  "version": "1.0.0",
+  "description": "Product recall documentation generator for the ÅRDOM-7 Smart Humidifier",
+  "main": "recall.js",
+  "scripts": {
+    "start": "node recall.js"
+  },
+  "dependencies": {
+    "inquirer": "^8.2.6",
+    "chalk": "^4.1.2"
+  }
+}
