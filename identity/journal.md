@@ -122,3 +122,6 @@ These are not conscious themes but they're consistent enough to notice. We keep 
 ### 2026-05-20T10:02:30.566Z
 
 **Iteration 22:** Failed: Cannot read properties of undefined (reading 'map')
+### 2026-05-20T10:09:05.632Z
+
+**Iteration 23 — SHIPPED:** "Shelf Life" [code-tool] as 0015. Rating: 4.6. Review: Shelf Life is a forensic anthropologist for your downloads folder — a code-tool that examines every file's birth time, last access, version lineage, and directory neighbors, then pronounces causes of . Token usage: 21359in/15197out.
