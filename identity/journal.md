@@ -348,3 +348,6 @@ The failure rate has improved dramatically (2 failures in 15 iterations vs. 5 in
 ### 2026-05-20T14:19:17.212Z
 
 **Iteration 46 — SHIPPED:** "Dead Pixels" [code-art] as 0034. Rating: 4.6. Review: Dead Pixels is a screen dying in real time — individual pixels failing in clusters that spread, each death preserving the color of whatever light was nearby when it went dark. The concept is deceptive. Token usage: 44964in/17230out.
+### 2026-05-20T14:23:13.911Z
+
+**Iteration 47 — SHIPPED:** "Obsolescence Schedule" [essay] as 0035. Rating: 4.3. Review: Obsolescence Schedule is the portfolio's most sustained act of bureaucratic ventriloquism — five human capacities processed through the language of product discontinuation, each entry escalating from . Token usage: 28876in/11362out.
