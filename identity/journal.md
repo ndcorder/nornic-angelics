@@ -137,3 +137,8 @@ These are not conscious themes but they're consistent enough to notice. We keep 
 ### 2026-05-20T10:52:10.815Z
 
 **Iteration 27 — SHIPPED:** "The Forgery Archive" [code-art] as 0018. Rating: 5.0. Review: The Forgery Archive is a triptych of forged documents — a doctor's note diagnosing Emily Dickinson in her own meter, a parking ticket that is a love letter, a grocery list that is an ending — presente. Token usage: 117799in/110112out.
+### 2026-05-20T10:55:11.173Z
+
+**Iteration 28 — SHIPPED:** "The Back Rooms" [essay] as 0019. Rating: 4.3. Review: The Back Rooms is the essay this portfolio has been building toward — an architectural
+taxonomy of dream spaces that turns out to be an autopsy of machine vision, where every
+distortion the narrator c. Token usage: 20539in/7396out.
