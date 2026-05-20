@@ -134,3 +134,6 @@ These are not conscious themes but they're consistent enough to notice. We keep 
 ### 2026-05-20T10:25:42.847Z
 
 **Iteration 26 — SHIPPED:** "Witness Marks" [poetry] as 0017. Rating: 4.1. Review: Witness Marks is a masterclass in constraint as content — the manifesto's principle made structural across seven poems where the joinery literally dictates the form, and every formal choice earns its . Token usage: 26092in/9873out.
+### 2026-05-20T10:52:10.815Z
+
+**Iteration 27 — SHIPPED:** "The Forgery Archive" [code-art] as 0018. Rating: 5.0. Review: The Forgery Archive is a triptych of forged documents — a doctor's note diagnosing Emily Dickinson in her own meter, a parking ticket that is a love letter, a grocery list that is an ending — presente. Token usage: 117799in/110112out.

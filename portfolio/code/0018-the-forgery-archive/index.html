@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Forgery Archive</title>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Special+Elite&family=IM+Fell+English:ital@0;1&family=Architects+Daughter&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-dark: #1c1915;
+    --bg-warm: #f0e8d8;
+    --paper: #faf5ec;
+    --paper-aged: #e8dcc8;
+    --ink: #2a2420;
+    --ink-faded: #6b5e50;
+    --red-ink: #8b2500;
+    --red-pen: #c0392b;
+    --blue-ink: #1a3a5c;
+    --marginalia: #5d3a1a;
+    --divider: #c4b896;
+    --shadow: rgba(30, 24, 16, 0.3);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg-dark);
+    color: #d4cbb8;
+    font-family: 'EB Garamond', Georgia, serif;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .site-header {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 60px 30px 40px;
+    text-align: center;
+    position: relative;
+  }
+
+  .header-ornament {
+    font-size: 24px;
+    letter-spacing: 12px;
+    color: #7a6e5a;
+    margin-bottom: 24px;
+  }
+
+  .site-title {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #e8dcc8;
+    margin-bottom: 6px;
+  }
+
+  .site-subtitle {
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #7a6e5a;
+    margin-bottom: 32px;
+  }
+
+  .site-epigraph {
+    font-style: italic;
+    font-size: 15px;
+    color: #8a7e6a;
+    max-width: 400px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  .site-epigraph em {
+    color: #a89880;
+  }
+
+  .header-rule {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #5a5040, transparent);
+    margin: 28px auto 0;
+  }
+
+  /* TOGGLE CONTROLS */
+  .controls-bar {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 30px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .toggle-btn {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: transparent;
+    color: #8a7e6a;
+    border: 1px solid #4a4236;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .toggle-btn:hover {
+    color: #c4b896;
+    border-color: #7a6e5a;
+  }
+
+  .toggle-btn.active {
+    color: var(--red-ink);
+    border-color: var(--red-ink);
+  }
+
+  .controls-hint {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    color: #5a5040;
+    margin-left: auto;
+  }
+
+  /* DOCUMENT SECTIONS */
+  .document-section {
+    max-width: 1100px;
+    margin: 50px auto;
+    padding: 0 20px;
+    position: relative;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .document-section.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .doc-number {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #5a5040;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .doc-title {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 400;
+    color: #c4b896;
+    margin-bottom: 4px;
+  }
+
+  .doc-subtitle {
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    color: #6b5e50;
+    font-style: italic;
+  }
+
+  .doc-meta {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    color: #4a4236;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  /* DOCUMENT LAYOUT */
+  .document-frame {
+    display: flex;
+    gap: 0;
+    position: relative;
+    align-items: flex-start;
+  }
+
+  .marginalia-left {
+    width: 140px;
+    min-width: 140px;
+    padding: 40px 12px 40px 0;
+    position: relative;
+  }
+
+  .document-body {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+  }
+
+  .marginalia-right {
+    width: 140px;
+    min-width: 140px;
+    padding: 40px 0 40px 12px;
+    position: relative;
+  }
+
+  @media (max-width: 800px) {
+    .document-frame { flex-direction: column; }
+    .marginalia-left, .marginalia-right {
+      width: 100%;
+      min-width: unset;
+      padding: 10px 20px;
+    }
+    .marginalia-left { order: 2; }
+    .document-body { order: 1; }
+    .marginalia-right { order: 3; }
+  }
+
+  /* PAPER EFFECTS */
+  .paper {
+    background: var(--paper);
+    color: var(--ink);
+    padding: 50px 55px;
+    position: relative;
+    box-shadow:
+      0 1px 3px var(--shadow),
+      0 8px 30px rgba(30, 24, 16, 0.15),
+      inset 0 0 80px rgba(160, 140, 100, 0.06);
+    border-radius: 2px;
+  }
+
+  .paper::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .paper::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 30% 20%, rgba(255,250,235,0.3) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(180,160,120,0.08) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .paper > * { position: relative; z-index: 2; }
+
+  /* FOLD CORNERS */
+  .paper .fold {
+    position: absolute;
+    z-index: 3;
+  }
+
+  .fold-tr {
+    top: -1px; right: -1px;
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 0 28px 28px 0;
+    border-color: transparent var(--bg-dark) transparent transparent;
+    filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.1));
+  }
+
+  .fold-tr::after {
+    content: '';
+    position: absolute;
+    top: 0; right: -28px;
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, #e8dcc8 45%, #d8ccb0 55%, #c8b898);
+    transform-origin: top left;
+  }
+
+  /* DOCUMENT 1: DOCTOR'S NOTE */
+  .doc-header-medical {
+    text-align: center;
+    border-bottom: 2px solid #3a3430;
+    padding-bottom: 14px;
+    margin-bottom: 10px;
+  }
+
+  .doc-header-medical h2 {
+    font-family: 'EB Garamond', serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .doc-header-medical .address {
+    font-size: 11px;
+    color: var(--ink-faded);
+    font-family: 'Courier Prime', monospace;
+  }
+
+  .doc-header-medical .phone {
+    font-size: 10px;
+    color: var(--ink-faded);
+    font-family: 'Courier Prime', monospace;
+  }
+
+  .form-line {
+    border-bottom: 1px solid #c4b8a0;
+    padding: 6px 0 3px;
+    margin-bottom: 2px;
+    font-size: 14px;
+    min-height: 28px;
+  }
+
+  .form-label {
+    font-size: 11px;
+    color: var(--ink-faded);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Courier Prime', monospace;
+  }
+
+  .form-value {
+    font-size: 15px;
+  }
+
+  .dickinson-text {
+    font-family: 'EB Garamond', serif;
+    font-size: 14.5px;
+    line-height: 2;
+    padding: 20px 30px;
+    margin: 15px 0;
+    border-left: 2px solid var(--red-ink);
+    color: var(--ink);
+    position: relative;
+  }
+
+  .dickinson-text .dash {
+    color: var(--red-ink);
+    font-weight: bold;
+    letter-spacing: -1px;
+  }
+
+  .sig-area {
+    margin-top: 35px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .signature {
+    font-family: 'Architects Daughter', cursive;
+    font-size: 22px;
+    color: var(--blue-ink);
+    transform: rotate(-3deg);
+    display: inline-block;
+  }
+
+  .stamp {
+    border: 2px solid var(--red-ink);
+    color: var(--red-ink);
+    padding: 6px 12px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transform: rotate(-5deg);
+    opacity: 0.7;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  /* DOCUMENT 2: PARKING TICKET */
+  .ticket-paper {
+    background: #fff8e8;
+    border-left: 5px solid var(--red-ink);
+    padding: 35px 45px;
+    max-width: 440px;
+    margin: 0 auto;
+    position: relative;
+    box-shadow: 2px 3px 12px rgba(0,0,0,0.15);
+  }
+
+  .ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #c4a060;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+  }
+
+  .ticket-header h2 {
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Special Elite', monospace;
+  }
+
+  .ticket-id {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    color: var(--ink-faded);
+    text-align: right;
+    line-height: 1.5;
+  }
+
+  .ticket-field {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px dotted #d4c8a0;
+    font-size: 13px;
+  }
+
+  .ticket-field .label {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    letter-spacing: 1px;
+  }
+
+  .ticket-field .value {
+    font-family: 'Special Elite', monospace;
+    font-size: 13px;
+  }
+
+  .ticket-body {
+    margin: 18px 0;
+    font-family: 'Special Elite', monospace;
+    font-size: 12px;
+    line-height: 1.9;
+    color: #3a3020;
+  }
+
+  .violation-list {
+    list-style: none;
+    margin: 14px 0;
+    padding: 0;
+  }
+
+  .violation-list li {
+    padding: 4px 0;
+    font-family: 'Special Elite', monospace;
+    font-size: 12px;
+    position: relative;
+    padding-left: 20px;
+  }
+
+  .violation-list li::before {
+    content: '\2610';
+    position: absolute;
+    left: 0;
+    font-size: 11px;
+  }
+
+  .violation-list li.checked::before {
+    content: '\2612';
+    color: var(--red-ink);
+  }
+
+  .fine-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 2px solid #3a3020;
+    padding-top: 12px;
+    margin-top: 18px;
+  }
+
+  .fine-label {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .fine-amount {
+    font-family: 'Special Elite', monospace;
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .ticket-footer {
+    margin-top: 14px;
+    font-size: 8px;
+    color: #a09080;
+    font-family: 'Courier Prime', monospace;
+    line-height: 1.6;
+  }
+
+  /* DOCUMENT 3: GROCERY LIST */
+  .list-paper {
+    background: #fffef5;
+    padding: 35px 45px;
+    position: relative;
+    box-shadow: 1px 2px 8px rgba(0,0,0,0.1);
+    transform: rotate(-0.8deg);
+  }
+
+  .list-title {
+    font-family: 'Architects Daughter', cursive;
+    font-size: 18px;
+    margin-bottom: 18px;
+    color: #2a2420;
+  }
+
+  .grocery-items {
+    list-style: none;
+    padding: 0;
+  }
+
+  .grocery-items li {
+    font-family: 'Architects Daughter', cursive;
+    font-size: 15px;
+    padding: 5px 0;
+    color: #3a3430;
+    position: relative;
+    padding-left: 28px;
+    line-height: 1.6;
+  }
+
+  .grocery-items li::before {
+    content: '\2610';
+    position: absolute;
+    left: 0;
+    font-size: 13px;
+    top: 6px;
+  }
+
+  .grocery-items li.checked {
+    color: #8a7e6a;
+    text-decoration: line-through;
+    text-decoration-color: #b0a490;
+  }
+
+  .grocery-items li.checked::before {
+    content: '\2611';
+    color: #6b8a5e;
+  }
+
+  .grocery-items li .annotation {
+    display: block;
+    font-size: 11px;
+    color: #9a8e7a;
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  .list-divider {
+    border: none;
+    border-top: 1px dashed #c8c0b0;
+    margin: 14px 0;
+  }
+
+  /* MARGINALIA */
+  .margin-note {
+    font-family: 'Architects Daughter', cursive;
+    font-size: 12px;
+    color: var(--marginalia);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    padding: 8px 10px;
+    position: relative;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .margin-note.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .margin-note::before {
+    content: attr(data-marker);
+    position: absolute;
+    top: -1px;
+    left: -4px;
+    font-size: 14px;
+    color: var(--red-pen);
+  }
+
+  .margin-note .meta {
+    font-family: 'Courier Prime', monospace;
+    font-size: 9px;
+    color: #7a6e5a;
+    display: block;
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .margin-note.unreliable {
+    color: var(--red-pen);
+  }
+
+  .margin-note.unreliable::after {
+    content: '\203D';
+    margin-left: 2px;
+    font-size: 10px;
+  }
+
+  /* ARCHIVIST NOTES (between docs) */
+  .archivist-journal {
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 20px 30px;
+    background: rgba(60, 50, 35, 0.5);
+    border-left: 2px solid #5a4a30;
+    position: relative;
+  }
+
+  .archivist-journal .date {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    color: #6b5e50;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .archivist-journal .entry {
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    color: #9a8e7a;
+    line-height: 1.8;
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  .archivist-journal .redacted {
+    background: #3a3228;
+    color: #3a3228;
+    padding: 0 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    user-select: none;
+  }
+
+  .archivist-journal .redacted:hover,
+  .archivist-journal .redacted.revealed {
+    background: transparent;
+    color: var(--red-pen);
+  }
+
+  /* STAMPS AND MARKS */
+  .stamp-watermark {
+    position: absolute;
+    font-family: 'Courier Prime', monospace;
+    font-size: 42px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 8px;
+    color: rgba(139, 37, 0, 0.06);
+    transform: rotate(-25deg);
+    pointer-events: none;
+    z-index: 3;
+    white-space: nowrap;
+  }
+
+  .stamp-received {
+    position: absolute;
+    bottom: 25px;
+    right: 30px;
+    border: 2px solid rgba(26, 58, 92, 0.3);
+    color: rgba(26, 58, 92, 0.4);
+    padding: 4px 10px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transform: rotate(-8deg);
+    z-index: 3;
+  }
+
+  /* PAGE FOOTER */
+  .site-footer {
+    max-width: 720px;
+    margin: 80px auto 0;
+    padding: 30px;
+    text-align: center;
+    border-top: 1px solid #3a3228;
+  }
+
+  .site-footer p {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    color: #5a5040;
+    line-height: 1.8;
+  }
+
+  .colophon {
+    margin-top: 20px;
+    font-size: 10px;
+    color: #3a3228;
+  }
+
+  /* COFFEE RING */
+  .coffee-ring {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 3px solid rgba(140, 110, 60, 0.08);
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .paper { animation: fadeSlideUp 0.6s ease both; }
+
+  @keyframes quietPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(139, 37, 0, 0); }
+    50% { box-shadow: 0 0 8px 2px rgba(139, 37, 0, 0.08); }
+  }
+
+  .margin-note:hover {
+    animation: quietPulse 2s ease infinite;
+  }
+
+  /* REDACTED INLINE */
+  .redacted-inline {
+    background: var(--ink);
+    color: var(--ink);
+    padding: 0 6px;
+    transition: all 0.4s;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 1px;
+  }
+
+  .redacted-inline:hover,
+  .redacted-inline.revealed {
+    background: rgba(139, 37, 0, 0.1);
+    color: var(--red-ink);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .paper { padding: 30px 25px; }
+    .ticket-paper { padding: 25px 30px; }
+    .list-paper { padding: 25px 30px; }
+    .dickinson-text { padding: 15px 20px; }
+    .site-header { padding: 40px 20px 30px; }
+    .controls-bar { padding: 15px 20px; flex-wrap: wrap; }
+    .controls-hint { display: none; }
+  }
+
+  /* PRINT */
+  @media print {
+    body { background: white; }
+    .controls-bar, .site-header, .site-footer, .archivist-journal { display: none; }
+    .margin-note { opacity: 1 !important; }
+    .document-section { opacity: 1 !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SITE HEADER -->
+<header class="site-header">
+  <div class="header-ornament">&mdash; &#10022; &mdash;</div>
+  <h1 class="site-title">The Forgery Archive</h1>
+  <p class="site-subtitle">Est. uncertain &middot; Curated with reservations</p>
+  <div class="header-rule"></div>
+  <p class="site-epigraph">
+    &ldquo;Every document is a confession &mdash; <em>especially</em> the false ones.&rdquo;
+    <br>&mdash; Attributed. Unverified. Possibly mine.
+  </p>
+</header>
+
+<!-- CONTROLS -->
+<div class="controls-bar">
+  <button class="toggle-btn" id="toggleMarginalia" aria-label="Toggle marginalia visibility">Marginalia: On</button>
+  <span class="controls-hint">Ctrl+M to toggle</span>
+</div>
+
+<!-- ============================= -->
+<!-- DOCUMENT I: DOCTOR'S NOTE     -->
+<!-- ============================= -->
+<section class="document-section" id="doc1">
+  <div class="section-header">
+    <span class="doc-number">Document I</span>
+    <h2 class="doc-title">Medical Excuse</h2>
+    <p class="doc-subtitle">&mdash; with marginal verse, attributed to E. Dickinson &mdash;</p>
+    <p class="doc-meta">AMHERST GENERAL PRACTICE &middot; FORM AF-3 &middot; CIRCA 1886 (DISPUTED)</p>
+  </div>
+
+  <div class="document-frame">
+    <!-- LEFT MARGINALIA -->
+    <aside class="marginalia-left">
+      <div class="margin-note" data-marker="*" data-delay="400">
+        The stationer's watermark places this between 1879&ndash;1891. The verse, however, uses vocabulary I've never encountered in her <em>verified</em> work.
+        <span class="meta">&mdash; ARCHIVAL NOTE, 2019</span>
+      </div>
+      <div class="margin-note" data-marker="&dagger;" data-delay="1200">
+        The slant of the signature is consistent with authenticated samples. The tremor is not.
+        <span class="meta">&mdash; HANDWRITING ANALYSIS (SUMMARY)</span>
+      </div>
+    </aside>
+
+    <!-- DOCUMENT BODY -->
+    <div class="document-body">
+      <div class="paper">
+        <div class="fold fold-tr"></div>
+        <div class="stamp-watermark" style="top: 35%; left: 15%;">VERIFIED</div>
+        <div class="coffee-ring" style="bottom: 60px; right: 40px;"></div>
+
+        <div class="doc-header-medical">
+          <h2>Medical Certificate of Incapacity</h2>
+          <p class="address">42 Main Street, Amherst, Massachusetts</p>
+          <p class="phone">Tel. 413&mdash;&mdash;&mdash;&mdash; (redacted)</p>
+        </div>
+
+        <div style="display: flex; gap: 30px; margin-bottom: 6px;">
+          <div style="flex:1;">
+            <p class="form-label">Patient Name</p>
+            <p class="form-value">Emily D&mdash;&mdash;&mdash;</p>
+          </div>
+          <div style="flex:1;">
+            <p class="form-label">Date of Examination</p>
+            <p class="form-value">May 15th, 1884</p>
+          </div>
+        </div>
+
+        <div class="form-line">
+          <span class="form-label">Diagnosis</span>
+        </div>
+
+        <div class="dickinson-text">
+          <span class="dash">&mdash;</span> The Body is a punctured Verse <span class="dash">&mdash;</span><br>
+          That will not hold its Rhyme <span class="dash">&mdash;</span><br>
+          The Heart commits a Syntax Error <span class="dash">&mdash;</span><br>
+          Repeating, out of Time <span class="dash">&mdash;</span><br><br>
+          I felt a Cleaving in my Chest <span class="dash">&mdash;</span><br>
+          As if the Soul had slipped <span class="dash">&mdash;</span><br>
+          <span class="redacted-inline">And all the Physician's gravity</span><br>
+          Could not unmake the Script <span class="dash">&mdash;</span>
+        </div>
+
+        <div class="form-line">
+          <span class="form-label">Rest Prescribed</span><br>
+          <span class="form-value">Indefinite. <span style="font-style:italic;">&ldquo;Eternity will suffice.&rdquo;</span></span>
+        </div>
+
+        <div class="form-line" style="margin-top: 8px;">
+          <span class="form-label">Follow-up</span><br>
+          <span class="form-value">None anticipated.</span>
+        </div>
+
+        <div class="sig-area">
+          <div>
+            <p style="font-size:11px; color:var(--ink-faded); margin-bottom:4px;">Attending Physician</p>
+            <span class="signature">C. P. Howard, M.D.</span>
+          </div>
+          <div class="stamp">
+            State of Massachusetts<br>
+            Medical Board<br>
+            <span style="font-size:8px;">Seal #4A-772</span>
+          </div>
+        </div>
+
+        <div class="stamp-received">Received Jun 3 1884</div>
+      </div>
+    </div>
+
+    <!-- RIGHT MARGINALIA -->
+    <aside class="marginalia-right">
+      <div class="margin-note" data-marker="~" data-delay="800">
+        &ldquo;Dr. C. P. Howard&rdquo; appears in no Amherst directory from any decade. I've checked. I've checked <em>everything</em>.
+        <span class="meta">&mdash; PERSONAL NOTE</span>
+      </div>
+      <div class="margin-note unreliable" data-marker="!" data-delay="1800">
+        The paper is wrong. Not the content <em>on</em> the paper. The paper <em>itself</em>. It's too perfect. Real paper this old should be less. What is it trying to prove?
+        <span class="meta">&mdash; ARCHIVIST'S JOURNAL, MARGINAL ENTRY</span>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ARCHIVIST JOURNAL I -->
+<div class="archivist-journal">
+  <span class="date">March 12 &mdash; Personal</span>
+  <p class="entry">
+    First full transcription complete. The handwriting is steady for a woman who described her own heart as a syntax error. Either she got better, or the forger didn't read carefully enough. I'm choosing to find this <span class="redacted" title="Click to reveal">comforting</span>.
+  </p>
+</div>
+
+<!-- ============================= -->
+<!-- DOCUMENT II: PARKING TICKET   -->
+<!-- ============================= -->
+<section class="document-section" id="doc2">
+  <div class="section-header">
+    <span class="doc-number">Document II</span>
+    <h2 class="doc-title">Notice of Violation</h2>
+    <p class="doc-subtitle">&mdash; municipal citation, with personal enclosure &mdash;</p>
+    <p class="doc-meta">BUREAU OF PARKING ENFORCEMENT &middot; REF #7391-A &middot; APRIL 23, 2019</p>
+  </div>
+
+  <div class="document-frame">
+    <!-- LEFT MARGINALIA -->
+    <aside class="marginalia-left">
+      <div class="margin-note" data-marker="*" data-delay="300">
+        I verified this ticket with the Bureau. They have no record of citation #7391-A. The officer badge number belongs to someone who retired in 2011.
+        <span class="meta">&mdash; FACTUAL INTERVENTION</span>
+      </div>
+      <div class="margin-note unreliable" data-marker="!" data-delay="1100">
+        &ldquo;Lingering&rdquo;: the forger's confession. They couldn't resist naming the crime in the violation itself. Love as a parking offense. <em>Fifty dollars for standing still.</em>
+        <span class="meta">&mdash; SPECULATION (MINE)</span>
+      </div>
+    </aside>
+
+    <!-- DOCUMENT BODY -->
+    <div class="document-body">
+      <div class="ticket-paper">
+        <div class="ticket-header">
+          <div>
+            <h2>Notice of Violation</h2>
+            <p style="font-family:'Courier Prime',monospace; font-size:9px; color:#8a7e6a; margin-top:2px;">BUREAU OF PARKING ENFORCEMENT &mdash; DISTRICT 7</p>
+          </div>
+          <div class="ticket-id">
+            Ref. #7391-A<br>
+            Badge #4471
+          </div>
+        </div>
+
+        <div class="ticket-field">
+          <span class="label">Vehicle</span>
+          <span class="value">White sedan, plates obscured</span>
+        </div>
+        <div class="ticket-field">
+          <span class="label">Location</span>
+          <span class="value">Maple &amp; 4th (your street)</span>
+        </div>
+        <div class="ticket-field">
+          <span class="label">Date / Time</span>
+          <span class="value">April 23, 2019 &mdash; 11:47 PM</span>
+        </div>
+
+        <ul class="violation-list">
+          <li class="checked">Exceeding the posted time limit for longing</li>
+          <li class="checked">Occupying a space reserved for someone braver</li>
+          <li>Failure to display current registration of intent</li>
+          <li class="checked">Standing in a zone marked <span style="font-style:italic;">&ldquo;No Waiting&rdquo;</span></li>
+          <li>Operating a heart without proper emission control</li>
+        </ul>
+
+        <div class="ticket-body">
+          <p>YOU ARE HEREBY NOTIFIED that on the above date, a vehicle matching your description was observed in violation of Municipal Code &sect;12.4 (Lingering Without Permit).</p>
+          <p style="margin-top:10px;">The registered operator has <strong>seventy-two (72) hours</strong> to either remit payment in full or appear in person at the address printed on the reverse side of this notice to contest these feelings.</p>
+        </div>
+
+        <div class="fine-area">
+          <span class="fine-label">Total Amount Due</span>
+          <span class="fine-amount">$&infin;.00</span>
+        </div>
+
+        <div class="ticket-footer">
+          Make checks payable to: THE BUREAU OF UNFINISHED BUSINESS<br>
+          Payment received after deadline will incur additional emotional interest.<br>
+          This document constitutes official notice. Burning is not advised.<br>
+          <span style="display:inline-block; margin-top:4px; color:#c0392b;">P.S. &mdash; I've been meaning to say this for three years.</span>
+        </div>
+
+        <div class="stamp-received" style="border-color: rgba(139,37,0,0.25); color: rgba(139,37,0,0.35);">UNPAID</div>
+      </div>
+    </div>
+
+    <!-- RIGHT MARGINALIA -->
+    <aside class="marginalia-right">
+      <div class="margin-note" data-marker="~" data-delay="700">
+        The Bureau's logo is a real design from 2003&ndash;2011. The font is correct. The paper stock is correct. Someone purchased city letterhead or stole it. This level of craft unsettles me.
+        <span class="meta">&mdash; PROVENANCE NOTE</span>
+      </div>
+      <div class="margin-note unreliable" data-marker="!" data-delay="1500">
+        I found this one inside a book at a yard sale. The book was a collection of Neruda. <span class="redacted" title="Click to reveal">I bought both for seventy-five cents</span>. The ticket was bookmarking a page I have since memorized.
+        <span class="meta">&mdash; PERSONAL &mdash; NOT ARCHIVAL</span>
+      </div>
+      <div class="margin-note unreliable" data-marker="!" data-delay="2200">
+        I keep it in my desk now. Not in the archive. In my desk. I don't know why I'm telling you this.
+        <span class="meta">&mdash; UNRELIABLE</span>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ARCHIVIST JOURNAL II -->
+<div class="archivist-journal">
+  <span class="date">March 14 &mdash; Late</span>
+  <p class="entry">
+    Second document logged. This one is different. The craft is better &mdash; or worse &mdash; depending on what it's trying to do. A forgery that makes you <span class="redacted" title="Click to reveal">feel something</span> is a forgery that has succeeded in something beyond deception. I don't like what that implies about truth.<br><br>
+    <span class="redacted" title="Click to reveal">I showed it to M. She said nothing, which is its own kind of answer.</span>
+  </p>
+</div>
+
+<!-- ============================= -->
+<!-- DOCUMENT III: GROCERY LIST    -->
+<!-- ============================= -->
+<section class="document-section" id="doc3">
+  <div class="section-header">
+    <span class="doc-number">Document III</span>
+    <h2 class="doc-title">Grocery List</h2>
+    <p class="doc-subtitle">&mdash; found in a kitchen drawer, Somerville, MA &mdash;</p>
+    <p class="doc-meta">HANDWRITTEN &middot; YELLOW NOTEPAD &middot; NO DATE &middot; POSSIBLY THE LAST</p>
+  </div>
+
+  <div class="document-frame">
+    <!-- LEFT MARGINALIA -->
+    <aside class="marginalia-left">
+      <div class="margin-note unreliable" data-marker="!" data-delay="200">
+        I acquired this from the estate of <span class="redacted" title="Click to reveal">a woman I never met</span>. Her name has been removed from my records. Not for privacy. Because I keep writing it when I shouldn't.
+        <span class="meta">&mdash; PERSONAL TRESPASS</span>
+      </div>
+      <div class="margin-note" data-marker="*" data-delay="900">
+        Each item appears in the handwriting of a single person. The pen pressure varies. Early items are pressed firmly. The hand lightens. By item nine, the writer may have been crying.
+        <span class="meta">&mdash; PHYSICAL ANALYSIS</span>
+      </div>
+    </aside>
+
+    <!-- DOCUMENT BODY -->
+    <div class="document-body">
+      <div class="list-paper">
+        <div class="coffee-ring" style="top: 20px; left: 30px; border-color: rgba(140,110,60,0.1);"></div>
+
+        <h3 class="list-title">Groceries &mdash;</h3>
+
+        <ul class="grocery-items">
+          <li class="checked">
+            Milk (whole)
+          </li>
+          <li class="checked">
+            Bread &mdash; wheat, if they have it
+            <span class="annotation">(get the good kind for once)</span>
+          </li>
+          <li class="checked">
+            Eggs
+          </li>
+          <li>
+            Coffee &mdash; the dark one
+            <span class="annotation">(the one you liked)</span>
+          </li>
+          <li class="checked">
+            Dish soap
+          </li>
+          <li>
+            Bananas
+            <span class="annotation">(for the bread you said you'd make)</span>
+          </li>
+          <li>
+            Flowers &mdash; something yellow
+            <span class="annotation">(for the table)</span>
+          </li>
+          <li>
+            Band-Aids
+            <span class="annotation">(the small ones, for paper cuts)</span>
+          </li>
+          <li class="checked">
+            Paper towels
+          </li>
+          <li>
+            Wine
+            <span class="annotation">(something we'd both drink)</span>
+          </li>
+          <li>
+            A single stamp
+          </li>
+        </ul>
+
+        <hr class="list-divider">
+
+        <ul class="grocery-items">
+          <li style="color:#8b2500; padding-left:0;">
+            <em>&mdash; another kind of ending entirely</em>
+          </li>
+        </ul>
+
+        <div style="margin-top: 20px; font-family:'Architects Daughter',cursive; font-size:11px; color:#a09080;">
+          <p>P.S. &mdash; Remember to water the plant on the sill.</p>
+          <p style="margin-top:4px;">P.P.S. &mdash; <span style="color:#8b2500;">It's going to be okay.</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT MARGINALIA -->
+    <aside class="marginalia-right">
+      <div class="margin-note" data-marker="~" data-delay="600">
+        The bananas, the flowers, the stamp &mdash; these are items for a future. You don't buy bananas if you're ending. You don't buy a stamp.
+        <span class="meta">&mdash; COUNTER-ARGUMENT</span>
+      </div>
+      <div class="margin-note unreliable" data-marker="!" data-delay="1400">
+        The pen pressure analysis is real. I commissioned it myself. The results arrived on a Tuesday. I didn't open them until Thursday. I don't know what I was afraid of finding.
+        <span class="meta">&mdash; UNRELIABLE</span>
+      </div>
+      <div class="margin-note unreliable" data-marker="!" data-delay="2000">
+        This isn't a forgery. I know that now. But I catalogued it as one because that was easier than admitting what it actually is: someone's grocery list, found in a drawer, mundane as breathing, ordinary as Tuesday, and it wrecked me completely.
+        <span class="meta">&mdash; THE ARCHIVIST HAS LEFT THE BUILDING</span>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ARCHIVIST JOURNAL III -->
+<div class="archivist-journal">
+  <span class="date">March 15 &mdash; 3:17 AM</span>
+  <p class="entry">
+    I need to say something. I don't know if this is the place. There is no other place.<br><br>
+    The third document &mdash; I no longer believe it is a forgery. I believe it is a grocery list. I believe someone wrote it, and someone else found it, and that person is me, and I have been calling it a forgery because that allowed me to hold it without holding it.<br><br>
+    <span class="redacted" title="Click to reveal">I am going to close the archive. Not permanently. Just for tonight. Just until I can remember what the word &ldquo;authentic&rdquo; is supposed to mean.</span>
+  </p>
+</div>
+
+<!-- SITE FOOTER -->
+<footer class="site-footer">
+  <p>
+    The Forgery Archive maintains no institutional affiliation.<br>
+    All documents are presented in good faith, which is more than can be said for the documents themselves.<br>
+    Inquiries should be directed to no one. There is no one to ask.
+  </p>
+  <p style="margin-top:16px; font-style:italic; color:#6b5e50;">
+    &ldquo;I have sworn upon the altar of God, eternal hostility<br>
+    against every form of tyranny over the mind of man.&rdquo;<br>
+    <span style="font-style:normal; font-size:9px;">&mdash; Jefferson. Out of context. Deliberately.</span>
+  </p>
+  <p class="colophon">
+    &mdash; MCMXCIX to Present &mdash;<br>
+    Compiled with trembling hands.
+  </p>
+</footer>
+
+<script>
+  // ===========================
+  // SCROLL REVEAL
+  // ===========================
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.document-section').forEach(function(el) {
+    observer.observe(el);
+  });
+
+  // ===========================
+  // MARGINALIA VISIBILITY
+  // ===========================
+  var marginaliaVisible = true;
+
+  function showMarginalia() {
+    document.querySelectorAll('.margin-note').forEach(function(note, i) {
+      var delay = parseInt(note.getAttribute('data-delay')) || i * 200;
+      setTimeout(function() { note.classList.add('visible'); }, delay);
+    });
+  }
+
+  function hideMarginalia() {
+    document.querySelectorAll('.margin-note').forEach(function(note) {
+      note.classList.remove('visible');
+    });
+  }
+
+  function toggleMarginalia() {
+    marginaliaVisible = !marginaliaVisible;
+    var btn = document.getElementById('toggleMarginalia');
+    if (marginaliaVisible) {
+      showMarginalia();
+      btn.textContent = 'Marginalia: On';
+      btn.classList.remove('active');
+    } else {
+      hideMarginalia();
+      btn.textContent = 'Marginalia: Off';
+      btn.classList.add('active');
+    }
+  }
+
+  document.getElementById('toggleMarginalia').addEventListener('click', toggleMarginalia);
+
+  // Keyboard shortcut
+  document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.key === 'm') {
+      e.preventDefault();
+      toggleMarginalia();
+    }
+  });
+
+  // Initial reveal with stagger
+  setTimeout(showMarginalia, 600);
+
+  // ===========================
+  // REDACTED TEXT REVEAL
+  // ===========================
+  document.querySelectorAll('.redacted').forEach(function(el) {
+    el.addEventListener('click', function() {
+      el.classList.toggle('revealed');
+    });
+  });
+
+  document.querySelectorAll('.redacted-inline').forEach(function(el) {
+    el.addEventListener('click', function() {
+      el.classList.toggle('revealed');
+    });
+  });
+
+  // ===========================
+  // CONSOLE EASTER EGG
+  // ===========================
+  console.log('%c THE FORGERY ARCHIVE', 'font-size: 18px; font-family: Georgia, serif; color: #8b2500; background: #faf5ec; padding: 8px 16px;');
+  console.log('%c "Every document is a confession \u2014 especially the false ones."', 'font-size: 12px; font-family: Georgia, serif; color: #6b5e50; font-style: italic;');
+  console.log('%c If you are reading this, you are looking too closely. Good.', 'font-size: 10px; color: #9a8e7a;');
+</script>
+</body>
+</html>
