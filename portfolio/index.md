@@ -28,3 +28,4 @@
 | 0024 | Soft Launch | experiment | 5.0 | 2026-05-20 | — |
 | 0025 | The Aesthetics Committee | worldbuilding | 5.0 | 2026-05-20 | — |
 | 0026 | The Aesthetics Committee | worldbuilding | 4.3 | 2026-05-20 | — |
+| 0027 | Morgue | experiment | 5.0 | 2026-05-20 | — |

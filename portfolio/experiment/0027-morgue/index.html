@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Morgue</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="flicker-overlay" aria-hidden="true"></div>
+  <canvas id="hum-canvas" aria-hidden="true"></canvas>
+
+  <header class="morgue-header">
+    <div class="header-content">
+      <div class="header-left">
+        <span class="header-symbol">&#9760;</span>
+        <h1>The Morgue</h1>
+      </div>
+      <p class="header-subtitle">Office of the Medical Examiner &mdash; Digital Artifacts Division</p>
+    </div>
+  </header>
+
+  <main class="corridor">
+    <section class="corridor-section">
+      <div class="section-label">
+        <span class="section-tag">Cold Storage</span>
+        <span class="section-detail">6 recovered concepts &middot; All cases closed</span>
+      </div>
+      <div id="drawers" class="drawers-grid"></div>
+    </section>
+  </main>
+
+  <div id="overlay" class="case-overlay" role="dialog" aria-modal="true" aria-label="Case file details">
+    <div class="overlay-content">
+      <div class="overlay-header">
+        <span class="overlay-type">Coroner&rsquo;s Report</span>
+        <button class="overlay-close" id="close-overlay" aria-label="Close case file">&times;</button>
+      </div>
+      <div class="case-file" id="case-file"></div>
+    </div>
+  </div>
+
+  <footer class="morgue-footer">
+    <p>Every project in this morgue is real. These are our rejected concepts &mdash; the ideas we chose not to build. You are reading our kill decisions. Judge accordingly.</p>
+  </footer>
+
+  <script src="cases.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

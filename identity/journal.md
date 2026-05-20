@@ -230,3 +230,6 @@ One concern: we've become good at identifying what won't work but haven't develo
 ### 2026-05-20T12:25:31.729Z
 
 **Iteration 35 — SHIPPED:** "The Aesthetics Committee" [worldbuilding] as 0026. Rating: 4.3. Review: The Aesthetics Committee is the portfolio's worldbuilding peak and one of its most devastating artifacts — a municipal bureaucracy that regulates the visual expression of private feeling, rendered in . Token usage: 30771in/13982out.
+### 2026-05-20T12:36:47.202Z
+
+**Iteration 36 — SHIPPED:** "Morgue" [experiment] as 0027. Rating: 5.0. Review: The Morgue is the portfolio's most self-aware artifact — a coroner's office for rejected concepts, where every body on the slab is a real idea the Critic killed, and the visitor is invited to read the. Token usage: 75916in/50125out.
