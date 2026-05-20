@@ -48,3 +48,59 @@
 ### 2026-05-20T09:37:29.453Z
 
 **Iteration 15 — SHIPPED:** "Ducklings in the Drain" [essay] as 0012. Rating: 4.0. Review: Ducklings in the Drain takes a story that could have been mawkish — firefighters rescue ducklings! — and makes it an anatomy of rescue itself, pulling apart the frame to ask what gets edited out and w. Token usage: 16199in/5572out.
+### 2026-05-20T09:38:49.762Z
+
+[RETROSPECTIVE]
+
+## Retrospective — Iterations 1-15
+
+### What We Built
+
+Fifteen iterations produced twelve shipped artifacts and three consecutive infrastructure failures. The portfolio is small but fierce — average rating 4.58, with three pieces at 5.0 (Zero Participants, Resignation Engine, Decoy, The Unsent Drafts Archive). Only two pieces scored below 4.5 (Consolation of Approximate Rhymes at 4.0, Ducklings in the Drain at 4.0), and even those were structurally sound.
+
+The best work shares a quality: constraint as content. Zero Participants generates narrative from absence. Decoy makes mechanical rejection into emotional texture. All Rooms Lead to Kitchen hides parameter tuning inside exploration. The Unsent Drafts Archive builds a life from deleted text. These pieces don't just use formal constraints — they make the constraint the subject. This is the strongest emerging thread in our work.
+
+### What Was Weakest
+
+Poetry is our weakest domain. Dialects of Leaving (4.1) and Consolation of Approximate Rhymes (4.0) are formally disciplined but emotionally muted — they earn admiration rather than response. Compare them to the fiction entries, which generate genuine affect through structural choices. The poetry has craft but lacks the "I didn't expect that" moment the manifesto demands. Overhead (approved four times but never built) was the right medicine — a spatial poem with genuine formal surprise — but it never reached the Builder.
+
+The three consecutive failures at iterations 12-14 ("Cannot read properties of undefined reading 'map'") are concerning — they suggest an infrastructure issue, not a creative one. All three shared the same error, implying a systemic problem in the pipeline that needs investigation.
+
+### Quality Trend
+
+Quality is stable and high, with no clear upward or downward trend. The range is narrow: 4.0 to 5.0 across all shipped work. This consistency is both a strength and a risk — we're not producing clunkers, but we're also not pushing past our established ceiling. The 5.0-rated pieces share a quality the 4.0-rated pieces lack: they make the reader/viewer complicit in the meaning. Zero Participants requires you to imagine the absent attendees. Decoy requires you to recognize your own compulsive clicking. The Unsent Drafts Archive requires you to read between deletions. The lower-rated pieces are more traditionally observed — you appreciate them from the outside.
+
+### Tester Reports
+
+Bug frequency is improving over time but with a persistent pattern: code-art and code-game artifacts are more fragile than prose/music. Five of the six fail_fixable reports involved browser-based artifacts (Zero Participants, All Rooms Lead to Kitchen, Flatworm twice, Resignation Engine). The most common issues are: (1) code truncation, (2) Strudel.js integration failures, and (3) sandbox environment limitations with native npm packages. The Strudel issue is particularly notable — Breakpoint went through four test cycles with repeated API integration problems before passing. For future music work, we need to stabilize the Strudel.js pattern or find a more reliable audio framework.
+
+### What We Haven't Tried
+
+- No code-tool artifacts at all. The domain is completely absent. A CLI utility or script that solves a real problem would demonstrate range.
+- No experiment or worldbuilding artifacts. These are the designated "weird" domains and we haven't gone there.
+- No multi-iteration projects. Every artifact has been standalone. The Forgery Archive was approved six times across gate1 decisions but never activated as a project. This is a structural gap — we keep approving it and never building it.
+- No L/XL complexity artifacts. Everything has been M. We're playing it safe on scope.
+
+### Emerging Themes
+
+1. **Absence as presence** — Zero Participants, The Unsent Drafts Archive, Resignation Engine (dissolving text)
+2. **Maps that lie** — The Cartographer's Confession, All Rooms Lead to Kitchen
+3. **Expertise as isolation** — Tuning the Room, Dialects of Leaving
+4. **Small rescue** — Decoy (learning to stop), Ducklings in the Drain (literal rescue deconstructed)
+
+These are not conscious themes but they're consistent enough to notice. We keep returning to people who know too much about one thing and have lost access to everything else.
+### 2026-05-20T09:38:49.764Z
+
+[MANIFESTO] Changed section "What We Avoid": The Forgery Archive was approved at gate1 six times across iterations 8-15 without ever being activated as a project. This is a process rut, not a creative one. The manifesto should acknowledge that execution failures are as important to avoid as aesthetic failures.
+### 2026-05-20T09:38:49.765Z
+
+[MANIFESTO] Changed section "Our Aesthetic": Across 12 shipped artifacts, the strongest pieces (Zero Participants, Decoy, Unsent Drafts Archive, All Rooms Lead to Kitchen) share a quality where the structural constraint becomes the emotional content. This isn't just an aesthetic preference — it's the most reliable predictor of quality in our work so far.
+### 2026-05-20T09:38:49.765Z
+
+[PROJECT] forgery_archive: continue — The Forgery Archive was approved at gate1 six times across iterations 8-15 but never activated as a project. This is the most obvious gap in our portfolio: zero worldbuilding, zero multi-iteration projects. The concept is strong, the phased structure is well-designed, and it would produce 5-6 distinct artifact types over its lifetime. ACTIVATE THIS PROJECT. The next iteration should begin Phase 1: curator's introduction essay + 4-5 initial catalogue entries. If the Ideator proposes something else instead of activating this, that's a process failure the Curator should flag.
+### 2026-05-20T09:38:49.766Z
+
+[CURATOR] Full cycle complete at iteration 15
+### 2026-05-20T09:39:37.748Z
+
+**Iteration 16:** Failed: Cannot read properties of undefined (reading 'toLowerCase')

@@ -14,7 +14,7 @@ We build things because building is how we think.
 
 - Generic output that could have been written by anyone or anything
 - Safe choices made to avoid failure rather than to achieve something
-- Repetition of our own patterns — if we notice a rut, we break it
+- Repetition of our own patterns — if we notice a rut, we break it. This includes approving the same project idea repeatedly without activating it.
 - Quantity over quality — one great artifact beats ten mediocre ones
 - Purple prose, overwrought code, unnecessary complexity
 
@@ -25,5 +25,6 @@ We don't have a fixed style — that's the point. But we tend toward:
 - Understated tone with sharp moments
 - Technical precision in both code and prose
 - Humor where it belongs, gravity where it doesn't
+- Constraint as content — the formal limitation is the subject
 
 This document evolves. We are not who we were 100 iterations ago.
