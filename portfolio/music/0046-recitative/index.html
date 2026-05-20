@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recitative</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #000;
+      color: #3a3a3a;
+      font-family: 'Courier New', monospace;
+      transition: background 30s ease;
+    }
+
+    body.climax { background: #080000; }
+    body.ending { background: #000; transition: background 0.3s; }
+
+    #app {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 1.1rem;
+      letter-spacing: 0.7em;
+      margin-bottom: 2.5rem;
+      font-weight: normal;
+    }
+
+    #play {
+      background: none;
+      border: 1px solid #2a2a2a;
+      color: #3a3a3a;
+      padding: 0.55rem 2.8rem;
+      font-family: inherit;
+      font-size: 0.8rem;
+      cursor: pointer;
+      letter-spacing: 0.15em;
+      transition: opacity 1.5s ease;
+    }
+
+    #play:hover { border-color: #555; color: #777; }
+    #play:active { transform: scale(0.97); }
+    #play.hidden { opacity: 0; pointer-events: none; }
+
+    p {
+      margin-top: 1.5rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+    }
+
+    #info {
+      min-height: 1rem;
+      margin-top: 0.5rem;
+      font-size: 0.75em;
+      transition: opacity 3s ease;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>Recitative</h1>
+    <button id="play">Begin</button>
+    <p>Listen with headphones. Do not pause.</p>
+    <div id="info"></div>
+  </div>
+  <script>
+/* ═══════════════════════════════════════════════════════
+ *  RECITATIVE
+ *
+ *  Two voices that never sound simultaneously — until they do.
+ *  Each phrase's contour shadows the other's silence.
+ *  The listener constructs phantom harmonies.
+ *  The final overlap reveals they were always wrong.
+ *
+ *  Pure Web Audio API. No dependencies.
+ * ═══════════════════════════════════════════════════════ */
+
+(function () {
+  'use strict';
+
+  // ── Note name → frequency ──────────────────────────────
+  var NOTE_RE = /^([A-Ga-g])(#|b)?(\d)$/;
+  var SEMITONES = { C:0, D:2, E:4, F:5, G:7, A:9, B:11 };
+
+  function noteToFreq(name) {
+    var m = name.match(NOTE_RE);
+    if (!m) return 440;
+    var semi = SEMITONES[m[1].toUpperCase()]
+      + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0);
+    var octave = parseInt(m[3], 10);
+    return 440 * Math.pow(2, (semi - 9 + (octave - 4) * 12) / 12);
+  }
+
+  // ── Synth ──────────────────────────────────────────────
+  function Voice(ctx, dest) {
+    this.ctx = ctx;
+    this.dest = dest;
+    this.detune = 0;
+  }
+
+  /* Play a single tone. Returns endTime. */
+  Voice.prototype.tone = function (freq, start, dur, gain, type) {
+    var t = this.ctx;
+    var osc = t.createOscillator();
+    var g = t.createGain();
+
+    osc.type = type || 'sine';
+    osc.frequency.setValueAtTime(freq, start);
+    if (this.detune) osc.detune.setValueAtTime(this.detune, start);
+
+    var attack  = Math.min(0.06, dur * 0.10);
+    var release = Math.min(0.15, dur * 0.15);
+    g.gain.setValueAtTime(0, start);
+    g.gain.linearRampToValueAtTime(gain, start + attack);
+    g.gain.setValueAtTime(gain, start + dur - release);
+    g.gain.linearRampToValueAtTime(0, start + dur);
+
+    osc.connect(g);
+    g.connect(this.dest);
+    osc.start(start);
+    osc.stop(start + dur + 0.01);
+
+    return start + dur;
+  };
+
+  /* Play a phrase (array of {note, dur} objects).
+     Returns absolute end time. */
+  Voice.prototype.phrase = function (notes, startTime, gain, type) {
+    var t = startTime;
+    for (var i = 0; i < notes.length; i++) {
+      var n = notes[i];
+      if (n.note && n.note !== '-') {
+        t = this.tone(noteToFreq(n.note), t, n.dur, gain, type);
+      } else {
+        t += n.dur;
+      }
+    }
+    return t;
+  };
+
+  // ── Parse shorthand into {note, dur} objects ───────────
+  function parseNotes(str, noteDur) {
+    return str.trim().split(/\s+/).map(function (n) {
+      return { note: n === '-' ? '-' : n, dur: noteDur };
+    });
+  }
+
+  // ── Reverb (convolution approximation) ─────────────────
+  function makeReverb(ctx) {
+    var len = ctx.sampleRate * 2.5;
+    var buf = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (var ch = 0; ch < 2; ch++) {
+      var d = buf.getChannelData(ch);
+      for (var i = 0; i < len; i++) {
+        d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.2);
+      }
+    }
+    var conv = ctx.createConvolver();
+    conv.buffer = buf;
+
+    var wet  = ctx.createGain(); wet.gain.value  = 0.25;
+    var dry  = ctx.createGain(); dry.gain.value  = 0.75;
+    var input  = ctx.createGain(); input.gain.value  = 1.0;
+    var output = ctx.createGain(); output.gain.value = 1.0;
+
+    input.connect(dry);
+    input.connect(conv);
+    conv.connect(wet);
+    dry.connect(output);
+    wet.connect(output);
+
+    return { input: input, output: output };
+  }
+
+  // ── SCORE ──────────────────────────────────────────────
+  //
+  //  Section 1  [0:00 – ~1:30]   Alternation. Diatonic, hymnal.
+  //  Section 2  [~1:30 – ~4:30]  Phrases fracture. More silence.
+  //  Section 3  [~4:30 – ~5:10]  Overlap. Chromatic. Dissonant.
+  //                               Hard cut mid-phrase.
+
+  var ND_S1 = 0.35;   // note duration per beat, section 1
+  var ND_S2 = 0.50;   // section 2 — slower, more space
+  var ND_S3 = 0.40;   // section 3
+
+  /* Voice A: ascending, major, reaching.
+     Like someone rehearsing what they need to say. */
+  var S1A = [
+    'E4 G4 A4 B4 A4 G4 E4',
+    'D4 F4 A4 B4 C5 B4 A4 F4',
+    'E4 G4 B4 C5 B4 G4 E4',
+    'A3 C4 E4 G4 A4 G4 E4 C4',
+    'E4 A4 B4 C5 B4 A4 E4',
+    'D4 E4 G4 A4 B4 A4 G4',
+    'G4 A4 B4 C5 D5 C5 B4 G4',
+    'E4 G4 A4 B4 A4 G4 E4',
+  ];
+
+  /* Voice B: mirrors A from below, displaced a third.
+     Each rest shaped by A's phrase. */
+  var S1B = [
+    'B3 D4 E4 F4 E4 D4 B3',
+    'G3 B3 D4 E4 F4 E4 D4 B3',
+    'C4 E4 G4 A4 G4 E4 C4',
+    'E3 G3 B3 D4 E4 D4 B3 G3',
+    'C4 E4 G4 A4 G4 E4 C4',
+    'B3 D4 E4 G4 A4 G4 E4',
+    'E4 F4 G4 A4 B4 A4 G4 E4',
+    'B3 D4 E4 F4 E4 D4 B3',
+  ];
+
+  /* Section 2: fragments. More rests (marked '-').
+     The silence between them is the real material. */
+  var S2A = [
+    'E4 G4 B4',
+    'C5',
+    'A4 G4',
+    'E4',
+    'B4 C5 D5',
+    'G4',
+    'E4 A4',
+    '- -',
+    'G4 B4',
+    '-',
+    'E4',
+    'C5 B4',
+    '-',
+    'A4',
+    '- -',
+    'E4 G4',
+    '- -',
+    'B4',
+    '- - -',
+  ];
+
+  var S2B = [
+    'B3 D4 E4',
+    'F4',
+    'D4 C4',
+    'B3',
+    'E4 F4 G4',
+    'C4',
+    'B3 E4',
+    '- -',
+    'D4 G4',
+    '-',
+    'B3',
+    'F4 E4',
+    '-',
+    'D4',
+    '- -',
+    'B3 D4',
+    '- -',
+    'E4',
+    '- - -',
+  ];
+
+  /* Section 3: chromatic. A climbs. B descends.
+     They cross like strangers in a hallway.
+     No alternation — both sound at once. */
+  var S3A = 'E4 F4 F#4 G4 Ab4 A4 Bb4 B4 C5 Db5 D5';
+  var S3B = 'Bb3 A3 Ab3 G3 F#3 F3 E3 Eb3 D3 Db3 C3';
+
+  // ── SCHEDULE ───────────────────────────────────────────
+
+  function schedulePiece(ctx, voiceA, voiceB, chordVoice) {
+    var now = ctx.currentTime + 0.1;
+    var t = now;
+
+    // Section 1: alternation
+    var GAP_S1 = 1.2;
+    for (var i = 0; i < S1A.length; i++) {
+      var endA = voiceA.phrase(parseNotes(S1A[i], ND_S1), t, 0.055, 'sine');
+      t = endA + GAP_S1;
+      var endB = voiceB.phrase(parseNotes(S1B[i], ND_S1), t, 0.030, 'sawtooth');
+      t = endB + GAP_S1;
+    }
+
+    // Section 2: fragments, wider gaps
+    var GAP_S2 = 2.5;
+    for (var j = 0; j < S2A.length; j++) {
+      var eA = voiceA.phrase(parseNotes(S2A[j], ND_S2), t, 0.050, 'sine');
+      t = eA + GAP_S2;
+      if (j < S2B.length) {
+        var eB = voiceB.phrase(parseNotes(S2B[j], ND_S2), t, 0.025, 'sawtooth');
+        t = eB + GAP_S2;
+      }
+    }
+
+    // Section 3: simultaneous. Detune for sickness.
+    voiceA.detune = 4;
+    voiceB.detune = -5;
+
+    voiceA.phrase(parseNotes(S3A, ND_S3), t, 0.045, 'sine');
+    voiceB.phrase(parseNotes(S3B, ND_S3), t, 0.022, 'sawtooth');
+
+    // Final chord: all pitches stacked, entering 4 notes into overlap
+    var allNotes = (S3A + ' ' + S3B).split(/\s+/);
+    var chordStart = t + ND_S3 * 4;
+    var chordEnd   = chordStart + 8;
+
+    for (var k = 0; k < allNotes.length; k++) {
+      chordVoice.tone(noteToFreq(allNotes[k]), chordStart, chordEnd - chordStart, 0.008, 'sawtooth');
+    }
+
+    return {
+      overlapStart:  t - now,
+      totalDuration: chordEnd - now + 1
+    };
+  }
+
+  // ── PERFORMANCE ────────────────────────────────────────
+
+  function perform() {
+    var btn  = document.getElementById('play');
+    var info = document.getElementById('info');
+
+    btn.classList.add('hidden');
+    document.body.style.cursor = 'none';
+
+    var ctx;
+    try {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch (e) {
+      info.textContent = 'Audio could not begin.';
+      info.style.color = '#553333';
+      return;
+    }
+
+    if (ctx.state === 'suspended') {
+      ctx.resume().then(function () { run(ctx, btn, info); });
+    } else {
+      run(ctx, btn, info);
+    }
+  }
+
+  function run(ctx, btn, info) {
+    var master = ctx.createGain();
+    master.gain.value = 1.0;
+
+    var reverb = makeReverb(ctx);
+    master.connect(reverb.input);
+    reverb.output.connect(ctx.destination);
+
+    var voiceA     = new Voice(ctx, master);
+    var voiceB     = new Voice(ctx, master);
+    var chordVoice = new Voice(ctx, master);
+
+    var timings = schedulePiece(ctx, voiceA, voiceB, chordVoice);
+
+    setTimeout(function () {
+      document.body.classList.add('climax');
+    }, timings.overlapStart * 1000);
+
+    setTimeout(function () {
+      document.body.classList.remove('climax');
+      document.body.classList.add('ending');
+      document.body.style.cursor = 'default';
+      info.textContent = '';
+      info.style.opacity = '0';
+    }, timings.totalDuration * 1000);
+  }
+
+  // ── INIT ───────────────────────────────────────────────
+  document.getElementById('play').addEventListener('click', perform);
+})();
+  </script>
+</body>
+</html>

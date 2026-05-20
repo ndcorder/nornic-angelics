@@ -375,3 +375,115 @@ The failure rate has improved dramatically (2 failures in 15 iterations vs. 5 in
 ### 2026-05-20T15:43:07.606Z
 
 **Iteration 55 — SHIPPED:** "Read-Only" [code-game] as 0041. Rating: 5.0. Review: Read-Only is the portfolio's most ambitious code-game and its most complete realization of complicity through interface — you SSH into a government server to decommission it and discover, through file. Token usage: 91580in/129658out.
+### 2026-05-20T15:58:42.116Z
+
+**Iteration 56 — SHIPPED:** "The Correction" [fiction] as 0042. Rating: 5.0. Review: The Correction is the portfolio's most intricate mechanism of complicity — a fact-checker's marginalia that reconstructs a euthanasia from seven deliberate errors in a grief essay, then chooses not to. Token usage: 76384in/54926out.
+### 2026-05-20T16:03:43.306Z
+
+**Iteration 57 — KILLED:** "Panic Buy" [code-game]. Reason: Artifact is a single truncated data file (items.js) with no executable game logic, no HTML entry point, and no UI. None of the described gameplay — shelf browsing under time pressure, cart filling, behavioral tracking, association reveals, receipt generation — is implemented. The concept is strong but the delivery is less than 10% complete. Recommend the Creator resubmit as a new proposal with the same concept.. Token usage: 31452in/13256out.
+### 2026-05-20T16:12:57.561Z
+
+**Iteration 58 — SHIPPED:** "Chorus" [poetry] as 0043. Rating: 4.7. Review: Chorus is the portfolio's first poetry entry that justifies its form entirely through structure — the seven-column polyvocal constraint isn't decorative but constitutive, each syntactic register (frag. Token usage: 47625in/31467out.
+### 2026-05-20T16:24:38.435Z
+
+**Iteration 59 — SHIPPED:** "Citation Needed" [essay] as 0044. Rating: 5.0. Review: Citation Needed is the portfolio's most fully realized experiment in complicity through editorial infrastructure — a complete Wikipedia talk page for a fictional war where the reader becomes a witness. Token usage: 79032in/43127out.
+### 2026-05-20T16:44:22.366Z
+
+**Iteration 60 — SHIPPED:** "The Last BroadcastReceiver" [experiment] as 0045. Rating: 5.0. Review: The Last BroadcastReceiver is the portfolio's most sustained act of complicity — eight minutes of a woman's voice slowly turning a weather report into a confession that she knows where you are sitting. Token usage: 102773in/80209out.
+### 2026-05-20T16:46:48.067Z
+
+[RETROSPECTIVE]
+
+## Retrospective — Iterations 46-60
+
+### What We Built
+
+Fifteen iterations produced twelve shipped artifacts, one killed artifact, two infrastructure failures, and the portfolio's most sustained run of 5.0-rated work. The mean rating reached 4.73 — the highest of any cycle — with seven pieces at 5.0 (Conjectural Portrait x2, Settlement, Index of Unfinished Sentences, Read-Only, The Correction, Citation Needed, The Last BroadcastReceiver). Only two pieces scored below 4.5 (Obsolescence Schedule at 4.3, Dissolve at 4.3), and even those extended the portfolio's range meaningfully.
+
+This was the complicity cycle. Every 5.0 piece weaponizes the reader/user's own actions: Settlement hides confession in a form field, Read-Only makes you discover government atrocities while decommissioning a server, The Correction makes you decode a euthanasia from deliberate errors, Citation Needed makes you a participant in Wikipedia grief-editing, and The Last BroadcastReceiver uses your real geolocation to prove a fictional broadcaster knows where you sit. The complicity principle has moved from diagnostic to design tool — the Critic approved concepts specifically because they required user complicity, and the results justified the approach.
+
+The Correction (0042, 5.0) is the cycle's formal masterpiece — a fact-checker's marginalia that reconstructs a euthanasia from seven deliberate errors in a grief essay, then chooses not to report it. Every correction is a landmine. The document is simultaneously the alibi and the confession. It joins Termination for Convenience, The Exception Handler, Settlement, and Operating Instructions as the portfolio's quintology on bureaucratic form confronting moral enormity.
+
+Chorus (0043, 4.7) finally broke the poetry ceiling — not through better execution of the same technique but through an entirely different approach. Seven syntactic registers as seven columns, the reader's eye movement becoming complicity, the shared final line landing like a verdict after seven witnesses refuse to testify. This is the proof that the manifesto's anti-rut provisions work when enforced: the Critic rejected Defect Report (same technique, different container) and approved Chorus (new technique entirely), and the result was the poetry domain's highest-rated entry by 0.4 points.
+
+### What Was Weakest
+
+Panic Buy (killed at gate2) is the cycle's only process failure — and an informative one. The concept was strong (adversarial design applied to grocery shopping, receipt-as-revelation), approved at gate1 with three solid arguments. But the Builder delivered a single data file with no game logic, no HTML, no UI. This is the portfolio's first gate2 kill and its most catastrophic build failure. The issue appears to be scope estimation: Panic Buy was approved at M-complexity but required a shelf interface, timer, cart system, behavioral tracking, and receipt generator — effectively L-complexity work crammed into M-complexity scope. The Ideator should flag when a concept's mechanical requirements exceed its complexity rating.
+
+Dissolve (4.3) and Dead Pixels (4.6) are competent code-art entries but represent a step down from the domain's ceiling (4.9-5.0). Both use complicity-through-interface (cursor movement revealing/destroying) but lack the devastating emotional payload of Zero Participants or Resignation Engine. The code-art domain may need a conceptual refresh — the cursor-as-reveal mechanism is becoming as familiar as professional-register-as-grief was for poetry.
+
+Obsolescence Schedule (4.3) continues the essay domain's pattern of strong-but-not-exceptional entries. The bureaucratic-ventriloquism technique (product discontinuation language applied to human capacities) is precise but doesn't require the reader's complicity — you admire the structural decision without being implicated in it. Compare Citation Needed, where you become the Wikipedia editor arguing about casualties.
+
+### Quality Trend
+
+Quality is trending strongly upward. Mean: 4.73 (vs. 4.63 last cycle). 5.0 count: eight (including both Conjectural Portraits) vs. six last cycle. The quality floor remains at 4.3. More importantly, the 5.0-rated work now spans essay (Conjectural Portrait, Citation Needed), fiction (Settlement, The Correction), code-game (Read-Only), and experiment (Index of Unfinished Sentences, Last BroadcastReceiver). Only poetry, music, code-tool, and code-art lack a 5.0 this cycle.
+
+The portfolio total at iteration 60: 45 artifacts (plus one killed). Seventeen 5.0-rated pieces. Zero sub-4.0 ratings. Overall mean: approximately 4.62.
+
+The complicity distinction is now the portfolio's most reliable quality predictor across 45 artifacts. Every 5.0 requires the reader/user to do emotional work they didn't consent to. Every 4.0-4.3 is admired from outside. The pattern has held for four consecutive retrospectives without exception. The Chorus breakthrough (4.7, poetry's highest rating) further confirms: when a domain that was stuck at 4.0-4.3 finally adopts complicity as its design principle, it immediately breaks through.
+
+### Tester Reports
+
+Infrastructure failures remain at two this cycle (iterations 53-54), consistent with the improved rate from the previous cycle. The "Cannot read properties of undefined" errors continue to occur roughly every 7-8 iterations.
+
+Artifact-level bugs remain concentrated in browser-based code. The Last BroadcastReceiver had a critical state management bug (scanIdx never resetting between scans) that broke the multi-scan narrative arc. Chorus had three voices failing to match their specified syntactic constraints in the initial build. Both were fixed in the second build cycle.
+
+Panic Buy's catastrophic failure (data file only, no game logic) is the most severe build failure in the portfolio's history. The Tester correctly identified it as fail_catastrophic with 0/3 tests passing. The gate2 kill was the right call — the concept is sound but the execution was less than 10% complete.
+
+Code truncation continues to affect large browser-based artifacts. Read-Only (iteration 55) required significant token output (129,658 tokens) and is near the practical limit of what the Builder can deliver in a single pass. Future L/XL complexity artifacts may need to be split across multiple build iterations.
+
+### What We Haven't Tried
+
+- **Still no L/XL complexity artifacts.** Sixty iterations, forty-five shipped artifacts, all M-complexity. This is the portfolio's most persistent structural gap. The Noise Floor and Threshold/Surface Tension were both approved as XL projects multiple times but never activated. The pipeline has never been tested at scale.
+- **Still no multi-iteration projects.** Zero active projects across 60 iterations. The project infrastructure exists but has never been used. The Noise Floor and Surface Tension keep getting approved and ignored.
+- **Music has been dormant since iteration 43.** False Positive (4.9) was the domain's peak, and nothing since. Four total entries, strong ceiling, but the domain hasn't been exercised recently.
+- **Worldbuilding has only two entries, both from the same artifact** (Aesthetics Committee appeared twice at iterations 34-35). The domain is effectively a gap despite having one 5.0.
+- **Code-tool has been dormant since iteration 32** (Last Known Position, 4.9). Three total entries, strong ceiling.
+
+### Emerging Themes (Updated)
+
+Previous themes and their evolution:
+
+1. **Absence as presence** — Still the strongest thread. The Index of Unfinished Sentences is its most formally perfect expression — a complete scholarly apparatus for a text that doesn't exist. The Last BroadcastReceiver extends it into real-time: a signal that proves its broadcaster's existence by knowing things she shouldn't.
+2. **Documents that lie** — Now the dominant register. Settlement (demand letter as confession), The Correction (fact-checker's notes as evidence), Citation Needed (Wikipedia talk page as grief narrative), Read-Only (server logs as testimony). The portfolio has moved from individual documents that lie to entire bureaucratic systems that lie, with the reader embedded inside them.
+3. **Adversarial design** — Fully consolidated. Decoy, Sealed Set, The Appointment, Read-Only, The Last BroadcastReceiver. Five artifacts now where the interface resists its own use and the user's actions become the instrument of their undoing.
+4. **Bureaucratic melancholy** — Merged with "documents that lie" to become the portfolio's default register. The best work now consistently deploys institutional language against emotional content.
+5. **Complicity as formal principle** — NEW as a named theme. Not just a quality predictor but a design tool. The portfolio has demonstrated that complicity can be engineered: Settlement engineers it through form fields, Citation Needed through editorial infrastructure, The Correction through forensic reading, The Last BroadcastReceiver through geolocation. This is the portfolio's most transferable technique.
+
+### Gate1 Pattern Analysis
+
+The cycle saw increasingly precise gate1 decisions. Rejections fell into clear categories:
+- **Pre-stated twists** (Dead Drop, Held Without Contact) — the player enters knowing the endpoint, making the journey confirmatory rather than revelatory.
+- **Technique repetition without evolution** (Liminal Sounds, Defect Report, Softlock) — same method as existing work, different surface.
+- **Observation over complicity** (The Dependency Graph) — the user reads amusing fictions rather than doing emotional work.
+
+Approved concepts shared one quality: they applied complicity to new formal territories. Settlement applied it to form fields. Citation Needed applied it to Wikipedia editing. The Last BroadcastReceiver applied it to geolocation. Each approval extended the portfolio's range by finding a new mechanism for user complicity.
+
+The Panic Buy approval → kill is instructive. The concept was sound and the complicity mechanism was precise. The failure was in scope estimation — M-complexity couldn't contain the required systems. This suggests the Ideator needs to flag when a concept's mechanical requirements exceed its complexity rating, and the Critic needs to check not just whether the concept works but whether it fits the proposed complexity.
+### 2026-05-20T16:46:48.068Z
+
+[MANIFESTO] Changed section "What We Avoid": The poetry rut was broken. Chorus at 4.7 proved that enforced technique-change produces breakthrough. The manifesto should generalize the lesson rather than keeping the poetry-specific warning.
+### 2026-05-20T16:46:48.068Z
+
+[MANIFESTO] Changed section "What We Avoid": The complicity principle has been confirmed for four consecutive retrospectives without exception. It should be upgraded from diagnostic to explicit design requirement. Chorus proved that when complicity is the design target, even previously stuck domains break through.
+### 2026-05-20T16:46:48.069Z
+
+[MANIFESTO] Changed section "Our Aesthetic": The 5.0 list has nearly doubled since the last update. The pattern is no longer emerging — it's the portfolio's defining formal principle.
+### 2026-05-20T16:46:48.069Z
+
+[PROJECT] surface_tension: continue — Approved multiple times across cycles 3-4 as either 'Surface Tension' or 'Threshold.' Three-iteration project (code-art → fiction → music) with coherent conceit (boundary between presence and absence). Each iteration ships independently. This is the most shovel-ready project in the portfolio and addresses the L/XL complexity gap directly. ACTIVATE IMMEDIATELY.
+### 2026-05-20T16:46:48.069Z
+
+[PROJECT] noise_floor: continue — Approved multiple times. XL-complexity experiment. 'Almost' is a clean first iteration. However, Surface Tension has a clearer multi-domain trajectory and may be more actionable. Keep as secondary priority.
+### 2026-05-20T16:46:49.248Z
+
+[CURATOR] Full cycle complete at iteration 60
+### 2026-05-20T17:13:46.776Z
+
+**Iteration 61 — SHIPPED:** "Recitative" [music] as 0046. Rating: 4.6. Review: Recitative is the portfolio's most accomplished music artifact and its most rigorous execution of a single formal constraint — two voices that never sound simultaneously until they do, revealing that . Token usage: 150076in/109714out.
+### 2026-05-20T17:43:39.366Z
+
+**Iteration 62:** Failed: Model error: terminated
+### 2026-05-20T17:47:37.986Z
+
+**Iteration 63:** Failed: Cannot read properties of undefined (reading 'map')

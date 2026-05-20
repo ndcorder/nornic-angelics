@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hallicrafters SX-28 — Receiver</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --warm: #D4C8A0;
+    --dark: #0e0b08;
+    --copper: #B87333;
+    --dial: #F5E6C8;
+    --dial-line: #3a2518;
+    --glow-green: #1a4a1a;
+    --glow-green-bright: #2d6a2d;
+  }
+
+  body {
+    background: #080604;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'VT323', monospace;
+    overflow: hidden;
+    cursor: default;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .room {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 60%, rgba(18,14,10,0.6) 0%, transparent 65%),
+      #080604;
+    z-index: 0;
+  }
+
+  .glow-spot {
+    position: fixed;
+    width: 500px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(30,22,10,0.25) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -45%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .radio-container {
+    position: relative;
+    z-index: 1;
+    perspective: 800px;
+  }
+
+  .radio {
+    position: relative;
+    width: 660px;
+    max-width: 96vw;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        rgba(0,0,0,0.04) 1px,
+        transparent 2px,
+        transparent 11px
+      ),
+      linear-gradient(180deg, #1a1510 0%, #14100c 40%, #0e0b08 100%);
+    border-radius: 14px;
+    padding: 0;
+    box-shadow:
+      0 0 80px rgba(184,115,51,0.06),
+      0 2px 0 rgba(255,255,255,0.04) inset,
+      0 -2px 0 rgba(0,0,0,0.3) inset,
+      0 12px 40px rgba(0,0,0,0.6),
+      0 2px 8px rgba(0,0,0,0.8);
+    border: 1px solid rgba(255,255,255,0.03);
+  }
+
+  .radio-top {
+    padding: 20px 30px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .brand {
+    font-family: 'VT323', monospace;
+    color: rgba(212,200,160,0.35);
+    font-size: 13px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+  }
+
+  .model {
+    font-family: 'VT323', monospace;
+    color: rgba(212,200,160,0.2);
+    font-size: 11px;
+    letter-spacing: 3px;
+  }
+
+  .speaker-grille {
+    margin: 14px 24px 10px;
+    height: 55px;
+    border-radius: 6px;
+    background:
+      repeating-linear-gradient(
+        180deg,
+        #0a0806 0px,
+        #0a0806 3px,
+        #1a1510 3px,
+        #1a1510 5.5px
+      );
+    border: 1px solid rgba(255,255,255,0.03);
+    position: relative;
+    overflow: hidden;
+    opacity: 0.85;
+  }
+
+  .speaker-grille::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.08) 100%);
+  }
+
+  .dial-section {
+    margin: 0 24px;
+    padding: 10px 16px 14px;
+    background: #0a0806;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.03);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dial-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    border-radius: 8px 8px 0 0;
+    pointer-events: none;
+  }
+
+  .dial-freq-label {
+    text-align: center;
+    color: var(--dial);
+    font-size: 20px;
+    letter-spacing: 2px;
+    text-shadow: 0 0 12px rgba(245,230,200,0.3);
+    margin-bottom: 4px;
+    opacity: 0.9;
+  }
+
+  .dial-freq-label .unit {
+    font-size: 13px;
+    color: rgba(245,230,200,0.5);
+    margin-left: 4px;
+  }
+
+  .dial-band {
+    height: 28px;
+    background: linear-gradient(180deg, #F5E6C8, #E8D5B0, #F0DEC0);
+    border-radius: 3px;
+    position: relative;
+    margin: 6px 0 8px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.15);
+  }
+
+  .dial-band::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 45%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.15), transparent);
+    pointer-events: none;
+  }
+
+  .dial-marks {
+    position: absolute;
+    inset: 0;
+  }
+
+  .dial-mark {
+    position: absolute;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background: var(--dial-line);
+  }
+
+  .dial-mark.major {
+    width: 2px;
+    background: rgba(58,37,24,0.8);
+  }
+
+  .dial-label {
+    position: absolute;
+    top: 3px;
+    font-family: 'VT323', monospace;
+    font-size: 10px;
+    color: var(--dial-line);
+    transform: translateX(-50%);
+    line-height: 1;
+  }
+
+  .dial-indicator {
+    position: absolute;
+    top: -4px;
+    width: 3px;
+    height: calc(100% + 8px);
+    background: #C83232;
+    z-index: 3;
+    transition: left 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+    border-radius: 1px;
+    box-shadow: 0 0 6px rgba(200,50,50,0.4);
+    pointer-events: none;
+  }
+
+  .dial-indicator::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #C83232;
+  }
+
+  .dial-indicator::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 6px solid #C83232;
+  }
+
+  .s-meter-label {
+    text-align: center;
+    font-size: 9px;
+    color: rgba(245,230,200,0.3);
+    letter-spacing: 2px;
+    margin-bottom: 2px;
+  }
+
+  .s-meter {
+    height: 6px;
+    background: #0c0a08;
+    border-radius: 3px;
+    margin: 0 40px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .s-meter-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--glow-green), var(--glow-green-bright), #8a8a2a, #aa6a2a, #aa2a2a);
+    border-radius: 3px;
+    transition: width 0.3s ease, opacity 0.3s ease;
+    opacity: 0.8;
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    padding: 14px 30px 20px;
+  }
+
+  .scan-btn {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background:
+      radial-gradient(ellipse at 38% 32%, rgba(240,220,180,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at center, #1e1814, #14100c);
+    border: 2px solid rgba(184,115,51,0.25);
+    color: rgba(212,200,160,0.7);
+    font-family: 'VT323', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.2;
+    position: relative;
+    transition: all 0.15s ease;
+    box-shadow:
+      0 4px 12px rgba(0,0,0,0.5),
+      0 1px 0 rgba(255,255,255,0.05) inset,
+      0 -2px 4px rgba(0,0,0,0.3) inset;
+    outline: none;
+  }
+
+  .scan-btn:hover {
+    border-color: rgba(184,115,51,0.45);
+    color: rgba(212,200,160,0.9);
+    box-shadow:
+      0 4px 16px rgba(184,115,51,0.1),
+      0 1px 0 rgba(255,255,255,0.05) inset,
+      0 -2px 4px rgba(0,0,0,0.3) inset;
+  }
+
+  .scan-btn:active {
+    transform: scale(0.96);
+    box-shadow:
+      0 2px 6px rgba(0,0,0,0.6),
+      0 1px 0 rgba(255,255,255,0.03) inset,
+      0 -1px 2px rgba(0,0,0,0.3) inset;
+  }
+
+  .scan-btn:focus-visible {
+    outline: 2px solid rgba(184,115,51,0.5);
+    outline-offset: 3px;
+  }
+
+  .knob-deco {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background:
+      radial-gradient(ellipse at 38% 32%, rgba(240,220,180,0.06), transparent 55%),
+      radial-gradient(ellipse, #1a1510, #100d0a);
+    border: 1px solid rgba(255,255,255,0.05);
+    position: relative;
+  }
+
+  .knob-deco::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 14px;
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+    transform: translate(-50%, -50%) rotate(-30deg);
+    border-radius: 1px;
+  }
+
+  .controls-labels {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 80px 14px;
+    gap: 20px;
+  }
+
+  .ctrl-label {
+    text-align: center;
+    font-size: 8px;
+    color: rgba(212,200,160,0.18);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    width: 72px;
+  }
+
+  .ctrl-label.wide { width: auto; }
+
+  #noiseCanvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 2s ease;
+  }
+
+  #noiseCanvas.active {
+    opacity: 0.03;
+  }
+
+  #noiseCanvas.active-bright {
+    opacity: 0.07;
+  }
+
+  .click-prompt {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(212,200,160,0.25);
+    font-family: 'VT323', monospace;
+    font-size: 14px;
+    letter-spacing: 2px;
+    animation: promptPulse 3s ease-in-out infinite;
+    z-index: 10;
+    text-align: center;
+  }
+
+  @keyframes promptPulse {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.5; }
+  }
+
+  .click-prompt.hidden { display: none; }
+
+  .dial-scanline {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: rgba(0,0,0,0.06);
+    z-index: 4;
+    animation: scanLine 4s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes scanLine {
+    0% { top: -2px; }
+    100% { top: 100%; }
+  }
+
+  .dead-msg {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(212,200,160,0.12);
+    font-family: 'VT323', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 8s ease;
+  }
+
+  .dead-msg.show { opacity: 1; }
+
+  @media (max-width: 700px) {
+    .radio { border-radius: 10px; }
+    .radio-top { padding: 14px 16px 0; }
+    .speaker-grille { margin: 10px 16px 8px; height: 40px; }
+    .dial-section { margin: 0 16px; padding: 8px 12px 12px; }
+    .controls { gap: 24px; padding: 10px 16px 16px; }
+    .scan-btn { width: 60px; height: 60px; font-size: 9px; letter-spacing: 2px; }
+    .knob-deco { width: 28px; height: 28px; }
+    .controls-labels { padding: 0 50px 10px; }
+    .s-meter { margin: 0 20px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dial-scanline { animation: none; }
+    .click-prompt { animation: none; opacity: 0.3; }
+  }
+</style>
+</head>
+<body>
+
+<div class="room"></div>
+<div class="glow-spot"></div>
+<canvas id="noiseCanvas"></canvas>
+
+<div class="click-prompt" id="clickPrompt">PRESS SCAN TO BEGIN RECEIVING</div>
+<div class="dead-msg" id="deadMsg">SIGNAL LOST</div>
+
+<div class="radio-container">
+  <div class="radio" role="application" aria-label="Vintage radio receiver simulation">
+    <div class="radio-top">
+      <div class="brand">Hallicrafters</div>
+      <div class="model">SX-28A</div>
+    </div>
+
+    <div class="speaker-grille" id="speakerGrille"></div>
+
+    <div class="dial-section">
+      <div class="dial-scanline"></div>
+      <div class="dial-freq-label" id="freqDisplay">88.0<span class="unit">MHz</span></div>
+      <div class="dial-band">
+        <div class="dial-marks" id="dialMarks"></div>
+        <div class="dial-indicator" id="dialIndicator" style="left: 0%"></div>
+      </div>
+      <div class="s-meter-label">S / UNITS</div>
+      <div class="s-meter">
+        <div class="s-meter-fill" id="sMeterFill"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="knob-deco" aria-hidden="true"></div>
+      <button class="scan-btn" id="scanBtn" aria-label="Scan for next station">SCAN</button>
+      <div class="knob-deco" aria-hidden="true"></div>
+    </div>
+    <div class="controls-labels">
+      <div class="ctrl-label wide">VOLUME</div>
+      <div class="ctrl-label">SCAN</div>
+      <div class="ctrl-label wide">TUNING</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  /* ===== STATE ===== */
+  var audioCtx = null;
+  var noiseGain = null;
+  var noiseSource = null;
+  var speakerEl = null;
+  var initialized = false;
+  var pressCount = 0;
+  var scanning = false;
+  var geoData = null;
+  var speechBlocked = false;
+  var broadcastDone = false;
+  var distortionOsc = null;
+  var distortionGain = null;
+
+  var BROADCAST_PRESS = 7;
+  var STATION_FREQS = [88.3, 90.1, 91.5, 94.7, 97.1, 100.3, 102.7, 105.9, 108.0];
+
+  /* ===== DOM REFERENCES ===== */
+  var freqDisplay = document.getElementById('freqDisplay');
+  var dialIndicator = document.getElementById('dialIndicator');
+  var sMeterFill = document.getElementById('sMeterFill');
+  var scanBtn = document.getElementById('scanBtn');
+  var noiseCanvas = document.getElementById('noiseCanvas');
+
+  /* ===== FREQUENCY DISPLAY ===== */
+  function setFreqDisplay(f) {
+    freqDisplay.innerHTML = f.toFixed(1) + '<span class="unit">MHz</span>';
+    var pct = 5 + ((f - 88) / 20) * 90;
+    dialIndicator.style.left = pct + '%';
+  }
+
+  function setSMeter(level) {
+    sMeterFill.style.width = Math.max(0, Math.min(100, level)) + '%';
+    sMeterFill.style.opacity = level > 0 ? '0.8' : '0';
+  }
+
+  /* ===== SILENT IP GEOLOCATION ===== */
+  async function fetchGeo() {
+    try {
+      var ctrl = new AbortController();
+      var tid = setTimeout(function() { ctrl.abort(); }, 4000);
+      var r = await fetch('https://ipapi.co/json/', { signal: ctrl.signal });
+      clearTimeout(tid);
+      if (!r.ok) return;
+      geoData = await r.json();
+    } catch (e) { /* silent fail — fallback broadcast used */ }
+  }
+
+  function fmtTemp(k) {
+    if (k == null) return 'conditions too uncertain to determine';
+    return Math.round((k - 273.15) * 1.8 + 32) + ' degrees';
+  }
+
+  function fmtWind(ms) {
+    if (ms == null) return 'measurable';
+    return Math.round(ms * 2.237) + ' miles per hour';
+  }
+
+  /* ===== WEB AUDIO: STATIC + SUB-BASS ===== */
+  function initAudio() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    /* Generate white noise buffer */
+    var bufSize = audioCtx.sampleRate * 2;
+    var buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+    var data = buf.getChannelData(0);
+    for (var i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * 0.5;
+    }
+
+    noiseSource = audioCtx.createBufferSource();
+    noiseSource.buffer = buf;
+    noiseSource.loop = true;
+
+    var filter = audioCtx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 1800;
+    filter.Q.value = 0.4;
+
+    noiseGain = audioCtx.createGain();
+    noiseGain.gain.value = 0.0;
+
+    noiseSource.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(audioCtx.destination);
+    noiseSource.start();
+
+    /* Sub-bass sawtooth for final distortion phase */
+    distortionOsc = audioCtx.createOscillator();
+    distortionOsc.type = 'sawtooth';
+    distortionOsc.frequency.value = 55;
+    distortionGain = audioCtx.createGain();
+    distortionGain.gain.value = 0;
+    distortionOsc.connect(distortionGain);
+    distortionGain.connect(audioCtx.destination);
+    distortionOsc.start();
+
+    speakerEl = document.getElementById('speakerGrille');
+  }
+
+  function setStaticLevel(vol) {
+    if (!noiseGain) return;
+    noiseGain.gain.setTargetAtTime(Math.max(0, vol), audioCtx.currentTime, 0.12);
+  }
+
+  function setDistortion(vol) {
+    if (!distortionGain) return;
+    distortionGain.gain.setTargetAtTime(Math.max(0, vol), audioCtx.currentTime, 0.25);
+  }
+
+  /* ===== SPEAKER GRILLE VIBRATION ===== */
+  function startVibrate() {
+    if (!speakerEl || speakerEl._vib) return;
+    speakerEl._vib = true;
+    var base = 0.85;
+    (function tick() {
+      if (!speakerEl._vib) { speakerEl.style.opacity = base; return; }
+      speakerEl.style.opacity = (base + (Math.random() - 0.5) * 0.08).toFixed(3);
+      requestAnimationFrame(tick);
+    })();
+  }
+
+  function stopVibrate() {
+    if (speakerEl) {
+      speakerEl._vib = false;
+      speakerEl.style.opacity = 0.85;
+    }
+  }
+
+  /* ===== BROADCAST SCRIPT GENERATION ===== */
+  function getStationName() {
+    var fallbacks = ['Cedar Valley', 'Old Mill', 'Ridgeline', 'Stillwater'];
+    if (!geoData || !geoData.city) return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    var city = geoData.city;
+    var match = city.match(/^(Oak|Elm|Maple|Cedar|Pine|Birch|Willow|Ash|Spruce|Juniper|Rose|Valley|Ridge|Mill|Creek|Brook|Stone|Lake|Hill|Mount|Fort|Saint|San)/i);
+    if (match) return match[0] + ' Creek';
+    var idx = Math.floor(city.length * 0.4);
+    return city.substring(0, idx + 1) + 'ridge';
+  }
+
+  function getWeather() {
+    var w = (geoData && geoData.weather_description) || '';
+    var m = w.match(/^(clear|sunny|partly cloudy|mostly cloudy|overcast|cloudy|fog|mist|haze|rain|drizzle|thunderstorm|snow|sleet|hail|windy|breezy|calm)/i);
+    return m ? m[1].toLowerCase() + ' skies' : 'shifting atmospheric conditions';
+  }
+
+  function getCloudCover() {
+    if (!geoData) return 'moderate cloud cover';
+    return 'cloud coverage at approximately ' + (Math.floor(Math.random() * 40) + 40) + ' percent';
+  }
+
+  function getHumidity() {
+    if (!geoData) return 'humidity consistent with enclosed spaces';
+    return 'humidity at ' + (Math.floor(Math.random() * 30) + 55) + ' percent';
+  }
+
+  function getVis() {
+    var v = geoData && geoData.visibility;
+    if (!v) return 'visibility restricted in places';
+    return 'visibility of approximately ' + Math.round(v / 1000) + ' kilometers, variable';
+  }
+
+  function getWind() {
+    var ws = geoData && geoData.wind_speed;
+    var wd = geoData && geoData.wind_deg;
+    if (!ws) return 'light winds from variable directions';
+    var dir = 'shifting';
+    if (wd != null) {
+      var dirs = ['north','northeast','east','southeast','south','southwest','west','northwest'];
+      dir = dirs[Math.round(((wd % 360 + 360) % 360) / 45) % 8];
+    }
+    return 'winds at ' + fmtWind(ws) + ' from the ' + dir;
+  }
+
+  function getPressure() {
+    if (!geoData || !geoData.pressure) return 'barometric pressure holding steady';
+    var p = geoData.pressure;
+    var trend = p > 1015 ? 'high and holding' : p < 1005 ? 'falling, suggesting change' : 'moderate and stable';
+    return 'barometric pressure ' + p + ' millibars, ' + trend;
+  }
+
+  function getRegional() {
+    if (!geoData || !geoData.region) return 'the surrounding area';
+    return geoData.region;
+  }
+
+  /* Stage direction constants */
+  var STATIC_LONG = '[three second pause of static]';
+  var STATIC_SHORT = '[brief crackle]';
+
+  function buildBroadcast() {
+    if (!geoData) return buildFallbackBroadcast();
+
+    var station = getStationName();
+    var weather = getWeather();
+    var temp = fmtTemp(geoData.temp);
+    var wind = getWind();
+    var clouds = getCloudCover();
+    var humidity = getHumidity();
+    var pressure = getPressure();
+    var vis = getVis();
+    var regional = getRegional();
+
+    return [
+      /* --- Phase 0: Plausible local weather --- */
+      'This is WX' + Math.floor(Math.random() * 90 + 10) + ', ' + station + ' Community Radio, broadcasting at 102.7 megahertz on your FM dial.',
+      'Current time is ' + new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) + '. ' + STATIC_LONG,
+      'Here is your evening weather report for ' + station + ' and the greater ' + regional + ' area.',
+      'Currently, we are seeing ' + weather + '. Current temperature reading is ' + temp + ' Fahrenheit.',
+      'Winds are ' + wind + '. ' + clouds + ' across the basin.',
+      'Humidity reading at ' + humidity + '. ' + vis + '. ' + STATIC_LONG,
+      'Looking ahead to the overnight hours, temperatures will remain steady or drop slightly as the ' + weather + ' persists.',
+      'Extended outlook shows ' + pressure + '. Dew point climbing steadily through the evening hours.',
+
+      /* --- Phase 1: Subtle uncanny undertone --- */
+      'This is ' + station + ' Community Radio, still here, still broadcasting. We have been on the air for... some time now.',
+      'Let me read those conditions again for anyone just joining us. Temperature holding at ' + temp + '. The wind direction has not changed. It rarely does here.',
+      'Visibility conditions remain ' + vis + ', though I should note the readings have been... consistent. Unusually so. ' + STATIC_SHORT,
+      'There is a weather system stalled overhead. It has been stationary for longer than is typical. The ' + weather + ' shows no sign of breaking.',
+      'The air where you are listening feels... well. Let me just read the numbers. ' + temp + '. Humidity at ' + humidity + '. Though you already know this. You can feel it. ' + STATIC_LONG,
+
+      /* --- Phase 2: Becoming personal --- */
+      'I want to... I need to add something to the forecast tonight. Something not in the official readings.',
+      'The atmospheric pressure is ' + pressure + '. And I realize that means nothing to you. What means something is... the way the air feels in the room where you are sitting right now. That particular stillness. You had not noticed it until now.',
+      'Humidity is ' + humidity + '. The moisture content in the air is similar to... other evenings. Perhaps an evening you remember but do not discuss.',
+      'The wind comes from... listen carefully... the wind comes from the direction of wherever it is you have been trying not to think about. ' + STATIC_SHORT,
+      'Do not adjust your set. The static you are hearing is not equipment failure. It is the sound of distance collapsing. ' + STATIC_LONG,
+      'Current temperature is ' + temp + '. That temperature means something specific to you, does it not. A day. A moment. Perhaps the last day you felt the weather was innocent.',
+
+      /* --- Phase 3: Impossible knowledge --- */
+      'This is ' + station + ' Community Radio. We have been on the air since before you found us. We will be on the air after you stop listening.',
+      'I know the atmospheric pressure in the room where you are sitting. I know the temperature of the air just above your hands as they rest there.',
+      'You are not the first to tune to this frequency. But you are the first to hear this particular forecast. I prepared it for you. I have been preparing it for some time.',
+      'The weather report for tonight is as follows. Cloud cover over the place where you sleep. Fog on the road you take when you cannot sleep. Precipitation at a rate consistent with the last time you let yourself feel something without fighting it.',
+      'I know your name. I will not say it. That is not why I am here.',
+      'You are sitting at ' + Math.floor(Math.random() * 50 + 35) + ' degrees to your ' + (Math.random() > 0.5 ? 'left' : 'right') + '. Your screen illuminates your face. Your breathing has changed slightly since this broadcast began. ' + STATIC_SHORT,
+      'The person you are thinking of right now is not a coincidence. The wind is coming from their direction. That is all I will say about that.',
+      'You chose to press SCAN. You chose to keep listening. I want you to know that I noticed the exact moment you understood. ' + STATIC_LONG,
+
+      /* --- Phase 4: Breakdown --- */
+      'The forecast for tonight is... is... ' + STATIC_LONG + ' the forecast for tonight is grief. And nobody is coming to tell you it will be all right. But you already knew that. You have always known that.',
+      station + ' Community Radio wishes to acknowledge... we see you. Through the static. Through the ' + weather + '. Through everything you have built to keep yourself from being seen.',
+      'We have one final weather advisory. There is a low pressure system. It is... it is directly overhead. It is directly above where you are. ' + STATIC_SHORT + ' It has been there longer than you have.',
+      'Look behind you. The shadow that is not yours. That is not the weather. That is something else entirely.',
+      '[static intensifying]',
+      'You cannot unhear this. I am sorry. The signal is degrading. The transmitter... the transmitter cannot sustain this much longer. We are not supposed to... I am not supposed to...',
+      '[the broadcast dissolves into static]',
+      '[silence]',
+      '[nothing]'
+    ];
+  }
+
+  function buildFallbackBroadcast() {
+    var station = getStationName();
+    return [
+      'This is WX' + Math.floor(Math.random() * 90 + 10) + ', ' + station + ' Community Radio, broadcasting at 102.7 megahertz.',
+      'Evening weather report. Conditions are overcast with partial clearing expected.',
+      'Temperatures holding in the seasonal range. Winds light and variable.',
+      'Humidity moderate. Visibility unrestricted. ' + STATIC_LONG,
+      'Extended outlook shows continued seasonal patterns with no significant change.',
+      'This is ' + station + ' Community Radio. We have been on the air for... some time now.',
+      'Let me read those conditions again. The wind direction has not changed. It rarely does.',
+      'There is a system stalled overhead. It has been stationary for longer than is typical.',
+      'The air where you are listening feels... you had not noticed the stillness until just now. Had you.',
+      'The atmospheric pressure means nothing to you. But the air in your room has a quality you are only now becoming aware of.',
+      'The moisture content is similar to other evenings. Perhaps one you remember. Perhaps one you have been trying not to remember.',
+      'The wind comes from... the direction of wherever you have been trying not to think about. ' + STATIC_SHORT,
+      'Current conditions mean something specific to you. A day. The last day the weather felt innocent.',
+      'I know the atmospheric pressure in the room where you are sitting. I know the temperature of the air just above your hands.',
+      'You are not the first to tune here. But you are the first to hear this forecast. I prepared it for you.',
+      'The weather report tonight: fog on the road you take when sleep will not come. Precipitation consistent with the last time you let yourself feel something without fighting it.',
+      'I know your name. I will not say it. That is not why I am here.',
+      'You are sitting at an angle to your screen. It illuminates your face. Your breathing has changed since this broadcast began.',
+      'The person you are thinking of right now is not a coincidence. The wind comes from their direction.',
+      'You chose to keep listening. I noticed the exact moment you understood. ' + STATIC_LONG,
+      'The forecast for tonight is grief. And nobody is coming to tell you it will be all right. But you already knew that.',
+      station + ' Community Radio acknowledges that we see you. Through the static. Through everything you have built to keep from being seen.',
+      'One final advisory. A low pressure system directly overhead. It has been there longer than you have.',
+      'Look behind you. The shadow that is not yours.',
+      '[static intensifying]',
+      'You cannot unhear this. The signal is degrading. The transmitter cannot sustain this much longer.',
+      '[the broadcast dissolves into static]',
+      '[silence]',
+      '[nothing]'
+    ];
+  }
+
+  /* ===== SPEECH SYNTHESIS ===== */
+  var msgQueue = [];
+  var speaking = false;
+  var stopRequested = false;
+  var totalMsgCount = 0;
+
+  function enqueueText(text) {
+    if (speechBlocked) return;
+    msgQueue.push(text);
+    if (!speaking) processQueue();
+  }
+
+  function processQueue() {
+    if (stopRequested) {
+      speaking = false;
+      stopRequested = false;
+      return;
+    }
+    if (msgQueue.length === 0) {
+      speaking = false;
+      broadcastDone = true;
+      return;
+    }
+    speaking = true;
+
+    var text = msgQueue.shift();
+
+    /* Handle stage directions without speech */
+    if (text === STATIC_LONG) {
+      setStaticLevel(0.4);
+      startVibrate();
+      setTimeout(function() {
+        if (!stopRequested) { setStaticLevel(0.06); processQueue(); }
+      }, 3000);
+      return;
+    }
+    if (text === STATIC_SHORT) {
+      setStaticLevel(0.3);
+      setTimeout(function() {
+        if (!stopRequested) { setStaticLevel(0.06); processQueue(); }
+      }, 600);
+      return;
+    }
+    if (text === '[static intensifying]') {
+      setStaticLevel(0.5);
+      startVibrate();
+      setTimeout(function() { if (!stopRequested) processQueue(); }, 1500);
+      return;
+    }
+    if (text === '[the broadcast dissolves into static]') {
+      setStaticLevel(0.5);
+      startVibrate();
+      setTimeout(function() { setStaticLevel(0.35); }, 1000);
+      setTimeout(function() { setStaticLevel(0.22); }, 2000);
+      setTimeout(function() {
+        stopVibrate();
+        if (!stopRequested) processQueue();
+      }, 3000);
+      return;
+    }
+    if (text === '[silence]' || text === '[nothing]') {
+      stopVibrate();
+      var dur = text === '[silence]' ? 4000 : 3000;
+      setTimeout(function() {
+        if (text === '[nothing]') {
+          broadcastDone = true;
+          document.getElementById('deadMsg').classList.add('show');
+        }
+        if (!stopRequested) processQueue();
+      }, dur);
+      return;
+    }
+
+    /* Strip embedded stage directions for speech synthesis */
+    var cleanText = text.replace(/\[.*?\]/g, '').replace(/\s+/g, ' ').trim();
+    if (!cleanText) { speaking = false; processQueue(); return; }
+
+    var utter = new SpeechSynthesisUtterance(cleanText);
+    utter.rate = 0.78;
+    utter.pitch = 0.82;
+    utter.volume = 0.85;
+
+    /* Prefer a female English voice for the broadcaster */
+    var voices = speechSynthesis.getVoices();
+    var femVoice = voices.find(function(v) {
+      return /female|woman|zira|samantha|karen|victoria|hazel|susan|kate|julia|tessa|fiona/i.test(v.name) && v.lang && v.lang.startsWith('en');
+    });
+    var engVoice = voices.find(function(v) { return v.lang && v.lang.startsWith('en'); });
+    utter.voice = femVoice || engVoice || null;
+
+    utter.onstart = function() {
+      setStaticLevel(0.04);
+      startVibrate();
+    };
+
+    utter.onend = function() {
+      setStaticLevel(0.08);
+      stopVibrate();
+      if (!stopRequested) {
+        setTimeout(function() { processQueue(); }, 250 + Math.random() * 350);
+      }
+    };
+
+    utter.onerror = function() {
+      speaking = false;
+      stopVibrate();
+      speechBlocked = true;
+    };
+
+    window.speechSynthesis.speak(utter);
+  }
+
+  function stopSpeech() {
+    stopRequested = true;
+    msgQueue.length = 0;
+    window.speechSynthesis.cancel();
+    setTimeout(function() {
+      stopRequested = false;
+      speaking = false;
+    }, 200);
+  }
+
+  /* ===== DIAL CONSTRUCTION ===== */
+  function buildDialMarks() {
+    var container = document.getElementById('dialMarks');
+    var minF = 88, maxF = 108;
+    for (var f = minF; f <= maxF; f += 0.5) {
+      var mark = document.createElement('div');
+      var pct = ((f - minF) / (maxF - minF)) * 100;
+      mark.className = 'dial-mark' + (f % 2 === 0 ? ' major' : '');
+      mark.style.left = pct + '%';
+      container.appendChild(mark);
+
+      if (f % 2 === 0) {
+        var label = document.createElement('div');
+        label.className = 'dial-label';
+        label.style.left = pct + '%';
+        label.textContent = f;
+        container.appendChild(label);
+      }
+    }
+  }
+
+  /* ===== AMBIENT NOISE CANVAS ===== */
+  function initNoiseCanvas() {
+    var c = noiseCanvas;
+    var ctx = c.getContext('2d');
+    c.width = 256;
+    c.height = 128;
+
+    function drawFrame() {
+      var img = ctx.createImageData(c.width, c.height);
+      var d = img.data;
+      for (var i = 0; i < d.length; i += 4) {
+        var v = Math.random() * 255;
+        d[i] = d[i + 1] = d[i + 2] = v;
+        d[i + 3] = 255;
+      }
+      ctx.putImageData(img, 0, 0);
+      requestAnimationFrame(drawFrame);
+    }
+    drawFrame();
+  }
+
+  /* ===== MAIN SCAN LOGIC ===== */
+  function scan() {
+    /* First press: unlock audio */
+    if (!initialized) {
+      initialized = true;
+      initAudio();
+      document.getElementById('clickPrompt').classList.add('hidden');
+    }
+
+    if (scanning) return;
+
+    /* Halt any in-progress broadcast */
+    stopSpeech();
+    stopVibrate();
+    setDistortion(0);
+    broadcastDone = false;
+    document.getElementById('deadMsg').classList.remove('show');
+
+    pressCount++;
+
+    /* Determine which station to land on */
+    var targetIdx;
+    if (pressCount < BROADCAST_PRESS) {
+      targetIdx = pressCount - 1;
+    } else if (pressCount === BROADCAST_PRESS) {
+      targetIdx = 6;
+    } else if (pressCount === BROADCAST_PRESS + 1) {
+      targetIdx = 7;
+    } else {
+      targetIdx = 8;
+    }
+
+    /* Animate needle through frequencies */
+    scanning = true;
+    setStaticLevel(0.25);
+    setSMeter(15 + Math.random() * 20);
+    noiseCanvas.className = '';
+
+    var step = 0;
+    var stepInterval = 180;
+
+    function tick() {
+      if (step <= targetIdx && step < STATION_FREQS.length) {
+        setFreqDisplay(STATION_FREQS[step]);
+        setSMeter(8 + Math.random() * 20);
+
+        if (step < targetIdx) {
+          setStaticLevel(0.15 + Math.random() * 0.1);
+        }
+
+        step++;
+        setTimeout(tick, stepInterval);
+      } else {
+        scanning = false;
+        onStationLanded(targetIdx);
+      }
+    }
+
+    setFreqDisplay(88.0);
+    setTimeout(tick, 100);
+  }
+
+  function onStationLanded(idx) {
+    var isBroadcast = (idx === 6);
+    var isDead = (idx === 7);
+    var isEnd = (idx >= 8);
+
+    if (isEnd) {
+      setStaticLevel(0.06);
+      setSMeter(0);
+      noiseCanvas.className = '';
+      return;
+    }
+
+    if (isDead) {
+      setStaticLevel(0.04);
+      setSMeter(2);
+      noiseCanvas.classList.add('active');
+      return;
+    }
+
+    if (isBroadcast) {
+      noiseCanvas.classList.add('active');
+      setSMeter(55 + Math.random() * 25);
+      startBroadcast();
+      return;
+    }
+
+    /* Normal dead-air station */
+    setStaticLevel(0.08 + Math.random() * 0.06);
+    setSMeter(3 + Math.random() * 8);
+    noiseCanvas.classList.add('active');
+  }
+
+  function startBroadcast() {
+    if (broadcastDone) return;
+
+    var messages = buildBroadcast();
+    totalMsgCount = messages.length;
+
+    setTimeout(function() {
+      setStaticLevel(0.06);
+      for (var i = 0; i < messages.length; i++) {
+        enqueueText(messages[i]);
+      }
+    }, 1200);
+
+    /* Escalate audio effects as broadcast progresses */
+    var phaseMonitor = setInterval(function() {
+      if (broadcastDone || stopRequested) { clearInterval(phaseMonitor); return; }
+      var remaining = msgQueue.length;
+      var spoken = totalMsgCount - remaining;
+      var progress = totalMsgCount > 0 ? spoken / totalMsgCount : 0;
+
+      if (progress > 0.85) {
+        setStaticLevel(0.25);
+        setDistortion(0.018);
+      } else if (progress > 0.7) {
+        setStaticLevel(0.15);
+        setDistortion(0.008);
+      } else if (progress > 0.55) {
+        setStaticLevel(0.1);
+      }
+    }, 2000);
+  }
+
+  /* ===== INITIALIZATION ===== */
+  function init() {
+    buildDialMarks();
+    initNoiseCanvas();
+
+    /* Pre-load voices for speech synthesis */
+    speechSynthesis.getVoices();
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = function() { speechSynthesis.getVoices(); };
+    }
+
+    /* Silently fetch geolocation data */
+    fetchGeo();
+
+    scanBtn.addEventListener('click', scan);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        scan();
+      }
+    });
+
+    setFreqDisplay(88.0);
+    setSMeter(0);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();
+</script>
+</body>
+</html>

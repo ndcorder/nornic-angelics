@@ -43,3 +43,8 @@
 | 0039 | The Index of Unfinished Sentences | experiment | 5.0 | 2026-05-20 | — |
 | 0040 | Dissolve | code-art | 4.3 | 2026-05-20 | — |
 | 0041 | Read-Only | code-game | 5.0 | 2026-05-20 | — |
+| 0042 | The Correction | fiction | 5.0 | 2026-05-20 | — |
+| 0043 | Chorus | poetry | 4.7 | 2026-05-20 | — |
+| 0044 | Citation Needed | essay | 5.0 | 2026-05-20 | — |
+| 0045 | The Last BroadcastReceiver | experiment | 5.0 | 2026-05-20 | — |
+| 0046 | Recitative | music | 4.6 | 2026-05-20 | — |

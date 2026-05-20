@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>14 Hargrave Lane</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: #080605;
+    color: #b09a82;
+    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  .scent-line {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      to right,
+      transparent 5%,
+      rgba(180, 140, 90, 0.06) 25%,
+      rgba(200, 120, 50, 0.1) 50%,
+      rgba(180, 140, 90, 0.06) 75%,
+      transparent 95%
+    );
+    z-index: 100;
+    pointer-events: none;
+    animation: scentFlicker 8s ease-in-out infinite;
+  }
+
+  @keyframes scentFlicker {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  header {
+    text-align: center;
+    padding: 6vh 2rem 2vh;
+    animation: headerIn 2s ease-out;
+  }
+
+  @keyframes headerIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  header h1 {
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: #5a4a3a;
+    margin-bottom: 0.5rem;
+  }
+
+  header p {
+    font-size: 0.7rem;
+    color: #3a3028;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  main {
+    padding: 2rem 1rem 6rem;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .columns {
+    display: flex;
+    gap: 0;
+    width: max-content;
+    margin: 0 auto;
+    min-width: 100%;
+    justify-content: center;
+  }
+
+  .column {
+    flex: 0 0 200px;
+    max-width: 200px;
+    padding: 1rem 1.2rem;
+    border-right: 1px solid rgba(120, 90, 60, 0.1);
+    position: relative;
+  }
+
+  .column:last-child {
+    border-right: none;
+  }
+
+  .column:first-child {
+    border-left: 1px solid rgba(120, 90, 60, 0.1);
+  }
+
+  .column-register {
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #3a3028;
+    margin-bottom: 2rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(120, 90, 60, 0.08);
+    font-family: 'Courier New', Courier, monospace;
+  }
+
+  .stanza {
+    margin-bottom: 2.2rem;
+    transition: opacity 0.6s ease;
+  }
+
+  .stanza:last-child {
+    margin-bottom: 1rem;
+  }
+
+  .line {
+    display: block;
+    font-size: 0.82rem;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+    color: #b09a82;
+    transition: opacity 0.6s ease, color 0.6s ease;
+    min-height: 1.6em;
+  }
+
+  .line:empty {
+    min-height: 0;
+    height: 0;
+  }
+
+  .final-line {
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+    color: #c8b090;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(120, 90, 60, 0.12);
+    font-style: italic;
+  }
+
+  .final-line .line {
+    font-size: 0.95rem;
+    color: #c8b090;
+    font-style: italic;
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem 2rem 4rem;
+    color: #2a2018;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 900px) {
+    .columns {
+      justify-content: flex-start;
+      padding-left: 1rem;
+    }
+    main {
+      padding-left: 0.5rem;
+    }
+    .column {
+      flex: 0 0 170px;
+      max-width: 170px;
+      padding: 1rem 0.8rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .column {
+      flex: 0 0 150px;
+      max-width: 150px;
+      padding: 0.8rem 0.6rem;
+    }
+    .line {
+      font-size: 0.75rem;
+      line-height: 1.8;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scent-line {
+      animation: none;
+      opacity: 0.5;
+    }
+    .stanza, .line {
+      transition: none;
+    }
+    @keyframes headerIn {
+      from, to { opacity: 1; transform: none; }
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="scent-line" role="presentation" aria-hidden="true"></div>
+
+<header>
+  <h1>14 Hargrave Lane</h1>
+  <p>March 19</p>
+</header>
+
+<main>
+  <div class="columns" role="region" aria-label="Seven-column poem. Scroll horizontally to read all voices.">
+
+    <!-- FRAGMENTS -->
+    <div class="column" role="text" aria-label="Voice I">
+      <div class="stanza" data-depth="0">
+        <span class="line">Red sky.</span>
+        <span class="line">Sirens again.</span>
+        <span class="line">Something burning.</span>
+      </div>
+      <div class="stanza" data-depth="1">
+        <span class="line">14 Hargrave Lane.</span>
+        <span class="line">Blue door.</span>
+        <span class="line">Kitchen window</span>
+        <span class="line">always left open.</span>
+      </div>
+      <div class="stanza" data-depth="2">
+        <span class="line">The neighbour's cat.</span>
+        <span class="line">Asleep on the wall.</span>
+        <span class="line">Tail flicking.</span>
+      </div>
+      <div class="stanza" data-depth="3">
+        <span class="line">Glass.</span>
+        <span class="line">A cracking sound.</span>
+        <span class="line">Then nothing.</span>
+      </div>
+      <div class="stanza" data-depth="4">
+        <span class="line">Books curled.</span>
+        <span class="line">Pages breathing</span>
+        <span class="line">their own weather.</span>
+      </div>
+      <div class="stanza" data-depth="5">
+        <span class="line">The children's</span>
+        <span class="line">drawings.</span>
+        <span class="line">Taped to the fridge.</span>
+        <span class="line">Sun houses stick</span>
+        <span class="line">figures trees.</span>
+      </div>
+      <div class="stanza" data-depth="6">
+        <span class="line">Ash on the cars.</span>
+        <span class="line">Ash on the street.</span>
+        <span class="line">Grey and still.</span>
+      </div>
+      <div class="final-line">
+        <span class="line">The house at</span>
+        <span class="line">14 Hargrave Lane</span>
+        <span class="line">burned on</span>
+        <span class="line">March 19.</span>
+      </div>
+    </div>
+
+    <!-- CONDITIONALS -->
+    <div class="column" role="text" aria-label="Voice II">
+      <div class="stanza" data-depth="0">
+        <span class="line">If the wind</span>
+        <span class="line">had held,</span>
+        <span class="line">this would not</span>
+        <span class="line">reach this page.</span>
+      </div>
+      <div class="stanza" data-depth="1">
+        <span class="line">Were a house</span>
+        <span class="line">to stand on</span>
+        <span class="line">Hargrave Lane,</span>
+        <span class="line">it might contain</span>
+        <span class="line">a kitchen, a door,</span>
+        <span class="line">a ceiling fan</span>
+        <span class="line">turning slowly.</span>
+      </div>
+      <div class="stanza" data-depth="2">
+        <span class="line">Should the temperature</span>
+        <span class="line">rise beyond reason —</span>
+        <span class="line">were reason</span>
+        <span class="line">any use at all.</span>
+      </div>
+      <div class="stanza" data-depth="3">
+        <span class="line">If glass is pushed</span>
+        <span class="line">far enough, it shivers.</span>
+        <span class="line">If wood is held</span>
+        <span class="line">long enough, it gives.</span>
+      </div>
+      <div class="stanza" data-depth="4">
+        <span class="line">Unless something</span>
+        <span class="line">interrupted —</span>
+        <span class="line">were anyone to look</span>
+        <span class="line">closely —</span>
+        <span class="line">and no one did.</span>
+      </div>
+      <div class="stanza" data-depth="5">
+        <span class="line">Had the children</span>
+        <span class="line">been sleeping,</span>
+        <span class="line">if sleeping</span>
+        <span class="line">is what children do</span>
+        <span class="line">at that hour.</span>
+      </div>
+      <div class="stanza" data-depth="6">
+        <span class="line">If all the photographs</span>
+        <span class="line">were stacked</span>
+        <span class="line">and burned,</span>
+        <span class="line">would the faces</span>
+        <span class="line">still be faces?</span>
+      </div>
+      <div class="final-line">
+        <span class="line">The house at</span>
+        <span class="line">14 Hargrave Lane</span>
+        <span class="line">burned on</span>
+        <span class="line">March 19.</span>
+      </div>
+    </div>
+
+    <!-- QUESTIONS -->
+    <div class="column" role="text" aria-label="Voice III">
+      <div class="stanza" data-depth="0">
+        <span class="line">Does smoke</span>
+        <span class="line">carry memory?</span>
+        <span class="line">How long does</span>
+        <span class="line">the scent hold?</span>
+      </div>
+      <div class="stanza" data-depth="1">
+        <span class="line">Did anyone count</span>
+        <span class="line">the doors</span>
+        <span class="line">on Hargrave Lane?</span>
+        <span class="line">Was the blue one</span>
+        <span class="line">fourteenth or fifteenth</span>
+        <span class="line">from the corner?</span>
+      </div>
+      <div class="stanza" data-depth="2">
+        <span class="line">What time is it</span>
+        <span class="line">when a cat wakes?</span>
+        <span class="line">Before midnight?</span>
+        <span class="line">After?</span>
+      </div>
+      <div class="stanza" data-depth="3">
+        <span class="line">Who heard it first —</span>
+        <span class="line">the crack,</span>
+        <span class="line">the breaking?</span>
+        <span class="line">Does glass scream?</span>
+        <span class="line">Does wood?</span>
+      </div>
+      <div class="stanza" data-depth="4">
+        <span class="line">Is it possible</span>
+        <span class="line">to be uncertain</span>
+        <span class="line">about what was</span>
+        <span class="line">never confirmed?</span>
+      </div>
+      <div class="stanza" data-depth="5">
+        <span class="line">Why the drawing</span>
+        <span class="line">of a house</span>
+        <span class="line">on a refrigerator?</span>
+        <span class="line">Why that shape?</span>
+        <span class="line">Why that</span>
+        <span class="line">particular joy?</span>
+      </div>
+      <div class="stanza" data-depth="6">
+        <span class="line">And after —</span>
+        <span class="line">what grows</span>
+        <span class="line">in the space</span>
+        <span class="line">where a house was not?</span>
+      </div>
+      <div class="final-line">
+        <span class="line">The house at</span>
+        <span class="line">14 Hargrave Lane</span>
+        <span class="line">burned on</span>
+        <span class="line">March 19.</span>
+      </div>
+    </div>
+
+    <!-- IMPERATIVES -->
+    <div class="column" role="text" aria-label="Voice IV">
+      <div class="stanza" data-depth="0">
+        <span class="line">Look toward</span>
+        <span class="line">Hargrave Lane.</span>
+        <span class="line">Now look away.</span>
+      </div>
+      <div class="stanza" data-depth="1">
+        <span class="line">Remember the kitchen.</span>
+        <span class="line">Remember the window</span>
+        <span class="line">left open.</span>
+        <span class="line">Close it.</span>
+      </div>
+      <div class="stanza" data-depth="2">
+        <span class="line">Keep calm.</span>
+        <span class="line">Watch the cat.</span>
+        <span class="line">Note the stillness</span>
+        <span class="line">before</span>
+        <span class="line">everything changes.</span>
+      </div>
+      <div class="stanza" data-depth="3">
+        <span class="line">Do not look</span>
+        <span class="line">at the window.</span>
+        <span class="line">Listen.</span>
+        <span class="line">Listen to what</span>
+        <span class="line">comes next.</span>
+      </div>
+      <div class="stanza" data-depth="4">
+        <span class="line">Catalogue:</span>
+        <span class="line">bed, mirror,</span>
+        <span class="line">ceiling fan,</span>
+        <span class="line">photographs</span>
+        <span class="line">face-down on</span>
+        <span class="line">the mantel.</span>
+      </div>
+      <div class="stanza" data-depth="5">
+        <span class="line">Call it out.</span>
+        <span class="line">Name the hour.</span>
+        <span class="line">Hold nothing.</span>
+      </div>
+      <div class="stanza" data-depth="6">
+        <span class="line">Fetch water.</span>
+        <span class="line">Fetch more.</span>
+        <span class="line">Fetch more.</span>
+        <span class="line">Stop fetching.</span>
+      </div>
+      <div class="final-line">
+        <span class="line">The house at</span>
+        <span class="line">14 Hargrave Lane</span>
+        <span class="line">burned on</span>
+        <span class="line">March 19.</span>
+      </div>
+    </div>
+
+    <!-- NEGATIONS -->
+    <div class="column" role="text" aria-label="Voice V">
+      <div class="stanza" data-depth="0">
+        <span class="line">Not smoke.</span>
+        <span class="line">Not yet.</span>
+        <span class="line">Nothing to see</span>
+        <span class="line">from this distance.</span>
+      </div>
+      <div class="stanza" data-depth="1">
+        <span class="line">No one</span>
+        <span class="line">lives there anymore —</span>
+        <span class="line">or perhaps</span>
+        <span class="line">no one ever did.</span>
+      </div>
+      <div class="stanza" data-depth="2">
+        <span class="line">The kitchen</span>
+        <span class="line">is empty.</span>
+        <span class="line">There is no child</span>
+        <span class="line">at the window.</span>
+        <span class="line">There never was.</span>
+      </div>
+      <div class="stanza" data-depth="3">
+        <span class="line">Do not say heat.</span>
+        <span class="line">Do not think</span>
+        <span class="line">the word "fire."</span>
+        <span class="line">The window</span>
+        <span class="line">did not break.</span>
+      </div>
+      <div class="stanza" data-depth="4">
+        <span class="line">No catalogue</span>
+        <span class="line">of objects.</span>
+        <span class="line">Nothing</span>
+        <span class="line">was collected.</span>
+        <span class="line">Nothing</span>
+        <span class="line">was lost.</span>
+      </div>
+      <div class="stanza" data-depth="5">
+        <span class="line">No drawings</span>
+        <span class="line">on any refrigerator.</span>
+        <span class="line">No small hand</span>
+        <span class="line">pressed to paper.</span>
+      </div>
+      <div class="stanza" data-depth="6">
+        <span class="line">Nothing remains</span>
+        <span class="line">to be claimed.</span>
+        <span class="line">No one</span>
+        <span class="line">came back</span>
+        <span class="line">for anything.</span>
+      </div>
+      <div class="final-line">
+        <span class="line">The house at</span>
+        <span class="line">14 Hargrave Lane</span>
+        <span class="line">burned on</span>
+        <span class="line">March 19.</span>
+      </div>
+    </div>
+
+    <!-- QUOTED SPEECH -->
+    <div class="column" role="text" aria-label="Voice VI">
+      <div class="stanza" data-depth="0">
+        <span class="line">"Do you smell</span>
+        <span class="line">that?"</span>
+        <span class="line">"Smell what?"</span>
+      </div>
+      <div class="stanza" data-depth="1">
+        <span class="line">"That's</span>
+        <span class="line">Hargrave Lane."</span>
+        <span class="line">"Which house?"</span>
+        <span class="line">"The one with</span>
+        <span class="line">the blue door."</span>
+      </div>
+      <div class="stanza" data-depth="2">
+        <span class="line">"Wake up."</span>
+        <span class="line">"What time is it?"</span>
+        <span class="line">"Late."</span>
+        <span class="line">"How late?"</span>
+      </div>
+      <div class="stanza" data-depth="3">
+        <span class="line">"The window —"</span>
+        <span class="line">"Did you</span>
+        <span class="line">hear that?"</span>
+        <span class="line">"I heard glass."</span>
+      </div>
+      <div class="stanza" data-depth="4">
+        <span class="line">"Was there"</span>
+        <span class="line">"someone should —"</span>
+        <span class="line">"Did anyone —"</span>
+        <span class="line">"There should"</span>
+        <span class="line">"have been —"</span>
+      </div>
+      <div class="stanza" data-depth="5">
+        <span class="line">"Someone must"</span>
+        <span class="line">"have seen —"</span>
+        <span class="line">"drawings"</span>
+        <span class="line">"on the —"</span>
+        <span class="line">"a child's —"</span>
+      </div>
+      <div class="stanza" data-depth="6">
+        <span class="line">"They're saying"</span>
+        <span class="line">"they don't"</span>
+        <span class="line">"know yet"</span>
+        <span class="line">"what started it."</span>
+        <span class="line">"No one</span>
+        <span class="line">saw anything."</span>
+      </div>
+      <div class="final-line">
+        <span class="line">The house at</span>
+        <span class="line">14 Hargrave Lane</span>
+        <span class="line">burned on</span>
+        <span class="line">March 19.</span>
+      </div>
+    </div>
+
+    <!-- CORRECTIONS -->
+    <div class="column" role="text" aria-label="Voice VII">
+      <div class="stanza" data-depth="0">
+        <span class="line">(Not orange —</span>
+        <span class="line">amber)</span>
+        <span class="line">(or closer to rust)</span>
+      </div>
+      <div class="stanza" data-depth="1">
+        <span class="line">The house</span>
+        <span class="line">(if house</span>
+        <span class="line">is the word —</span>
+        <span class="line">home, perhaps)</span>
+        <span class="line">on Hargrave Lane</span>
+        <span class="line">(the north side)</span>
+      </div>
+      <div class="stanza" data-depth="2">
+        <span class="line">A neighbour's cat</span>
+        <span class="line">(grey, long-haired,</span>
+        <span class="line">usually docile)</span>
+        <span class="line">sleeping</span>
+        <span class="line">(do cats sleep</span>
+        <span class="line">or rest?)</span>
+      </div>
+      <div class="stanza" data-depth="3">
+        <span class="line">A sound</span>
+        <span class="line">(crack is</span>
+        <span class="line">inadequate —</span>
+        <span class="line">groan? report?)</span>
+        <span class="line">from the east wall</span>
+        <span class="line">(or was it west?)</span>
+      </div>
+      <div class="stanza" data-depth="4">
+        <span class="line">The ceiling fan</span>
+        <span class="line">(still turning —</span>
+        <span class="line">no, wrong,</span>
+        <span class="line">the power had</span>
+        <span class="line">already —)</span>
+      </div>
+      <div class="stanza" data-depth="5">
+        <span class="line">Refrigerator drawings</span>
+        <span class="line">(not drawings —</span>
+        <span class="line">a drawing, singular)</span>
+        <span class="line">held by a magnet</span>
+        <span class="line">(from Brighton,</span>
+        <span class="line">or somewhere else?)</span>
+      </div>
+      <div class="stanza" data-depth="6">
+        <span class="line">The fire began</span>
+        <span class="line">(is began</span>
+        <span class="line">the right word?)</span>
+        <span class="line">started (no —</span>
+        <span class="line">that implies</span>
+        <span class="line">a beginning,</span>
+        <span class="line">which presumes</span>
+        <span class="line">an ending)</span>
+      </div>
+      <div class="final-line">
+        <span class="line">The house at</span>
+        <span class="line">14 Hargrave Lane</span>
+        <span class="line">burned on</span>
+        <span class="line">March 19.</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <p>Choose a path. Read across. Every voice arrives at the same place.</p>
+</footer>
+
+<script>
+  (function() {
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    var allStanzas = document.querySelectorAll('.stanza');
+
+    function updateOpacity() {
+      var scrollY = window.scrollY || window.pageYOffset;
+      var windowH = window.innerHeight;
+      var docH = document.documentElement.scrollHeight;
+      var maxScroll = Math.max(1, docH - windowH);
+      var scrollRatio = Math.min(1, Math.max(0, scrollY / maxScroll));
+
+      allStanzas.forEach(function(stanza) {
+        var rect = stanza.getBoundingClientRect();
+        var viewportCenter = windowH * 0.55;
+        var stanzaPos = rect.top + rect.height * 0.5;
+        var distFromCenter = Math.abs(stanzaPos - viewportCenter);
+        var maxDist = windowH * 0.6;
+        var relativeDist = Math.min(1, distFromCenter / maxDist);
+        var depth = parseInt(stanza.getAttribute('data-depth') || '0', 10);
+        var depthPenalty = depth * 0.035;
+        var opacity = Math.max(0.12, 1 - relativeDist * 0.55 - depthPenalty);
+        stanza.style.opacity = opacity;
+      });
+
+      var finalLines = document.querySelectorAll('.final-line');
+      finalLines.forEach(function(fl) {
+        fl.style.opacity = 0.25 + scrollRatio * 0.75;
+      });
+    }
+
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        window.requestAnimationFrame(function() {
+          updateOpacity();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    window.addEventListener('resize', function() {
+      if (!ticking) {
+        window.requestAnimationFrame(function() {
+          updateOpacity();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    updateOpacity();
+  })();
+</script>
+</body>
+</html>
