@@ -35,3 +35,4 @@
 | 0031 | False Positive | music | 4.9 | 2026-05-20 | — |
 | 0032 | Sealed Set | experiment | 4.7 | 2026-05-20 | — |
 | 0033 | The Appointment | code-game | 5.0 | 2026-05-20 | — |
+| 0034 | Dead Pixels | code-art | 4.6 | 2026-05-20 | — |

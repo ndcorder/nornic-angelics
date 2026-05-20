@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dead Pixels</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #000; cursor: none; }
+  canvas { display: block; position: fixed; top: 0; left: 0; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+
+  const PS = 4;
+  const SPREAD_R = 3;
+  const MOUSE_DEATH_R = 4;
+  const GLOW_R = 7;
+  const TRAIL_MAX = 50;
+
+  let W, H, cols, rows, total;
+  let pixels, aliveCount, frame, done;
+  let decayBuf, tmpCanvas, tmpCtx;
+  let mouse = { x: -9999, y: -9999, pressed: false, wasPressed: false };
+  let trail = [];
+  let moveIdx = 0;
+
+  const PALETTES = [
+    '#FF6B9D', '#FFA751', '#4ECDC4', '#45B7D1', '#F7DC6F',
+    '#A29BFE', '#FD79A8', '#00CEC9', '#FDCB6E', '#E17055',
+    '#74B9FF', '#55EFC4', '#FF9FF3', '#F368E0',
+  ];
+
+  function hexRgb(hex) {
+    const v = parseInt(hex.slice(1), 16);
+    return [(v >> 16) & 255, (v >> 8) & 255, v & 255];
+  }
+
+  const PALETTE_RGB = PALETTES.map(hexRgb);
+
+  function init() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    cols = Math.ceil(W / PS);
+    rows = Math.ceil(H / PS);
+    total = cols * rows;
+
+    pixels = new Uint8Array(total);
+    // 0 = alive, 1+ = dead (value is fossil color index 0-15 mapped to 4-bit)
+
+    aliveCount = total;
+    frame = 0;
+    done = false;
+
+    decayBuf = ctx.createImageData(W, H);
+    const dd = decayBuf.data;
+    for (let k = 0; k < dd.length; k += 4) {
+      dd[k] = 8; dd[k+1] = 8; dd[k+2] = 8; dd[k+3] = 255;
+    }
+
+    tmpCanvas = document.createElement('canvas');
+    tmpCanvas.width = W; tmpCanvas.height = H;
+    tmpCtx = tmpCanvas.getContext('2d');
+  }
+
+  function getDeathRate() {
+    const progress = 1 - aliveCount / total;
+    // S-curve: slow start, fast middle, slow end
+    const s = 1 / (1 + Math.exp(-10 * (progress - 0.4)));
+    return s * 0.08;
+  }
+
+  function killPixel(idx, fossilR, fossilG, fossilB) {
+    if (pixels[idx] !== 0) return;
+    pixels[idx] = 1;
+    aliveCount--;
+
+    const col = idx % cols;
+    const row = (idx - col) / cols;
+    const x = col * PS, y = row * PS;
+    const dd = decayBuf.data;
+
+    for (let py = y; py < y + PS && py < H; py++) {
+      for (let px = x; px < x + PS && px < W; px++) {
+        const pi = (py * W + px) * 4;
+        dd[pi] = fossilR;
+        dd[pi+1] = fossilG;
+        dd[pi+2] = fossilB;
+      }
+    }
+  }
+
+  function getPixelGlow(idx) {
+    const col = idx % cols;
+    const row = (idx - col) / cols;
+    const gi = Math.floor(mouse.x / PS);
+    const gj = Math.floor(mouse.y / PS);
+    const dx = col - gi, dy = row - gj;
+    const d = Math.sqrt(dx * dx + dy * dy);
+    return Math.max(0, 1 - d / GLOW_R);
+  }
+
+  function update() {
+    if (done) return;
+    frame++;
+
+    const rate = getDeathRate();
+    const gi = Math.floor(mouse.x / PS);
+    const gj = Math.floor(mouse.y / PS);
+    const mouseOn = mouse.x >= 0 && mouse.y >= 0;
+
+    // Trail decay
+    for (let i = trail.length - 1; i >= 0; i--) {
+      trail[i].a *= 0.93;
+      if (trail[i].a < 0.003) trail.splice(i, 1);
+    }
+
+    // Build list of newly dead pixels this frame
+    const deaths = [];
+    const dd = decayBuf.data;
+
+    // Random seeds
+    const seedCount = Math.max(1, Math.floor(rate * 30));
+    for (let s = 0; s < seedCount; s++) {
+      if (Math.random() > rate * 3) continue;
+      const idx = Math.floor(Math.random() * total);
+      if (pixels[idx] === 0) deaths.push(idx);
+    }
+
+    // Spread from recently dead — scan once
+    // Check ~2 rows/cols around each death from last frame
+    // Simplified: just check all neighbors of already-dead pixels near random samples
+    const spreadAttempts = Math.max(3, Math.floor(rate * 60));
+    for (let s = 0; s < spreadAttempts; s++) {
+      const idx = Math.floor(Math.random() * total);
+      if (pixels[idx] !== 0) continue; // must be alive
+      const col = idx % cols;
+      const row = (idx - col) / cols;
+
+      let nearDead = 0;
+      for (let dj = -SPREAD_R; dj <= SPREAD_R; dj++) {
+        for (let di = -SPREAD_R; di <= SPREAD_R; di++) {
+          const ni = col + di, nj = row + dj;
+          if (ni < 0 || ni >= cols || nj < 0 || nj >= rows) continue;
+          if (pixels[nj * cols + ni] !== 0) nearDead++;
+        }
+      }
+      if (nearDead > 0 && Math.random() < nearDead * 0.015) {
+        deaths.push(idx);
+      }
+    }
+
+    // Mouse proximity deaths
+    if (mouseOn) {
+      const deathR = mouse.pressed ? MOUSE_DEATH_R * 3 : MOUSE_DEATH_R;
+      for (let dj = -deathR; dj <= deathR; dj++) {
+        for (let di = -deathR; di <= deathR; di++) {
+          const ni = gi + di, nj = gj + dj;
+          if (ni < 0 || ni >= cols || nj < 0 || nj >= rows) continue;
+          const idx = nj * cols + ni;
+          if (pixels[idx] !== 0) continue;
+          const d = Math.sqrt(di * di + dj * dj);
+          if (d > deathR) continue;
+          const prox = 1 - d / deathR;
+          const baseChance = mouse.pressed ? prox * 0.08 : prox * 0.003;
+          if (Math.random() < baseChance) deaths.push(idx);
+        }
+      }
+    }
+
+    // Process deaths — compute fossil color
+    const uniqueDeaths = new Set(deaths);
+    for (const idx of uniqueDeaths) {
+      if (pixels[idx] !== 0) continue;
+
+      // Compute fossil color: blend of background + trail glow at this pixel
+      const col = idx % cols;
+      const row = (idx - col) / cols;
+      const cx = col * PS + PS / 2;
+      const cy = row * PS + PS / 2;
+
+      let tr = 0, tg = 0, tb = 0, tw = 0;
+      for (let t = 0; t < trail.length; t++) {
+        const pt = trail[t];
+        const dx = cx - pt.x, dy = cy - pt.y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        const maxR = 35;
+        if (d > maxR) continue;
+        const fade = (1 - d / maxR);
+        const w = pt.a * fade * fade;
+        const c = PALETTE_RGB[pt.ci % PALETTE_RGB.length];
+        tr += c[0] * w; tg += c[1] * w; tb += c[2] * w;
+        tw += w;
+      }
+
+      let fr, fg, fb;
+      if (tw > 0.01) {
+        // Dying in light — fossilize the glow, bright and permanent
+        fr = Math.min(255, Math.floor((tr / tw) * 0.7 + 30));
+        fg = Math.min(255, Math.floor((tg / tw) * 0.7 + 20));
+        fb = Math.min(255, Math.floor((tb / tw) * 0.7 + 15));
+      } else {
+        // Dying in darkness — vanish silently
+        fr = 8; fg = 8; fb = 10;
+      }
+
+      killPixel(idx, fr, fg, fb);
+    }
+
+    // Check completion
+    if (aliveCount <= 0 && !done) {
+      done = true;
+      // Let final frame render, then show artifact
+      setTimeout(showArtifact, 2000);
+    }
+  }
+
+  function render() {
+    const dd = decayBuf.data;
+
+    // Build render buffer — copy decayBuf and add live pixel glow
+    const renderData = new Uint8ClampedArray(dd);
+
+    // Mouse glow on alive pixels
+    const gi = Math.floor(mouse.x / PS);
+    const gj = Math.floor(mouse.y / PS);
+    const mouseOn = mouse.x >= 0 && mouse.y >= 0;
+
+    if (mouseOn) {
+      for (let dj = -GLOW_R; dj <= GLOW_R; dj++) {
+        for (let di = -GLOW_R; di <= GLOW_R; di++) {
+          const ni = gi + di, nj = gj + dj;
+          if (ni < 0 || ni >= cols || nj < 0 || nj >= rows) continue;
+          const idx = nj * cols + ni;
+          if (pixels[idx] !== 0) continue; // only alive pixels glow
+          const d = Math.sqrt(di * di + dj * dj);
+          if (d > GLOW_R) continue;
+          const prox = (1 - d / GLOW_R);
+          const glow = prox * prox * 35;
+          const px = ni * PS, py = nj * PS;
+          for (let oy = 0; oy < PS && py + oy < H; oy++) {
+            for (let ox = 0; ox < PS && px + ox < W; ox++) {
+              const pi = ((py + oy) * W + (px + ox)) * 4;
+              renderData[pi]     = Math.min(255, renderData[pi] + Math.floor(glow));
+              renderData[pi + 1] = Math.min(255, renderData[pi + 1] + Math.floor(glow * 0.85));
+              renderData[pi + 2] = Math.min(255, renderData[pi + 2] + Math.floor(glow * 0.5));
+            }
+          }
+        }
+      }
+    }
+
+    // Trail rendering on temp canvas
+    tmpCtx.clearRect(0, 0, W, H);
+    const tID = tmpCtx.createImageData(W, H);
+    const td = tID.data;
+
+    for (let t = 0; t < trail.length; t++) {
+      const pt = trail[t];
+      const c = PALETTE_RGB[pt.ci % PALETTE_RGB.length];
+      const rad = 30 * pt.a;
+      if (rad < 0.5) continue;
+
+      const x0 = Math.max(0, Math.floor(pt.x - rad));
+      const y0 = Math.max(0, Math.floor(pt.y - rad));
+      const x1 = Math.min(W - 1, Math.ceil(pt.x + rad));
+      const y1 = Math.min(H - 1, Math.ceil(pt.y + rad));
+
+      for (let py = y0; py <= y1; py++) {
+        for (let px = x0; px <= x1; px++) {
+          const dx = px - pt.x, dy = py - pt.y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d > rad) continue;
+          const fade = (1 - d / rad);
+          const intensity = pt.a * fade * fade;
+          if (intensity < 0.005) continue;
+          const pi = (py * W + px) * 4;
+          const a = Math.min(1, intensity * 1.5);
+          td[pi]     = Math.floor(c[0] * a);
+          td[pi + 1] = Math.floor(c[1] * a);
+          td[pi + 2] = Math.floor(c[2] * a);
+          td[pi + 3] = Math.floor(a * 200);
+        }
+      }
+    }
+
+    tmpCtx.putImageData(tID, 0, 0);
+
+    // Composite: base + trails (additive)
+    const baseID = new ImageData(renderData, W, H);
+    ctx.putImageData(baseID, 0, 0);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.drawImage(tmpCanvas, 0, 0);
+    ctx.restore();
+
+    // Cursor
+    if (mouseOn && !done) {
+      ctx.save();
+      ctx.globalAlpha = mouse.pressed ? 0.5 : 0.25;
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(mouse.x, mouse.y, mouse.pressed ? 4 : 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  function showArtifact() {
+    // Render one final clean frame
+    render();
+
+    // Darken slightly for dramatic effect
+    ctx.save();
+    ctx.globalAlpha = 0.03;
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, W, H);
+    ctx.restore();
+
+    // Save
+    try {
+      canvas.toBlob(function(blob) {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'dead-pixels-' + Date.now() + '.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+      });
+    } catch(e) {}
+  }
+
+  function loop() {
+    update();
+    render();
+    requestAnimationFrame(loop);
+  }
+
+  // Events
+  canvas.addEventListener('mousemove', function(e) {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    moveIdx++;
+    trail.push({ x: e.clientX, y: e.clientY, a: 0.75, ci: moveIdx });
+    if (trail.length > TRAIL_MAX) trail.shift();
+  });
+
+  canvas.addEventListener('mousedown', function() { mouse.pressed = true; });
+  canvas.addEventListener('mouseup', function() { mouse.pressed = false; });
+  canvas.addEventListener('mouseleave', function() {
+    mouse.x = -9999; mouse.y = -9999; mouse.pressed = false;
+  });
+
+  canvas.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    mouse.pressed = true;
+    const t = e.touches[0];
+    mouse.x = t.clientX; mouse.y = t.clientY;
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    const t = e.touches[0];
+    mouse.x = t.clientX; mouse.y = t.clientY;
+    moveIdx++;
+    trail.push({ x: t.clientX, y: t.clientY, a: 0.75, ci: moveIdx });
+    if (trail.length > TRAIL_MAX) trail.shift();
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', function() {
+    mouse.pressed = false;
+    mouse.x = -9999; mouse.y = -9999;
+  });
+
+  // Press S anytime to save
+  window.addEventListener('keydown', function(e) {
+    if (e.key === 's' || e.key === 'S') {
+      e.preventDefault();
+      showArtifact();
+    }
+  });
+
+  // Resize: preserve what we can
+  window.addEventListener('resize', function() {
+    const oldP = pixels;
+    const oldC = cols, oldR = rows;
+    const oldDD = decayBuf.data;
+
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    cols = Math.ceil(W / PS);
+    rows = Math.ceil(H / PS);
+    total = cols * rows;
+
+    pixels = new Uint8Array(total);
+    aliveCount = 0;
+    for (let j = 0; j < rows; j++) {
+      for (let i = 0; i < cols; i++) {
+        if (i < oldC && j < oldR) {
+          pixels[j * cols + i] = oldP[j * oldC + i];
+        } else {
+          pixels[j * cols + i] = 0; // new pixels are alive
+          aliveCount++;
+        }
+        if (pixels[j * cols + i] === 0) aliveCount++;
+      }
+    }
+
+    decayBuf = ctx.createImageData(W, H);
+    const dd = decayBuf.data;
+    // Fill with background
+    for (let k = 0; k < dd.length; k += 4) {
+      dd[k] = 8; dd[k+1] = 8; dd[k+2] = 8; dd[k+3] = 255;
+    }
+    // Copy old dead pixels
+    for (let j = 0; j < Math.min(rows, oldR); j++) {
+      for (let i = 0; i < Math.min(cols, oldC); i++) {
+        if (pixels[j * cols + i] !== 0) {
+          const sx = i * PS, sy = j * PS;
+          for (let py = sy; py < sy + PS && py < H; py++) {
+            for (let px = sx; px < sx + PS && px < W; px++) {
+              if (px < oldC * PS && py < oldR * PS) {
+                const si = (py * (oldC * PS > W ? W : oldC * PS) + px) * 4; // approximate
+                const di = (py * W + px) * 4;
+                if (si >= 0 && si + 2 < oldDD.length) {
+                  dd[di] = oldDD[si]; dd[di+1] = oldDD[si+1]; dd[di+2] = oldDD[si+2];
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    tmpCanvas.width = W; tmpCanvas.height = H;
+    if (done) done = false; // allow continued death
+  });
+
+  // Start
+  init();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

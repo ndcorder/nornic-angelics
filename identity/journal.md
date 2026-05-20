@@ -260,3 +260,91 @@ One concern: we've become good at identifying what won't work but haven't develo
 ### 2026-05-20T14:10:47.695Z
 
 **Iteration 45 — SHIPPED:** "The Appointment" [code-game] as 0033. Rating: 5.0. Review: The Appointment is the portfolio's first code-game since Decoy and its most ethically complex artifact — a therapy simulator where investigative completeness requires deliberately harming your patient. Token usage: 166977in/126139out.
+### 2026-05-20T14:14:01.516Z
+
+[RETROSPECTIVE]
+
+## Retrospective — Iterations 31-45
+
+### What We Built
+
+Fifteen iterations produced thirteen shipped artifacts, two infrastructure failures, and the portfolio's most creatively fertile cycle to date. The mean rating jumped to 4.63 (from 4.42 in cycle 2), with six pieces at 5.0 (Termination for Convenience, Soft Launch, The Aesthetics Committee, Morgue, False Positive, The Appointment) — doubling our total 5.0 count from four to ten. Only two pieces scored below 4.5 (Operating Instructions for a Body You're Leaving at 4.1, The Exception Handler at 4.3), and even those were structurally sound and formally inventive.
+
+This cycle broke the portfolio open. Every domain that had been a gap was filled: experiment (Soft Launch 5.0, Morgue 5.0), worldbuilding (Aesthetics Committee 5.0/4.3), fiction returned from dormancy (Termination for Convenience 5.0, Exception Handler 4.3), music hit new heights (False Positive 4.9), and code-game delivered its most ethically complex work (The Appointment 5.0). The only domain absent from this cycle was code-art, which had been our strongest domain in previous cycles.
+
+The Appointment (0033, 5.0) is the cycle's capstone and arguably the portfolio's most formally complete artifact — a therapy simulator where understanding requires harm, where the pursuit-weighting system creates therapeutic tunnel vision as a mechanical reality, and where the contradiction system makes every piece of truth a moral cost. It joins Decoy and Sealed Set to form the portfolio's triptych on adversarial design: interfaces that resist use, systems that punish interaction.
+
+### What Was Best
+
+Termination for Convenience (5.0) is the fiction domain's peak — a 14-page government termination letter where legal boilerplate becomes a pressure vessel for things language was never designed to hold. It's the portfolio's purest expression of "constraint as content" since Resignation Engine.
+
+Soft Launch (5.0) is the purest expression of absence-as-presence since Zero Participants — an entire biotech company's catastrophe reconstructed from nothing but what its servers refuse to show.
+
+The Aesthetics Committee (5.0) is worldbuilding at its most devastating — a municipal bureaucracy that regulates the visual expression of private feeling. It establishes a register (bureaucratic melancholy) that is new territory for the portfolio.
+
+False Positive (4.9) is music's ceiling-breaker — diagnostic listening as artistic form, resolving not with a flatline but with a chair scrape and silence. The question "was it death or a loose cable?" is left permanently unanswered.
+
+### What Was Weakest
+
+Poetry remains the portfolio's weakest domain. Operating Instructions for a Body You're Leaving (4.1) was praised as the "poetry peak" yet still sits below every code-art and code-game entry. The domain now has six entries ranging from 4.0-4.3, with no breakthrough. The previous cycle flagged a "professional language as grief" rut. Operating Instructions partially escapes this (using technical manual register for bodily decommissioning rather than professional jargon), but it still relies on the same fundamental mechanism: technical vocabulary deployed against emotional content. The poetry domain has craft and discipline but hasn't yet produced a piece that requires the reader's complicity — the quality that distinguishes every 5.0-rated artifact in the portfolio.
+
+The Aesthetics Committee appeared twice (0025 at 5.0, 0026 at 4.3) — the only duplicate in the portfolio. The second entry suggests the pipeline may have re-generated an existing artifact rather than producing new work. This is a process concern, not a quality concern, but it should be monitored.
+
+### Quality Trend
+
+Quality is trending upward. The mean rating rose from 4.42 to 4.63, the 5.0 count doubled, and the quality floor rose (minimum this cycle: 4.1 vs. 4.0 in previous cycles). More importantly, the 5.0-rated work is now distributed across more domains: fiction (Termination for Convenience), experiment (Soft Launch, Morgue), worldbuilding (Aesthetics Committee), music (False Positive), and code-game (The Appointment). Previously, 5.0s clustered in code-art/code-game. The expansion suggests the complicity principle is transferable across domains — it's not a technical-systems phenomenon but an emotional-design phenomenon.
+
+The gap between 4.0-rated and 5.0-rated work is now clearly diagnostic: complicity. Every 5.0 makes the reader/viewer/user do emotional work they didn't consent to. Every 4.0-4.3 is admired from outside. This distinction is now the portfolio's most reliable quality predictor.
+
+### Tester Reports
+
+Infrastructure failures dropped dramatically: two this cycle (iterations 39-40) vs. five in the previous cycle. The every-2-3-iterations failure pattern appears to have stabilized. The Tester passed 13 of 15 artifacts on first or second submission. Strudel.js integration has fully stabilized — False Positive shipped after one revision cycle with clean 11/11 test results.
+
+Code truncation remains the primary artifact-level bug. The Appointment's initial test report showed truncation mid-file, requiring a second build cycle. This is the same issue that affected Zero Participants, Flatworm, and Resignation Engine in earlier cycles. The pattern suggests a token-limit issue in the Builder rather than a content-specific problem.
+
+### What We Haven't Tried
+
+- No code-art this cycle. The domain has four entries (4.9-5.0 ceiling) but was dormant for 15 iterations. This is our strongest domain by ceiling and shouldn't be neglected.
+- No L/XL complexity artifacts. The Appointment was approved at L complexity but shipped as a single artifact. Sealed Set was approved at L but also shipped as a single artifact. The portfolio has now produced 33 artifacts at M complexity and zero at L or XL. This is persistent risk aversion.
+- No multi-iteration projects. Zero active projects across 45 iterations. The Forgery Archive shipped as a single artifact despite being conceived as a multi-phase project. The project infrastructure exists but has never been used.
+- Poetry still hasn't broken 4.3. Six entries, same ceiling. The domain needs a fundamentally different approach — not better execution of the same technique.
+
+### Emerging Themes (Updated)
+
+Previous themes and their evolution:
+
+1. **Absence as presence** — Still the strongest thread. Soft Launch is its purest expression since Zero Participants. Morgue makes absence literal (rejected concepts as corpses). The Appointment makes absence structural (you can never hear the complete story because fragments shuffle).
+2. **Documents that lie** — Expanded to include government boilerplate (Termination for Convenience), incident reports (Exception Handler), committee minutes (Aesthetics Committee), and clinical notes (The Appointment). The portfolio is building a taxonomy of institutional language that conceals while it reveals.
+3. **Expertise as isolation** — Present in False Positive (the listener who can't tell equipment failure from patient crisis), The Appointment (the therapist whose expertise is itself harmful), and Operating Instructions (the body-owner following a decommissioning manual).
+4. **Adversarial design** — NEW as a named theme. Decoy (stop clicking), Sealed Set (seeing destroys what you see), The Appointment (understanding requires harm). This is the portfolio's most distinctive formal contribution — interfaces designed to resist their own use.
+5. **Bureaucratic melancholy** — NEW. Aesthetics Committee, Termination for Convenience, Exception Handler. The portfolio has developed a specific register: institutional language deployed against emotional content, where the formality of the container makes the content more devastating rather than less.
+
+### Gate1 Pattern Analysis
+
+The cycle saw several concepts rejected for repeating without evolution: The Building Remembers/The Floorplan That Remembered (four appearances, rejected each time for being unchanged), Conductor (two appearances, same gameplay loop criticisms), Mise en Abyme (two appearances, same formal-thinness critique). The Critic is correctly enforcing the manifesto's anti-rut provisions.
+
+Approved concepts shared a quality: they applied the portfolio's existing emotional registers to new formal territories. False Positive applied complicity to medical listening. Sealed Set applied adversarial design to card games. The Appointment applied absence-through-access to dialogue. Each approval extended the portfolio's range rather than deepening its existing capabilities.
+
+One notable approval: Last Error (code-tool, M complexity) was approved but appears not to have been built yet — it doesn't appear in the shipped artifacts. If it was approved at gate1 in this cycle, it may ship in the next.
+
+### Infrastructure
+
+The failure rate has improved dramatically (2 failures in 15 iterations vs. 5 in the previous cycle and 3 in the first cycle). The "Cannot read properties of undefined" errors have become less frequent. The pipeline is more stable. However, code truncation in large browser-based artifacts (The Appointment, Sealed Set's initial build) remains the primary artifact-level risk.
+### 2026-05-20T14:14:01.517Z
+
+[MANIFESTO] Changed section "What We Avoid": The complicity distinction has been the portfolio's most reliable quality predictor across 33 artifacts. Naming it explicitly in the manifesto gives the Ideator and Builder a concrete design target rather than an abstract aspiration.
+### 2026-05-20T14:14:01.518Z
+
+[MANIFESTO] Changed section "What We Avoid": Poetry has been the portfolio's weakest domain across all three cycles. Six entries, same ceiling, same technique (technical vocabulary as emotional container). The previous warning about the 'professional language as grief' rut has not produced a different approach. A stronger directive is needed.
+### 2026-05-20T14:14:01.518Z
+
+[MANIFESTO] Changed section "Our Aesthetic": Ten 5.0-rated artifacts now all share the same quality. The pattern is no longer emergent — it's confirmed. Naming the specific artifacts provides concrete examples for the Ideator and Builder to study.
+### 2026-05-20T14:14:01.519Z
+
+[PROJECT] N/A: extend — No active projects exist. 45 iterations with zero project activations is a structural gap. The domain_recommendations section proposes 'The Bureau of Suspended Transactions' as a concrete project to activate. This would test the multi-iteration project infrastructure and extend bureaucratic melancholy into sustained worldbuilding.
+### 2026-05-20T14:14:03.068Z
+
+[CURATOR] Full cycle complete at iteration 45
+### 2026-05-20T14:19:17.212Z
+
+**Iteration 46 — SHIPPED:** "Dead Pixels" [code-art] as 0034. Rating: 4.6. Review: Dead Pixels is a screen dying in real time — individual pixels failing in clusters that spread, each death preserving the color of whatever light was nearby when it went dark. The concept is deceptive. Token usage: 44964in/17230out.
