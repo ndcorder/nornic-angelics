@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chart No. 47 — Tristow Cove — Cornwall — 1847</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #2c1810;
+    --ink-light: #6b4c3b;
+    --ink-faint: #a08872;
+    --paper: #e8d5b7;
+    --paper-light: #f0e2cc;
+    --paper-dark: #c4a882;
+    --water: #7a9eb0;
+    --water-deep: #5a8496;
+    --land: #c9b896;
+    --accent-red: #8b3a3a;
+    --accent-gold: #b8941e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a1410;
+    font-family: 'Cormorant Garamond', 'Georgia', serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-x: hidden;
+  }
+
+  .chart-frame {
+    position: relative;
+    width: 100%;
+    max-width: 960px;
+    aspect-ratio: 4/3;
+    background:
+      radial-gradient(ellipse at 30% 40%, rgba(139,69,19,0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 60%, rgba(139,69,19,0.04) 0%, transparent 40%),
+      radial-gradient(ellipse at 50% 50%, var(--paper-light) 0%, var(--paper) 60%, var(--paper-dark) 100%);
+    border: 3px double var(--ink-light);
+    box-shadow:
+      0 0 0 1px var(--paper-dark),
+      0 0 0 4px var(--ink-light),
+      0 0 0 5px var(--paper-dark),
+      0 8px 32px rgba(0,0,0,0.4),
+      inset 0 0 60px rgba(44,24,16,0.1);
+    overflow: hidden;
+  }
+
+  .chart-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(44,24,16,0.01) 2px,
+        rgba(44,24,16,0.01) 4px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(44,24,16,0.008) 3px,
+        rgba(44,24,16,0.008) 6px
+      );
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .chart-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(44,24,16,0.15) 100%);
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .chart-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .annotation {
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+  }
+
+  .annotation:hover .marker-ring {
+    stroke: var(--accent-red);
+    stroke-width: 2;
+  }
+
+  .annotation:hover .marker-dot {
+    fill: var(--accent-red);
+  }
+
+  .annotation.read .marker-ring {
+    stroke: var(--accent-gold);
+    stroke-width: 1.5;
+    stroke-dasharray: 2 2;
+  }
+
+  .annotation.read .marker-dot {
+    fill: var(--accent-gold);
+  }
+
+  .annotation.dimmed {
+    opacity: 0.4;
+  }
+
+  .annotation.dimmed:hover {
+    opacity: 0.7;
+  }
+
+  .marker-ring {
+    fill: none;
+    stroke: var(--ink-light);
+    stroke-width: 1;
+    transition: stroke 0.3s, stroke-width 0.3s;
+  }
+
+  .marker-dot {
+    fill: var(--ink-light);
+    transition: fill 0.3s;
+  }
+
+  .annotation-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 7px;
+    fill: var(--ink-faint);
+    pointer-events: none;
+    transition: fill 0.3s;
+  }
+
+  .annotation:hover .annotation-label {
+    fill: var(--accent-red);
+  }
+
+  .reveal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26,20,16,0.85);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+
+  .reveal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .reveal-card {
+    position: relative;
+    max-width: 480px;
+    width: 90%;
+    padding: 48px 40px;
+    background:
+      radial-gradient(ellipse at 30% 30%, var(--paper-light), var(--paper));
+    border: 2px solid var(--ink-light);
+    box-shadow:
+      0 0 0 1px var(--paper-dark),
+      0 12px 40px rgba(0,0,0,0.5),
+      inset 0 0 40px rgba(44,24,16,0.08);
+    transform: translateY(20px) scale(0.96);
+    transition: transform 0.5s ease;
+  }
+
+  .reveal-overlay.active .reveal-card {
+    transform: translateY(0) scale(1);
+  }
+
+  .reveal-card::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 1px solid var(--ink-faint);
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .reveal-marginalia-type {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 12px;
+  }
+
+  .reveal-text {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink);
+    font-style: italic;
+    font-weight: 300;
+    margin-bottom: 24px;
+  }
+
+  .reveal-text .handwritten {
+    font-weight: 400;
+    color: var(--accent-red);
+    font-style: italic;
+  }
+
+  .reveal-counter {
+    font-size: 12px;
+    color: var(--ink-faint);
+    text-align: right;
+    letter-spacing: 1px;
+  }
+
+  .reveal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    color: var(--ink-light);
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: color 0.2s;
+  }
+
+  .reveal-close:hover {
+    color: var(--accent-red);
+  }
+
+  .instruction {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    color: var(--ink-faint);
+    letter-spacing: 1px;
+    z-index: 4;
+    text-align: center;
+    opacity: 1;
+    transition: opacity 1s ease;
+    pointer-events: none;
+  }
+
+  .instruction.hidden {
+    opacity: 0;
+  }
+
+  .chart-title {
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .stain {
+    fill: rgba(139, 69, 19, 0.04);
+    stroke: rgba(139, 69, 19, 0.06);
+    stroke-width: 1;
+  }
+
+  @keyframes tideShift {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(3px); }
+  }
+
+  .tide-line {
+    animation: tideShift 8s ease-in-out infinite;
+  }
+
+  .tide-line:nth-child(2) { animation-delay: -2s; }
+  .tide-line:nth-child(3) { animation-delay: -4s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tide-line { animation: none; }
+  }
+
+  .progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: var(--accent-red);
+    z-index: 5;
+    transition: width 0.5s ease;
+  }
+
+  .final-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(44,24,16,0.02);
+    z-index: 4;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 2s ease;
+  }
+
+  .final-overlay.visible {
+    opacity: 1;
+  }
+
+  .watermark-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-5deg);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--accent-red);
+    opacity: 0;
+    z-index: 4;
+    pointer-events: none;
+    transition: opacity 3s ease;
+    white-space: nowrap;
+    letter-spacing: 4px;
+  }
+
+  .watermark-text.visible {
+    opacity: 0.12;
+  }
+
+  @media (max-width: 640px) {
+    .chart-frame {
+      aspect-ratio: 3/4;
+    }
+    .reveal-card {
+      padding: 32px 24px;
+    }
+    .reveal-text {
+      font-size: 15px;
+    }
+    .watermark-text {
+      font-size: 24px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="chart-frame" id="chartFrame">
+  <svg class="chart-svg" viewBox="0 0 960 720" xmlns="http://www.w3.org/2000/svg" id="chartSvg">
+    <defs>
+      <pattern id="hatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="6" stroke="#a08872" stroke-width="0.5" opacity="0.3"/>
+      </pattern>
+      <pattern id="wavePattern" patternUnits="userSpaceOnUse" width="40" height="8">
+        <path d="M0 4 Q10 0 20 4 Q30 8 40 4" fill="none" stroke="#5a8496" stroke-width="0.5" opacity="0.3"/>
+      </pattern>
+      <filter id="roughEdge">
+        <feTurbulence type="turbulence" baseFrequency="0.04" numOctaves="4" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="3"/>
+      </filter>
+    </defs>
+
+    <!-- Water -->
+    <rect x="0" y="0" width="960" height="720" fill="#8aaeb8" opacity="0.15"/>
+    <rect x="0" y="0" width="960" height="720" fill="url(#wavePattern)" opacity="0.5"/>
+
+    <!-- Grid lines -->
+    <g opacity="0.08" stroke="#2c1810" stroke-width="0.5">
+      <line x1="0" y1="0" x2="0" y2="720"/><line x1="160" y1="0" x2="160" y2="720"/>
+      <line x1="320" y1="0" x2="320" y2="720"/><line x1="480" y1="0" x2="480" y2="720"/>
+      <line x1="640" y1="0" x2="640" y2="720"/><line x1="800" y1="0" x2="800" y2="720"/>
+      <line x1="960" y1="0" x2="960" y2="720"/>
+      <line x1="0" y1="0" x2="960" y2="0"/><line x1="0" y1="120" x2="960" y2="120"/>
+      <line x1="0" y1="240" x2="960" y2="240"/><line x1="0" y1="360" x2="960" y2="360"/>
+      <line x1="0" y1="480" x2="960" y2="480"/><line x1="0" y1="600" x2="960" y2="600"/>
+      <line x1="0" y1="720" x2="960" y2="720"/>
+    </g>
+
+    <!-- Grid labels -->
+    <g opacity="0.2" font-family="Cormorant Garamond" font-size="8" fill="#2c1810">
+      <text x="80" y="14" text-anchor="middle">A</text>
+      <text x="240" y="14" text-anchor="middle">B</text>
+      <text x="400" y="14" text-anchor="middle">C</text>
+      <text x="560" y="14" text-anchor="middle">D</text>
+      <text x="720" y="14" text-anchor="middle">E</text>
+      <text x="880" y="14" text-anchor="middle">F</text>
+      <text x="14" y="64" text-anchor="middle">1</text>
+      <text x="14" y="184" text-anchor="middle">2</text>
+      <text x="14" y="304" text-anchor="middle">3</text>
+      <text x="14" y="424" text-anchor="middle">4</text>
+      <text x="14" y="544" text-anchor="middle">5</text>
+      <text x="14" y="664" text-anchor="middle">6</text>
+    </g>
+
+    <!-- Land mass -->
+    <g id="landGroup">
+      <path id="landMass" fill="#c9b896" stroke="#6b4c3b" stroke-width="1.5" filter="url(#roughEdge)"/>
+      <path id="landHatch" fill="url(#hatch)" stroke="none"/>
+      <path id="cliffMarks" fill="none" stroke="#6b4c3b" stroke-width="0.7" opacity="0.6"/>
+    </g>
+
+    <!-- Coastal detail -->
+    <g id="coastalDetail" fill="none" stroke="#6b4c3b" stroke-width="0.5" opacity="0.4"></g>
+
+    <!-- Depth soundings -->
+    <g id="soundingsGroup" fill="#5a8496" font-family="Cormorant Garamond" font-size="8" opacity="0.5"></g>
+
+    <!-- Tide lines -->
+    <g id="tideLines"></g>
+
+    <!-- Buildings -->
+    <g id="buildings"></g>
+
+    <!-- Land paths -->
+    <g id="landPaths" fill="none" stroke="#6b4c3b" stroke-width="0.8" stroke-dasharray="4 2" opacity="0.5"></g>
+
+    <!-- Compass rose -->
+    <g transform="translate(800, 560)" opacity="0.8">
+      <circle cx="0" cy="0" r="30" fill="none" stroke="#6b4c3b" stroke-width="0.5"/>
+      <circle cx="0" cy="0" r="20" fill="none" stroke="#6b4c3b" stroke-width="0.3"/>
+      <polygon points="0,-28 -4,-8 0,-12 4,-8" fill="#2c1810"/>
+      <polygon points="0,28 -4,8 0,12 4,8" fill="#6b4c3b"/>
+      <polygon points="-28,0 -8,-4 -12,0 -8,4" fill="#6b4c3b"/>
+      <polygon points="28,0 8,-4 12,0 8,4" fill="#6b4c3b"/>
+      <text x="0" y="-34" text-anchor="middle" font-family="Cormorant Garamond" font-size="11" fill="#2c1810" font-weight="600">N</text>
+      <text x="0" y="42" text-anchor="middle" font-family="Cormorant Garamond" font-size="9" fill="#6b4c3b">S</text>
+      <text x="-36" y="4" text-anchor="middle" font-family="Cormorant Garamond" font-size="9" fill="#6b4c3b">W</text>
+      <text x="36" y="4" text-anchor="middle" font-family="Cormorant Garamond" font-size="9" fill="#6b4c3b">E</text>
+      <line x1="-18" y1="-18" x2="18" y2="18" stroke="#a08872" stroke-width="0.3"/>
+      <line x1="18" y1="-18" x2="-18" y2="18" stroke="#a08872" stroke-width="0.3"/>
+      <circle cx="0" cy="0" r="2" fill="#6b4c3b"/>
+    </g>
+
+    <!-- Scale bar -->
+    <g transform="translate(80, 660)" opacity="0.7">
+      <rect x="0" y="0" width="120" height="4" fill="#6b4c3b" opacity="0.3"/>
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#6b4c3b" stroke-width="0.8"/>
+      <line x1="60" y1="0" x2="60" y2="6" stroke="#6b4c3b" stroke-width="0.5"/>
+      <line x1="120" y1="0" x2="120" y2="8" stroke="#6b4c3b" stroke-width="0.8"/>
+      <text x="0" y="16" font-family="Cormorant Garamond" font-size="7" fill="#a08872">0</text>
+      <text x="55" y="16" font-family="Cormorant Garamond" font-size="7" fill="#a08872">¼</text>
+      <text x="110" y="16" font-family="Cormorant Garamond" font-size="7" fill="#a08872">½ mile</text>
+    </g>
+
+    <!-- Chart title cartouche -->
+    <g transform="translate(80, 40)">
+      <rect x="-10" y="-10" width="260" height="75" fill="#f0e2cc" stroke="#6b4c3b" stroke-width="1" rx="2" opacity="0.9"/>
+      <rect x="-6" y="-6" width="252" height="67" fill="none" stroke="#a08872" stroke-width="0.5" rx="1" opacity="0.5"/>
+      <text x="0" y="10" font-family="Cormorant Garamond" font-size="18" font-weight="600" fill="#2c1810" class="chart-title">TRISTOW COVE</text>
+      <text x="0" y="26" font-family="Cormorant Garamond" font-size="10" fill="#6b4c3b">County of Cornwall — England</text>
+      <text x="0" y="40" font-family="Cormorant Garamond" font-size="9" fill="#a08872">Surveyed Oct.–Nov. 1847</text>
+      <text x="0" y="52" font-family="Cormorant Garamond" font-size="8" fill="#a08872">By H. Morewether, Hydrographer</text>
+    </g>
+
+    <!-- Coffee stain -->
+    <circle cx="680" cy="140" r="38" class="stain" opacity="0.6"/>
+    <circle cx="680" cy="140" r="35" fill="none" stroke="rgba(139,69,19,0.05)" stroke-width="4"/>
+
+    <!-- Shipwreck marker (subtle) -->
+    <g id="wreckMark" transform="translate(520, 260)" opacity="0.3">
+      <line x1="-5" y1="-5" x2="5" y2="5" stroke="#8b3a3a" stroke-width="1.2"/>
+      <line x1="5" y1="-5" x2="-5" y2="5" stroke="#8b3a3a" stroke-width="1.2"/>
+    </g>
+    <text x="530" y="255" font-family="Cormorant Garamond" font-size="6" fill="#8b3a3a" opacity="0.35" font-style="italic">R. lost</text>
+  </svg>
+
+  <div class="instruction" id="instruction">Click the marginalia to read the cartographer's notes</div>
+  <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+  <div class="final-overlay" id="finalOverlay"></div>
+  <div class="watermark-text" id="watermarkText">the coast keeps moving</div>
+</div>
+
+<div class="reveal-overlay" id="revealOverlay">
+  <div class="reveal-card">
+    <button class="reveal-close" id="revealClose" aria-label="Close">&times;</button>
+    <div class="reveal-marginalia-type" id="revealType"></div>
+    <div class="reveal-text" id="revealText"></div>
+    <div class="reveal-counter" id="revealCounter"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const TOTAL_FRAGMENTS = 15;
+  const DISTORTION_RANGE = 8;
+
+  const annotations = [
+    {
+      id: 1,
+      x: 170, y: 440,
+      type: 'Depth Sounding',
+      label: 'III fathoms',
+      text: 'The board requires <span class="handwritten">six soundings per chart.</span> I have taken thirty-seven. The sea floor will not hold still. I drop the lead, haul it up, drop it again in the same spot — <span class="handwritten">different depth every time.</span> Either the bottom is migratory or I am losing my competence. The Admiralty does not catalogue incompetence.'
+    },
+    {
+      id: 2,
+      x: 290, y: 310,
+      type: 'Bearing Correction',
+      label: 'Corr. +2°14\'',
+      text: 'I have adjusted this bearing <span class="handwritten">fourteen times.</span> My instrument is sound. My calculations are sound. The headland was not here before the storm. The commissioners will say I have <span class="handwritten">confused west with northwest</span> again. I have not confused anything. The land moved.'
+    },
+    {
+      id: 3,
+      x: 400, y: 520,
+      type: 'Tide Table Note',
+      label: 'MHWS',
+      text: 'Mean High Water Springs — <span class="handwritten">I can no longer predict the tides</span> with any reliability. The old tables are useless. The storm rearranged everything beneath the surface. <span class="handwritten">Eleanor could read the water</span> by looking at it. She would laugh at me now, scrawling numbers that mean nothing, trying to impose <span class="handwritten">order on something that has gone feral.</span>'
+    },
+    {
+      id: 4,
+      x: 520, y: 380,
+      type: 'Publisher\'s Note',
+      label: 'To Messrs. Hurd',
+      text: '<span class="handwritten">Gentlemen, I must request a sixth extension.</span> The coastline has altered again. I am not being imprecise — I returned to Tristow last Tuesday and the eastern point had shifted <span class="handwritten">measurably</span> since Thursday. I assure you I am of sound mind. Please do not send another surveyor to verify my work. I could not bear it.'
+    },
+    {
+      id: 5,
+      x: 680, y: 260,
+      type: 'Scale Calculation',
+      label: 'Scale 1:4800',
+      text: 'At this scale, <span class="handwritten">one inch equals four hundred feet.</span> At any scale, the distance from the old harbour to the place where the Resolve went down is precisely <span class="handwritten">the distance between my life and what replaced it.</span> I have measured it. I have remeasured it. The figures do not change. I wish they would.'
+    },
+    {
+      id: 6,
+      x: 130, y: 560,
+      type: 'Warning to Mariners',
+      label: 'CAUTION',
+      text: '<span class="handwritten">ATTENTION</span> — Rock formation at grid ref. C4 no longer exists. Neither does the one at D7. Or the sandbar at F2. <span class="handwritten">I have struck through four hazards</span> in red ink but the publisher says this makes the chart look "irregular." He did not say what one should do instead of crossing out the things the sea has swallowed.'
+    },
+    {
+      id: 7,
+      x: 350, y: 160,
+      type: 'Compass Rose Correction',
+      label: 'Var. 22°W',
+      text: 'The variation is <span class="handwritten">twenty-two degrees west of true north.</span> But I find myself turning the chart on my table so that the rose points toward the window, <span class="handwritten">toward the sea,</span> as though north were a place I could walk to. As though any of the cardinal directions still led somewhere worth going. <span class="handwritten">North. East. Below.</span>'
+    },
+    {
+      id: 8,
+      x: 780, y: 420,
+      type: 'Depth Sounding',
+      label: 'XII fathoms',
+      text: 'Twelve fathoms here, <span class="handwritten">or possibly thirteen.</span> I cannot see the bottom and the line may have drifted. <span class="handwritten">Everything in this water is drifting.</span> The sounding lead hangs and I think of another weight, another line, another depth I could not measure — the distance from the deck of the Resolve to the surface, in the last quarter-hour. <span class="handwritten">Twelve fathoms. Twelve.</span> I keep finding it everywhere.'
+    },
+    {
+      id: 9,
+      x: 450, y: 650,
+      type: 'Coastal Erosion Note',
+      label: 'Erosion mark',
+      text: '<span class="handwritten">The cliff has retreated eleven feet since August.</span> Eleven feet of Cornwall has returned to the sea. I watched a portion fall — the earth groaned and then <span class="handwritten">was simply not there anymore.</span> The way a person is there, and then is not. The way a boat is there, and then there is only water filling the space where it was. The coast keeps <span class="handwritten">eroding. Erasing.</span> The way I am being erased.'
+    },
+    {
+      id: 10,
+      x: 600, y: 160,
+      type: 'Publisher\'s Note',
+      label: 'To Messrs. Hurd',
+      text: '<span class="handwritten">Gentlemen, I will not require a further extension.</span> I have completed the chart to the best of my ability, which is to say: it is wrong. It is <span class="handwritten">the best wrong map I can make.</span> The coast does not look like this. It looks like a place where something ended and nothing has yet begun. I am sending what I have. It will have to be enough. <span class="handwritten">It will not be enough. Nothing will.</span>'
+    },
+    {
+      id: 11,
+      x: 820, y: 300,
+      type: 'Soundings Ref.',
+      label: 'See Addendum',
+      text: '<span class="handwritten">Refer to sounding addendum, Sheet B.</span> There is no Sheet B. There never was. I told the publisher I had additional pages of measurements to justify the delays, but I was sitting in my room <span class="handwritten">staring at the wall</span> or walking to the harbour at night to stand where she last stood on dry land, looking at a horizon she would not cross again. <span class="handwritten">There is no addendum. There is only this.</span>'
+    },
+    {
+      id: 12,
+      x: 240, y: 200,
+      type: 'Scale Verification',
+      label: 'Verif.',
+      text: 'I have recalculated the scale <span class="handwritten">nine times.</span> The numbers are correct. The chart is wrong. The ratio between what I have drawn and what actually exists is <span class="handwritten">the distance between a map and a memory, between a coastline and a confession.</span> I thought I was making a record. I was making a headstone. <span class="handwritten">Here lies Tristow Cove. Here lies my wife.</span>'
+    },
+    {
+      id: 13,
+      x: 550, y: 560,
+      type: 'Warning to Mariners',
+      label: 'CAUTION',
+      text: '<span class="handwritten">ATTENTION</span> — The channel marker has not been replaced. The harbour master says he has submitted the request. The harbour master says many things. <span class="handwritten">The channel is unsafe after dark.</span> Do not attempt entry in heavy weather. Do not attempt entry in grief. <span class="handwritten">Do not attempt entry.</span> There is nothing in this harbour worth reaching anymore.'
+    },
+    {
+      id: 14,
+      x: 440, y: 110,
+      type: 'Title Block Correction',
+      label: 'Correction',
+      text: 'The title reads: <span class="handwritten">"Tristow Cove — surveyed Oct.–Nov. 1847."</span> It should read: <span class="handwritten">"Tristow Cove — after."</span> After the storm. After the Resolve. After Eleanor. After everything that made this finger of land feel like a place rather than an accusation. <span class="handwritten">After.</span> The most important word on this chart and it does not appear anywhere.'
+    },
+    {
+      id: 15,
+      x: 100, y: 650,
+      type: 'Cartographer\'s Mark',
+      label: 'H.M.',
+      text: '<span class="handwritten">I have finished.</span> The chart is complete, or as complete as I can make it, which is to say it is a document of <span class="handwritten">failure and love and the precise depth at which a body stops being a person and becomes a sounding.</span> I will send it to London. They will not see what it truly is. They will see coastlines and depths and bearings. They will not see <span class="handwritten">the shape of a man trying to draw his grief into something that looks like work.</span> They will file it. I will come apart.'
+    }
+  ];
+
+  let readCount = 0;
+  let readIds = new Set();
+  let currentAnnotation = null;
+
+  function generateCoastline() {
+    const distortion = () => (Math.random() - 0.5) * DISTORTION_RANGE;
+
+    const basePoints = [
+      [0, 0], [60, 0], [120, 10], [180, 5], [240, 15], [300, 20],
+      [340, 40], [370, 70], [390, 100], [400, 130], [395, 160],
+      [380, 190], [360, 210], [350, 240], [355, 270], [370, 300],
+      [390, 330], [405, 360], [415, 390], [410, 420], [395, 450],
+      [375, 475], [350, 500], [320, 520], [290, 540], [260, 560],
+      [235, 580], [215, 610], [200, 640], [190, 670], [185, 700],
+      [185, 720], [0, 720]
+    ];
+
+    return basePoints.map(([x, y]) => [
+      x + (x > 180 && x < 420 ? distortion() * 0.3 : 0),
+      y + (y > 0 && y < 720 ? distortion() * 0.2 : 0)
+    ]);
+  }
+
+  function pointsToSmoothPath(points) {
+    if (points.length < 3) return '';
+    let d = `M ${points[0][0]} ${points[0][1]}`;
+    for (let i = 0; i < points.length - 2; i++) {
+      const [x0, y0] = points[i];
+      const [x1, y1] = points[i + 1];
+      const [x2, y2] = points[i + 2];
+      const cpx1 = x0 + (x1 - x0) * 0.5;
+      const cpy1 = y0 + (y1 - y0) * 0.5;
+      const cpx2 = x1 + (x2 - x1) * 0.5;
+      const cpy2 = y1 + (y2 - y1) * 0.5;
+      d += ` C ${cpx1} ${cpy1}, ${x1} ${y1}, ${(cpx1 + cpx2) / 2} ${(cpy1 + cpy2) / 2}`;
+    }
+    const last = points[points.length - 1];
+    d += ` L ${last[0]} ${last[1]}`;
+    return d;
+  }
+
+  function drawMap() {
+    const coastline = generateCoastline();
+    const coastPath = pointsToSmoothPath(coastline);
+
+    document.getElementById('landMass').setAttribute('d', coastPath);
+    document.getElementById('landHatch').setAttribute('d', coastPath);
+
+    // Cliff marks along coast
+    let cliffPath = '';
+    for (let i = 2; i < coastline.length - 2; i += 3) {
+      const [x, y] = coastline[i];
+      const angle = Math.atan2(
+        coastline[i + 1][1] - coastline[i - 1][1],
+        coastline[i + 1][0] - coastline[i - 1][0]
+      ) + Math.PI / 2;
+      const len = 4 + Math.random() * 4;
+      cliffPath += `M ${x} ${y} l ${Math.cos(angle) * len} ${Math.sin(angle) * len} `;
+      const len2 = 2 + Math.random() * 2;
+      cliffPath += `M ${x + 2} ${y + 1} l ${Math.cos(angle) * len2} ${Math.sin(angle) * len2} `;
+    }
+    document.getElementById('cliffMarks').setAttribute('d', cliffPath);
+
+    // Depth soundings
+    const soundingsGroup = document.getElementById('soundingsGroup');
+    const soundingData = [
+      [550, 200, 'III'], [620, 250, 'V'], [700, 180, 'VII'], [750, 320, 'XII'],
+      [680, 400, 'IV'], [580, 350, 'IX'], [650, 480, 'VI'], [720, 550, 'XI'],
+      [500, 300, 'VIII'], [550, 450, 'X'], [600, 550, 'VII'], [800, 200, 'XIV'],
+      [850, 350, 'XIII'], [780, 480, 'IX'], [480, 600, 'V'], [600, 180, 'VI'],
+      [520, 520, 'XI'], [660, 150, 'IV'], [470, 280, 'XII'], [540, 150, 'VII']
+    ];
+    soundingData.forEach(([bx, by, depth]) => {
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', bx + (Math.random() - 0.5) * 4);
+      text.setAttribute('y', by + (Math.random() - 0.5) * 4);
+      text.setAttribute('font-size', 7 + Math.random() * 2);
+      text.textContent = depth;
+      soundingsGroup.appendChild(text);
+    });
+
+    // Tide lines
+    const tideGroup = document.getElementById('tideLines');
+    for (let i = 0; i < 3; i++) {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      let d = `M ${420 + i * 15} ${120 + i * 50}`;
+      for (let x = 420 + i * 15; x < 900; x += 30) {
+        const yOff = Math.sin(x * 0.02 + i) * 8;
+        d += ` Q ${x + 15} ${120 + i * 50 + yOff + 5}, ${x + 30} ${120 + i * 50 + yOff}`;
+      }
+      path.setAttribute('d', d);
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', '#5a8496');
+      path.setAttribute('stroke-width', '0.5');
+      path.setAttribute('opacity', '0.25');
+      path.classList.add('tide-line');
+      tideGroup.appendChild(path);
+    }
+
+    // Buildings
+    const buildingsGroup = document.getElementById('buildings');
+    [
+      [120, 200, 8, 6, 'Ch.'], [80, 350, 6, 5, ''],
+      [150, 300, 5, 4, ''], [200, 450, 7, 5, 'Inn'],
+      [100, 500, 5, 4, ''], [280, 420, 6, 5, ''],
+      [160, 550, 5, 4, ''], [60, 250, 5, 4, '']
+    ].forEach(([x, y, w, h, label]) => {
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      rect.setAttribute('x', x); rect.setAttribute('y', y);
+      rect.setAttribute('width', w); rect.setAttribute('height', h);
+      rect.setAttribute('fill', '#6b4c3b'); rect.setAttribute('opacity', '0.4');
+      buildingsGroup.appendChild(rect);
+      if (label) {
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', x + w / 2); text.setAttribute('y', y - 3);
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('font-family', 'Cormorant Garamond');
+        text.setAttribute('font-size', 6); text.setAttribute('fill', '#a08872');
+        text.textContent = label;
+        buildingsGroup.appendChild(text);
+      }
+    });
+
+    // Land paths
+    const landPathsGroup = document.getElementById('landPaths');
+    [
+      'M 120 206 L 150 250 L 200 350 L 200 450',
+      'M 120 206 L 80 350 L 100 500',
+      'M 80 350 L 150 300',
+      'M 200 450 L 280 420'
+    ].forEach(d => {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', d);
+      landPathsGroup.appendChild(path);
+    });
+
+    // Coastal rocks
+    const coastalDetail = document.getElementById('coastalDetail');
+    for (let i = 4; i < coastline.length - 4; i += 5) {
+      const [x, y] = coastline[i];
+      const rock = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      rock.setAttribute('cx', x + 5 + Math.random() * 8);
+      rock.setAttribute('cy', y - 2 + Math.random() * 4);
+      rock.setAttribute('r', 1 + Math.random());
+      rock.setAttribute('fill', '#6b4c3b');
+      rock.setAttribute('stroke', 'none');
+      rock.setAttribute('opacity', '0.3');
+      coastalDetail.appendChild(rock);
+    }
+  }
+
+  function placeAnnotations() {
+    const svg = document.getElementById('chartSvg');
+    annotations.forEach(ann => {
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g.classList.add('annotation');
+      g.setAttribute('data-id', ann.id);
+      g.setAttribute('transform', `translate(${ann.x}, ${ann.y})`);
+      g.setAttribute('role', 'button');
+      g.setAttribute('tabindex', '0');
+      g.setAttribute('aria-label', `Marginalia: ${ann.label}`);
+
+      const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      ring.setAttribute('cx', 0); ring.setAttribute('cy', 0); ring.setAttribute('r', 8);
+      ring.classList.add('marker-ring');
+      g.appendChild(ring);
+
+      const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      dot.setAttribute('cx', 0); dot.setAttribute('cy', 0); dot.setAttribute('r', 2);
+      dot.classList.add('marker-dot');
+      g.appendChild(dot);
+
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', 12); text.setAttribute('y', 4);
+      text.classList.add('annotation-label');
+      text.textContent = ann.label;
+      g.appendChild(text);
+
+      g.addEventListener('click', () => revealAnnotation(ann));
+      g.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          revealAnnotation(ann);
+        }
+      });
+
+      svg.appendChild(g);
+    });
+  }
+
+  function revealAnnotation(ann) {
+    currentAnnotation = ann;
+
+    document.getElementById('revealType').textContent = ann.type;
+    document.getElementById('revealText').innerHTML = ann.text;
+
+    if (!readIds.has(ann.id)) {
+      readIds.add(ann.id);
+      readCount++;
+
+      const marker = document.querySelector(`.annotation[data-id="${ann.id}"]`);
+      if (marker) marker.classList.add('read');
+
+      document.getElementById('progressBar').style.width =
+        (readCount / TOTAL_FRAGMENTS) * 100 + '%';
+
+      if (readCount === 1) {
+        document.getElementById('instruction').classList.add('hidden');
+      }
+    }
+
+    document.getElementById('revealCounter').textContent =
+      `${readCount} of ${TOTAL_FRAGMENTS} annotations read`;
+
+    document.querySelectorAll('.annotation').forEach(el => {
+      if (parseInt(el.getAttribute('data-id')) !== ann.id) {
+        el.classList.add('dimmed');
+      }
+    });
+
+    document.getElementById('revealOverlay').classList.add('active');
+  }
+
+  function closeReveal() {
+    document.getElementById('revealOverlay').classList.remove('active');
+
+    document.querySelectorAll('.annotation').forEach(el => {
+      el.classList.remove('dimmed');
+    });
+
+    if (readCount >= TOTAL_FRAGMENTS) {
+      triggerFinalState();
+    }
+
+    currentAnnotation = null;
+  }
+
+  function triggerFinalState() {
+    document.getElementById('finalOverlay').classList.add('visible');
+    setTimeout(() => {
+      document.getElementById('watermarkText').classList.add('visible');
+    }, 1500);
+  }
+
+  document.getElementById('revealClose').addEventListener('click', closeReveal);
+  document.getElementById('revealOverlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('revealOverlay')) {
+      closeReveal();
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && currentAnnotation) {
+      closeReveal();
+    }
+  });
+
+  drawMap();
+  placeAnnotations();
+})();
+</script>
+</body>
+</html>
