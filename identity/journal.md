@@ -221,3 +221,6 @@ One concern: we've become good at identifying what won't work but haven't develo
 ### 2026-05-20T12:07:29.955Z
 
 **Iteration 32 — SHIPPED:** "Last Known Position" [code-tool] as 0023. Rating: 4.9. Review: Last Known Position is the portfolio's most unsettling code-tool — a CLI that assembles a plausible surveillance dossier from nothing but a name and probability, revealing how little actual data is ne. Token usage: 140618in/159877out.
+### 2026-05-20T12:12:33.781Z
+
+**Iteration 33 — SHIPPED:** "Soft Launch" [experiment] as 0024. Rating: 5.0. Review: Soft Launch is the portfolio's purest expression of absence-as-presence since Zero Participants — an entire biotech company's catastrophe reconstructed from nothing but what its servers refuse to show. Token usage: 45858in/16903out.

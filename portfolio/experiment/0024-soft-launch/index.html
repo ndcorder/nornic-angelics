@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>503 Service Unavailable — Clarimond Biosystems</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --mono: 'Courier New', Courier, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --bg: #0a0a0a;
+    --text: #b0b0b0;
+    --dim: #555;
+    --accent: #d4d4d4;
+    --redacted-bg: #2a2a2a;
+    --border: #222;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.7;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Address bar ── */
+  .address-bar {
+    background: #111;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+
+  .address-bar label {
+    color: var(--dim);
+    user-select: none;
+  }
+
+  .address-input {
+    flex: 1;
+    background: #050505;
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 3px;
+    outline: none;
+  }
+
+  .address-input:focus {
+    border-color: #444;
+  }
+
+  /* ── Response panel ── */
+  .response-panel {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    flex: 1;
+    min-height: 0;
+  }
+
+  @media (max-width: 700px) {
+    .response-panel {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+    }
+  }
+
+  /* ── Headers panel ── */
+  .headers-panel {
+    background: #0e0e0e;
+    border-right: 1px solid var(--border);
+    padding: 20px;
+    overflow-y: auto;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .headers-title {
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 10px;
+    margin-bottom: 12px;
+  }
+
+  .header-line {
+    margin-bottom: 8px;
+    word-break: break-all;
+  }
+
+  .header-key {
+    color: #7a7a7a;
+  }
+
+  .header-val {
+    color: var(--text);
+  }
+
+  .status-line {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .status-line .header-key {
+    color: var(--dim);
+  }
+
+  .status-code-display {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-weight: bold;
+    margin-right: 6px;
+  }
+
+  .status-2xx { background: #1a2e1a; color: #6b6; }
+  .status-3xx { background: #2e2e1a; color: #bb6; }
+  .status-4xx { background: #2e1a1a; color: #b66; }
+  .status-5xx { background: #2e1a1a; color: #b66; }
+
+  /* ── Body panel ── */
+  .body-panel {
+    padding: 32px 40px;
+    overflow-y: auto;
+    max-width: 720px;
+  }
+
+  @media (max-width: 700px) {
+    .body-panel { padding: 20px; }
+  }
+
+  .error-page { }
+
+  .status-code {
+    font-family: var(--mono);
+    font-size: 48px;
+    font-weight: 100;
+    color: var(--dim);
+    letter-spacing: 4px;
+    margin-bottom: 4px;
+  }
+
+  .status-text {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 24px;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 24px;
+  }
+
+  .body-text p {
+    margin-bottom: 14px;
+  }
+
+  .body-text ul {
+    margin: 12px 0 14px 20px;
+  }
+
+  .body-text li {
+    margin-bottom: 8px;
+  }
+
+  .body-text code {
+    background: #161616;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: #999;
+  }
+
+  .small {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .faded {
+    color: var(--dim);
+  }
+
+  .redacted {
+    background: var(--redacted-bg);
+    color: transparent;
+    border-radius: 2px;
+    user-select: none;
+    cursor: default;
+  }
+
+  .redacted.irreversible {
+    background: #1a1a1a;
+    text-decoration: line-through;
+    text-decoration-color: #333;
+  }
+
+  /* ── Cached frame ── */
+  .cached-frame {
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    margin: 16px 0;
+    background: #0c0c0c;
+  }
+
+  .cached-header {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 14px;
+  }
+
+  .team-entry {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .team-entry:last-of-type {
+    border-bottom: none;
+  }
+
+  .redacted-entry {
+    opacity: 0.6;
+  }
+
+  /* ── Product list ── */
+  .product-list li {
+    font-size: 13px;
+    list-style-type: '→ ';
+  }
+
+  /* ── Hidden fragments ── */
+  .hidden-fragment {
+    display: none;
+  }
+
+  .hidden-fragment.revealed {
+    display: block;
+  }
+
+  .fragment-hr {
+    border: none;
+    border-top: 1px dashed #222;
+    margin: 24px 0 16px;
+  }
+
+  .fragment-text {
+    color: #888;
+    font-size: 12px;
+  }
+
+  .fragment-text code {
+    color: #aaa;
+  }
+
+  .fragment-text em {
+    color: #999;
+    font-style: italic;
+  }
+
+  /* ── Subtle hr ── */
+  hr.subtle {
+    border: none;
+    border-top: 1px solid #1a1a1a;
+    margin: 16px 0;
+  }
+
+  /* ── Varin page (empty 200) ── */
+  .varin-page {
+    /* intentionally empty */
+  }
+
+  /* ── Visited indicator ── */
+  .visited-count {
+    color: #333;
+    font-family: var(--mono);
+    font-size: 10px;
+    text-align: right;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="address-bar">
+  <label for="addr">clarimond.bio</label>
+  <span style="color:#333">/</span>
+  <input
+    type="text"
+    id="addr"
+    class="address-input"
+    value=""
+    placeholder="type a path…"
+    autocomplete="off"
+    spellcheck="false"
+  >
+</div>
+
+<div class="response-panel">
+  <div class="headers-panel" id="headersPanel">
+    <div class="headers-title">Response Headers</div>
+    <div id="headersContent"></div>
+  </div>
+  <div class="body-panel" id="bodyPanel"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  Clarimond Biosystems — Server Simulation
+// ═══════════════════════════════════════════════════
+
+const visited = new Set(JSON.parse(localStorage.getItem('cb_visited') || '[]'));
+
+function saveVisited() {
+  localStorage.setItem('cb_visited', JSON.stringify([...visited]));
+}
+
+function markVisited(path) {
+  if (path && path !== '__fallback__') {
+    visited.add(path);
+    saveVisited();
+  }
+}
+
+function hasVisited(path) {
+  return visited.has(path);
+}
+
+function visitedCount() {
+  return visited.size;
+}
+
+// ── Route definitions ──
+
+const ROUTES = {
+
+  '': {
+    status: 503,
+    statusText: 'Service Unavailable',
+    headers: {
+      'Server': 'nginx/1.18.0 (Ubuntu)',
+      'Date': 'Fri, 14 Mar 2025 08:31:12 GMT',
+      'Content-Type': 'text/html; charset=UTF-8',
+      'Retry-After': '86400',
+    },
+    body: `
+      <div class="error-page">
+        <div class="status-code">503</div>
+        <div class="status-text">Service Unavailable</div>
+        <div class="divider"></div>
+        <div class="body-text">
+          <p>The server is temporarily unable to service your request due to maintenance downtime or capacity problems. Please try again later.</p>
+          <hr class="subtle">
+          <p class="small">Clarimond Biosystems is a clinical-stage biotechnology company developing next-generation gene therapies for pediatric neurological disorders.</p>
+          <p class="small faded">Site under maintenance. Please direct inquiries to <span class="redacted">██████████████</span>.</p>
+        </div>
+      </div>`
+  },
+
+  'about': {
+    status: 503,
+    statusText: 'Service Unavailable',
+    headers: {
+      'Server': 'nginx/1.18.0 (Ubuntu)',
+      'Date': 'Fri, 14 Mar 2025 08:31:12 GMT',
+      'Content-Type': 'text/html; charset=UTF-8',
+      'Retry-After': '86400',
+      'X-Powered-By': 'PHP/7.4.3',
+    },
+    fragments: {
+      'products': `
+        <div class="hidden-fragment" data-requires="products">
+          <hr class="fragment-hr">
+          <p class="fragment-text">Site maintenance began 17 October 2024, coinciding with the voluntary suspension of all active clinical programmes. No timeline for restoration has been established. The original about page referenced "12 families participating in our pivotal trial" — this text was removed during the current maintenance period.</p>
+        </div>`,
+      'team': `
+        <div class="hidden-fragment" data-requires="team">
+          <hr class="fragment-hr">
+          <p class="fragment-text">Before restructuring, this page listed four co-founders. Current cached versions list three. The fourth co-founder's section was edited on 16 October 2024 at 23:47 UTC, seven hours before maintenance began.</p>
+        </div>`,
+    },
+    body: `
+      <div class="error-page">
+        <div class="status-code">503</div>
+        <div class="status-text">Service Unavailable</div>
+        <div class="divider"></div>
+        <div class="body-text">
+          <p>The Clarimond Biosystems website is currently undergoing scheduled maintenance as part of our organisational restructuring.</p>
+          <p>We apologise for the inconvenience. Our team is working to restore full service as quickly as possible. In the meantime, please direct all inquiries to our legal representation.</p>
+          <p class="small faded">Clarimond Biosystems Inc.<br>Est. 2019 &mdash; dedicated to advancing next-generation gene therapies for pediatric neurological conditions.</p>
+          <p class="small faded">This page was last updated: <span class="redacted">██████████</span></p>
+          {{fragments}}
+        </div>
+      </div>`
+  },
+
+  'team': {
+    status: 410,
+    statusText: 'Gone',
+    headers: {
+      'Server': 'nginx/1.18.0 (Ubuntu)',
+      'Date': 'Fri, 14 Mar 2025 08:31:12 GMT',
+      'Content-Type': 'text/html; charset=UTF-8',
+      'X-Note': 'This resource has been permanently removed.',
+    },
+    fragments: {
+      'investors': `
+        <div class="hidden-fragment" data-requires="investors">
+          <hr class="fragment-hr">
+          <p class="fragment-text">The redacted co-founder's section was manually edited by user <code>m.achebe</code> on 16 October 2024 at 23:47 UTC. The edit replaced the name, title, and biography with Unicode block characters. The commit message was: <em>"updated per legal counsel recommendation re: personnel changes"</em>.</p>
+        </div>`,
+    },
+    body: `
+      <div class="error-page">
+        <div class="status-code">410</div>
+        <div class="status-text">Gone</div>
+        <div class="divider"></div>
+        <div class="body-text">
+          <p>The requested resource <code>/team</code> is no longer available and has been permanently removed.</p>
+          <p class="small">The following is preserved from Google's cached version, retrieved 15 October 2024:</p>
+          <div class="cached-frame">
+            <p class="cached-header">Cached snapshot — last indexed 14 Oct 2024 03:22 UTC</p>
+            <p class="team-entry"><strong>Dr. Marcus Achebe</strong>, CEO &amp; Co-Founder<br><span class="small">Former VP of Clinical Development, Novartis Gene Therapies. PhD Molecular Biology, ETH Zürich.</span></p>
+            <p class="team-entry"><strong>Dr. Renaud Claquin</strong>, CTO &amp; Co-Founder<br><span class="small">Principal Investigator, CRISPR Therapeutics. ScD Computational Biology, MIT.</span></p>
+            <p class="team-entry"><strong>Dr. Yuki Saramoto</strong>, CMO &amp; Co-Founder<br><span class="small">Attending Pediatric Neurologist, UCSF Benioff Children's Hospital. MD PhD, University of Tokyo.</span></p>
+            <p class="team-entry redacted-entry"><strong class="redacted">██████████████</strong>, <span class="redacted">██████████████</span> &amp; Co-Founder<br><span class="small"><span class="redacted">████████████████████████████████████████████████████████████████</span></span></p>
+            <p class="small faded">Clarimond Biosystems was founded in 2019 by four leading researchers united by a shared vision: to develop safe, effective gene therapies for the most challenging pediatric neurological conditions.</p>
+          </div>
+          {{fragments}}
+        </div>
+      </div>`
+  },
+
+  'products': {
+    status: 403,
+    statusText: 'Forbidden',
+    headers: {
+      'Server': 'nginx/1.18.0 (Ubuntu)',
+      'Date': 'Fri, 14 Mar 2025 08:31:12 GMT',
+      'Content-Type': 'text/html; charset=UTF-8',
+      'X-Frame-Options': 'DENY',
+      'X-Content-Type-Options': 'nosniff',
+    },
+    fragments: {
+      'about': `
+        <div class="hidden-fragment" data-requires="about">
+          <hr class="fragment-hr">
+          <p class="fragment-text">CLB-101 was an adeno-associated virus serotype 9 gene therapy targeting a rare pediatric neurodegenerative condition. The pivotal trial enrolled 12 patients between March 2023 and August 2024. Interim analysis was scheduled for November 2024. The programme was suspended in October 2024 — before interim analysis — following an internal report filed by a then-member of the executive team.</p>
+        </div>`,
+      'press': `
+        <div class="hidden-fragment" data-requires="press">
+          <hr class="fragment-hr">
+          <p class="fragment-text">The internal report, filed 15 October 2024, identified persistent aberrant transgene expression in dorsal root ganglia tissue across multiple participants. Clinical correlates included <span class="redacted irreversible">████████████████████████████</span> confirmed by electromyography. The report recommended immediate voluntary suspension and patient re-evaluation. It was authored by the co-founder whose name has been removed from this domain.</p>
+        </div>`,
+    },
+    body: `
+      <div class="error-page">
+        <div class="status-code">403</div>
+        <div class="status-text">Forbidden</div>
+        <div class="divider"></div>
+        <div class="body-text">
+          <p>Access to this resource has been restricted pending the outcome of ongoing legal proceedings.</p>
+          <p>Clarimond Biosystems has voluntarily suspended all clinical development programmes. No product information, trial data, or related materials are available for public dissemination at this time.</p>
+          <p>In accordance with FDA guidance and in consultation with external legal counsel, we have restricted access to previously published information regarding:</p>
+          <ul class="product-list">
+            <li>CLB-101: AAV9-based gene therapy for <span class="redacted">██████████████████</span> in pediatric patients aged 6 months to 12 years</li>
+            <li>CLB-101 Phase II/III trial protocol and endpoints</li>
+            <li>Enrollment criteria and participant demographics</li>
+            <li>Interim efficacy and safety data previously presented at <span class="redacted">██████████████</span> 2024</li>
+          </ul>
+          <p class="small faded">If you believe you have received this message in error, or if you are a member of the press seeking comment, please contact our legal department. Note: the /contact page has been decommissioned.</p>
+          {{fragments}}
+        </div>
+      </div>`
+  },
+
+  'investors': {
+    status: 301,
+    statusText: 'Moved Permanently',
+    headers: {
+      'Server': 'nginx/1.18.0 (Ubuntu)',
+      'Date': 'Fri, 14 Mar 2025 08:31:12 GMT',
+      'Content-Type': 'text/html; charset=UTF-8',
+      'Location': '/about',
+    },
+    fragments: {
+      'contact': `
+        <div class="hidden-fragment" data-requires="contact">
+          <hr class="fragment-hr">
+          <p class="fragment-text">Lead investor: Archimedes Health Ventures, Series B ($47M, March 2023). Archimedes managing partner Daniel Okafor joined the Clarimond board of directors on 12 April 2023 and remains a board member as of the last available public filing. The /investors page was redirected on 18 October 2024, one day after the board meeting at which the clinical hold was discussed.</p>
+        </div>`,
+    },
+    body: `
+      <div class="error-page">
+        <div class="status-code">301</div>
+        <div class="status-text">Moved Permanently</div>
+        <div class="divider"></div>
+        <div class="body-text">
+          <p>The resource at <code>/investors</code> has been moved permanently to <code>/about</code>.</p>
+          <p class="small">Investor relations inquiries should be directed to <span class="redacted">██████████████</span> at <span class="redacted">████████████████████████████</span>.</p>
+          {{fragments}}
+        </div>
+      </div>`
+  },
+
+  'press': {
+    status: 451,
+    statusText: 'Unavailable For Legal Reasons',
+    headers: {
+      'Server': 'nginx/1.18.0 (Ubuntu)',
+      'Date': 'Fri, 14 Mar 2025 08:31:12 GMT',
+      'Content-Type': 'text/html; charset=UTF-8',
+      'Link': '<https://www.clarimond.bio/legal>; rel="blocked-by"',
+    },
+    fragments: {
+      'investors': `
+        <div class="hidden-fragment" data-requires="investors">
+          <hr class="fragment-hr">
+          <p class="fragment-text">The legal filing references "Clarimond Biosystems Inc. v. Varin." Dr. Lena Varin was served with a cease-and-desist and temporary restraining order on 20 October 2024, preventing her from discussing "confidential trial data, internal communications, and proprietary research methodology" with any third party, including regulatory agencies. The order was granted ex parte. Dr. Varin was not represented at the hearing.</p>
+        </div>`,
+      'products': `
+        <div class="hidden-fragment" data-requires="products">
+          <hr class="fragment-hr">
+          <p class="fragment-text">On 2 November 2024, journalist Maren Kessler of the San Francisco Chronicle published an article titled "Gene Therapy Startup Suspends Trial After Co-Founder's Internal Report Raises Safety Concerns." The article was removed within 6 hours following a legal threat from Archimedes Health Ventures' counsel. Kessler's follow-up investigation, "The Erased Co-Founder," remains unpublished.</p>
+        </div>`,
+    },
+    body: `
+      <div class="error-page">
+        <div class="status-code">451</div>
+        <div class="status-text">Unavailable For Legal Reasons</div>
+        <div class="divider"></div>
+        <div class="body-text">
+          <p>Access to this resource is unavailable due to a legal demand from government or court order.</p>
+          <p>The Clarimond Biosystems press page has been removed following legal proceedings in the <span class="redacted">██████████████</span> jurisdiction. All press materials, media assets, and public statements issued prior to October 2024 are subject to a preservation and non-disclosure order.</p>
+          <p>Members of the media seeking comment should contact external counsel:</p>
+          <p class="small">
+            <strong><span class="redacted">██████████████</span> &amp; Partners LLP</strong><br>
+            Attn: <span class="redacted">██████████████</span><br>
+            Reference: <em>Clarimond Biosystems Inc. v. <span class="redacted irreversible">██████████████</span></em>
+          </p>
+          <p class="small faded">Pursuant to Case No. <span class="redacted">████████████████████████████</span></p>
+          {{fragments}}
+        </div>
+      </div>`
+  },
+
+  'contact': {
+    status: 404,
+    statusText: 'Not Found',
+    headers: {
+      'Server': 'nginx/1.18.0 (Ubuntu)',
+      'Date': 'Fri, 14 Mar 2025 08:31:12 GMT',
+      'Content-Type': 'text/html; charset=UTF-8',
+    },
+    fragments: {
+      'about': `
+        <div class="hidden-fragment" data-requires="about">
+          <hr class="fragment-hr">
+          <p class="fragment-text">The Patient Liaison Office was staffed by two full-time employees and managed communications with the families of CLB-101 trial participants. It was closed on 21 October 2024. All staff were placed under NDA. The office's email server (liaison@clarimond.bio) returned bounce messages beginning 22 October 2024.</p>
+        </div>`,
+      'team': `
+        <div class="hidden-fragment" data-requires="team">
+          <hr class="fragment-hr">
+          <p class="fragment-text">The last email received by the Patient Liaison Office was sent on 19 October 2024 at 04:17 UTC from a parent's personal email address. The subject line was: <em>"Why is my daughter losing sensation in her fingers?"</em></p>
+          <p class="fragment-text">It was never answered.</p>
+        </div>`,
+    },
+    body: `
+      <div class="error-page">
+        <div class="status-code">404</div>
+        <div class="status-text">Not Found</div>
+        <div class="divider"></div>
+        <div class="body-text">
+          <p>The requested URL <code>/contact</code> was not found on this server.</p>
+          <p>No public contact page has ever existed for Clarimond Biosystems. Patient, caregiver, and physician inquiries were historically managed through the Patient Liaison Office (active 2019&ndash;2024), which operated as a separate internal function and did not maintain a public-facing web presence.</p>
+          <p class="small">For clinical trial inquiries related to the CLB-101 programme, please contact the FDA's Drug Safety division directly.</p>
+          {{fragments}}
+        </div>
+      </div>`
+  },
+
+  'varin': {
+    status: 200,
+    statusText: 'OK',
+    headers: {
+      'Server': 'nginx/1.18.0 (Ubuntu)',
+      'Date': 'Fri, 14 Mar 2025 08:31:12 GMT',
+      'Content-Type': 'text/html; charset=UTF-8',
+      'Content-Length': '0',
+    },
+    body: '<div class="varin-page"></div>',
+    lockedStatus: 404,
+    lockedStatusText: 'Not Found',
+    lockedHeaders: {
+      'Server': 'nginx/1.18.0 (Ubuntu)',
+      'Date': 'Fri, 14 Mar 2025 08:31:12 GMT',
+      'Content-Type': 'text/html; charset=UTF-8',
+    },
+    lockedBody: `
+      <div class="error-page">
+        <div class="status-code">404</div>
+        <div class="status-text">Not Found</div>
+        <div class="divider"></div>
+        <div class="body-text">
+          <p>The requested URL <code>/varin</code> was not found on this server.</p>
+          <p class="small faded">If you arrived here by following a link, it may have been outdated or incorrect.</p>
+        </div>
+      </div>`,
+    requireVisited: 4,
+  },
+};
+
+// ── Render functions ──
+
+function getStatusClass(code) {
+  if (code >= 200 && code < 300) return 'status-2xx';
+  if (code >= 300 && code < 400) return 'status-3xx';
+  if (code >= 400 && code < 500) return 'status-4xx';
+  return 'status-5xx';
+}
+
+function renderHeaders(status, statusText, headers) {
+  const sc = getStatusClass(status);
+  let html = `<div class="status-line">
+    <span class="header-key">HTTP/1.1 </span>
+    <span class="status-code-display ${sc}">${status}</span>
+    <span class="header-val">${statusText}</span>
+  </div>`;
+
+  for (const [key, val] of Object.entries(headers)) {
+    html += `<div class="header-line">
+      <span class="header-key">${key}:</span>
+      <span class="header-val"> ${val}</span>
+    </div>`;
+  }
+
+  document.getElementById('headersContent').innerHTML = html;
+}
+
+function renderBody(html) {
+  document.getElementById('bodyPanel').innerHTML = html;
+
+  // Reveal fragments based on visited routes
+  document.querySelectorAll('.hidden-fragment').forEach(el => {
+    const requires = el.dataset.requires;
+    if (requires && hasVisited(requires)) {
+      el.classList.add('revealed');
+    }
+  });
+}
+
+function resolveBody(route) {
+  let body = route.body;
+
+  // Replace {{fragments}} placeholder with conditional fragments
+  if (route.fragments) {
+    let fragmentsHtml = '';
+    for (const [reqPath, fragHtml] of Object.entries(route.fragments)) {
+      fragmentsHtml += fragHtml;
+    }
+    body = body.replace('{{fragments}}', fragmentsHtml);
+  }
+
+  return body;
+}
+
+// ── Navigation ──
+
+function navigate(path) {
+  path = path.replace(/^[/#]+/, '').replace(/[/]+$/, '');
+
+  const route = ROUTES[path];
+
+  if (!route) {
+    // Generic 404
+    const fallbackBody = `
+      <div class="error-page">
+        <div class="status-code">404</div>
+        <div class="status-text">Not Found</div>
+        <div class="divider"></div>
+        <div class="body-text">
+          <p>The requested URL <code>/${path}</code> was not found on this server.</p>
+          <p class="small faded">Available resources on this server are limited. The site is under maintenance.</p>
+        </div>
+      </div>`;
+    renderHeaders(404, 'Not Found', {
+      'Server': 'nginx/1.18.0 (Ubuntu)',
+      'Date': new Date().toUTCString(),
+      'Content-Type': 'text/html; charset=UTF-8',
+    });
+    renderBody(fallbackBody);
+    return;
+  }
+
+  // Handle /varin gating
+  if (route.requireVisited !== undefined) {
+    if (visitedCount() < route.requireVisited) {
+      renderHeaders(route.lockedStatus, route.lockedStatusText, route.lockedHeaders);
+      renderBody(route.lockedBody);
+      markVisited(path);
+      return;
+    }
+  }
+
+  // Render route
+  renderHeaders(route.status, route.statusText, route.headers);
+  renderBody(resolveBody(route));
+  markVisited(path);
+
+  // Update title
+  document.title = `${route.status} ${route.statusText} — Clarimond Biosystems`;
+}
+
+// ── Input handling ──
+
+const addrInput = document.getElementById('addr');
+
+addrInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const path = addrInput.value.trim();
+    if (path !== addrInput.dataset.currentPath) {
+      window.location.hash = path;
+    }
+  }
+});
+
+window.addEventListener('hashchange', function() {
+  const path = window.location.hash.slice(1);
+  addrInput.value = path;
+  addrInput.dataset.currentPath = path;
+  navigate(path);
+});
+
+// ── Initialize ──
+
+(function init() {
+  const hash = window.location.hash.slice(1);
+  if (hash) {
+    addrInput.value = hash;
+    addrInput.dataset.currentPath = hash;
+    navigate(hash);
+  } else {
+    addrInput.value = '';
+    addrInput.dataset.currentPath = '';
+    navigate('');
+  }
+})();
+</script>
+</body>
+</html>

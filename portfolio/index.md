@@ -25,3 +25,4 @@
 | 0021 | Eulogy for a Living Person | essay | 4.3 | 2026-05-20 | — |
 | 0022 | Termination for Convenience | fiction | 5.0 | 2026-05-20 | — |
 | 0023 | Last Known Position | code-tool | 4.9 | 2026-05-20 | — |
+| 0024 | Soft Launch | experiment | 5.0 | 2026-05-20 | — |
