@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coat Check Log — 17 December</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@300;400&display=swap');
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: #1a1714;
+    color: #c8b89a;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 40px 20px 120px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .header {
+    margin-bottom: 60px;
+    border-bottom: 1px solid #3a3530;
+    padding-bottom: 30px;
+  }
+
+  .header h1 {
+    font-family: 'Caveat', cursive;
+    font-size: 28px;
+    font-weight: 600;
+    color: #a89878;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
+  .header .meta {
+    font-size: 12px;
+    color: #6a6050;
+    line-height: 1.8;
+  }
+
+  .note {
+    font-family: 'Caveat', cursive;
+    font-size: 16px;
+    color: #8a7e6e;
+    margin: 30px 0 10px;
+    padding-left: 20px;
+    border-left: 2px solid #2e2a25;
+    font-style: italic;
+  }
+
+  .coat-entry {
+    margin-bottom: 45px;
+    padding: 20px 25px;
+    background: #1e1b17;
+    border: 1px solid #2e2a25;
+    border-radius: 3px;
+    position: relative;
+  }
+
+  .coat-entry::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 28px,
+        #22201c 28px,
+        #22201c 29px
+      );
+    opacity: 0.3;
+    pointer-events: none;
+    border-radius: 3px;
+  }
+
+  .coat-number {
+    font-family: 'Caveat', cursive;
+    font-size: 22px;
+    font-weight: 700;
+    color: #8a7a5a;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .coat-type {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #5a5040;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .inventory {
+    list-style: none;
+    padding: 0;
+  }
+
+  .inventory li {
+    position: relative;
+    padding-left: 16px;
+    margin-bottom: 4px;
+  }
+
+  .inventory li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: #4a4030;
+  }
+
+  .stain {
+    color: #9a8a6e;
+  }
+
+  .lining-note {
+    color: #7a6e5e;
+    font-style: italic;
+  }
+
+  .water-line {
+    border-bottom: 1px solid rgba(80, 100, 120, 0.15);
+    padding-bottom: 2px;
+  }
+
+  .water-damage-1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 15%;
+    background: linear-gradient(to top,
+      rgba(40, 50, 60, 0.12) 0%,
+      transparent 100%
+    );
+    pointer-events: none;
+    border-radius: 0 0 3px 3px;
+  }
+
+  .water-damage-2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 25%;
+    background: linear-gradient(to top,
+      rgba(40, 50, 60, 0.18) 0%,
+      transparent 100%
+    );
+    pointer-events: none;
+    border-radius: 0 0 3px 3px;
+  }
+
+  .water-damage-3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(to top,
+      rgba(40, 50, 60, 0.25) 0%,
+      rgba(35, 45, 55, 0.12) 50%,
+      transparent 100%
+    );
+    pointer-events: none;
+    border-radius: 0 0 3px 3px;
+  }
+
+  .water-damage-4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background: linear-gradient(to top,
+      rgba(40, 55, 65, 0.35) 0%,
+      rgba(35, 50, 60, 0.18) 50%,
+      transparent 100%
+    );
+    pointer-events: none;
+    border-radius: 0 0 3px 3px;
+  }
+
+  .water-damage-5::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80%;
+    background: linear-gradient(to top,
+      rgba(40, 55, 65, 0.45) 0%,
+      rgba(35, 50, 60, 0.25) 50%,
+      transparent 100%
+    );
+    pointer-events: none;
+    border-radius: 0 0 3px 3px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Coat Check Log — 17 December</h1>
+  <div class="meta">
+    Event: Meridian Gallery Winter Benefit<br>
+    Attendant: On duty 18:00 — close<br>
+    Status: CLOSING — venue cleared after pipe burst (basement level, east wall)<br>
+    Note: All remaining items catalogued per policy. Unclaimed property held 30 days.
+  </div>
+</div>
+
+<div class="note">
+  Cold from the loading door. I should have worn something heavier.
+</div>
+
+<div class="coat-entry water-damage-1">
+  <span class="coat-number">#1</span>
+  <span class="coat-type">Wool overcoat, charcoal. Men's. Designer label removed.</span>
+  <ul class="inventory">
+    <li>Left pocket: crumpled valet ticket (Hyatt Regency), $9 in mixed bills, one stick of cinnamon gum still soft</li>
+    <li>Right pocket: nothing, but the interior seam split along old stitching — someone tried to reach something and gave up</li>
+    <li>Left inner: a key on a plain ring. No fob. No tag. Cut for a deadbolt, not a car.</li>
+    <li class="lining-note">Lining worn thin at the right shoulder. Carries a bag there. The same bag every day.</li>
+    <li class="stain">Collar: foundation makeup, two shades. One darker. Months apart.</li>
+  </ul>
+</div>
+
+<div class="coat-entry water-damage-1">
+  <span class="coat-number">#2</span>
+  <span class="coat-type">Raincoat, honey beige. Women's. Unworn waterproofing.</span>
+  <ul class="inventory">
+    <li>Left pocket: two cough drops (cherry, wrapped), receipt from a restaurant in Midtown — dinner for one, total $47.50, paid cash, 23% tip</li>
+    <li>Right pocket: phone charging cable, USB-C, knotted around itself. Carried like that for weeks.</li>
+    <li class="lining-note">Inner pocket: a folded note on gallery stationery. "We should talk about the Halifax piece." Written in someone else's hand.</li>
+    <li class="stain">Right cuff: adhesive residue from a gallery entry wristband. Torn off.</li>
+  </ul>
+</div>
+
+<div class="note">
+  Rubbing my arms again. Heating cut out when the pipe went. Going on forty minutes now.
+</div>
+
+<div class="coat-entry water-damage-1">
+  <span class="coat-number">#3</span>
+  <span class="coat-type">Leather motorcycle jacket, black. Men's. Well-broken.</span>
+  <ul class="inventory">
+    <li>Left pocket: lighter (empty), rolling papers, a guitar pick with a woman's name in marker. Not his. Or not anymore.</li>
+    <li>Right pocket: coin from 1987. A luck thing. Everything else is gone from this pocket except the coin.</li>
+    <li class="stain">Right elbow: road rash scuffed into the grain, polished smooth by handling. He touches it when he talks about it.</li>
+    <li class="lining-note">Zippered inner: earplugs, still in pharmacy packaging. Came prepared to not hear something.</li>
+  </ul>
+</div>
+
+<div class="coat-entry water-damage-2">
+  <span class="coat-number">#4</span>
+  <span class="coat-type">Down puffer, metallic silver. Women's. High-end.</span>
+  <ul class="inventory">
+    <li class="water-line">Left pocket: a child's mitten, navy blue, sealed in a plastic bag. The child has not worn this mitten in some time.</li>
+    <li class="water-line">Right pocket: lipstick (dried at the tip), Advil, a paper square with a phone number — area code doesn't match this city.</li>
+    <li class="stain">Interior: dog hair. White. Retriever, probably. Warm from more than one body.</li>
+    <li class="lining-note">The mitten has been washed carefully, separately, many times. She takes it out and puts it back.</li>
+  </ul>
+</div>
+
+<div class="note">
+  #4 still held its warmth when I moved it aside. Felt it through the hanger.
+</div>
+
+<div class="coat-entry water-damage-2">
+  <span class="coat-number">#5</span>
+  <span class="coat-type">Blazer, navy, double-breasted. Men's. Custom tailoring.</span>
+  <ul class="inventory">
+    <li class="water-line">Left pocket: five business cards from tonight, all different. His own among them — embossed text wearing off at the corners.</li>
+    <li class="water-line">Right pocket: a folded napkin with a phone number in server's handwriting. She was fast about it.</li>
+    <li class="stain">Left cuff: champagne. Someone else's toast reached him.</li>
+    <li class="lining-note">Inner breast: a photograph. A house in autumn. Not a house for sale. A house he doesn't own yet.</li>
+  </ul>
+</div>
+
+<div class="coat-entry water-damage-3">
+  <span class="coat-number">#6</span>
+  <span class="coat-type">Shearling coat, cream. Women's. European sizing.</span>
+  <ul class="inventory">
+    <li class="water-line">Left pocket: passport. Six stamps in three months. Canada twice, and Portugal.</li>
+    <li class="water-line">Right pocket: a wooden rosary. Crucifix worn on one side only. She holds it in her right hand.</li>
+    <li class="stain">All pockets: scent of tobacco. Turkish. Not a smoker now — a coat that remembers.</li>
+    <li class="lining-note">Passport photo is two years old. Her hair is shorter now. Everything is shorter now.</li>
+  </ul>
+</div>
+
+<div class="coat-entry water-damage-3">
+  <span class="coat-number">#7</span>
+  <span class="coat-type">Poncho, hand-woven. Unisex. Alpaca, I think.</span>
+  <ul class="inventory">
+    <li>No pockets. None at all.</li>
+    <li class="stain">Front hem: a small constellation of holes. Moths, or stored where things were allowed to eat.</li>
+    <li class="lining-note">Tag in the collar, written in marker: "Pisac Market, August 2019." Bought from the maker.</li>
+    <li>Smells like someone else's grandmother. Cedar, eucalyptus, cooking oil.</li>
+  </ul>
+</div>
+
+<div class="note">
+  Shivering. I keep the desk lamp on for the heat it throws. The water has reached the chair legs.
+</div>
+
+<div class="coat-entry water-damage-3">
+  <span class="coat-number">#8</span>
+  <span class="coat-type">Trench coat, khaki. Men's. Old. Very old.</span>
+  <ul class="inventory">
+    <li class="water-line">Left pocket: transistor radio earpiece. Frayed cord. Hasn't been worn to listen to anything in decades.</li>
+    <li class="water-line">Right pocket: a folded American flag. Triangle-folded, ceremonial. Small enough to be from a footlocker.</li>
+    <li class="stain">Left shoulder: dark spot at the seam. Ink, not blood. A pen broke there decades ago, and he didn't stop wearing it.</li>
+    <li class="lining-note">Repaired three times. Thread doesn't match. He did it himself.</li>
+  </ul>
+</div>
+
+<div class="coat-entry water-damage-4">
+  <span class="coat-number">#9</span>
+  <span class="coat-type">Sequined wrap, black. Women's. Open weave.</span>
+  <ul class="inventory">
+    <li>No pockets. Sequins missing along the left drape — caught on something. A chair back, a bracelet, someone's watch.</li>
+    <li class="stain">Perfume in the fibers. Two kinds. One is hers. One belongs to the person she held tonight.</li>
+    <li class="water-line">Safety pin at the clasp. Replaced the original closure. Quick fix, done carefully.</li>
+  </ul>
+</div>
+
+<div class="coat-entry water-damage-4">
+  <span class="coat-number">#10</span>
+  <span class="coat-type">Wool peacoat, navy. Men's. Navy-issue. Real buttons.</span>
+  <ul class="inventory">
+    <li class="water-line">Left pocket: a folded letter. Sealed. Addressed to someone in Des Moines, Iowa. Stamp cancelled. Never sent. Re-sealed with tape.</li>
+    <li class="water-line">Right pocket: a toy dinosaur. Green plastic. Given by a child, not stolen. Carried.</li>
+    <li class="stain">Collar: salt. From a road in winter, or from tears he didn't acknowledge. Both leave the same residue.</li>
+    <li class="lining-note">The letter is addressed in his hand. He could send it. He has chosen not to. He has also chosen not to stop carrying it.</li>
+  </ul>
+</div>
+
+<div class="coat-entry water-damage-4">
+  <span class="coat-number">#11</span>
+  <span class="coat-type">Fur stole, mink. Women's. Vintage.</span>
+  <ul class="inventory">
+    <li>No pockets. A clasp at the throat — tarnished silver.</li>
+    <li class="water-line">Lining monogrammed. Initials that don't match the woman who wore it tonight.</li>
+    <li class="stain">Fur thinning at the nape. A hand has rested there, over the years, many times.</li>
+    <li class="lining-note">Inherited. Kept for memory rather than warmth. She doesn't need it for warmth.</li>
+  </ul>
+</div>
+
+<div class="note">
+  Stamping my feet to keep feeling in them. The lower hooks got it worst. Six through eleven took the most water.
+</div>
+
+<div class="coat-entry water-damage-4">
+  <span class="coat-number">#12</span>
+  <span class="coat-type">Corduroy blazer, brown. Men's. Elbow patches.</span>
+  <ul class="inventory">
+    <li class="water-line">Left pocket: reading glasses in a hard case. Prescribed 2021. Scratched lenses. He doesn't always wear them when he should.</li>
+    <li class="water-line">Right pocket: folded printout — an email from a university press. "We regret to inform." Read, refolded, carried to a gala.</li>
+    <li class="stain">Right cuff: ink, blue-black. Margin notes. He annotates everything.</li>
+    <li class="lining-note">Takes the rejection out and reads it. Then puts it back. Carries it the way others carry talismans — not for luck, but as proof.</li>
+  </ul>
+</div>
+
+<div class="coat-entry water-damage-5">
+  <span class="coat-number">#13</span>
+  <span class="coat-type">Winter parka, hunter green. Men's. Two sizes too large.</span>
+  <ul class="inventory">
+    <li class="water-line">Left pocket: insulated work gloves. Thinsulate lining, exterior worn at the palms. His hands are still rough.</li>
+    <li class="water-line">Right pocket: a laminated photograph of a woman. She is laughing at whoever is taking the picture.</li>
+    <li class="stain">The coat is big because he was bigger when he bought it, or because someone wanted him warm. Or both.</li>
+    <li class="lining-note">Lamination cracking along the fold. He opens it. Closes it. Every day.</li>
+  </ul>
+</div>
+
+<div class="note">
+  My fingers are stiff. I keep misreading the tags. #13 was the warmest. I held it longer than I needed to.
+</div>
+
+<div class="coat-entry water-damage-5">
+  <span class="coat-number">#14</span>
+  <span class="coat-type">Silk shawl, embroidered. Women's. Old country, probably.</span>
+  <ul class="inventory">
+    <li>No pockets. Delicate. Hand-stitched roses in the border.</li>
+    <li class="water-line">Mended where the silk split. A grandmother's hand. Or the woman herself, learning from one.</li>
+    <li class="stain">A drop of something sweet at the fringe — dessert wine, I think. Tonight's.</li>
+    <li class="lining-note">Kept in tissue paper. Brought out when she needs to remember she is from somewhere.</li>
+  </ul>
+</div>
+
+<div class="coat-entry water-damage-5">
+  <span class="coat-number">#15</span>
+  <span class="coat-type">Duffle coat, camel. Unisex. Wooden toggles.</span>
+  <ul class="inventory">
+    <li class="water-line">Left pocket: a phone. Dead battery. Lock screen is a dog.</li>
+    <li class="water-line">Right pocket: earbuds tangled with a house key and a gym membership card. Expired in October.</li>
+    <li class="stain">Toggles chewed. Not by a dog. By a person, nervously, while thinking.</li>
+    <li class="lining-note">The phone was important enough to pocket. Not important enough to charge.</li>
+  </ul>
+</div>
+
+<div class="coat-entry water-damage-5">
+  <span class="coat-number">#16</span>
+  <span class="coat-type">Cashmere topcoat, black. Women's. No ornamentation.</span>
+  <ul class="inventory">
+    <li class="water-line">Left pocket: a single earring. Pearl drop. Gold post. The match is at home, or on the floor of a cab, or someone else's pocket.</li>
+    <li class="water-line">Right pocket: receipt for tonight's silent auction. Winning bid on Lot 7. $3,200. Paid without hesitation.</li>
+    <li class="stain">Interior: faint trace of the perfume she wore last year. She hasn't cleaned the coat since. Some scent is more than scent.</li>
+    <li class="lining-note">This coat has never been worn in rain before tonight. She looks at the water damage and does not flinch.</li>
+  </ul>
+</div>
+
+<div class="note">
+  I can see my breath now. The water is over my shoes. Seventeen coats. Almost through.
+</div>
+
+<div class="coat-entry">
+  <span class="coat-number">#00</span>
+  <span class="coat-type">Wool jacket, dark grey. Unisex cut. Off the rack — department store, three or four seasons ago.</span>
+  <ul class="inventory">
+    <li>Left pocket: pen. Black ink, almost empty. A receipt from tonight's opening — one drink, one service charge. "ATTENDANT" printed at the top.</li>
+    <li>Right pocket: a claim ticket. Perforated edge. Printed with tonight's log — same paper stock, same numbering machine. But the number is #00. Not in the sequence. Not in the log. Because this coat was never checked.</li>
+    <li class="stain">Right cuff: damp now. The water reached it behind the desk, where it hung all night, while I stood in front of the desk, in my shirtsleeves, cataloguing.</li>
+    <li class="lining-note">Left inner pocket: a list. Seventeen coats, numbered and described, in the same handwriting as the entries above. The ink is the same pen. This coat was never checked because it was mine. It hung behind me the whole shift. I never turned around to take it.</li>
+  </ul>
+</div>
+
+</body>
+</html>

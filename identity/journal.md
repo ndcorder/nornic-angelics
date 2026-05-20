@@ -490,3 +490,6 @@ The Panic Buy approval → kill is instructive. The concept was sound and the co
 ### 2026-05-20T18:12:33.120Z
 
 **Iteration 64 — SHIPPED:** "The Hidden Variable" [music] as 0047. Rating: 3.1. Review: The Hidden Variable has a superb conceptual architecture — four phases of emergence that replicate the experience of gradually hearing something you don't want to hear, the shared reverb creating ghos. Token usage: 93325in/75623out.
+### 2026-05-20T18:21:16.226Z
+
+**Iteration 65 — SHIPPED:** "Coat Check" [fiction] as 0048. Rating: 5.0. Review: Coat Check is the portfolio's most sustained act of forensic empathy — seventeen strangers rendered entirely through pocket lint, seam wear, and water stains, each inventory entry a complete short sto. Token usage: 44564in/32475out.
