@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Identity Verification Process</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --paper:#e2d8c4;
+  --ink:#2a2420;
+  --muted:#8a7e6e;
+  --field:#f5f0e8;
+  --border:#bbb3a3;
+  --danger:#b83030;
+  --accept:#c4e0b0;
+}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Courier New',Courier,monospace;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:1.5rem;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.box{
+  width:100%;max-width:560px;
+  background:#f8f4ec;
+  border:1px solid #d0c8b8;
+  box-shadow:2px 3px 12px rgba(0,0,0,0.06);
+  padding:2.5rem 3rem;
+  animation:fadeUp .4s ease;
+}
+h1{
+  font-size:1.05rem;font-weight:700;
+  letter-spacing:.04em;text-transform:uppercase;
+  margin-bottom:1.6rem;padding-bottom:.7rem;
+  border-bottom:2px solid var(--ink);
+}
+label{
+  display:block;font-size:.72rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:.35rem;margin-top:1.1rem;
+}
+input[type="text"]{
+  width:100%;padding:.55rem .65rem;
+  font-family:'Courier New',Courier,monospace;
+  font-size:.95rem;background:var(--field);
+  border:1px solid var(--border);color:var(--ink);
+  outline:none;transition:border-color .2s,background .3s;
+}
+input[type="text"]:focus{border-color:var(--ink)}
+input[type="text"]::placeholder{color:#bfb8a8;font-style:italic}
+
+.bt{
+  margin-top:1.6rem;padding:.5rem 1.4rem;
+  font-family:'Courier New',Courier,monospace;
+  font-size:.78rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;background:var(--ink);color:var(--field);
+  border:none;cursor:pointer;transition:background .2s;
+}
+.bt:hover{background:#4a433c}
+.bt:disabled{opacity:.35;cursor:default}
+
+.msg{
+  margin-top:.5rem;font-size:.82rem;min-height:1.3em;
+  transition:color .3s;line-height:1.45;
+}
+.msg.err{color:var(--danger)}
+.msg.ok{color:#4a6a3a}
+
+.sc{
+  font-size:.68rem;color:var(--muted);text-align:right;
+  margin-top:.5rem;letter-spacing:.02em;
+}
+
+.di{
+  margin-top:.7rem;padding:.45rem .65rem;
+  background:#ece6da;border-left:3px solid var(--border);
+  font-size:.85rem;word-break:break-word;
+}
+
+.hi{opacity:0;height:0;overflow:hidden;transition:all .5s ease;margin:0}
+.hi.on{opacity:1;height:auto;margin-top:1rem}
+.hi input{border-color:#b0c8a0!important;background:#f6faf2!important}
+
+.ph{display:none}
+.ph.on{display:block}
+
+#p3 input[type="text"]{
+  background:#faf8f4;border-color:#c8c0b0;
+  box-shadow:none;font-size:1.05rem;
+}
+#p3 input[type="text"]:focus{
+  border-color:#a0a090;background:#fff;
+}
+#p3 input[type="text"].familiar{
+  border-color:#b0c8a0;background:#f6faf2;
+}
+
+.fin{
+  text-align:center;padding:2rem 0;
+  animation:fadeUp 1.2s ease;
+}
+.fn{
+  font-size:2.2rem;font-weight:400;
+  letter-spacing:.01em;margin:.5rem 0;
+}
+.fs{
+  font-size:.78rem;color:var(--muted);
+  letter-spacing:.08em;font-style:italic;
+}
+
+.ti{border-top:1px solid var(--border);padding-top:.6rem}
+.st{font-size:.7rem;color:var(--muted);letter-spacing:.02em}
+
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@media(max-width:600px){.box{padding:1.5rem 1.2rem}h1{font-size:.9rem}}
+</style>
+</head>
+<body>
+
+<div class="box">
+
+  <!-- PHASE 1: Indifference -->
+  <section id="p1" class="ph on">
+    <h1>Identity Verification Form</h1>
+    <p style="font-size:.72rem;color:var(--muted);margin-bottom:.3rem">Form C-44 &mdash; Bureau of Records</p>
+    <div class="sc">Section 1 of 3</div>
+
+    <label for="f1n">Legal Full Name</label>
+    <input type="text" id="f1n" placeholder="As it appears on official documents" autocomplete="off" spellcheck="false">
+    <div class="msg" id="m1n"></div>
+    <div id="d1n" class="di" style="display:none"></div>
+
+    <label for="f1d">Preferred Name <span style="font-weight:400;text-transform:none;font-size:.65rem">(if different)</span></label>
+    <input type="text" id="f1d" placeholder="Optional" autocomplete="off" spellcheck="false">
+    <div class="msg" id="m1d"></div>
+    <div id="prefPreview" class="hi"></div>
+
+    <button class="bt" id="b1">Continue &rarr;</button>
+    <div class="ti"><span class="st">Please note: all fields are subject to system validation.</span></div>
+  </section>
+
+  <!-- PHASE 2: Hostility -->
+  <section id="p2" class="ph">
+    <h1>Verification Required</h1>
+    <div class="sc">Section 2 of 3</div>
+
+    <label for="f2c">Please Confirm Your Name</label>
+    <input type="text" id="f2c" placeholder="Re-enter your name exactly as shown" autocomplete="off" spellcheck="false">
+    <div class="msg" id="m2c"></div>
+    <div id="d2c" class="di" style="display:none"></div>
+
+    <label for="f2p">Primary Name on File</label>
+    <input type="text" id="f2p" placeholder="Your primary registered name" autocomplete="off" spellcheck="false">
+    <div class="msg" id="m2p"></div>
+    <div id="d2p" class="di" style="display:none"></div>
+
+    <label for="f2n">Name as Commonly Known</label>
+    <input type="text" id="f2n" placeholder="Enter your name as commonly known" autocomplete="off" spellcheck="false">
+    <div class="msg" id="m2n"></div>
+    <div id="d2n" class="di" style="display:none"></div>
+
+    <button class="bt" id="b2">Continue &rarr;</button>
+    <div class="ti"><span class="st">Multiple verification steps help us protect your identity. We appreciate your patience.</span></div>
+  </section>
+
+  <!-- PHASE 3: The exhale -->
+  <section id="p3" class="ph">
+    <h1>Final Verification</h1>
+    <div class="sc">Section 3 of 3</div>
+
+    <label for="f3r">Name as Recognized by This System</label>
+    <input type="text" id="f3r" placeholder="Enter name" autocomplete="off" spellcheck="false">
+    <div class="msg" id="m3r"></div>
+    <div id="d3r" class="di" style="display:none"></div>
+
+    <div id="fin" class="fin" style="display:none">
+      <div class="fs">You are</div>
+      <div class="fn" id="fnD"></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  /* State: what the user entered, what they prefer,
+     what the system distorted, how many times they've tried */
+  var userName  = '',
+      prefName  = '',
+      hiddenName= '',
+      sysName   = '',
+      attempts  = 0;
+
+  /* ---- Distortion functions ---- */
+
+  function titleCase(s){
+    return s.toLowerCase().replace(/\b\w/g,function(c){return c.toUpperCase()});
+  }
+
+  function properCase(s){
+    return s.split(' ').map(function(w){
+      return w.charAt(0).toUpperCase()+w.slice(1).toLowerCase();
+    }).join(' ');
+  }
+
+  function reverse(s){return s.split('').reverse().join('')}
+
+  function dropLetter(s){
+    var i=Math.floor(s.length/3);
+    if(i>=s.length) i=s.length-1;
+    if(i<0) return s;
+    return s.substring(0,i)+s.substring(i+1);
+  }
+
+  function quote(s){return '\u201C'+s+'\u201D'}
+
+  function addHonorific(s){
+    var h=['Mr.','Mrs.','Ms.','Dr.'];
+    return h[attempts%h.length]+' '+s;
+  }
+
+  function redact(s){
+    var i=Math.floor(s.length/2);
+    if(i<1)i=1; if(i>=s.length-1)i=s.length-2;
+    return s.substring(0,i-1)+'***'+s.substring(i+2);
+  }
+
+  function initials(s){
+    if(s.length<=4)return s.charAt(0)+'.';
+    return s.charAt(0)+'.'+s.charAt(s.length-1)+'.';
+  }
+
+  function abbreviate(s){
+    var vowels='aeiou',idx=0;
+    for(var k=0;k<s.length;k++){
+      if(vowels.indexOf(s[k].toLowerCase())!==-1){idx=k;break}
+    }
+    return s.substring(0,idx+1).toUpperCase()+'.';
+  }
+
+  /* ---- DOM helpers ---- */
+
+  function $(id){return document.getElementById(id)}
+
+  function escHtml(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function showDiv(el,txt){el.style.display='block';el.textContent=txt}
+  function hideDiv(el){el.style.display='none'}
+
+  function setMsg(el,txt,cls){
+    el.textContent=txt;
+    el.className='msg'+(cls?' '+cls:'');
+  }
+
+  function animIn(el){
+    el.style.animation='none';
+    void el.offsetHeight;
+    el.style.animation='fadeUp .4s ease';
+  }
+
+  function flashField(el){
+    el.style.background='#f0ebe0';
+    setTimeout(function(){el.style.background=''},400);
+  }
+
+  /* ---- Element references ---- */
+
+  var p1=$('p1'), p2=$('p2'), p3=$('p3');
+
+  var f1n=$('f1n'), f1d=$('f1d'),
+      m1n=$('m1n'), m1d=$('m1d'),
+      d1n=$('d1n'), b1=$('b1');
+
+  var f2c=$('f2c'), f2p=$('f2p'), f2n=$('f2n'),
+      m2c=$('m2c'), m2p=$('m2p'), m2n=$('m2n'),
+      d2c=$('d2c'), d2p=$('d2p'), d2n=$('d2n'),
+      b2=$('b2');
+
+  var f3r=$('f3r'), m3r=$('m3r'), d3r=$('d3r'),
+      fin=$('fin'), fnD=$('fnD');
+
+  /* ==================== PHASE 1 ==================== */
+
+  f1n.addEventListener('input',function(){
+    userName=this.value.trim();
+    if(!userName){setMsg(m1n,'');hideDiv(d1n);return}
+
+    var raw=this.value;
+
+    /* If the user didn't follow "proper" capitalization,
+       the system "corrects" it — bureaucratic indifference */
+    if(raw.toUpperCase()!==raw && properCase(raw)!==raw){
+      sysName=properCase(raw);
+      setMsg(m1n,'Note: standardized to '+quote(sysName)+' for record consistency.','');
+      showDiv(d1n,'On file: '+sysName);
+      flashField(this);
+    }else if(raw.toUpperCase()===raw && raw.length>2){
+      sysName=properCase(raw);
+      setMsg(m1n,'Converted from uppercase. Recorded as '+quote(sysName)+'.','');
+      showDiv(d1n,'On file: '+sysName);
+      flashField(this);
+    }else{
+      sysName=raw;
+      setMsg(m1n,'');
+      hideDiv(d1n);
+    }
+  });
+
+  f1d.addEventListener('input',function(){
+    prefName=this.value.trim();
+    var pp=$('prefPreview');
+
+    if(prefName){
+      /* The preferred name field accepts input without distortion.
+         A subtle green-bordered preview appears — easy to miss. */
+      pp.className='hi on';
+      pp.innerHTML=
+        '<label style="color:#4a6a3a;margin-top:.3rem;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:block">Your name will be recorded as:</label>'+
+        '<div style="padding:.35rem .65rem;background:#f6faf2;border:1px solid #c8d8b8;font-size:.95rem;margin-top:.2rem;word-break:break-word">'+
+        escHtml(prefName)+'</div>';
+    }else{
+      pp.className='hi';
+      pp.innerHTML='';
+    }
+  });
+
+  f1n.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();b1.click()}});
+  f1d.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();b1.click()}});
+
+  b1.addEventListener('click',function(){
+    userName=f1n.value.trim();
+    prefName=f1d.value.trim();
+
+    if(!userName){
+      setMsg(m1n,'A name is required to proceed.','err');
+      return;
+    }
+
+    /* If no preferred name was given, fall back to the legal name */
+    if(!prefName) prefName=userName;
+
+    /* Store the clean preferred name — what Phase 3 will ultimately accept */
+    hiddenName=prefName;
+    sysName=properCase(userName);
+    attempts=0;
+
+    p1.classList.remove('on');
+    p2.classList.add('on');
+    animIn(p2);
+    f2c.value='';
+    f2c.focus();
+  });
+
+  /* ==================== PHASE 2 ==================== */
+
+  f2c.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();b2.click()}});
+  f2p.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();b2.click()}});
+  f2n.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();b2.click()}});
+
+  f2c.addEventListener('input',function(){setMsg(m2c,'');hideDiv(d2c)});
+  f2p.addEventListener('input',function(){setMsg(m2p,'');hideDiv(d2p)});
+  f2n.addEventListener('input',function(){setMsg(m2n,'');hideDiv(d2n)});
+
+  b2.addEventListener('click',function(){
+    var valConfirm = f2c.value.trim(),
+        valPrimary = f2p.value.trim(),
+        valKnown   = f2n.value.trim();
+
+    if(!valConfirm && !valPrimary && !valKnown){
+      setMsg(m2c,'At least one field must be completed to proceed.','err');
+      return;
+    }
+
+    /* --- Confirm field: checks against system record --- */
+    if(valConfirm){
+      attempts++;
+      var isMatch=(valConfirm===sysName || valConfirm===userName);
+
+      if(isMatch){
+        setMsg(m2c,'Confirmed. Additional verification required.','ok');
+        showDiv(d2c,'Confirmed: '+sysName);
+      }else{
+        setMsg(m2c,'Entry does not match our records. On file: '+quote(sysName),'err');
+        showDiv(d2c,'Expected: '+sysName+' \u2014 Received: '+valConfirm);
+      }
+    }
+
+    /* --- Primary name field: applies distortion --- */
+    if(valPrimary){
+      attempts++;
+      var distorted;
+      switch((attempts-1)%7){
+        case 0: distorted=addHonorific(valPrimary); break;
+        case 1: distorted=quote(valPrimary); break;
+        case 2: distorted=titleCase(valPrimary); break;
+        case 3: distorted=initials(valPrimary); break;
+        case 4: distorted='\u201C'+valPrimary+'\u201D'; break;
+        case 5: distorted=abbreviate(valPrimary); break;
+        default:distorted=properCase(valPrimary); break;
+      }
+      sysName=distorted;
+      setMsg(m2p,'Primary name updated to '+quote(distorted),'');
+      showDiv(d2p,'On file: '+distorted);
+    }
+
+    /* --- Commonly known field: heavier distortion --- */
+    if(valKnown){
+      attempts++;
+      var warped;
+      switch((attempts-1)%5){
+        case 0: warped=reverse(valKnown); break;
+        case 1: warped=dropLetter(valKnown); break;
+        case 2: warped=redact(valKnown); break;
+        case 3: warped=valKnown.toLowerCase(); break;
+        default:warped=valKnown.charAt(0).toUpperCase()+valKnown.slice(1).toLowerCase(); break;
+      }
+      setMsg(m2n,'Recorded alias: '+quote(warped),'');
+      showDiv(d2n,'Also known as: '+warped);
+    }
+
+    /* After enough friction, advance to Phase 3 */
+    if(attempts>=3){
+      setTimeout(function(){
+        p2.classList.remove('on');
+        p3.classList.add('on');
+        animIn(p3);
+
+        f3r.value='';
+        f3r.setAttribute('placeholder','Enter name');
+        f3r.focus();
+
+        /* If the user entered a preferred name back in Phase 1,
+           the Phase 3 field subtly mirrors it — recognition, not revelation */
+        if(hiddenName && hiddenName!==userName && hiddenName.length>0){
+          f3r.className='familiar';
+          f3r.setAttribute('placeholder','Enter your name as you know it to be');
+        }
+      },900);
+    }
+  });
+
+  /* ==================== PHASE 3 ==================== */
+
+  f3r.addEventListener('keydown',function(e){
+    if(e.key==='Enter'){e.preventDefault();f3r.blur()}
+  });
+
+  f3r.addEventListener('input',function(){
+    setMsg(m3r,'');
+    hideDiv(d3r);
+    fin.style.display='none';
+  });
+
+  f3r.addEventListener('blur',function(){
+    var v=this.value.trim();
+    if(!v)return;
+
+    /* Accept the name if it matches the preferred name from Phase 1 */
+    if(v===hiddenName || (hiddenName && v.toLowerCase()===hiddenName.toLowerCase())){
+      setMsg(m3r,'','ok');
+      hideDiv(d3r);
+      fnD.textContent=v;
+      fin.style.display='block';
+      animIn(fin);
+    }else{
+      setMsg(m3r,'','err');
+      showDiv(d3r,'Unrecognized entry. The name you are attempting to register does not appear in any verified database.');
+      fin.style.display='none';
+    }
+  });
+
+})();
+</script>
+</body>
+</html>

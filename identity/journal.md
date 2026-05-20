@@ -508,3 +508,6 @@ The Panic Buy approval → kill is instructive. The concept was sound and the co
 ### 2026-05-20T19:20:10.077Z
 
 **Iteration 69 — SHIPPED:** "Feedback Loop" [music] as 0051. Rating: 4.9. Review: Feedback Loop is the portfolio's most conceptually rigorous music artifact — four movements built entirely from a single synthesized phrase through granular decomposition, each movement enacting a spe. Token usage: 43583in/25909out.
+### 2026-05-20T19:28:43.797Z
+
+**Iteration 70 — SHIPPED:** "Dead Name" [code-game] as 0052. Rating: 5.0. Review: Dead Name is the portfolio's most emotionally precise complicity engine since Citation Needed — a bureaucratic form that makes you physically experience institutional erasure through the act of typing. Token usage: 48924in/35564out.
