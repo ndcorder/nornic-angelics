@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback Loop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #070707;
+      --fg: #e8e8e8;
+      --muted: #555;
+      --accent: #c8b07a;
+      --line: #1a1a1a;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Space Grotesk', sans-serif;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #app {
+      width: 100%; max-width: 540px;
+      padding: 0 28px;
+      text-align: center;
+      position: relative; z-index: 10;
+    }
+
+    #play-btn {
+      width: 84px; height: 84px;
+      border: 2px solid rgba(200,176,122,0.25);
+      border-radius: 50%;
+      background: transparent;
+      color: var(--fg);
+      cursor: pointer;
+      outline: none;
+      position: relative;
+      margin: 0 auto;
+      transition: all 0.4s ease;
+      display: block;
+    }
+
+    #play-btn:focus-visible {
+      box-shadow: 0 0 0 3px rgba(200,176,122,0.35);
+    }
+
+    #play-btn:not(.playing):hover {
+      border-color: rgba(200,176,122,0.6);
+      box-shadow: 0 0 36px rgba(200,176,122,0.06);
+    }
+
+    #play-btn .tri {
+      display: block;
+      width: 0; height: 0;
+      border-left: 17px solid var(--fg);
+      border-top: 11px solid transparent;
+      border-bottom: 11px solid transparent;
+      margin: 0 auto;
+      transition: opacity 0.3s;
+    }
+
+    #play-btn .bars {
+      display: none;
+      gap: 5px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #play-btn .bars span {
+      display: block;
+      width: 4px; height: 20px;
+      background: var(--fg);
+      border-radius: 2px;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    #play-btn .bars span:nth-child(2) { animation-delay: 0.18s; }
+    #play-btn .bars span:nth-child(3) { animation-delay: 0.36s; }
+
+    @keyframes pulse {
+      0%, 100% { transform: scaleY(0.45); }
+      50% { transform: scaleY(1); }
+    }
+
+    #play-btn.playing .tri { display: none; }
+    #play-btn.playing .bars { display: flex; }
+
+    .info {
+      margin-top: 36px;
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .info.hidden {
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+    }
+
+    .title {
+      font-size: 12px;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    .duration {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #3a3a3a;
+      letter-spacing: 3px;
+    }
+
+    .hint {
+      margin-top: 28px;
+      font-size: 10.5px;
+      color: #2e2e2e;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      animation: breathe 3s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 0.35; }
+      50% { opacity: 0.8; }
+    }
+
+    #mvmt-info {
+      margin-top: 32px;
+      opacity: 0;
+      transition: opacity 1s ease;
+      text-align: center;
+    }
+
+    #mvmt-info.visible { opacity: 1; }
+
+    #mvmt-label {
+      font-size: 10.5px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 300;
+    }
+
+    #mvmt-name {
+      margin-top: 8px;
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--fg);
+      letter-spacing: 1.5px;
+    }
+
+    #mvmt-desc {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      font-weight: 300;
+    }
+
+    #progress {
+      margin-top: 44px;
+      height: 1px;
+      background: var(--line);
+      border-radius: 0.5px;
+      overflow: hidden;
+    }
+
+    #progress-fill {
+      width: 0%;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 0.5px;
+    }
+
+    #time-display {
+      margin-top: 18px;
+      font-size: 10.5px;
+      color: #333;
+      letter-spacing: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #foot {
+      margin-top: 40px;
+      font-size: 9.5px;
+      color: #1e1e1e;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      line-height: 1.9;
+    }
+
+    .bg-orb {
+      position: fixed;
+      top: 50%; left: 50%;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    #orb-warm {
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, rgba(200,176,122,0.025) 0%, transparent 70%);
+      transform: translate(-50%,-50%);
+      transition: opacity 5s ease;
+    }
+
+    #orb-cool {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(110,140,200,0.025) 0%, transparent 70%);
+      transform: translate(-50%,-50%);
+      opacity: 0;
+      transition: opacity 5s ease;
+    }
+
+    #bg-glow {
+      position: fixed;
+      top: 50%; left: 50%;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      transform: translate(-50%,-50%);
+      background: radial-gradient(circle, rgba(200,176,122,0.012) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      animation: drift 22s ease-in-out infinite;
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translate(-50%,-50%) scale(1); }
+      50% { transform: translate(-50%,-50%) scale(1.15); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01s !important;
+        transition-duration: 0.01s !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="bg-glow"></div>
+  <div id="orb-warm" class="bg-orb"></div>
+  <div id="orb-cool" class="bg-orb"></div>
+
+  <div id="app">
+    <button id="play-btn" aria-label="Play composition">
+      <span class="tri"></span>
+      <div class="bars">
+        <span></span><span></span><span></span>
+      </div>
+    </button>
+
+    <div class="info" id="info">
+      <div class="title">Feedback Loop</div>
+      <div class="duration">4:00</div>
+      <div class="hint">begin listening</div>
+    </div>
+
+    <div id="mvmt-info">
+      <div id="mvmt-label"></div>
+      <div id="mvmt-name"></div>
+      <div id="mvmt-desc"></div>
+    </div>
+
+    <div id="progress"><div id="progress-fill"></div></div>
+    <div id="time-display">0:00 / 4:00</div>
+
+    <div id="foot">a single phrase<br>four hearings</div>
+  </div>
+
+  <script>
+  /* =================================================================
+     Feedback Loop — four movements from one phrase
+     
+     Source: "That's fine" synthesized via formant synthesis into an
+     AudioBuffer. Every sound in the 4-minute piece is derived from
+     this single buffer through granular decomposition.
+     ================================================================= */
+
+  const TOTAL = 240;
+  const MVMT = [
+    { s:0,   e:62,  label:'movement i',   name:'Recognition',  desc:'the phrase as it was spoken' },
+    { s:62,  e:122, label:'movement ii',  name:'Dissolution',  desc:'speech becomes texture' },
+    { s:122, e:182, label:'movement iii', name:'Resonance',    desc:'texture becomes harmony' },
+    { s:182, e:240, label:'movement iv',  name:'Return',       desc:'hearing it for the first time' }
+  ];
+
+  /* ── DOM refs ── */
+  const $play = document.getElementById('play-btn');
+  const $info = document.getElementById('info');
+  const $mi   = document.getElementById('mvmt-info');
+  const $ml   = document.getElementById('mvmt-label');
+  const $mn   = document.getElementById('mvmt-name');
+  const $md   = document.getElementById('mvmt-desc');
+  const $pf   = document.getElementById('progress-fill');
+  const $td   = document.getElementById('time-display');
+  const $ow   = document.getElementById('orb-warm');
+  const $oc   = document.getElementById('orb-cool');
+
+  /* ── State ── */
+  let ctx = null, master = null;
+  let t0 = 0, cur = -1, alive = false, raf = null;
+  let speechBuf = null;
+
+  // ── 1. Formant Speech Synthesizer ──────────────────────────
+  // Generates "That's fine" as a recognizable speech-like AudioBuffer
+  // using parallel formant filters on a glottal pulse source.
+  
+  function buildSpeechBuffer (audioCtx) {
+    const SR = audioCtx.sampleRate;
+    const dur = 2.2;
+    const len = Math.ceil(SR * dur);
+    const offCtx = new OfflineAudioContext(1, len, SR);
+
+    // Glottal pulse: sawtooth-like at varying f0
+    const srcLen = Math.ceil(SR * (dur + 0.5));
+    const srcBuf = offCtx.createBuffer(1, srcLen, SR);
+    const sd = srcBuf.getChannelData(0);
+
+    // Phoneme sequence: | "that's" — δ æ t s | "fine" — f aɪ n |
+    // Each phoneme: { t0, t1, f0, formants[[freq,amp,bw],...] }
+    const phonemes = [
+      { t0:0.04, t1:0.17, f0:125, f: [[650,0.85,90],[1800,0.35,110],[2800,0.15,120]] },         // "th" voiced
+      { t0:0.14, t1:0.32, f0:142, f: [[780,0.90,80],[1520,0.45,90],[2600,0.18,120]] },          // "ae"
+      { t0:0.29, t1:0.40, f0:130, f: [[650,0.80,90],[1800,0.40,100],[2800,0.12,120]] },         // "t" release
+      { t0:0.38, t1:0.47, f0:0,    f: [] },                                                       // "s" noise burst
+      { t0:0.47, t1:0.53, f0:0,    f: [] },                                                       // silence
+      { t0:0.56, t1:0.68, f0:128,  f: [[650,0.85,90],[1800,0.30,110],[2800,0.10,130]] },        // "f" voiced
+      { t0:0.64, t1:0.88, f0:150,  f: [[760,0.92,80],[1400,0.48,90],[2600,0.20,110]] },         // "aI"
+      { t0:0.84, t1:0.94, f0:155,  f: [[760,0.92,80],[1600,0.42,90],[2600,0.18,110]] },         // "aI" glide
+      { t0:0.90, t1:1.35, f0:132,  f: [[300,0.90,70],[900,0.30,80],[2400,0.08,100]] },          // "n" nasal
+      { t0:1.30, t1:1.60, f0:118,  f: [[580,0.70,90],[1500,0.25,100],[2600,0.08,120]] },        // fade
+    ];
+
+    // Build glottal pulse + noise into source buffer
+    let phase = 0;
+    for (let i = 0; i < srcLen; i++) {
+      const t = i / SR;
+      let ph = null;
+      for (const p of phonemes) {
+        if (t >= p.t0 && t < p.t1) { ph = p; break; }
+      }
+      if (ph && ph.f0 > 0) {
+        phase += ph.f0 / SR;
+        // Sawtooth-ish with soft clip
+        sd[i] = ((phase % 1) * 2 - 1) * 0.35;
+      } else if (ph && ph.f0 === 0) {
+        // Noise for "s" and silence gap
+        sd[i] = (Math.random() * 2 - 1) * 0.25;
+      } else {
+        sd[i] = 0;
+      }
+    }
+
+    // Apply formant filters in OfflineAudioContext
+    const srcNode = offCtx.createBufferSource();
+    srcNode.buffer = srcBuf;
+    srcNode.loop = false;
+
+    // Create formant filter chains per phoneme time region
+    // Simplified: use one set of filters with automation
+    const f1 = offCtx.createBiquadFilter(); f1.type = 'bandpass';
+    const f2 = offCtx.createBiquadFilter(); f2.type = 'bandpass';
+    const f3 = offCtx.createBiquadFilter(); f3.type = 'bandpass';
+    const g1 = offCtx.createGain();
+    const g2 = offCtx.createGain();
+    const g3 = offCtx.createGain();
+
+    const merge = offCtx.createGain(); merge.gain.value = 1;
+
+    srcNode.connect(f1); f1.connect(g1); g1.connect(merge);
+    srcNode.connect(f2); f2.connect(g2); g2.connect(merge);
+    srcNode.connect(f3); f3.connect(g3); g3.connect(merge);
+
+    // Automate formant frequencies and gains
+    const totalOff = dur + 0.5;
+    const segs = 200;
+    for (let i = 0; i <= segs; i++) {
+      const t = (i / segs) * totalOff;
+      let ph = null;
+      for (const p of phonemes) {
+        if (t >= p.t0 && t < p.t1) { ph = p; break; }
+      }
+      if (ph && ph.f.length >= 3) {
+        f1.frequency.setValueAtTime(ph.f[0][0], t);
+        f1.Q.setValueAtTime(ph.f[0][0] / ph.f[0][2], t);
+        g1.gain.setValueAtTime(ph.f[0][1], t);
+
+        f2.frequency.setValueAtTime(ph.f[1][0], t);
+        f2.Q.setValueAtTime(ph.f[1][0] / ph.f[1][2], t);
+        g2.gain.setValueAtTime(ph.f[1][1], t);
+
+        f3.frequency.setValueAtTime(ph.f[2][0], t);
+        f3.Q.setValueAtTime(ph.f[2][0] / ph.f[2][2], t);
+        g3.gain.setValueAtTime(ph.f[2][1], t);
+      } else {
+        g1.gain.setValueAtTime(0.001, t);
+        g2.gain.setValueAtTime(0.001, t);
+        g3.gain.setValueAtTime(0.001, t);
+      }
+    }
+
+    // Overall envelope
+    const env = offCtx.createGain();
+    env.gain.setValueAtTime(0.001, 0);
+    env.gain.linearRampToValueAtTime(0.9, 0.04);
+    env.gain.setValueAtTime(0.9, 1.2);
+    env.gain.linearRampToValueAtTime(0.001, 1.6);
+    merge.connect(env);
+    env.connect(offCtx.destination);
+
+    srcNode.start(0);
+    return offCtx.startRendering().then(rendered => {
+      // Trim silence
+      const data = rendered.getChannelData(0);
+      let start = 0, end = data.length - 1;
+      while (start < end && Math.abs(data[start]) < 0.005) start++;
+      while (end > start && Math.abs(data[end]) < 0.005) end--;
+      const trimLen = end - start + 1;
+      const trimmed = audioCtx.createBuffer(1, Math.max(trimLen, 1), audioCtx.sampleRate);
+      trimmed.getChannelData(0).set(data.subarray(start, end + 1));
+      return trimmed;
+    });
+  }
+
+  // ── 2. TTS Fallback (attempts browser Speech API) ──────────
+  async function attemptTTS (audioCtx) {
+    if (!('speechSynthesis' in window)) return null;
+
+    const voices = speechSynthesis.getVoices();
+    const v = voices.find(v => v.lang.startsWith('en') && v.localService) ||
+              voices.find(v => v.lang.startsWith('en')) || null;
+    if (!v) return null;
+
+    return new Promise(resolve => {
+      const dest = audioCtx.createMediaStreamDestination();
+      const chunks = [];
+      let resolved = false;
+
+      const tryMime = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+        ? 'audio/webm;codecs=opus' : 'audio/webm';
+
+      let mk;
+      try { mk = new MediaRecorder(dest.stream, { mimeType: tryMime }); }
+      catch (_) { resolve(null); return; }
+
+      mk.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+      mk.onstop = async () => {
+        if (resolved) return;
+        resolved = true;
+        try {
+          const blob = new Blob(chunks, { type: 'audio/webm' });
+          const ab = await blob.arrayBuffer();
+          const decoded = await audioCtx.decodeAudioData(ab);
+          if (decoded.duration > 0.3) return resolve(decoded);
+        } catch (_) {}
+        resolve(null);
+      };
+
+      const utt = new SpeechSynthesisUtterance("That's fine.");
+      utt.voice = v; utt.rate = 0.92; utt.pitch = 1.0; utt.volume = 0.85;
+
+      // Patch: connect audioCtx destination to the stream for some browsers
+      const splitter = audioCtx.createChannelSplitter(2);
+      const merger = audioCtx.createChannelMerger(2);
+      const silentGain = audioCtx.createGain(); silentGain.gain.value = 0;
+      splitter.connect(merger, 0, 0);
+      splitter.connect(merger, 0, 1);
+      merger.connect(dest);
+      splitter.connect(silentGain); // silent path
+
+      mk.start();
+      utt.onend = () => setTimeout(() => mk.stop(), 200);
+      utt.onerror = () => { mk.stop(); };
+      speechSynthesis.speak(utt);
+
+      // Timeout
+      setTimeout(() => { if (!resolved) { resolved = true; speechSynthesis.cancel(); resolve(null); } }, 4000);
+    });
+  }
+
+  // ── 3. Audio Boot ──────────────────────────────────────────
+  async function boot () {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    master = ctx.createGain();
+    master.gain.value = 0.7;
+    master.connect(ctx.destination);
+
+    // Try TTS first, fall back to formant synthesis
+    const ttsBuf = await attemptTTS(ctx);
+    if (ttsBuf && ttsBuf.duration > 0.3) {
+      speechBuf = ttsBuf;
+    } else {
+      speechBuf = await buildSpeechBuffer(ctx);
+    }
+  }
+
+  // ── 4. Granular Engine ─────────────────────────────────────
+  function fadeGain (node, from, to, dur, delay) {
+    const t = ctx.currentTime + delay;
+    node.gain.setValueAtTime(Math.max(from, 0.0001), t);
+    node.gain.linearRampToValueAtTime(Math.max(to, 0.0001), t + dur);
+  }
+
+  // Grain cloud: N grains from speechBuf with pitch/time scatter
+  function cloud (N, baseTime, totalDur, pitch, spread, grainLen, level, delay) {
+    const n = Math.max(1, N);
+    const span = Math.max(0, totalDur - grainLen);
+    const bus = ctx.createGain();
+    bus.gain.value = 0.0001;
+    bus.connect(master);
+    fadeGain(bus, 0.0001, level, 1.6, delay);
+
+    for (let i = 0; i < n; i++) {
+      const when = baseTime + delay + (span / n) * i + (Math.random() - 0.5) * spread;
+      if (when < baseTime) continue;
+      const maxOff = Math.max(0, speechBuf.duration - grainLen);
+      const offset = Math.random() * maxOff;
+      const p = pitch * (1 + (Math.random() - 0.5) * 0.08);
+      const lv = level * (0.4 + Math.random() * 0.6);
+      const dur = grainLen * (0.8 + Math.random() * 0.4);
+
+      const s = ctx.createBufferSource();
+      s.buffer = speechBuf;
+      s.playbackRate.value = p;
+
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, when);
+      g.gain.linearRampToValueAtTime(lv, when + Math.min(0.03, dur * 0.15));
+      g.gain.setValueAtTime(lv, when + dur * 0.6);
+      g.gain.linearRampToValueAtTime(0.0001, when + dur);
+
+      s.connect(g).connect(bus);
+      s.start(when, offset, dur);
+    }
+
+    fadeGain(bus, level, 0.0001, 2.2, delay + totalDur - 2.2);
+    return bus;
+  }
+
+  // Sustained tone from speechBuf spectral content
+  function droneTone (freq, baseTime, dur, vol, delay) {
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    const f = ctx.createBiquadFilter();
+    o.type = 'sine'; o.frequency.value = freq;
+    f.type = 'lowpass'; f.frequency.value = 2200; f.Q.value = 0.6;
+    g.gain.value = 0.0001;
+    fadeGain(g, 0.0001, vol, 2.5, delay);
+    fadeGain(g, vol, 0.0001, 2.5, delay + dur - 2.5);
+    o.connect(f).connect(g).connect(master);
+    const t = baseTime + delay;
+    o.start(t); o.stop(t + dur);
+  }
+
+  // ── 5. Four Movements ──────────────────────────────────────
+
+  /*  I · Recognition  (0 – 62 s)
+      The phrase intact, repeated with breathing room.
+      Tiny grains flicker at the edges — the first hairline cracks.  */
+  function movement1 () {
+    const base = ctx.currentTime;
+    const bus = ctx.createGain(); bus.gain.value = 0.0001;
+    bus.connect(master);
+    fadeGain(bus, 0.0001, 0.4, 3.5, 0);
+
+    const gap = 7.5, reps = 8;
+    for (let i = 0; i < reps; i++) {
+      const t = base + gap * i;
+      const s = ctx.createBufferSource();
+      s.buffer = speechBuf;
+      // Tiny pitch jitter keeps it alive without changing identity
+      s.playbackRate.value = 1.0 + (Math.random() - 0.5) * 0.004;
+
+      const pg = ctx.createGain();
+      const v = 0.6 + Math.random() * 0.1;
+      pg.gain.setValueAtTime(0.0001, t);
+      pg.gain.linearRampToValueAtTime(v, t + 0.3);
+      pg.gain.setValueAtTime(v, t + speechBuf.duration * 0.7);
+      pg.gain.linearRampToValueAtTime(0.0001, t + speechBuf.duration + 0.3);
+
+      s.connect(pg).connect(bus);
+      s.start(t); s.stop(t + speechBuf.duration + 0.4);
+
+      // Edge grains — barely audible fragments between repetitions
+      if (i > 1 && Math.random() > 0.35) {
+        const gt = t + speechBuf.duration + 0.6 + Math.random() * 3;
+        const gs = ctx.createBufferSource();
+        gs.buffer = speechBuf;
+        gs.playbackRate.value = 0.5 + Math.random() * 1.0;
+        const gg = ctx.createGain(); gg.gain.value = 0.0001;
+        gg.gain.setValueAtTime(0.0001, gt);
+        gg.gain.linearRampToValueAtTime(0.08, gt + 0.03);
+        gg.gain.linearRampToValueAtTime(0.0001, gt + 0.1);
+        gs.connect(gg).connect(bus);
+        gs.start(gt, Math.random() * speechBuf.duration, 0.12);
+      }
+    }
+
+    fadeGain(bus, 0.4, 0.0001, 5, 57);
+    return bus;
+  }
+
+  /*  II · Dissolution  (62 – 122 s)
+      Speech becomes texture. Dense overlapping clouds,
+      time-stretched, detuned, fracturing.                        */
+  function movement2 () {
+    const base = ctx.currentTime;
+    const bus = ctx.createGain(); bus.gain.value = 0.0001;
+    bus.connect(master);
+    fadeGain(bus, 0.0001, 0.38, 4, 0);
+
+    // Slow stretched layer
+    cloud(26, base, 54, 0.7, 2.5, 2.2, 0.12, 0);
+    // Mid layer
+    cloud(34, base, 54, 1.0, 1.0, 1.0, 0.09, 4);
+    // High shimmer
+    cloud(30, base, 54, 1.5, 0.6, 0.5, 0.055, 7);
+    // Sub-bass layer
+    cloud(16, base, 54, 0.4, 3.0, 2.8, 0.08, 2);
+
+    // Sporadic semi-intelligible fragments
+    for (let i = 0; i < 8; i++) {
+      const t = base + 3 + i * 6.5 + Math.random() * 3;
+      const s = ctx.createBufferSource();
+      s.buffer = speechBuf;
+      s.playbackRate.value = 0.8 + Math.random() * 0.4;
+      const fg = ctx.createGain(); fg.gain.value = 0.0001;
+      fg.gain.setValueAtTime(0.0001, t);
+      fg.gain.linearRampToValueAtTime(0.18, t + 0.06);
+      fg.gain.linearRampToValueAtTime(0.0001, t + 0.35);
+      s.connect(fg).connect(bus);
+      const maxOff = Math.max(0, speechBuf.duration - 0.4);
+      s.start(t, Math.random() * maxOff, 0.4);
+    }
+
+    fadeGain(bus, 0.38, 0.0001, 5, 55);
+    return bus;
+  }
+
+  /*  III · Resonance  (122 – 182 s)
+      Texture becomes harmony. Tones emerge from the grains.
+      Harmonic series rises out of noise.                          */
+  function movement3 () {
+    const base = ctx.currentTime;
+    const bus = ctx.createGain(); bus.gain.value = 0.0001;
+    bus.connect(master);
+    fadeGain(bus, 0.0001, 0.32, 4.5, 0);
+
+    // Harmonic series (fundamental ~110 Hz / A2)
+    const harmonics = [
+      { f:110, v:0.09, d:0 },   { f:165, v:0.065, d:4 },
+      { f:220, v:0.08, d:9 },   { f:275, v:0.045, d:16 },
+      { f:330, v:0.07, d:22 },  { f:440, v:0.04, d:30 },
+      { f:550, v:0.035, d:38 }, { f:660, v:0.028, d:44 },
+    ];
+    harmonics.forEach(h => droneTone(h.f, base, 50, h.v, h.d));
+
+    // Sparse processed speech grains (barely recognizable)
+    cloud(10, base, 55, 0.5, 5.0, 3.2, 0.03, 1);
+    cloud(12, base, 55, 1.3, 2.5, 1.8, 0.025, 6);
+
+    // Filtered noise bed
+    const nBuf = ctx.createBuffer(2, ctx.sampleRate * 4, ctx.sampleRate);
+    for (let c = 0; c < 2; c++) {
+      const d = nBuf.getChannelData(c);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    const ns = ctx.createBufferSource(); ns.buffer = nBuf; ns.loop = true;
+    const bf = ctx.createBiquadFilter();
+    bf.type = 'bandpass'; bf.frequency.value = 280; bf.Q.value = 5;
+    const ng = ctx.createGain(); ng.gain.value = 0.0001;
+    fadeGain(ng, 0.0001, 0.04, 7, 0);
+    fadeGain(ng, 0.04, 0.0001, 7, 46);
+    ns.connect(bf).connect(ng).connect(bus);
+    ns.start(base, 0, 56);
+
+    fadeGain(bus, 0.32, 0.0001, 5, 53);
+    return bus;
+  }
+
+  /*  IV · Return  (182 – 240 s)
+      Hearing it for the first time. The phrase re-emerges, slower,
+      in a new harmonic context. The accumulated spectral residue
+      of the previous movements hums beneath it.                   */
+  function movement4 () {
+    const base = ctx.currentTime;
+    const bus = ctx.createGain(); bus.gain.value = 0.0001;
+    bus.connect(master);
+    fadeGain(bus, 0.0001, 0.45, 5.5, 0);
+
+    // Quiet harmonic residue from M3 (listener carries this context)
+    droneTone(110, base, 56, 0.018, 0);
+    droneTone(165, base, 56, 0.012, 2);
+    droneTone(220, base, 56, 0.014, 4);
+
+    // The phrase returns — progressively slower, more resonant
+    const gap = 13, reps = 4;
+    for (let i = 0; i < reps; i++) {
+      const t = base + gap * i + 3;
+      const rate = 0.85 - i * 0.018; // slowing with each repetition
+      const s = ctx.createBufferSource();
+      s.buffer = speechBuf;
+      s.playbackRate.value = rate;
+
+      // Synthetic reverb via convolver
+      const rv = ctx.createConvolver();
+      const rLen = Math.floor(ctx.sampleRate * 3.5);
+      const rBuf = ctx.createBuffer(2, rLen, ctx.sampleRate);
+      for (let c = 0; c < 2; c++) {
+        const d = rBuf.getChannelData(c);
+        for (let j = 0; j < rLen; j++) {
+          d[j] = Math.pow(1 - j / rLen, 2.2) * (Math.random() * 2 - 1) * 0.3;
+        }
+      }
+      rv.buffer = rBuf;
+
+      const pg = ctx.createGain();
+      const vol = 0.42 + i * 0.06;
+      const dur = speechBuf.duration / rate;
+      pg.gain.setValueAtTime(0.0001, t);
+      pg.gain.linearRampToValueAtTime(vol, t + 0.8);
+      pg.gain.setValueAtTime(vol, t + dur * 0.75);
+      pg.gain.linearRampToValueAtTime(0.0001, t + dur + 1.2);
+
+      // Dry + wet paths
+      s.connect(pg);
+      pg.connect(bus);        // dry
+      pg.connect(rv).connect(bus); // wet
+
+      s.start(t);
+    }
+
+    // Distant grain echo
+    cloud(6, base, 56, 1.15, 6, 2.5, 0.02, 5);
+
+    fadeGain(bus, 0.45, 0.0001, 6.5, 52);
+    return bus;
+  }
+
+  const mvmtFns = [movement1, movement2, movement3, movement4];
+
+  // ── 6. Schedule & Playback ─────────────────────────────────
+  function schedule () {
+    mvmtFns.forEach((fn, i) => {
+      const delay = MVMT[i].s * 1000;
+      setTimeout(() => { if (alive) try { fn(); } catch (_) {} }, delay);
+    });
+  }
+
+  function play () {
+    $play.classList.add('playing');
+    $info.classList.add('hidden');
+    $mi.classList.add('visible');
+    alive = true;
+    t0 = Date.now();
+    schedule();
+    tick();
+  }
+
+  function stop () {
+    alive = false;
+    try {
+      fadeGain(master, master.gain.value, 0.0001, 1.0, 0);
+    } catch (_) {}
+    cancelAnimationFrame(raf);
+    setTimeout(() => {
+      $play.classList.remove('playing');
+      $mi.classList.remove('visible');
+      $info.classList.remove('hidden');
+      $pf.style.width = '0%';
+      $td.textContent = '0:00 / 4:00';
+      cur = -1;
+      setOrb(0);
+      if (master) master.gain.value = 0.7;
+    }, 1200);
+  }
+
+  // ── 7. Animation Loop ──────────────────────────────────────
+  function tick () {
+    if (!alive) return;
+    raf = requestAnimationFrame(tick);
+    const el = (Date.now() - t0) / 1000;
+
+    $pf.style.width = Math.min(100, el / TOTAL * 100) + '%';
+    const m = Math.floor(el / 60), s = Math.floor(el % 60);
+    $td.textContent = `${m}:${String(s).padStart(2, '0')} / 4:00`;
+
+    let mi = -1;
+    for (let i = 0; i < MVMT.length; i++) {
+      if (el >= MVMT[i].s && el < MVMT[i].e) { mi = i; break; }
+    }
+    if (mi !== cur) {
+      cur = mi;
+      if (mi >= 0) {
+        $ml.textContent = MVMT[mi].label;
+        $mn.textContent = MVMT[mi].name;
+        $md.textContent = MVMT[mi].desc;
+        setOrb(mi + 1);
+      }
+    }
+
+    if (el >= TOTAL) { stop(); return; }
+  }
+
+  function setOrb (mv) {
+    $ow.style.opacity = [0.5, 1, 0.7, 1][mv] || 0.5;
+    $oc.style.opacity = [0, 0, 0.6, 0][mv] || 0;
+  }
+
+  // ── 8. Event ───────────────────────────────────────────────
+  $play.addEventListener('click', async () => {
+    if (!ctx) {
+      $play.disabled = true;
+      await boot();
+      $play.disabled = false;
+    }
+    if (alive) stop(); else play();
+  });
+
+  // Pre-load voices for TTS fallback
+  if ('speechSynthesis' in window) {
+    speechSynthesis.getVoices();
+    speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+  }
+  </script>
+</body>
+</html>

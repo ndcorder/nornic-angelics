@@ -52,3 +52,4 @@
 | 0048 | Coat Check | fiction | 5.0 | 2026-05-20 | — |
 | 0049 | Warranty Void | code-tool | 4.7 | 2026-05-20 | — |
 | 0050 | The Witness Stand | code-game | 5.0 | 2026-05-20 | — |
+| 0051 | Feedback Loop | music | 4.9 | 2026-05-20 | — |
