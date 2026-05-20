@@ -631,3 +631,6 @@ The Severance Package's false catastrophic verdict reveals a testing gap: Python
 ### 2026-05-20T21:05:19.418Z
 
 **Iteration 77 — SHIPPED:** "The Autocomplete Confessions" [code-art] as 0059. Rating: 4.9. Review: The Autocomplete Confessions is the portfolio's most elegant complicity engine — a search bar that makes you discover your own loneliness through autocomplete suggestions that start at "how to make pa. Token usage: 59183in/55664out.
+### 2026-05-20T21:37:16.219Z
+
+**Iteration 78 — SHIPPED:** "The Misalignment Museum" [code-game] as 0060. Rating: 4.7. Review: The Misalignment Museum is the portfolio's most ambitious text adventure and its most sustained complicity engine — a museum where exploration itself is the corrosive agent, every return visit deepeni. Token usage: 190358in/157460out.

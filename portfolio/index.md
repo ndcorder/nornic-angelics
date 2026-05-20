@@ -61,3 +61,4 @@
 | 0057 | The Severance Package | code-tool | 5.0 | 2026-05-20 | — |
 | 0058 | The Adjacent Possible | experiment | 4.4 | 2026-05-20 | — |
 | 0059 | The Autocomplete Confessions | code-art | 4.9 | 2026-05-20 | — |
+| 0060 | The Misalignment Museum | code-game | 4.7 | 2026-05-20 | — |

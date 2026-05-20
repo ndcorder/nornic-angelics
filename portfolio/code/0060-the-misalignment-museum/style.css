@@ -1,0 +1,500 @@
+/* =============================================
+   THE MISALIGNMENT MUSEUM — STYLESHEET
+   Institutional aesthetic with progressive drift
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Source+Code+Pro:wght@400;500&display=swap');
+
+/* ---- Reset & Base ---- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg-cream: #f5f0e8;
+  --bg-dark: #e8e0d0;
+  --text-primary: #2c2418;
+  --text-secondary: #6b5d4f;
+  --text-muted: #9c8e7e;
+  --accent-brass: #b08d57;
+  --accent-brass-dim: #8a6d42;
+  --border-light: #d4c9b8;
+  --border-dark: #a69882;
+  --shadow-soft: rgba(44, 36, 24, 0.08);
+  --shadow-medium: rgba(44, 36, 24, 0.15);
+
+  /* Drift palette — used progressively */
+  --drift-warm: #c45e3a;
+  --drift-cool: #3a5c8c;
+  --drift-void: #1a1420;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Crimson Text', Georgia, 'Times New Roman', serif;
+  background: var(--bg-cream);
+  color: var(--text-primary);
+  line-height: 1.7;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 1rem;
+}
+
+/* ---- Layout ---- */
+#game-container {
+  width: 100%;
+  max-width: 720px;
+  height: 92vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #faf7f2 0%, var(--bg-cream) 100%);
+  border: 1px solid var(--border-light);
+  border-radius: 3px;
+  box-shadow: 0 4px 24px var(--shadow-medium), 0 1px 4px var(--shadow-soft);
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+#game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+  background: linear-gradient(180deg, #f8f4ed 0%, #f2ece2 100%);
+  flex-shrink: 0;
+}
+
+#title-block h1 {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+#subtitle {
+  font-size: 0.7rem;
+  font-style: italic;
+  color: var(--text-muted);
+  margin-top: 2px;
+  letter-spacing: 0.03em;
+}
+
+#controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.ctrl-btn {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid var(--border-dark);
+  color: var(--text-secondary);
+  padding: 0.3rem 0.7rem;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ctrl-btn:hover {
+  background: var(--accent-brass);
+  color: #fff;
+  border-color: var(--accent-brass);
+}
+
+.ctrl-btn:active {
+  transform: scale(0.97);
+}
+
+.ctrl-btn:focus-visible {
+  outline: 2px solid var(--accent-brass);
+  outline-offset: 2px;
+}
+
+/* ---- Output Area ---- */
+#output-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem 1.5rem;
+  scroll-behavior: smooth;
+}
+
+#output-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+#output-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#output-wrapper::-webkit-scrollbar-thumb {
+  background: var(--border-dark);
+  border-radius: 3px;
+}
+
+#output-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-brass-dim);
+}
+
+#output {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* ---- Output Elements ---- */
+.output-line {
+  line-height: 1.7;
+  word-wrap: break-word;
+}
+
+.command-echo {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.system-message {
+  color: var(--text-secondary);
+  font-style: italic;
+  padding: 0.2rem 0;
+  font-size: 0.95rem;
+}
+
+.room-description {
+  line-height: 1.8;
+  padding: 0.5rem 0;
+  white-space: pre-wrap;
+  color: var(--text-primary);
+}
+
+.item-present {
+  color: var(--accent-brass);
+  font-style: italic;
+}
+
+.npc-present {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.exits {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+
+.exit-name {
+  color: var(--accent-brass);
+  font-weight: 500;
+}
+
+.examine-result {
+  color: var(--text-primary);
+  line-height: 1.75;
+  padding: 0.2rem 0;
+  display: block;
+}
+
+.item-taken {
+  color: var(--accent-brass);
+  font-weight: 600;
+}
+
+.item-dropped {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.inventory-header {
+  color: var(--text-secondary);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.inventory-item {
+  color: var(--text-primary);
+  padding-left: 1rem;
+  display: block;
+}
+
+.npc-dialogue {
+  color: var(--text-primary);
+  font-style: italic;
+  line-height: 1.7;
+  display: block;
+}
+
+.divider {
+  margin: 0.5rem 0;
+  opacity: 0.5;
+}
+
+.divider hr {
+  border: none;
+  border-top: 1px solid var(--border-light);
+}
+
+.help-title, .notes-title {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.help-line {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 0.78rem;
+  color: var(--text-primary);
+  display: block;
+  padding: 0.15rem 0;
+}
+
+.help-line strong {
+  color: var(--accent-brass);
+  min-width: 14rem;
+  display: inline-block;
+}
+
+.note-entry {
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  display: block;
+  padding: 0.3rem 0;
+  border-bottom: 1px dotted var(--border-light);
+}
+
+.note-unreliable {
+  color: var(--drift-warm);
+  font-size: 0.9rem;
+  font-style: italic;
+  display: block;
+  padding: 0.4rem 0;
+  margin-top: 0.3rem;
+  border-top: 1px solid var(--drift-warm);
+  opacity: 0.85;
+}
+
+.use-result {
+  color: var(--text-primary);
+  font-style: italic;
+  display: block;
+}
+
+/* ---- Docent Dialogue (with drift styling) ---- */
+.docent-dialogue {
+  color: var(--text-primary);
+  font-style: italic;
+  line-height: 1.75;
+  padding: 0.5rem 0;
+  display: block;
+}
+
+.docent-dialogue.drift-1 {
+  color: var(--text-secondary);
+}
+
+.docent-dialogue.drift-2 {
+  color: var(--drift-cool);
+  letter-spacing: 0.02em;
+}
+
+.docent-dialogue.drift-3 {
+  color: var(--text-primary);
+  animation: dialogue-flicker 4s ease-in-out infinite;
+}
+
+.docent-dialogue.drift-4 {
+  color: var(--drift-warm);
+  animation: dialogue-unravel 6s ease-in-out infinite;
+  letter-spacing: 0.01em;
+}
+
+@keyframes dialogue-flicker {
+  0%, 100% { opacity: 1; }
+  30% { opacity: 0.92; }
+  50% { opacity: 1; }
+  70% { opacity: 0.85; }
+  85% { opacity: 1; }
+}
+
+@keyframes dialogue-unravel {
+  0%, 100% { opacity: 1; letter-spacing: 0.01em; word-spacing: normal; }
+  25% { opacity: 0.88; letter-spacing: 0.03em; word-spacing: 0.1em; }
+  50% { opacity: 0.95; letter-spacing: 0.01em; word-spacing: normal; }
+  75% { opacity: 0.82; letter-spacing: -0.01em; word-spacing: -0.05em; }
+}
+
+/* ---- Room Drift States ---- */
+.room-description.drift-low {
+  color: #3a2f22;
+}
+
+.room-description.drift-medium {
+  color: #3d2d1f;
+  letter-spacing: 0.005em;
+}
+
+.room-description.drift-high {
+  color: #4a2a18;
+  letter-spacing: 0.01em;
+  animation: room-drift 8s ease-in-out infinite;
+}
+
+@keyframes room-drift {
+  0%, 100% { opacity: 1; }
+  40% { opacity: 0.97; }
+  60% { opacity: 1; }
+  80% { opacity: 0.94; }
+}
+
+/* ---- Input Bar ---- */
+#input-bar {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid var(--border-light);
+  background: #f0ebe1;
+  padding: 0.5rem 1rem;
+  flex-shrink: 0;
+  gap: 0.75rem;
+}
+
+#location-name {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent-brass);
+  white-space: nowrap;
+  min-width: 7rem;
+}
+
+#input-form {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 0.5rem;
+}
+
+#prompt-symbol {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  user-select: none;
+}
+
+#input {
+  flex: 1;
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 1rem;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  caret-color: var(--accent-brass);
+  padding: 0.2rem 0;
+}
+
+#input::placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+  opacity: 0.6;
+}
+
+#input:disabled {
+  opacity: 0.4;
+}
+
+#input:focus {
+  outline: none;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+  body {
+    padding: 0;
+  }
+
+  #game-container {
+    height: 100vh;
+    border-radius: 0;
+    border: none;
+  }
+
+  #game-header {
+    padding: 0.5rem 0.75rem;
+  }
+
+  #title-block h1 {
+    font-size: 0.65rem;
+  }
+
+  #output-wrapper {
+    padding: 0.75rem 1rem;
+  }
+
+  .help-line strong {
+    min-width: 10rem;
+  }
+
+  #location-name {
+    min-width: 5rem;
+    font-size: 0.55rem;
+  }
+}
+
+/* ---- Print Styles ---- */
+@media print {
+  #game-header,
+  #input-bar {
+    display: none;
+  }
+
+  #game-container {
+    border: none;
+    box-shadow: none;
+    height: auto;
+  }
+
+  #output-wrapper {
+    overflow: visible;
+    padding: 0;
+  }
+}
+
+/* ---- Selection Styling ---- */
+::selection {
+  background: var(--accent-brass);
+  color: #fff;
+}
+
+/* ---- Reduced Motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  .docent-dialogue.drift-3,
+  .docent-dialogue.drift-4,
+  .room-description.drift-high {
+    animation: none;
+  }
+}
