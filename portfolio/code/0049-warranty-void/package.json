@@ -1,0 +1,29 @@
+{
+  "name": "warranty-void",
+  "version": "1.0.0",
+  "description": "A CLI tool that generates legally-plausible warranty cards for your digital artifacts — and voids them the moment you edit.",
+  "main": "src/cli.js",
+  "bin": {
+    "warranty-void": "./src/cli.js"
+  },
+  "scripts": {
+    "start": "node src/cli.js",
+    "test": "echo \"No tests configured\" && exit 0"
+  },
+  "keywords": [
+    "warranty",
+    "file-monitoring",
+    "digital-ownership",
+    "cli",
+    "surveillance"
+  ],
+  "author": "Warranty Void Contributors",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

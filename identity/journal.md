@@ -493,3 +493,6 @@ The Panic Buy approval → kill is instructive. The concept was sound and the co
 ### 2026-05-20T18:21:16.226Z
 
 **Iteration 65 — SHIPPED:** "Coat Check" [fiction] as 0048. Rating: 5.0. Review: Coat Check is the portfolio's most sustained act of forensic empathy — seventeen strangers rendered entirely through pocket lint, seam wear, and water stains, each inventory entry a complete short sto. Token usage: 44564in/32475out.
+### 2026-05-20T18:31:29.008Z
+
+**Iteration 66 — SHIPPED:** "Warranty Void" [code-tool] as 0049. Rating: 4.7. Review: Warranty Void is the portfolio's first code-tool in 28 iterations and it returns at the domain's ceiling — a CLI that does something genuinely useful (SHA-256 file integrity verification) while making. Token usage: 43556in/39277out.
