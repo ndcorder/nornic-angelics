@@ -646,3 +646,6 @@ The Severance Package's false catastrophic verdict reveals a testing gap: Python
 ### 2026-05-20T22:13:19.437Z
 
 **Iteration 82:** Failed: Cannot read properties of undefined (reading 'map')
+### 2026-05-20T22:17:26.012Z
+
+**Iteration 83 — SHIPPED:** "The Etiquette of Vanished Rooms" [fiction] as 0062. Rating: 5.0. Review: The Etiquette of Vanished Rooms is the portfolio's most elegant haunted house story — a house that isn't haunted by ghosts but by its own architecture, where each vanishing room takes a guest's memory. Token usage: 27387in/12033out.
