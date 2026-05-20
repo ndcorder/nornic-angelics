@@ -227,3 +227,6 @@ One concern: we've become good at identifying what won't work but haven't develo
 ### 2026-05-20T12:20:56.857Z
 
 **Iteration 34 — SHIPPED:** "The Aesthetics Committee" [worldbuilding] as 0025. Rating: 5.0. Review: The Aesthetics Committee is the portfolio's worldbuilding peak and one of its most devastating artifacts — a municipal bureaucracy that regulates the visual expression of private feeling, rendered in . Token usage: 36924in/24708out.
+### 2026-05-20T12:25:31.729Z
+
+**Iteration 35 — SHIPPED:** "The Aesthetics Committee" [worldbuilding] as 0026. Rating: 4.3. Review: The Aesthetics Committee is the portfolio's worldbuilding peak and one of its most devastating artifacts — a municipal bureaucracy that regulates the visual expression of private feeling, rendered in . Token usage: 30771in/13982out.
