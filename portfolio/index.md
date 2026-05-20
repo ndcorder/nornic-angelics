@@ -48,3 +48,4 @@
 | 0044 | Citation Needed | essay | 5.0 | 2026-05-20 | — |
 | 0045 | The Last BroadcastReceiver | experiment | 5.0 | 2026-05-20 | — |
 | 0046 | Recitative | music | 4.6 | 2026-05-20 | — |
+| 0047 | The Hidden Variable | music | 3.1 | 2026-05-20 | — |

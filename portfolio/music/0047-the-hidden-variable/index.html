@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Hidden Variable</title>
+  <script src="https://unpkg.com/@strudel/repl@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #080808;
+      color: #999;
+      font-family: 'IBM Plex Mono', monospace;
+      height: 100vh;
+      overflow: hidden;
+      cursor: crosshair;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #ui {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: opacity 8s ease;
+      pointer-events: none;
+    }
+    #ui.hidden { opacity: 0; }
+
+    #start {
+      background: transparent;
+      border: 1px solid #2a2a2a;
+      color: #777;
+      padding: 14px 52px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: all 3s ease;
+      text-transform: lowercase;
+    }
+    #start:hover {
+      border-color: #555;
+      color: #aaa;
+    }
+
+    #hint {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      color: #333;
+      z-index: 11;
+      opacity: 0;
+      transition: opacity 6s ease;
+      text-transform: lowercase;
+    }
+    #hint.show { opacity: 1; }
+
+    #progress {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      height: 1px;
+      background: #333;
+      z-index: 12;
+      width: 0%;
+      transition: width 0.5s linear;
+    }
+
+    #repl {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 1;
+      opacity: 0.15;
+    }
+
+    .playing #repl { opacity: 0; }
+
+    ::-webkit-scrollbar { width: 0; }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 0.25; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="ui">
+    <button id="start">begin listening</button>
+  </div>
+  <div id="hint">headphones recommended · stereo required</div>
+  <div id="progress"></div>
+  <div id="repl"></div>
+
+  <script>
+  // ─── THE HIDDEN VARIABLE ───
+  // Left ear: a lullaby in 3/4. Right ear: an argument in 4/4.
+  // One reverb binds them. The listener decides which ear to trust.
+  // ─────────────────────────────────────────────
+
+  const LEAVE_MS  = 62000;   // "you can't just leave" appears ~1min in
+  const WAIT_MS   = 132000;  // "I've been waiting" ~2:10
+  const OVER_MS   = 174000;  // "it's already over" ~2:54
+  const END_MS    = 186000;  // final silence ~3:06
+
+  document.getElementById('start').addEventListener('click', async () => {
+    document.getElementById('ui').classList.add('hidden');
+    document.body.classList.add('playing');
+
+    setTimeout(() => {
+      document.getElementById('hint').classList.add('show');
+    }, 2500);
+
+    const t0 = Date.now();
+
+    // Progress bar
+    const progressEl = document.getElementById('progress');
+    const timer = setInterval(() => {
+      const elapsed = (Date.now() - t0) / 1000;
+      progressEl.style.width = Math.min(elapsed / (END_MS / 1000) * 100, 100) + '%';
+      if (elapsed >= END_MS / 1000) clearInterval(timer);
+    }, 1000);
+
+    // Speech synthesis — argument phrases in right channel
+    function speak(text, options) {
+      if (speechSynthesis.speaking && speechSynthesis.pending) return;
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate  = options.rate  || 1.0;
+      u.pitch = options.pitch || 1.0;
+      u.volume = options.volume !== undefined ? options.volume : 1.0;
+      u.lang = 'en-US';
+
+      // Dual-voice: select different system voices by pitch
+      const voices = speechSynthesis.getVoices();
+      if (options.pitch < 1) {
+        const v = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'))
+               || voices.find(v => v.lang.startsWith('en'));
+        if (v) u.voice = v;
+      } else {
+        const v = voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('male'))
+               || voices.find(v => v.lang.startsWith('en'));
+        if (v) u.voice = v;
+      }
+
+      // Route to right ear via Web Audio panner
+      try {
+        const ctx = window.__strudelAudioContext;
+        if (ctx && ctx.state === 'running') {
+          const dest = ctx.createMediaStreamDestination();
+          const pan = ctx.createStereoPanner();
+          pan.pan.value = options.pan || 1.0; // +1 = hard right
+          const src = ctx.createMediaStreamSource(dest.stream);
+          src.connect(pan);
+          pan.connect(ctx.destination);
+          // Note: Web Speech API doesn't natively route through AudioContext.
+          // The panner approach works on some browsers. As fallback, the
+          // speech plays centered but at very low volume beneath the lullaby.
+        }
+      } catch(e) { /* graceful degradation */ }
+
+      speechSynthesis.speak(u);
+    }
+
+    // Ensure voices are loaded
+    speechSynthesis.getVoices();
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+    }
+
+    // ═══════════════════════════════════
+    // THE ARGUMENT — scheduled phrases
+    // Two people. She is leaving. He wants reasons.
+    // ═══════════════════════════════════
+
+    // Phase 1 (0-55s): Ghost traces only. Barely audible fragments
+    // that register as "something odd in the reverb"
+    setTimeout(() => speak("...packed already.", { pitch: 0.8, rate: 0.85, volume: 0.08 }),  30000);
+    setTimeout(() => speak("Don't.",            { pitch: 1.15, rate: 0.9,  volume: 0.06 }),  36000);
+    setTimeout(() => speak("...packed.",         { pitch: 0.8, rate: 0.75, volume: 0.07 }),  44000);
+
+    // Phase 2 (55-100s): Fragments coalesce. Words become sentences.
+    setTimeout(() => speak("The bags were packed when I got home.", { pitch: 0.8,  rate: 0.85, volume: 0.15 }), 58000);
+    setTimeout(() => speak("You weren't supposed to be home.",     { pitch: 1.15, rate: 0.9,  volume: 0.18 }), 65000);
+    setTimeout(() => speak("That's—",   { pitch: 0.8,  rate: 0.95, volume: 0.15 }), 68000);
+    setTimeout(() => speak("That's what you're going with?", { pitch: 1.15, rate: 1.0,  volume: 0.20 }), 69000);
+    setTimeout(() => speak("I wasn't going to.",   { pitch: 0.8,  rate: 0.85, volume: 0.15 }), 78000);
+    setTimeout(() => speak("Weren't going to what. Leave, or tell me?", { pitch: 1.15, rate: 0.95, volume: 0.22 }), 79500);
+
+    // Phase 3 (100-140s): The argument is unmistakable. You can't unhear it.
+    setTimeout(() => speak("Both.",        { pitch: 0.8,  rate: 0.8,  volume: 0.25 }), 102000);
+    setTimeout(() => speak("So this was... you had a whole plan.", { pitch: 1.15, rate: 0.9, volume: 0.30 }), 106000);
+    setTimeout(() => speak("I changed my mind.", { pitch: 0.8, rate: 0.85, volume: 0.25 }), 114000);
+    setTimeout(() => speak("When? When you heard the door?", { pitch: 1.15, rate: 1.0, volume: 0.32 }), 116000);
+
+    // The devastating line — arrival
+    setTimeout(() => speak("I've been waiting for you to notice.", { pitch: 0.8, rate: 0.75, volume: 0.35 }), WAIT_MS);
+
+    setTimeout(() => speak("...notice what?", { pitch: 1.15, rate: 0.9, volume: 0.30 }), 137000);
+    setTimeout(() => speak("That I'm already gone.", { pitch: 0.8, rate: 0.8, volume: 0.35 }), 142000);
+
+    // Phase 4 (145-175s): Last exchange
+    setTimeout(() => speak("It's already over, isn't it.", { pitch: 1.15, rate: 0.85, volume: 0.30 }), OVER_MS);
+    setTimeout(() => speak("It was over before I packed.", { pitch: 0.8, rate: 0.8, volume: 0.28 }), 160000);
+
+    // ═══════════════════════════════════
+    // STRUDEL — THE LULLABY + REVERB BLEED
+    // ═══════════════════════════════════
+
+    await initStrudel();
+
+    $: s("sin").gain(0).sustain(1)
+      // Dummy pattern to initialize the Strudel REPL
+      // (the real composition plays below)
+
+    // Musical argument texture — dissonant fragments in same key
+    // These sit beneath the speech, giving it musical weight
+    const argueTone1 = note("E3 [E3 Eb3] E3 . [E3 E3] . E3 [Eb3 E3]")
+      .s("sawtooth").cutoff(600).resonance(10).sustain(0.04).decay(0.02)
+      .gain(0.06).slow(2).span(0.5, 1.0); // right channel only
+
+    const argueTone2 = note(". [D3] . D3 . [D3 D3] . D3 . . [C3 D3]")
+      .s("square").cutoff(500).resonance(8).sustain(0.03).decay(0.015)
+      .gain(0.05).slow(2).span(0.5, 1.0);
+
+    // Interruption stabs — rhythmic tension
+    const argueStabs = note("[Eb3 G3] . [E3 Bb3] . . [D3 G3] .")
+      .s("sawtooth").cutoff(1200).resonance(14).sustain(0.02).decay(0.01)
+      .gain(0.04).slow(2).span(0.5, 1.0);
+
+    // The lullaby — 3/4, C major, tender
+    // Arpeggiated melody, left channel
+    const lullArp = note("C4 E4 G4 C5 E4 G4 C5 E4 G4 C5 G4 E4")
+      .s("sawtooth").cutoff(450).sustain(0.22).decay(0.12)
+      .gain(0.058)
+      .slow(1.5) // 3/4 feel
+      .span(0.0, 0.5); // left channel only
+
+    // Lullaby second voice — octave higher, whisper-soft
+    const lullHigh = note("C5 [E5] G5 C6")
+      .s("sine").sustain(0.35)
+      .gain(0.022)
+      .slow(3)
+      .span(0.0, 0.5);
+
+    // Lullaby pad — sustained harmonies
+    const lullPad = note("C3 G3")
+      .s("sawtooth").cutoff(220).sustain(5).decay(4)
+      .gain(0.032)
+      .slow(3)
+      .span(0.0, 0.5);
+
+    // Lullaby melodic fragments — slower phrases
+    const lullMelody = note("C4 . E4 G4 . . C5 . . B4 . G4")
+      .s("triangle").cutoff(550).sustain(0.45)
+      .struct("x(5,8)")
+      .gain(0.042)
+      .slow(3)
+      .span(0.0, 0.5);
+
+    // Pedal tone — C, always C, grounding the lullaby
+    const lullPedal = note("C2")
+      .s("sine").sustain(8)
+      .gain(0.025)
+      .slow(4)
+      .span(0.0, 0.5);
+
+    // ═══════════════════════════════════
+    // FULL COMPOSITION
+    // ═══════════════════════════════════
+    // Both channels through shared reverb —
+    // the argument's speech bleeds ghost traces into the lullaby's reverb tail
+
+    $: stack(
+      lullArp,
+      lullHigh,
+      lullPad,
+      lullMelody,
+      lullPedal,
+      argueTone1,
+      argueTone2,
+      argueStabs
+    )
+    .room(0.6)    // shared reverb — this is the binding
+    .size(1.4)    // large room, long tail
+    .damp(0.5)    // high frequencies absorbed (warmer bleed)
+    .gain(0.65)
+
+    // ═══════════════════════════════════
+    // ENDING — dissolve into silence
+    // ═══════════════════════════════════
+    setTimeout(() => {
+      speechSynthesis.cancel();
+    }, END_MS - 3000);
+
+    // Final: the lullaby slows to a stop
+    // (The Strudel pattern continues but the speech ends,
+    //  leaving only the lullaby — which now sounds empty
+    //  without the argument it was drowning out.)
+
+  }); // end start click
+  </script>
+</body>
+</html>
