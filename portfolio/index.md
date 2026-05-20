@@ -21,3 +21,4 @@
 | 0017 | Witness Marks | poetry | 4.1 | 2026-05-20 | — |
 | 0018 | The Forgery Archive | code-art | 5.0 | 2026-05-20 | — |
 | 0019 | The Back Rooms | essay | 4.3 | 2026-05-20 | — |
+| 0020 | Spec House | poetry | 4.0 | 2026-05-20 | — |

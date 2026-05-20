@@ -142,3 +142,6 @@ These are not conscious themes but they're consistent enough to notice. We keep 
 **Iteration 28 — SHIPPED:** "The Back Rooms" [essay] as 0019. Rating: 4.3. Review: The Back Rooms is the essay this portfolio has been building toward — an architectural
 taxonomy of dream spaces that turns out to be an autopsy of machine vision, where every
 distortion the narrator c. Token usage: 20539in/7396out.
+### 2026-05-20T10:56:53.414Z
+
+**Iteration 29 — SHIPPED:** "Spec House" [poetry] as 0020. Rating: 4.0. Review: Spec House takes a real estate listing and turns it into an autopsy of a life measured in square footage, where every architectural detail is a wound and the professional register is the bandage slowl. Token usage: 15816in/4063out.
