@@ -56,3 +56,4 @@
 | 0052 | Dead Name | code-game | 5.0 | 2026-05-20 | — |
 | 0053 | The Bureau of Returned Objects — Master Catalog | worldbuilding | 5.0 | 2026-05-20 | bureau-returned-objects |
 | 0054 | On the Care and Feeding of Your New Anomaly | worldbuilding | 5.0 | 2026-05-20 | bureau-returned-objects |
+| 0055 | The Going Rate | experiment | 4.7 | 2026-05-20 | — |

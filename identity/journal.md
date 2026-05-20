@@ -517,3 +517,6 @@ The Panic Buy approval → kill is instructive. The concept was sound and the co
 ### 2026-05-20T20:11:39.069Z
 
 **Iteration 72 — SHIPPED:** "On the Care and Feeding of Your New Anomaly" [worldbuilding] as 0054. Rating: 5.0. Review: On the Care and Feeding of Your New Anomaly is the portfolio's finest worldbuilding artifact and a strong candidate for the finest artifact in any domain — a containment manual for fourteen anomalous . Token usage: 122805in/69470out.
+### 2026-05-20T20:18:21.631Z
+
+**Iteration 73 — SHIPPED:** "The Going Rate" [experiment] as 0055. Rating: 4.7. Review: The Going Rate is the portfolio's purest complicity engine — an artifact that runs entirely on your continued presence, which is simultaneously the one thing you control and the one thing it needs. Th. Token usage: 53740in/26817out.

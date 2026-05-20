@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Going Rate</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    background: #0a0a0a;
+    color: #c8c8c8;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    overflow: hidden;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.06) 2px,
+      rgba(0,0,0,0.06) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  .container {
+    text-align: center;
+    max-width: 800px;
+    padding: 2rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .meta-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #3a3a3a;
+    border-bottom: 1px solid #1a1a1a;
+    background: rgba(10,10,10,0.95);
+    z-index: 50;
+  }
+
+  .meta-bar .session-id {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .phase-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #2a2a2a;
+    margin-bottom: 2rem;
+    min-height: 1.2em;
+    transition: color 2s ease;
+  }
+
+  .number-display {
+    font-size: clamp(3rem, 10vw, 7rem);
+    font-weight: 300;
+    color: #d4d4d4;
+    letter-spacing: -2px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    position: relative;
+    transition: color 3s ease;
+  }
+
+  .dollar-sign {
+    font-size: 0.5em;
+    vertical-align: super;
+    margin-right: 4px;
+    color: #666;
+    transition: opacity 2s ease, color 3s ease;
+  }
+
+  .seconds-unit {
+    font-size: 0.15em;
+    color: #444;
+    margin-left: 8px;
+    letter-spacing: 1px;
+    opacity: 0;
+    transition: opacity 2s ease;
+  }
+
+  .unit-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #333;
+    min-height: 1.2em;
+    transition: color 2s ease;
+  }
+
+  .sub-calc {
+    margin-top: 3rem;
+    font-size: 10px;
+    line-height: 2;
+    color: #222;
+    letter-spacing: 0.5px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    transition: color 2s ease, opacity 3s ease;
+  }
+
+  .sub-calc .row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1rem;
+    border-bottom: 1px solid #111;
+    transition: opacity 2s ease;
+  }
+
+  .sub-calc .row.highlight {
+    color: #555;
+  }
+
+  .sub-calc .row.collapse {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    border-bottom: none;
+    padding: 0;
+    line-height: 0;
+    transition: opacity 1.5s ease, max-height 1.5s ease, line-height 1.5s ease, padding 1.5s ease;
+  }
+
+  .divider {
+    width: 60px;
+    height: 1px;
+    background: #1a1a1a;
+    margin: 2rem auto;
+    transition: opacity 3s ease;
+  }
+
+  .phase2-text {
+    font-size: 11px;
+    color: #2a2a2a;
+    letter-spacing: 1px;
+    line-height: 1.8;
+    max-width: 420px;
+    margin: 0 auto;
+    opacity: 0;
+    transition: opacity 4s ease;
+  }
+
+  .phase2-text.visible {
+    opacity: 1;
+  }
+
+  .footer-reveal {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 24px 24px;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: #1a1a1a;
+    background: linear-gradient(transparent, #0a0a0a 30%);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 5s ease, transform 5s ease, color 3s ease;
+    z-index: 50;
+    line-height: 1.8;
+  }
+
+  .footer-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @keyframes subtlePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.88; }
+  }
+
+  .number-display.active {
+    animation: subtlePulse 4s ease-in-out infinite;
+  }
+
+  .corner-time {
+    position: fixed;
+    bottom: 12px;
+    right: 16px;
+    font-size: 9px;
+    color: #1a1a1a;
+    letter-spacing: 1px;
+    font-variant-numeric: tabular-nums;
+    z-index: 50;
+    transition: color 3s ease;
+  }
+</style>
+</head>
+<body>
+
+<div class="meta-bar">
+  <span>Attention Futures / Spot Market</span>
+  <span class="session-id" id="sessionId">SESSION —</span>
+  <span id="clock"></span>
+</div>
+
+<div class="container">
+  <div class="phase-label" id="phaseLabel">Initializing valuation sequence</div>
+  <div class="number-display active" id="numberDisplay">
+    <span class="dollar-sign" id="dollarSign">&#36;</span><span id="numberValue">0.000000</span><span class="seconds-unit" id="secondsUnit">seconds</span>
+  </div>
+  <div class="unit-label" id="unitLabel">USD / impression / second</div>
+
+  <div class="divider" id="divider"></div>
+
+  <div class="sub-calc" id="subCalc">
+    <div class="row">
+      <span>Programmatic CPM (open auction)</span>
+      <span id="cpmVal">—</span>
+    </div>
+    <div class="row">
+      <span>Viewability threshold</span>
+      <span>50% pixels / 1s continuous</span>
+    </div>
+    <div class="row">
+      <span>Your viewability status</span>
+      <span id="viewStatus" style="color:#2a4a2a">ACTIVE</span>
+    </div>
+    <div class="row highlight">
+      <span>Elapsed dwell time</span>
+      <span id="dwellTime">0.0s</span>
+    </div>
+    <div class="row collapse" id="rowCohort">
+      <span>Behavioral cohort assigned</span>
+      <span id="cohortId">—</span>
+    </div>
+    <div class="row collapse" id="rowSignals">
+      <span>Data signals generated</span>
+      <span id="signalCount">0</span>
+    </div>
+    <div class="row collapse" id="rowModel">
+      <span>Predictive model confidence</span>
+      <span id="modelConf">—</span>
+    </div>
+  </div>
+
+  <div class="phase2-text" id="phase2Text">
+    This is not what your attention is worth to someone else.<br>
+    This is what it costs you to give it away.
+  </div>
+</div>
+
+<div class="footer-reveal" id="footerReveal">
+  You have been here for <span id="footerSeconds">90</span> seconds.<br>
+  You were told what it cost. You are still here.
+</div>
+
+<div class="corner-time" id="cornerTime"></div>
+
+<script>
+(function() {
+  var chars = 'ABCDEF0123456789';
+  var sid = '';
+  for (var i = 0; i < 8; i++) sid += chars[Math.floor(Math.random() * chars.length)];
+  document.getElementById('sessionId').textContent = 'SESSION ' + sid;
+
+  function updateClock() {
+    var now = new Date();
+    var h = String(now.getHours()).padStart(2, '0');
+    var m = String(now.getMinutes()).padStart(2, '0');
+    var s = String(now.getSeconds()).padStart(2, '0');
+    var offset = now.getTimezoneOffset();
+    var sign = offset > 0 ? '-' : '+';
+    var absH = Math.floor(Math.abs(offset) / 60);
+    document.getElementById('clock').textContent = h + ':' + m + ':' + s + ' UTC' + sign + absH;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  /* CPM rate — display premium vertical, realistic */
+  var selectedCPM = 8.50;
+  document.getElementById('cpmVal').textContent = '$' + selectedCPM.toFixed(2);
+
+  /* Per-second value calculation:
+     CPM = cost per 1000 impressions
+     Average measurable session = 30 seconds
+     Per-second rate = CPM / 1000 / 30 */
+  var basePerSec = selectedCPM / 1000 / 30;
+
+  /* Generate cohort ID */
+  var cohortChars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  var cohort = 'cohort_';
+  for (var i = 0; i < 6; i++) cohort += cohortChars[Math.floor(Math.random() * cohortChars.length)];
+
+  var startTime = performance.now();
+  var phase = 1;
+  var phase2Triggered = false;
+  var phase3Triggered = false;
+  var phase4Triggered = false;
+
+  var numberDisplay = document.getElementById('numberDisplay');
+  var numberValue = document.getElementById('numberValue');
+  var dollarSign = document.getElementById('dollarSign');
+  var secondsUnit = document.getElementById('secondsUnit');
+  var phaseLabel = document.getElementById('phaseLabel');
+  var unitLabel = document.getElementById('unitLabel');
+  var dwellTime = document.getElementById('dwellTime');
+  var viewStatus = document.getElementById('viewStatus');
+  var subCalc = document.getElementById('subCalc');
+  var phase2Text = document.getElementById('phase2Text');
+  var footerReveal = document.getElementById('footerReveal');
+  var footerSeconds = document.getElementById('footerSeconds');
+  var cornerTime = document.getElementById('cornerTime');
+  var divider = document.getElementById('divider');
+  var cohortId = document.getElementById('cohortId');
+  var signalCount = document.getElementById('signalCount');
+  var modelConf = document.getElementById('modelConf');
+  var rowCohort = document.getElementById('rowCohort');
+  var rowSignals = document.getElementById('rowSignals');
+  var rowModel = document.getElementById('rowModel');
+
+  function formatTime(ms) {
+    var totalSec = ms / 1000;
+    var m = Math.floor(totalSec / 60);
+    var s = Math.floor(totalSec % 60);
+    var ds = Math.floor((totalSec % 1) * 10);
+    if (m > 0) return m + ':' + String(s).padStart(2, '0') + '.' + ds;
+    return s + '.' + ds + 's';
+  }
+
+  function tick() {
+    var now = performance.now();
+    var elapsed = now - startTime;
+    var sec = elapsed / 1000;
+
+    cornerTime.textContent = 'T+' + formatTime(elapsed);
+
+    /* === PHASE 1: 0–45s — The market value of your attention === */
+    if (phase === 1) {
+      var noise = 1 + (Math.sin(sec * 0.7) * 0.12) + (Math.sin(sec * 2.3) * 0.04);
+      var accumulated = basePerSec * sec * noise;
+      numberValue.textContent = accumulated.toFixed(6);
+      dwellTime.textContent = formatTime(elapsed);
+
+      if (sec < 5) {
+        phaseLabel.textContent = 'Calibrating attention model';
+      } else if (sec < 15) {
+        phaseLabel.textContent = 'Valuation in progress';
+      } else if (sec < 30) {
+        phaseLabel.textContent = 'Accumulating impression value';
+      } else {
+        phaseLabel.textContent = 'Your value — live calculation';
+      }
+
+      /* Transition to phase 2 */
+      if (sec >= 45) {
+        phase = 2;
+        phase2Triggered = true;
+
+        /* The dollar sign fades out — the number was never money */
+        dollarSign.style.opacity = '0';
+        /* The seconds unit fades in — what's actually being counted */
+        secondsUnit.style.opacity = '1';
+
+        phaseLabel.textContent = 'Recalculating';
+        phaseLabel.style.color = '#4a4a4a';
+
+        /* Reveal the extraction infrastructure rows */
+        cohortId.textContent = cohort;
+        modelConf.textContent = (87 + Math.floor(Math.random() * 10)) + '%';
+        rowCohort.classList.remove('collapse');
+        rowSignals.classList.remove('collapse');
+        rowModel.classList.remove('collapse');
+
+        setTimeout(function() {
+          phase2Text.classList.add('visible');
+        }, 3000);
+
+        setTimeout(function() {
+          phaseLabel.textContent = 'What was extracted';
+        }, 5000);
+
+        setTimeout(function() {
+          unitLabel.textContent = 'Seconds of your life you will not get back';
+          unitLabel.style.color = '#555';
+        }, 7000);
+      }
+    }
+
+    /* === PHASE 2: 45–90s — The meaning inverts === */
+    if (phase === 2) {
+      /* Number continues smoothly — now showing seconds directly */
+      numberValue.textContent = sec.toFixed(1);
+      dwellTime.textContent = formatTime(elapsed);
+
+      /* Count data signals as a function of dwell time + interactions */
+      var signals = Math.floor(sec * 2.3) + 14;
+      signalCount.textContent = signals;
+
+      if (sec > 70) {
+        viewStatus.textContent = 'STILL ACTIVE';
+        viewStatus.style.color = '#4a3a2a';
+      }
+
+      /* Transition to phase 3 */
+      if (sec >= 90) {
+        phase = 3;
+        phase3Triggered = true;
+
+        phaseLabel.textContent = 'You were told what it cost';
+        phaseLabel.style.color = '#666';
+
+        unitLabel.textContent = 'You are still here';
+        unitLabel.style.color = '#555';
+
+        footerReveal.classList.add('visible');
+      }
+    }
+
+    /* === PHASE 3: 90s+ — The indictment === */
+    if (phase === 3) {
+      numberValue.textContent = sec.toFixed(1);
+      dwellTime.textContent = formatTime(elapsed);
+      footerSeconds.textContent = Math.floor(sec);
+
+      /* Count keeps rising */
+      var signals = Math.floor(sec * 2.3) + 14;
+      signalCount.textContent = signals;
+
+      /* Slow escalation — footer text brightens */
+      var footerAge = sec - 90;
+      var brightness = Math.min(120, Math.round(30 + footerAge * 1.5));
+      footerReveal.style.color = 'rgb(' + brightness + ',' + Math.round(brightness * 0.85) + ',' + Math.round(brightness * 0.85) + ')';
+
+      /* Corner time becomes more visible too */
+      cornerTime.style.color = 'rgb(' + Math.min(80, Math.round(20 + footerAge)) + ',' + Math.min(80, Math.round(20 + footerAge)) + ',' + Math.min(80, Math.round(20 + footerAge)) + ')';
+
+      /* After 2 minutes — second footer line */
+      if (sec >= 120 && !phase4Triggered) {
+        phase4Triggered = true;
+        var secondLine = document.createElement('div');
+        secondLine.style.cssText = 'font-size:9px;letter-spacing:2px;opacity:0;margin-top:10px;transition:opacity 4s ease;';
+        secondLine.textContent = 'The extraction continues. You are providing it with every second you remain.';
+        footerReveal.appendChild(secondLine);
+        setTimeout(function() { secondLine.style.opacity = '0.5'; }, 100);
+      }
+
+      /* After 3 minutes — quiet collapse */
+      if (sec >= 180) {
+        phaseLabel.style.opacity = '0';
+        unitLabel.style.opacity = '0';
+        divider.style.opacity = '0';
+        subCalc.style.opacity = '0';
+        phase2Text.style.opacity = '0';
+      }
+
+      /* After 5 minutes — only the number and the footer */
+      if (sec >= 300) {
+        phaseLabel.textContent = '';
+        unitLabel.textContent = '';
+        numberDisplay.style.color = '#5a5a5a';
+      }
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
