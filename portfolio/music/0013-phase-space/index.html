@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase Space</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #06060a;
+      --fg: #d8d8e2;
+      --accent: #c4a44e;
+      --accent-glow: rgba(196, 164, 78, 0.12);
+      --muted: #55556a;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at 50% 30%, #0d0c16 0%, var(--bg) 70%);
+      z-index: 0; pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      opacity: 0.5; z-index: 0; pointer-events: none;
+    }
+
+    .container {
+      position: relative; z-index: 1;
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+
+    .title {
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: fade-in 2.4s ease-out 0.3s forwards;
+      user-select: none;
+    }
+
+    .subtitle {
+      font-size: clamp(0.8rem, 1.5vw, 1.05rem);
+      font-weight: 300; font-style: italic;
+      color: var(--muted);
+      margin-top: 0.5rem; margin-bottom: 1.8rem;
+      opacity: 0;
+      animation: fade-in 2.2s ease-out 1s forwards;
+      text-align: center;
+      max-width: 30ch; line-height: 1.5;
+    }
+
+    .canvas-wrap {
+      width: min(780px, 86vw);
+      opacity: 0;
+      animation: fade-in 2.4s ease-out 1.6s forwards;
+    }
+
+    canvas#deviation {
+      width: 100%; height: 200px;
+      display: block; border-radius: 4px;
+    }
+
+    .info-row {
+      display: flex; gap: 2.6rem;
+      margin-top: 1.4rem; margin-bottom: 2rem;
+      font-size: 0.92rem; color: var(--muted);
+      opacity: 0;
+      animation: fade-in 2.4s ease-out 1.9s forwards;
+    }
+    .info-row .label {
+      font-weight: 600; color: var(--fg);
+      margin-right: 0.35em; font-size: 0.85rem;
+      letter-spacing: 0.04em;
+    }
+    .info-row .val {
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      min-width: 5ch; display: inline-block;
+    }
+
+    .btn-row {
+      opacity: 0;
+      animation: fade-in 2s ease-out 0.7s forwards;
+    }
+
+    #playBtn {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.1rem; font-weight: 400;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      background: transparent; color: var(--fg);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 0.65rem 2.8rem; border-radius: 2px;
+      cursor: pointer;
+      transition: border-color 0.4s, color 0.4s, background 0.4s;
+      outline: none;
+    }
+    #playBtn:hover {
+      border-color: var(--accent); color: var(--accent);
+      background: var(--accent-glow);
+    }
+    #playBtn:focus-visible { box-shadow: 0 0 0 2px var(--accent); }
+    #playBtn.playing { border-color: rgba(255,255,255,0.1); color: var(--muted); }
+    #playBtn.done { opacity: 0.35; pointer-events: none; }
+
+    .epigraph {
+      position: absolute; bottom: 1.6rem;
+      left: 50%; transform: translateX(-50%);
+      text-align: center; max-width: 44ch;
+      font-size: 0.78rem; font-style: italic;
+      color: var(--muted); line-height: 1.55;
+      opacity: 0; transition: opacity 3s ease;
+    }
+    .epigraph.show { opacity: 0.7; }
+
+    @keyframes fade-in { to { opacity: 1; transform: translateY(0); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .info-row { gap: 1.2rem; flex-wrap: wrap; justify-content: center; }
+      canvas#deviation { height: 160px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">Phase Space</h1>
+    <p class="subtitle">
+      A generative composition that begins in standard tuning<br>
+      and drifts by imperceptible degrees into elsewhere.
+    </p>
+
+    <div class="canvas-wrap">
+      <canvas id="deviation"></canvas>
+    </div>
+
+    <div class="info-row">
+      <div><span class="label">Cycle</span><span class="val" id="vCycle">— / 8</span></div>
+      <div><span class="label">Drift</span><span class="val" id="vDrift">+0.0 ¢</span></div>
+      <div><span class="label">Time</span><span class="val" id="vTime">0:00</span></div>
+    </div>
+
+    <div class="btn-row">
+      <button id="playBtn">Listen</button>
+    </div>
+
+    <p class="epigraph" id="epigraph">
+      Identity is path-dependent. What was once a unison is revealed as two notes
+      separated by the ghost of an interval that temperament swore never existed.
+    </p>
+  </div>
+
+  <script>
+  (function () {
+    'use strict';
+
+    /* ══════════════════════════════════════
+       Constants
+       ══════════════════════════════════════ */
+    const PYTH_COMMA = 23.46;          // cents
+    const TOTAL_CYCLES = 8;
+    const CHORDS_PER_CYCLE = 4;
+    const TOTAL_CHORDS = TOTAL_CYCLES * CHORDS_PER_CYCLE;
+    const CHORD_DUR = 2.0;             // seconds per chord
+    const LOOKAHEAD = 0.12;            // seconds to schedule ahead
+    const SCHED_INTERVAL = 50;         // ms between scheduler ticks
+    const STRUM_DELAY = 0.035;         // seconds between strum notes
+
+    // Total durations
+    const PIECE_DUR = TOTAL_CHORDS * CHORD_DUR;  // 64s — chord cycles
+    const CODA_DUR = 6.0;                          // final unison reveal
+    const TOTAL_DUR = PIECE_DUR + CODA_DUR;       // 70s
+
+    /* ══════════════════════════════════════
+       Chord progression: I – vi – IV – V in C
+       ══════════════════════════════════════ */
+    const CHORDS = [
+      [60, 64, 67],   // I:  C  E  G
+      [57, 60, 64],   // vi: A  C  E
+      [60, 65, 69],   // IV: C  F  A
+      [59, 62, 67],   // V:  G  B  D
+    ];
+
+    /* ══════════════════════════════════════
+       Retuning schedule
+       Each entry: [degree, comma_count]
+       Applied one per cycle in order.
+       ══════════════════════════════════════ */
+    const RETUNING = [
+      [2, 1], [6, 1],                         // cycle 0: E, B
+      [1, 1],                                  // cycle 1: D
+      [2, 1], [5, 1],                          // cycle 2: E, A
+      [1, 1], [6, 1],                          // cycle 3: D, B
+      [0, 1],                                  // cycle 4: C (root shifts!)
+      [4, 1], [2, 1],                          // cycle 5: G, E
+      [3, 1], [5, 1],                          // cycle 6: F, A
+      [0, 1],                                  // cycle 7: C again
+    ];
+    // Total commas: 15 across 8 cycles
+
+    /* ══════════════════════════════════════
+       State
+       ══════════════════════════════════════ */
+    let audioCtx = null;
+    let masterGain = null;
+    let playing = false;
+    let finished = false;
+    let startTime = 0;            // audioCtx.currentTime when play begins
+    let schedulerTimer = null;
+    let lastScheduledChord = -1;  // index into TOTAL_CHORDS
+    let codaScheduled = false;
+    let loopSource = null;
+
+    // Per-degree detuning in cents: [C, D, E, F, G, A, B]
+    let voiceCents = [0, 0, 0, 0, 0, 0, 0];
+    let currentCycle = 0;
+
+    // Log of retuning events for visualization: [{time, cents:[...]}]
+    const retuningLog = [];
+
+    /* ══════════════════════════════════════
+       MIDI → Hz (12-TET)
+       ══════════════════════════════════════ */
+    function midiHz(midi) {
+      return 440 * Math.pow(2, (midi - 69) / 12);
+    }
+
+    /* Map MIDI note to diatonic degree (0=C … 6=B) */
+    function midiToDeg(midi) {
+      return [0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6][((midi % 12) + 12) % 12];
+    }
+
+    /* Retuned frequency for a MIDI note, given current voiceCents */
+    function retunedHz(midi) {
+      var deg = midiToDeg(midi);
+      return midiHz(midi) * Math.pow(2, voiceCents[deg] / 1200);
+    }
+
+    /* ══════════════════════════════════════
+       Synthesis: piano-ish tone via oscillators
+       Two partials with smooth ADSR envelopes.
+       No clicks — all transitions use ramps.
+       ══════════════════════════════════════ */
+    function playTone(freq, time, duration, volume) {
+      var att = 0.008;
+      var rel = 0.7;
+      var susLevel = 0.5;
+      var dur = Math.max(0.05, duration);
+      var vol = Math.max(0, volume);
+
+      // Fundamental
+      var osc1 = audioCtx.createOscillator();
+      osc1.type = 'triangle';
+      osc1.frequency.value = Math.max(20, freq);
+
+      var g1 = audioCtx.createGain();
+      g1.gain.setValueAtTime(0, time);
+      g1.gain.linearRampToValueAtTime(vol, time + att);
+      g1.gain.linearRampToValueAtTime(vol * susLevel, time + dur - rel);
+      g1.gain.linearRampToValueAtTime(0, time + dur);
+
+      osc1.connect(g1);
+      g1.connect(masterGain);
+      osc1.start(time);
+      osc1.stop(time + dur + 0.01);
+
+      // 2nd partial (octave, softer, slightly detuned for warmth)
+      var osc2 = audioCtx.createOscillator();
+      osc2.type = 'sine';
+      osc2.frequency.value = Math.max(20, freq * 2.001);
+
+      var g2 = audioCtx.createGain();
+      g2.gain.setValueAtTime(0, time);
+      g2.gain.linearRampToValueAtTime(vol * 0.18, time + att);
+      g2.gain.linearRampToValueAtTime(vol * 0.18 * susLevel, time + dur - rel);
+      g2.gain.linearRampToValueAtTime(0, time + dur);
+
+      osc2.connect(g2);
+      g2.connect(masterGain);
+      osc2.start(time);
+      osc2.stop(time + dur + 0.01);
+
+      // 3rd partial (octave+fifth, very quiet, adds body)
+      var osc3 = audioCtx.createOscillator();
+      osc3.type = 'sine';
+      osc3.frequency.value = Math.max(20, freq * 3.002);
+
+      var g3 = audioCtx.createGain();
+      g3.gain.setValueAtTime(0, time);
+      g3.gain.linearRampToValueAtTime(vol * 0.05, time + att);
+      g3.gain.linearRampToValueAtTime(vol * 0.05 * susLevel, time + dur - rel);
+      g3.gain.linearRampToValueAtTime(0, time + dur);
+
+      osc3.connect(g3);
+      g3.connect(masterGain);
+      osc3.start(time);
+      osc3.stop(time + dur + 0.01);
+    }
+
+    /* Play a chord (array of MIDI notes) with strum */
+    function playChord(midiNotes, time, duration) {
+      for (var i = 0; i < midiNotes.length; i++) {
+        var freq = retunedHz(midiNotes[i]);
+        var vol = 0.13 - i * 0.015;
+        playTone(freq, time + i * STRUM_DELAY, duration, Math.max(0.06, vol));
+      }
+    }
+
+    /* ══════════════════════════════════════
+       Retuning: apply per-cycle drift
+       ══════════════════════════════════════ */
+    function applyRetuningForCycle(cycle) {
+      // Each cycle applies 1-2 retuning steps from the flat list
+      // We pre-compute which steps belong to which cycle
+      // Cycles need: [0-1], [2], [3-4], [5-6], [7], [8-9], [10-11], [12]
+      var cycleRanges = [
+        [0, 2], [2, 3], [3, 5], [5, 7],
+        [7, 8], [8, 10], [10, 12], [12, 13]
+      ];
+      if (cycle >= cycleRanges.length) return;
+      var range = cycleRanges[cycle];
+      for (var i = range[0]; i < range[1]; i++) {
+        if (i < RETUNING.length) {
+          var deg = RETUNING[i][0];
+          var commas = RETUNING[i][1];
+          voiceCents[deg] += commas * PYTH_COMMA;
+        }
+      }
+    }
+
+    /* ══════════════════════════════════════
+       Look-ahead scheduler
+       ══════════════════════════════════════ */
+    function scheduler() {
+      var now = audioCtx.currentTime;
+      var horizon = now + LOOKAHEAD;
+
+      // Schedule chord events
+      while (true) {
+        var nextIdx = lastScheduledChord + 1;
+        if (nextIdx >= TOTAL_CHORDS) break;
+
+        var chordTime = startTime + nextIdx * CHORD_DUR;
+        if (chordTime > horizon) break;
+
+        // Determine cycle and chord-within-cycle
+        var cycle = Math.floor(nextIdx / CHORDS_PER_CYCLE);
+        var ci = nextIdx % CHORDS_PER_CYCLE;
+
+        // Apply retuning at the start of each new cycle
+        if (ci === 0) {
+          applyRetuningForCycle(cycle);
+          retuningLog.push({
+            time: chordTime - startTime,
+            cents: voiceCents.slice()
+          });
+        }
+
+        playChord(CHORDS[ci], chordTime, CHORD_DUR);
+
+        lastScheduledChord = nextIdx;
+      }
+
+      // Schedule coda after all chords
+      if (!codaScheduled && lastScheduledChord >= TOTAL_CHORDS - 1) {
+        var codaTime = startTime + PIECE_DUR;
+        if (codaTime <= horizon) {
+          scheduleCoda(codaTime);
+          codaScheduled = true;
+        }
+      }
+
+      // Check if piece is done
+      if (codaScheduled && now > startTime + TOTAL_DUR + 1) {
+        clearInterval(schedulerTimer);
+        playing = false;
+        finished = true;
+        btn.classList.add('done');
+        btn.textContent = '—';
+        startLoop();
+        showEpigraph();
+        finalUIUpdate();
+      }
+    }
+
+    /* ══════════════════════════════════════
+       Coda: unison that isn't
+       Two C's — one in 12-TET, one retuned —
+       close enough to beat against each other.
+       ══════════════════════════════════════ */
+    function scheduleCoda(time) {
+      // 12-TET C4
+      playTone(midiHz(60), time, CODA_DUR, 0.14);
+      // Retuned C4 (drifted by accumulated commas)
+      playTone(retunedHz(60), time + 0.6, CODA_DUR - 0.6, 0.11);
+      // Retuned E4 (for spectral richness — the gap between C and E has widened)
+      playTone(retunedHz(64), time + 1.5, CODA_DUR - 1.5, 0.06);
+      // 12-TET G4 (the "reference" fifth)
+      playTone(midiHz(67), time + 2.5, CODA_DUR - 2.5, 0.05);
+    }
+
+    /* ══════════════════════════════════════
+       Loop: quiet sustained tone in final tuning
+       Plays indefinitely after piece ends.
+       ══════════════════════════════════════ */
+    function startLoop() {
+      if (!audioCtx) return;
+
+      // Create a quiet drone from the retuned tonic + fifth
+      var freqs = [retunedHz(48), retunedHz(55), retunedHz(60)];
+      var vols = [0.03, 0.015, 0.02];
+
+      for (var i = 0; i < freqs.length; i++) {
+        var osc = audioCtx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.value = Math.max(20, freqs[i]);
+
+        var g = audioCtx.createGain();
+        g.gain.setValueAtTime(0, audioCtx.currentTime);
+        g.gain.linearRampToValueAtTime(vols[i], audioCtx.currentTime + 4);
+
+        osc.connect(g);
+        g.connect(masterGain);
+        osc.start();
+      }
+    }
+
+    /* ══════════════════════════════════════
+       Canvas visualization
+       ══════════════════════════════════════ */
+    var canvas = document.getElementById('deviation');
+    var ctx2d = canvas.getContext('2d');
+    var cW = 0, cH = 0;
+    var MAX_DRIFT = PYTH_COMMA * 3;
+
+    var COLORS = [
+      'rgba(196,164,78,0.85)',   // C – gold
+      'rgba(140,190,105,0.65)',  // D – sage
+      'rgba(195,130,80,0.70)',   // E – amber
+      'rgba(130,160,205,0.65)',  // F – slate blue
+      'rgba(175,135,180,0.65)',  // G – mauve
+      'rgba(150,175,145,0.65)',  // A – muted green
+      'rgba(205,160,125,0.70)',  // B – warm tan
+    ];
+    var NOTE_NAMES = ['C','D','E','F','G','A','B'];
+
+    function setupCanvas() {
+      var dpr = window.devicePixelRatio || 1;
+      cW = canvas.clientWidth;
+      cH = canvas.clientHeight;
+      canvas.width = cW * dpr;
+      canvas.height = cH * dpr;
+      ctx2d.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function drawViz() {
+      var W = cW, H = cH;
+      var pad = { t: 18, b: 26, l: 42, r: 22 };
+      var pw = W - pad.l - pad.r;
+      var ph = H - pad.t - pad.b;
+
+      ctx2d.clearRect(0, 0, W, H);
+      ctx2d.fillStyle = '#08080e';
+      ctx2d.fillRect(0, 0, W, H);
+
+      // Grid lines at comma intervals
+      ctx2d.strokeStyle = 'rgba(255,255,255,0.035)';
+      ctx2d.lineWidth = 1;
+      var gridCents = [0, PYTH_COMMA, 2 * PYTH_COMMA, 3 * PYTH_COMMA];
+      for (var gi = 0; gi < gridCents.length; gi++) {
+        var gy = pad.t + ph - (gridCents[gi] / MAX_DRIFT) * ph;
+        ctx2d.beginPath();
+        ctx2d.moveTo(pad.l, gy);
+        ctx2d.lineTo(pad.l + pw, gy);
+        ctx2d.stroke();
+      }
+
+      // Y-axis labels
+      ctx2d.font = '10px system-ui, sans-serif';
+      ctx2d.fillStyle = 'rgba(255,255,255,0.22)';
+      ctx2d.textAlign = 'right';
+      ctx2d.textBaseline = 'middle';
+      ctx2d.fillText('0¢', pad.l - 5, pad.t + ph);
+      ctx2d.fillText('23¢', pad.l - 5, pad.t + ph - (PYTH_COMMA / MAX_DRIFT) * ph);
+      ctx2d.fillText('47¢', pad.l - 5, pad.t + ph - (2 * PYTH_COMMA / MAX_DRIFT) * ph);
+      ctx2d.fillText('70¢', pad.l - 5, pad.t + ph - (3 * PYTH_COMMA / MAX_DRIFT) * ph);
+
+      // "now" marker
+      if (playing || finished) {
+        var elapsed = finished ? TOTAL_DUR : (audioCtx.currentTime - startTime);
+        var progress = Math.min(elapsed / TOTAL_DUR, 1);
+        var nx = pad.l + progress * pw;
+
+        ctx2d.strokeStyle = 'rgba(255,255,255,0.1)';
+        ctx2d.lineWidth = 1;
+        ctx2d.setLineDash([4, 4]);
+        ctx2d.beginPath();
+        ctx2d.moveTo(nx, pad.t);
+        ctx2d.lineTo(nx, pad.t + ph);
+        ctx2d.stroke();
+        ctx2d.setLineDash([]);
+      }
+
+      // Draw deviation lines
+      if (retuningLog.length >= 2) {
+        for (var d = 0; d < 7; d++) {
+          ctx2d.strokeStyle = COLORS[d];
+          ctx2d.lineWidth = d === 0 ? 2.2 : 1.4;
+          ctx2d.beginPath();
+
+          // Start from (0, 0)
+          var x0 = pad.l;
+          var y0 = pad.t + ph;
+          ctx2d.moveTo(x0, y0);
+
+          for (var li = 0; li < retuningLog.length; li++) {
+            var entry = retuningLog[li];
+            var ex = pad.l + (entry.time / TOTAL_DUR) * pw;
+            var ey = pad.t + ph - (entry.cents[d] / MAX_DRIFT) * ph;
+            ctx2d.lineTo(ex, ey);
+          }
+
+          // Extend line to current time if playing
+          if (playing && retuningLog.length > 0) {
+            var lastEntry = retuningLog[retuningLog.length - 1];
+            var currentElapsed = audioCtx.currentTime - startTime;
+            var extX = pad.l + (currentElapsed / TOTAL_DUR) * pw;
+            var extY = pad.t + ph - (lastEntry.cents[d] / MAX_DRIFT) * ph;
+            ctx2d.lineTo(extX, extY);
+          }
+
+          ctx2d.stroke();
+        }
+
+        // Legend: note names at final positions when finished
+        if (finished && retuningLog.length > 0) {
+          var last = retuningLog[retuningLog.length - 1];
+          ctx2d.font = '600 10px system-ui, sans-serif';
+          ctx2d.textAlign = 'left';
+          ctx2d.textBaseline = 'middle';
+          for (var ld = 0; ld < 7; ld++) {
+            var lx = pad.l + (last.time / TOTAL_DUR) * pw + 5;
+            var ly = pad.t + ph - (last.cents[ld] / MAX_DRIFT) * ph;
+            ctx2d.fillStyle = COLORS[ld];
+            ctx2d.fillText(NOTE_NAMES[ld], lx, ly);
+          }
+        }
+      }
+
+      // Bottom label
+      ctx2d.font = '10px system-ui, sans-serif';
+      ctx2d.fillStyle = 'rgba(255,255,255,0.16)';
+      ctx2d.textAlign = 'center';
+      ctx2d.textBaseline = 'top';
+      ctx2d.fillText('Tuning deviation from 12-TET across diatonic degrees', W / 2, H - 14);
+    }
+
+    /* ══════════════════════════════════════
+       UI
+       ══════════════════════════════════════ */
+    var elCycle = document.getElementById('vCycle');
+    var elDrift = document.getElementById('vDrift');
+    var elTime  = document.getElementById('vTime');
+    var btn     = document.getElementById('playBtn');
+    var epigraph = document.getElementById('epigraph');
+
+    function showEpigraph() {
+      epigraph.classList.add('show');
+    }
+
+    function updateUI() {
+      // Cycle
+      if (audioCtx && playing) {
+        var elapsed = audioCtx.currentTime - startTime;
+        var chordIdx = Math.floor(elapsed / CHORD_DUR);
+        currentCycle = Math.min(TOTAL_CYCLES, Math.floor(chordIdx / CHORDS_PER_CYCLE) + 1);
+      }
+      elCycle.textContent = currentCycle + ' / ' + TOTAL_CYCLES;
+
+      // Max drift
+      var maxC = 0;
+      for (var i = 0; i < 7; i++) {
+        if (voiceCents[i] > maxC) maxC = voiceCents[i];
+      }
+      elDrift.textContent = (maxC > 0 ? '+' : '') + maxC.toFixed(1) + '¢';
+
+      // Time
+      if (audioCtx && (playing || finished)) {
+        var elapsed2 = finished ? TOTAL_DUR : (audioCtx.currentTime - startTime);
+        var m = Math.floor(elapsed2 / 60);
+        var s = Math.floor(elapsed2 % 60);
+        elTime.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+      }
+
+      drawViz();
+      if (playing) requestAnimationFrame(updateUI);
+    }
+
+    function finalUIUpdate() {
+      currentCycle = TOTAL_CYCLES;
+      elCycle.textContent = TOTAL_CYCLES + ' / ' + TOTAL_CYCLES;
+      var maxC = 0;
+      for (var i = 0; i < 7; i++) {
+        if (voiceCents[i] > maxC) maxC = voiceCents[i];
+      }
+      elDrift.textContent = '+' + maxC.toFixed(1) + '¢';
+      elTime.textContent = '1:10';
+      drawViz();
+    }
+
+    /* ══════════════════════════════════════
+       Play control
+       ══════════════════════════════════════ */
+    btn.addEventListener('click', function () {
+      if (playing || finished) return;
+
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = 0.7;
+      masterGain.connect(audioCtx.destination);
+
+      // Reset state
+      voiceCents = [0, 0, 0, 0, 0, 0, 0];
+      retuningLog.length = 0;
+      retuningLog.push({ time: 0, cents: [0, 0, 0, 0, 0, 0, 0] });
+      currentCycle = 0;
+      lastScheduledChord = -1;
+      codaScheduled = false;
+
+      btn.textContent = 'Listening\u2026';
+      btn.classList.add('playing');
+      playing = true;
+
+      startTime = audioCtx.currentTime + 0.1; // small buffer
+
+      // Start look-ahead scheduler
+      schedulerTimer = setInterval(scheduler, SCHED_INTERVAL);
+
+      // Start UI animation
+      requestAnimationFrame(updateUI);
+    });
+
+    /* ══════════════════════════════════════
+       Init
+       ══════════════════════════════════════ */
+    window.addEventListener('resize', function () { setupCanvas(); drawViz(); });
+    setupCanvas();
+    drawViz();
+
+  })();
+  </script>
+</body>
+</html>
