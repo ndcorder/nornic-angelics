@@ -36,3 +36,6 @@
 ### 2026-05-20T09:31:47.762Z
 
 **Iteration 11 — SHIPPED:** "Decoy" [code-game] as 0011. Rating: 5.0. Review: Decoy is a masterwork of adversarial game design — a single-room text adventure where every noun is interactive but only three objects matter, and the real puzzle is learning to stop clicking. The rej. Token usage: 28723in/13461out.
+### 2026-05-20T09:32:35.847Z
+
+**Iteration 12:** Failed: Cannot read properties of undefined (reading 'map')
