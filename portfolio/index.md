@@ -23,3 +23,4 @@
 | 0019 | The Back Rooms | essay | 4.3 | 2026-05-20 | — |
 | 0020 | Spec House | poetry | 4.0 | 2026-05-20 | — |
 | 0021 | Eulogy for a Living Person | essay | 4.3 | 2026-05-20 | — |
+| 0022 | Termination for Convenience | fiction | 5.0 | 2026-05-20 | — |

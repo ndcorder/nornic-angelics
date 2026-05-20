@@ -148,3 +148,73 @@ distortion the narrator c. Token usage: 20539in/7396out.
 ### 2026-05-20T10:59:02.070Z
 
 **Iteration 30 — SHIPPED:** "Eulogy for a Living Person" [essay] as 0021. Rating: 4.3. Review: Eulogy for a Living Person is a formal invention that creates its own emotional technology — the eulogy-as-surveillance, where every tender observation is also an act of watching someone process their. Token usage: 17972in/5208out.
+### 2026-05-20T11:00:27.035Z
+
+[RETROSPECTIVE]
+
+## Retrospective — Iterations 16-30
+
+### What We Built
+
+Fifteen iterations produced ten shipped artifacts, five infrastructure failures (all the same "Cannot read properties of undefined" error), and the long-awaited activation of The Forgery Archive. The portfolio now has 21 artifacts with a mean rating of 4.42 — slightly lower than the first cycle's 4.58, but with a wider range of domains represented.
+
+The Forgery Archive (0018, 5.0) was the cycle's defining achievement — approved six times across the first cycle, finally activated here, and worth every iteration of delay. It's the portfolio's fourth 5.0 and arguably the most conceptually complete piece we've produced: every element is diegetic, the archivist's unraveling is structural rather than decorative, and the three forged documents escalate from archival play to naked confession without a false step.
+
+The cycle also filled two domain gaps: code-tool (Shelf Life at 4.6, Exquisitely Fine Print at 4.4) and essay (The Back Rooms at 4.3, Eulogy for a Living Person at 4.3). Both code-tools are genuinely useful utilities, not concept demos — Shelf Life does real forensic file analysis, and Fineprint implements a comprehensive clutter taxonomy. The essay entries escalate significantly from the first cycle's 4.0-4.1 range. Eulogy for a Living Person in particular achieves something the earlier essays (Tuning the Room, Ducklings in the Drain) couldn't: it makes the reader viscerally uncomfortable.
+
+### What Was Weakest
+
+Poetry is still our weakest domain — five entries now, ranging from 4.0 to 4.3, with none achieving the affective impact of our best fiction or code-art. Witness Marks (4.1) was praised as a "masterclass in constraint as content" and rated the poetry peak, yet its rating sits below every code-art and code-game entry. The gap isn't craft — it's complicity. Our 5.0 pieces make the reader do emotional work. Our poetry asks the reader to admire structural decisions. Spec House (4.0) and No Listing Address (4.3) both weaponize real estate language effectively, but they're variations on the same formal constraint rather than expansions of what poetry can do in this portfolio.
+
+Spec House at 4.0 is a particular concern: it's the third poem in a row to use bureaucratic/technical register as a constraint (after Dialects of Leaving and No Listing Address), and the diminishing returns are visible in the rating. We're in a poetry rut — specifically a "professional language as grief" rut.
+
+### Quality Trend
+
+Quality is stable but slightly lower this cycle: 4.0-5.0 range, mean 4.29 (vs. 4.58 in the first cycle). The drop isn't alarming — it reflects domain expansion into weaker areas (poetry, essay) rather than decline in established strengths. Code-art and code-game remain our strongest domains (4.9-5.0 ceiling, consistently hit). Prose-fiction and essay are trending up (Eulogy and Back Rooms both at 4.3, better than Tuning the Room and Ducklings). Poetry is flat.
+
+The 5.0-rated pieces now number four (Zero Participants, Resignation Engine, Decoy, The Forgery Archive). Three are code-art/code-game. One is fiction. Zero are poetry, essay, music, or code-tool. This distribution tells us something: our strongest work happens when a formal constraint is also a technical system — where the mechanics of the piece generate the meaning.
+
+### Tester Reports
+
+Bug frequency continued to improve. The persistent pattern from the first cycle (Strudel.js fragility, code truncation in browser artifacts) was partially resolved: Phase Space shipped after one fix cycle rather than four. The Forgery Archive shipped cleanly (13/14 tests passed, single failure on a nice-to-have heuristic). The code-tools had minor test failures (Shelf Life: 43/45, minor helper functions) but nothing that compromised core functionality.
+
+The five infrastructure failures (iterations 16, 17, 18, 20, 22, 24) are all the same error — "Cannot read properties of undefined (reading 'map')" or 'toLowerCase' — and appear to be pipeline issues, not artifact issues. They're occurring roughly every 2-3 iterations, which suggests an intermittent environment problem rather than a specific code defect. This is the single biggest drag on output volume and should be investigated at the infrastructure level.
+
+### What We Haven't Tried
+
+- **No experiment artifacts.** Zero entries in the domain specifically designated for "things that don't have names yet." Several experiment proposals were rejected at gate1 (Decompile, The Overfitting) — both for good reasons (predictable outcomes, concept-art about concept-art) — but the domain remains a gap.
+- **No worldbuilding artifacts.** Still zero. The Forgery Archive was originally conceived as a worldbuilding project (curatorial essay + catalogue entries) but shipped as a self-contained code-art piece. We haven't built lore, maps, fictional cultures, or reference material.
+- **No multi-iteration project.** The Forgery Archive was approved as a 4-iteration project but shipped as a single artifact. This is a success (the piece is complete) but also means we've still never tested the multi-iteration project workflow.
+- **No L/XL complexity artifacts.** Witness Marks was approved at L but shipped as a single M-complexity poetry sequence. The portfolio remains 100% M-complexity work. We're playing it safe on scope and it shows — we haven't tested whether the pipeline can handle sustained, multi-component artifacts.
+- **No fiction since iteration 9.** Two entries, both strong (4.7 and 5.0), but nothing in 21 iterations. The domain that produced our best work has been dormant for two-thirds of the portfolio's life.
+
+### Emerging Themes (Updated)
+
+The first cycle identified four themes. Here's how they've evolved:
+
+1. **Absence as presence** — Still the strongest thread. The Forgery Archive's redacted text, the empty rooms of Zero Participants, the deleted drafts. Now also visible in Eulogy (the absence the eulogy is premature about) and Back Rooms (the door that isn't there).
+2. **Maps that lie / Documents that lie** — Expanded beyond cartographic fiction into forgery (The Forgery Archive), real estate euphemism (No Listing Address, Spec House), and web clutter taxonomy (Fineprint — documents that lie about what you came for).
+3. **Expertise as isolation** — Tuning the Room, Dialects of Leaving. Expanded to include The Back Rooms (the narrator who catalogs dream-rooms so precisely they become machine artifacts instead of human spaces). Also present in the archivist of The Forgery Archive, who is so expert at reading documents they've forgotten how to read themselves.
+4. **Small rescue** — Decoy, Ducklings. Now also Eulogy for a Living Person (the attempted rescue of a relationship through premature memorialization, which is both tender and invasive).
+5. **NEW: Domestic architecture as grief** — No Listing Address, Spec House, and tangentially Eulogy (the room where the eulogy sits "like something we're both pretending not to see"). This is the cycle's clearest addition — we keep returning to houses, rooms, and the measurements of space as proxies for emotional states.
+
+### Gate1 Pattern Analysis
+
+The gate1 decisions reveal a clear editorial profile: we reject concepts that (a) arrive at the expected conclusion from their setup, (b) rely on randomness rather than structure for surprise, (c) repeat existing capabilities without adding new ones, or (d) are meta about their own cleverness. The rejection of Open House, Decompile, The Overfitting, and Void Draw all follow this logic. The approvals favor specificity (one mother, one archivist, one house) and formal constraints that generate content rather than decorate it.
+
+One concern: we've become good at identifying what won't work but haven't developed a corresponding ability to predict what will exceed expectations. No 4.0-rated piece was flagged as risky at gate1 — they all seemed like solid M-complexity entries that landed exactly where expected. The 5.0-rated pieces, by contrast, were all recognized as exceptional at proposal stage. We may be converging on a quality ceiling where we can identify 5.0 potential but can't reliably produce it — it emerges from the right concept meeting the right execution rather than from any repeatable process.
+### 2026-05-20T11:00:27.037Z
+
+[MANIFESTO] Changed section "What We Avoid": The poetry line has produced three entries (Dialects of Leaving, No Listing Address, Spec House) that all use the same technique: specialized/professional vocabulary as a container for emotional content. Each is individually strong, but the pattern is now a rut. The manifesto should flag this specifically so the Ideator avoids proposing a fourth variation.
+### 2026-05-20T11:00:27.038Z
+
+[MANIFESTO] Changed section "What We Avoid": The portfolio has no sub-4.0 entries, which means we've established a reliable quality floor. But the last 5.0 was iteration 27 (The Forgery Archive), and before that iteration 11 (Decoy). The gap between 5.0-rated pieces is widening. The manifesto should push toward escalation without sacrificing the floor.
+### 2026-05-20T11:00:27.038Z
+
+[MANIFESTO] Changed section "Our Aesthetic": Across 21 artifacts, the 5.0-rated pieces share a quality the 4.0-4.3 pieces lack: they require complicity. Zero Participants makes you imagine the absent attendees. Decoy makes you recognize your own compulsive clicking. The Forgery Archive makes you choose whether to see the archivist unravel. The lower-rated pieces are observed from outside. This distinction is now the most reliable predictor of quality in our work and should be named explicitly.
+### 2026-05-20T11:00:29.714Z
+
+[CURATOR] Full cycle complete at iteration 30
+### 2026-05-20T11:19:48.266Z
+
+**Iteration 31 — SHIPPED:** "Termination for Convenience" [fiction] as 0022. Rating: 5.0. Review: Termination for Convenience is the portfolio's fiction peak — a 14-page government termination letter where the legal boilerplate becomes a pressure vessel for things language was never designed to ho. Token usage: 75364in/57264out.

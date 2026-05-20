@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Termination for Convenience — Contract No. █████-2023-GLADIUS</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+  :root {
+    --paper: #f4f1eb;
+    --ink: #1a1a1a;
+    --muted: #6b6b6b;
+    --redacted: #1a1a1a;
+    --marginalia: #4a3728;
+    --accent: #8b0000;
+    --stamp-red: #a01010;
+    --page-shadow: rgba(0,0,0,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #2a2a2a;
+    font-family: 'Courier Prime', 'Courier New', monospace;
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .topbar {
+    width: 100%;
+    background: #1a1a1a;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 2px solid #333;
+  }
+  .topbar-title {
+    color: #888;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .topbar-classified {
+    color: var(--stamp-red);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    border: 1px solid var(--stamp-red);
+    padding: 2px 8px;
+  }
+
+  .document-wrapper {
+    position: relative;
+    margin: 40px auto;
+    width: 100%;
+    max-width: 850px;
+    padding: 0 20px;
+  }
+
+  .page {
+    background: var(--paper);
+    position: relative;
+    padding: 72px 80px 64px 80px;
+    min-height: 1100px;
+    box-shadow:
+      0 1px 3px var(--page-shadow),
+      0 4px 12px var(--page-shadow),
+      2px 8px 24px rgba(0,0,0,0.1);
+    margin-bottom: 0;
+    border-radius: 2px;
+    display: none;
+  }
+  .page.active { display: block; }
+
+  .page-number {
+    position: absolute;
+    bottom: 28px;
+    right: 48px;
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .letterhead {
+    text-align: center;
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #ccc;
+  }
+  .letterhead-title {
+    font-family: 'Crimson Text', serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .letterhead-sub {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .legal-body {
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: var(--ink);
+    text-align: justify;
+    hyphens: auto;
+  }
+  .legal-body p {
+    margin-bottom: 14px;
+    text-indent: 28px;
+  }
+  .legal-body p:first-child {
+    text-indent: 0;
+  }
+  .legal-body .no-indent {
+    text-indent: 0;
+  }
+
+  .legal-body .section-head {
+    font-weight: 700;
+    font-size: 12.5px;
+    margin-top: 22px;
+    margin-bottom: 8px;
+    text-indent: 0;
+    font-family: 'Crimson Text', serif;
+    letter-spacing: 0.5px;
+  }
+
+  .legal-body .sub-head {
+    font-weight: 700;
+    font-size: 11.5px;
+    margin-top: 16px;
+    margin-bottom: 6px;
+    text-indent: 0;
+  }
+
+  .redacted {
+    background: var(--redacted);
+    color: var(--redacted);
+    padding: 1px 4px;
+    border-radius: 1px;
+    display: inline;
+    user-select: none;
+    font-size: 12.5px;
+    line-height: 1.75;
+    letter-spacing: -0.5px;
+  }
+  .redacted-long {
+    background: var(--redacted);
+    color: var(--redacted);
+    padding: 1px 8px;
+    border-radius: 1px;
+    display: inline-block;
+    height: 1em;
+  }
+  .redacted-partial {
+    background: var(--redacted);
+    color: var(--redacted);
+    padding: 1px 3px;
+    border-radius: 1px;
+  }
+
+  .marginalia {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    color: var(--marginalia);
+    font-size: 13.5px;
+    line-height: 1.55;
+    position: relative;
+    margin: 18px 0 18px 0;
+    padding: 12px 16px;
+    background: rgba(74, 55, 40, 0.04);
+    border-left: 2px solid rgba(74, 55, 40, 0.2);
+    max-width: 85%;
+  }
+  .marginalia.later {
+    border-left-color: rgba(139, 0, 0, 0.25);
+    background: rgba(139, 0, 0, 0.02);
+  }
+  .marginalia.final {
+    border-left-color: rgba(139, 0, 0, 0.4);
+    background: rgba(139, 0, 0, 0.04);
+  }
+
+  .marginalia-date {
+    font-size: 10px;
+    color: #999;
+    font-style: normal;
+    display: block;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .strikethrough {
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+  .handwritten {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+  }
+
+  .sig-block {
+    margin-top: 48px;
+    line-height: 1.6;
+    font-size: 12.5px;
+  }
+  .sig-line {
+    display: inline-block;
+    border-bottom: 1px solid var(--ink);
+    width: 220px;
+    margin-bottom: 6px;
+  }
+  .sig-block .typed-name {
+    font-weight: 700;
+  }
+  .sig-block .title-line {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .invoice-box {
+    border: 2px solid var(--ink);
+    padding: 28px 32px;
+    margin: 28px 0;
+    text-align: center;
+  }
+  .invoice-box .amount {
+    font-size: 36px;
+    font-weight: 700;
+    font-family: 'Crimson Text', serif;
+    margin: 16px 0;
+    letter-spacing: 2px;
+  }
+  .invoice-box .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+  }
+  .invoice-box .line-items {
+    text-align: left;
+    font-size: 11px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #ccc;
+    line-height: 1.8;
+  }
+  .invoice-box .line-item {
+    display: flex;
+    justify-content: space-between;
+  }
+  .invoice-box .line-item .descr {
+    color: var(--muted);
+  }
+
+  .final-note {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--marginalia);
+    text-align: center;
+    margin-top: 40px;
+    line-height: 1.7;
+  }
+
+  .stamp {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-12deg);
+    font-size: 52px;
+    font-weight: 700;
+    font-family: 'Crimson Text', serif;
+    color: var(--stamp-red);
+    opacity: 0.12;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .stamp-corner {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    transform: rotate(3deg);
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Crimson Text', serif;
+    color: var(--stamp-red);
+    opacity: 0.35;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    border: 3px solid var(--stamp-red);
+    padding: 6px 14px;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .nav-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    margin-top: -1px;
+    background: var(--paper);
+    border-top: 1px solid #d0cdc6;
+    border-radius: 0 0 2px 2px;
+    box-shadow: 0 4px 12px var(--page-shadow);
+  }
+  .nav-btn {
+    background: none;
+    border: 1px solid #bbb;
+    padding: 8px 20px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--ink);
+    transition: all 0.2s;
+    border-radius: 2px;
+  }
+  .nav-btn:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  .nav-btn:disabled:hover {
+    background: none;
+    color: var(--ink);
+  }
+  .page-indicator {
+    font-size: 11px;
+    color: var(--muted);
+    min-width: 100px;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+  .page-dots {
+    display: flex;
+    gap: 4px;
+  }
+  .page-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ccc;
+    transition: background 0.3s;
+  }
+  .page-dot.active {
+    background: var(--ink);
+  }
+  .page-dot.visited {
+    background: #888;
+  }
+
+  .watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-35deg);
+    font-size: 80px;
+    font-weight: 700;
+    font-family: 'Crimson Text', serif;
+    color: rgba(0,0,0,0.018);
+    letter-spacing: 12px;
+    text-transform: uppercase;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 700px) {
+    .page {
+      padding: 48px 32px 48px 32px;
+      min-height: 900px;
+    }
+    .legal-body { font-size: 11.5px; }
+    .marginalia { font-size: 12.5px; max-width: 100%; }
+    .stamp { font-size: 32px; }
+    .stamp-corner { font-size: 11px; top: 20px; right: 20px; }
+    .topbar-title { font-size: 9px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="topbar-title">Document Viewer — Reference ████████</span>
+  <span class="topbar-classified">Modified Handling Required</span>
+</div>
+
+<div class="document-wrapper">
+
+  <!-- PAGE 1 -->
+  <div class="page active" id="page-1">
+    <div class="watermark">Gladius</div>
+    <div class="letterhead">
+      <div class="letterhead-title">Department of Defense</div>
+      <div class="letterhead-sub">Defense Advanced Projects Office · Special Contracts Division</div>
+      <div class="letterhead-sub" style="margin-top:6px; color:#aaa;">Washington, DC ███████</div>
+    </div>
+
+    <div class="legal-body">
+      <p class="no-indent" style="margin-bottom:4px;">In reply refer to:</p>
+      <p class="no-indent" style="font-weight:700; margin-bottom:16px;">SCD-GLD-2023-████ / Termination Notice █████-██</p>
+
+      <p class="no-indent" style="margin-bottom:4px;">Date: <span style="white-space:nowrap;">November 14, 2023</span></p>
+      <p class="no-indent" style="margin-bottom:4px;">Contract No.: █████-2023-GLADIUS</p>
+      <p class="no-indent" style="margin-bottom:4px;">Contractor: <span class="redacted" style="padding:1px 24px;">██████████████████████</span></p>
+      <p class="no-indent" style="margin-bottom:4px;">Contracting Officer: <span class="redacted" style="padding:1px 20px;">████████████████</span></p>
+      <p class="no-indent" style="margin-bottom:24px;">Project Designation: <span class="redacted" style="padding:1px 30px;">████████████████████████████████</span></p>
+
+      <p><strong>SUBJECT: Notice of Termination for Convenience of the Government (Fixed-Price)</strong></p>
+
+      <p>Pursuant to the authority vested in the undersigned Contracting Officer under the terms and conditions of the above-referenced contract, and in accordance with Federal Acquisition Regulation (FAR) 52.249-2, "Termination for Convenience of the Government (Fixed-Price)," you are hereby notified that Contract No. █████-2023-GLADIUS is terminated in its entirety, effective upon receipt of this notice.</p>
+
+      <p>This termination is effected for the convenience of the Government and shall not be construed as a reflection upon the Contractor's performance, competence, or adherence to the specifications set forth in the Statement of Work, as amended (Exhibits A through <span class="redacted" style="padding:1px 6px;">██</span>).</p>
+    </div>
+
+    <div class="marginalia">
+      <span class="marginalia-date">[Received November 19, 2023 — handwritten]</span>
+      Standard form. Marked it standard. Marked it routine. Filed it under M-Vance in the cabinet by the window. Third drawer. Expected to forget about it by Thursday.
+    </div>
+
+    <span class="page-number">1 of 14</span>
+  </div>
+
+  <!-- PAGE 2 -->
+  <div class="page" id="page-2">
+    <div class="watermark">Gladius</div>
+
+    <div class="legal-body">
+      <p class="section-head">II. SCOPE AND BACKGROUND</p>
+
+      <p>The terminated contract, awarded on <span class="redacted" style="padding:1px 12px;">██████████</span>, encompassed the design, development, integration, and field-readiness testing of a <span class="redacted" style="padding:1px 40px;">████████████████████████████████████████</span> system (hereinafter referred to as "the System") for deployment within operational environments as designated by the Contracting Officer's Representative (COR).</p>
+
+      <p>The System was conceived, specified, and procured under the auspices of Special Project GLADIUS, a <span class="redacted" style="padding:1px 20px;">████████████████████</span> initiative authorized under <span class="redacted" style="padding:1px 14px;">████████████</span> and further governed by the supplementary directives contained in Enclosure <span class="redacted" style="padding:1px 6px;">██</span> of the Master Program Directive (MPD-<span class="redacted" style="padding:1px 8px;">████████</span>).</p>
+
+      <p>The Contractor acknowledges that all specifications, deliverables, test results, and interim reports associated with the System were transmitted through <span class="redacted" style="padding:1px 18px;">████████████████</span> channels, and that the Contractor's personnel held active clearances at the level of <span class="redacted" style="padding:1px 8px;">████████</span> or above for the duration of the performance period.</p>
+    </div>
+
+    <div class="marginalia">
+      <span class="marginalia-date">[undated — probably same evening]</span>
+      Four years. I read "the System" and felt nothing. That's what we called it. Not a project name we chose — a name we were given. <em>The System.</em> As if calling it anything specific would have been a kind of confession.
+    </div>
+
+    <span class="page-number">2 of 14</span>
+  </div>
+
+  <!-- PAGE 3 -->
+  <div class="page" id="page-3">
+    <div class="watermark">Gladius</div>
+
+    <div class="legal-body">
+      <p class="section-head">III. REASON FOR TERMINATION</p>
+
+      <p>The Government has determined that continuation of Contract No. █████-2023-GLADIUS is no longer in its best interest. This determination is made under the comprehensive authority granted by FAR 52.249-2(a) and is based upon a thorough review of current operational requirements, strategic priorities, and resource allocation considerations within the <span class="redacted" style="padding:1px 16px;">████████████████</span>.</p>
+
+      <p>The Contracting Officer certifies that this termination is not predicated upon:</p>
+
+      <p class="no-indent" style="margin-left:28px;">(a) Any deficiency in Contractor performance;<br>
+      (b) Any material breach of contractual obligations;<br>
+      (c) Any failure to meet milestones as defined in the Integrated Master Schedule (IMS), Rev. <span class="redacted" style="padding:1px 6px;">██</span>;<br>
+      (d) Any substantive deviation from the technical specifications enumerated in the Performance Work Statement (PWS), Sections <span class="redacted" style="padding:1px 10px;">██████████</span> through <span class="redacted" style="padding:1px 10px;">██████████</span>;<br>
+      (e) Any adverse finding during the Independent Verification and Validation (IV&V) review conducted <span class="redacted" style="padding:1px 20px;">████████████████████</span>.</p>
+
+      <p>To the contrary, the Government acknowledges that the Contractor has met or exceeded all performance thresholds established under the contract's Quality Assurance Surveillance Plan (QASP), achieving a cumulative performance rating of <span class="redacted" style="padding:1px 8px;">████████</span> across all Task Orders.</p>
+    </div>
+
+    <div class="marginalia">
+      <span class="marginalia-date">[November 22 — after Thanksgiving, alone in the office]</span>
+      <span class="strikethrough">They were satisfied with the work. That's what this says. Explicitly.</span> No — it says they weren't <em>unsatisfied.</em> There's a difference. A dog isn't "unsatisfied" with its meal. It just finishes eating.
+    </div>
+
+    <span class="page-number">3 of 14</span>
+  </div>
+
+  <!-- PAGE 4 -->
+  <div class="page" id="page-4">
+    <div class="watermark">Gladius</div>
+    <div class="stamp-corner">Copy 1 of 2</div>
+
+    <div class="legal-body">
+      <p class="section-head">IV. DELIVERABLES AND WORK PRODUCT STATUS</p>
+
+      <p>As of the effective date of termination, the Contractor shall have completed and shall deliver, in accordance with the settlement provisions outlined in Section VII, the following work products:</p>
+
+      <p class="sub-head">4.1 — Primary System Components</p>
+      <p class="no-indent" style="margin-left:28px;">(i) The <span class="redacted" style="padding:1px 30px;">██████████████████████████████</span> Module (hereinafter "Module Alpha"), designed to <span class="redacted" style="padding:1px 50px;">██████████████████████████████████████████████████████████████</span>.</p>
+
+      <p class="no-indent" style="margin-left:56px;">Status at termination: <strong>100% complete.</strong> Accepted. <span class="redacted" style="padding:1px 6px;">████</span> certified for deployment.</p>
+
+      <p class="no-indent" style="margin-left:28px;">(ii) The <span class="redacted" style="padding:1px 30px;">██████████████████████████████</span> Module (hereinafter "Module Beta"), designed to <span class="redacted" style="padding:1px 50px;">██████████████████████████████████████████████████████████████</span>.</p>
+
+      <p class="no-indent" style="margin-left:56px;">Status at termination: <strong>100% complete.</strong> Accepted. Field-deployed <span class="redacted" style="padding:1px 14px;">████████████</span>.</p>
+
+      <p class="no-indent" style="margin-left:28px;">(iii) The <span class="redacted" style="padding:1px 30px;">██████████████████████████████</span> Interface (hereinafter "the Interface"), designed to integrate Module Alpha and Module Beta with <span class="redacted" style="padding:1px 40px;">████████████████████████████████████████</span> and to provide operational control through <span class="redacted" style="padding:1px 40px;">████████████████████████████████████████</span>.</p>
+
+      <p class="no-indent" style="margin-left:56px;">Status at termination: <strong>97% complete.</strong> Remaining 3% constitutes final calibration of <span class="redacted" style="padding:1px 16px;">████████████████</span> parameters and is waived pursuant to FAR 52.249-2(g).</p>
+    </div>
+
+    <div class="marginalia">
+      <span class="marginalia-date">[undated]</span>
+      Three percent. Three percent away from finished and they killed it. No — not killed. <em>Terminated.</em> <em>For convenience.</em> The word matters to them. I can see that now. <em>Killed</em> implies it was alive.
+    </div>
+
+    <span class="page-number">4 of 14</span>
+  </div>
+
+  <!-- PAGE 5 -->
+  <div class="page" id="page-5">
+    <div class="watermark">Gladius</div>
+
+    <div class="legal-body">
+      <p class="sub-head">4.2 — Supplementary Deliverables</p>
+
+      <p class="no-indent" style="margin-left:28px;">(iv) Training materials and operational manuals (Volumes I through <span class="redacted" style="padding:1px 6px;">██</span>) for end-user instruction on System deployment, maintenance, and <span class="redacted" style="padding:1px 30px;">██████████████████████████████</span>. Status: <strong>Complete.</strong></p>
+
+      <p class="no-indent" style="margin-left:28px;">(v) The Simulation Environment, designated <span class="redacted" style="padding:1px 20px;">████████████████</span>, developed for the purpose of validating System performance under <span class="redacted" style="padding:1px 30px;">██████████████████████████████</span> conditions. Status: <strong>Complete.</strong></p>
+
+      <p class="no-indent" style="margin-left:28px;">(vi) All source code, build environments, cryptographic materials, and <span class="redacted" style="padding:1px 20px;">████████████████</span> keys associated with the System. Status: <strong>To be transferred per Section VIII.</strong></p>
+
+      <p>The Contractor acknowledges that Deliverables (i) through (iii) have been formally accepted by the Government through the Contracting Officer's Representative in writing on <span class="redacted" style="padding:1px 14px;">████████████</span>, and that no outstanding deficiencies, punch-list items, or corrective action requests remain open against these line items.</p>
+
+      <p class="section-head">V. PERSONNEL PROVISIONS</p>
+
+      <p>All Contractor personnel assigned to Contract No. █████-2023-GLADIUS shall be notified of this termination within <span class="redacted" style="padding:1px 6px;">██</span> business days of receipt. The Government assumes no obligation for continued employment, benefits, or clearance sponsorship of Contractor personnel beyond the settlement period defined in Section VII.</p>
+    </div>
+
+    <div class="marginalia">
+      <span class="marginalia-date">[November 25]</span>
+      Eighteen people. Eighteen people I recruited. Told them it was important work. Couldn't tell them what it was <em>for</em> — that part wasn't unusual, we're used to that — but I told them it <em>mattered.</em> I believed it. I think I believed it. <span class="strikethrough">Now I have to</span> What do I tell them now?
+    </div>
+
+    <span class="page-number">5 of 14</span>
+  </div>
+
+  <!-- PAGE 6 -->
+  <div class="page" id="page-6">
+    <div class="watermark">Gladius</div>
+    <div class="stamp">Terminated</div>
+
+    <div class="legal-body">
+      <p>The following Contractor personnel are specifically referenced for the purposes of this termination and associated administrative actions:</p>
+
+      <p class="no-indent" style="margin-left:28px;">
+      Principal Investigator: <span class="redacted" style="padding:1px 20px;">████████████████</span><br>
+      Lead Engineer: <span class="redacted" style="padding:1px 20px;">████████████████</span><br>
+      Systems Architect: <span class="redacted" style="padding:1px 20px;">████████████████</span><br>
+      <span class="redacted" style="padding:1px 20px;">████████████████</span>: <span class="redacted" style="padding:1px 20px;">████████████████</span><br>
+      <span class="redacted" style="padding:1px 20px;">████████████████</span>: <span class="redacted" style="padding:1px 20px;">████████████████</span>
+      </p>
+
+      <p><span class="redacted-long" style="width:100%;display:block;height:1.6em;"></span></p>
+
+      <p><span class="redacted-long" style="width:100%;display:block;height:1.6em;"></span></p>
+
+      <p><span class="redacted-long" style="width:100%;display:block;height:1.6em;"></span></p>
+
+      <p>Contractor personnel shall surrender all facility access credentials, cryptographic tokens, and <span class="redacted" style="padding:1px 14px;">████████████</span> within <span class="redacted" style="padding:1px 6px;">██</span> hours of notification.</p>
+    </div>
+
+    <div class="marginalia">
+      <span class="marginalia-date">[November 26 — at home, late]</span>
+      They redacted the names. From <em>me.</em> I know these people. I've been in a room with them for four years. And the government redacted their names from the letter telling me to fire them. <span class="strikethrough">That's bureaucracy. That's just</span> Why? <em>Why?</em> You don't redact a name to protect the person. You redact a name to sever the connection. They want us to not know each other anymore.
+    </div>
+
+    <span class="page-number">6 of 14</span>
+  </div>
+
+  <!-- PAGE 7 -->
+  <div class="page" id="page-7">
+    <div class="watermark">Gladius</div>
+
+    <div class="legal-body">
+      <p class="section-head">VI. GOVERNMENT PROPERTY AND DATA RIGHTS</p>
+
+      <p>Upon termination, all data, documents, and other materials produced under this contract shall become the exclusive property of the Government, including but not limited to:</p>
+
+      <p class="no-indent" style="margin-left:28px;">(i) All technical data, including design specifications, test results, and <span class="redacted" style="padding:1px 20px;">████████████████</span>;<br>
+      (ii) All computer software, including source code, object code, build scripts, and associated documentation;<br>
+      (iii) All <span class="redacted" style="padding:1px 30px;">██████████████████████████████</span> generated, discovered, or refined during the performance period;<br>
+      (iv) All research notes, laboratory records, and <span class="redacted" style="padding:1px 14px;">████████████</span> pertaining to the System's <span class="redacted" style="padding:1px 20px;">████████████████</span>;<br>
+      (v) All prototypes, test articles, and <span class="redacted" style="padding:1px 20px;">████████████████</span>.</p>
+
+      <p>The Contractor shall make no claim of intellectual property, trade secret, or proprietary interest in any materials developed under this contract. The Government retains an irrevocable, worldwide, royalty-free license to use, modify, reproduce, and <span class="redacted" style="padding:1px 14px;">████████████</span> all deliverables for any purpose whatsoever.</p>
+
+      <p>No copies, excerpts, or derivative works of any deliverable shall be retained by the Contractor. The Contractor shall certify, in writing, the destruction of all such materials within <span class="redacted" style="padding:1px 6px;">██</span> days of settlement.</p>
+    </div>
+
+    <div class="marginalia">
+      <span class="marginalia-date">[November 27 — after meeting with counsel]</span>
+      Our lawyer said the language is "comprehensive but not unusual." That's the phrase she used. I asked if we could contest the data rights clause. She looked at me for a long time and said, "You can contest anything. Whether it's wise is a different question." She's never once said that before.
+    </div>
+
+    <span class="page-number">7 of 14</span>
+  </div>
+
+  <!-- PAGE 8 -->
+  <div class="page" id="page-8">
+    <div class="watermark">Gladius</div>
+
+    <div class="legal-body">
+      <p class="section-head">VII. SETTLEMENT PROPOSAL</p>
+
+      <p>In accordance with FAR 52.249-2(j), the Contractor is directed to submit a settlement proposal to the Contracting Officer within sixty (60) calendar days of receipt of this notice. The settlement proposal shall include:</p>
+
+      <p class="no-indent" style="margin-left:28px;">(i) A comprehensive accounting of all costs incurred under the contract through the effective date of termination;<br>
+      (ii) The total value of work completed and accepted, including all accepted deliverables enumerated in Section IV;<br>
+      (iii) The value of work in process, including the waived items described in Section IV, Subsection 4.1(iii);<br>
+      (iv) Any costs associated with the termination of subcontracts;<br>
+      (v) <span class="redacted" style="padding:1px 40px;">████████████████████████████████████████</span>;<br>
+      (vi) A proposed settlement amount.</p>
+
+      <p>The Government reserves the right to audit all submitted costs and to adjust the settlement amount in accordance with the principles established in FAR Part 31 and any supplemental cost principles referenced in <span class="redacted" style="padding:1px 14px;">████████████</span>.</p>
+
+      <p>The Contractor shall not include in the settlement proposal any claim for:</p>
+
+      <p class="no-indent" style="margin-left:28px;">(a) Anticipated profits on work not performed;<br>
+      (b) <span class="redacted" style="padding:1px 50px;">██████████████████████████████████████████████████████████████</span>;<br>
+      (c) Costs that would have been incurred but for the termination;<br>
+      (d) Any amount related to <span class="redacted" style="padding:1px 20px;">████████████████</span>.</p>
+    </div>
+
+    <div class="marginalia later">
+      <span class="marginalia-date">[December 1 — a Sunday]</span>
+      (b). What is (b)? What can't I even <em>name</em> in a cost proposal? We built something. It was accepted. It was <em>deployed</em> — they told me it was deployed. And now I can't claim a cost I'm not allowed to describe for a purpose I was never told using materials I have to certify I destroyed. I keep coming back to the word <em>convenience.</em> It's convenient. The termination. For them. Everything about this is convenient. The paperwork is convenient. The silence is convenient.
+    </div>
+
+    <span class="page-number">8 of 14</span>
+  </div>
+
+  <!-- PAGE 9 -->
+  <div class="page" id="page-9">
+    <div class="watermark">Gladius</div>
+    <div class="stamp-corner">Eyes Only</div>
+
+    <div class="legal-body">
+      <p class="section-head">VIII. TRANSFER OF MATERIALS</p>
+
+      <p>Within <span class="redacted" style="padding:1px 6px;">██</span> days of the settlement agreement, the Contractor shall arrange for the physical and electronic transfer of all deliverables, materials, and <span class="redacted" style="padding:1px 20px;">████████████████</span> to the designated Government receiving facility at:</p>
+
+      <p class="no-indent" style="margin-left:28px; line-height:1.8;">
+      <span class="redacted" style="padding:1px 30px;">██████████████████████████████</span><br>
+      <span class="redacted" style="padding:1px 30px;">██████████████████████████████</span><br>
+      <span class="redacted" style="padding:1px 14px;">████████████</span>, <span class="redacted" style="padding:1px 8px;">████████</span> <span class="redacted" style="padding:1px 12px;">██████████</span><br>
+      ATTN: <span class="redacted" style="padding:1px 20px;">████████████████</span> / Code <span class="redacted" style="padding:1px 8px;">████████</span>
+      </p>
+
+      <p>Transfer of classified materials shall be conducted via <span class="redacted" style="padding:1px 16px;">████████████</span> courier in accordance with <span class="redacted" style="padding:1px 14px;">████████████</span> procedures. The Contractor shall obtain a receipt (Form <span class="redacted" style="padding:1px 8px;">████████</span>) from the receiving facility and shall forward the original to the Contracting Officer.</p>
+
+      <p>Electronic transfer of digital assets, including source code repositories, build environments, and <span class="redacted" style="padding:1px 20px;">████████████████</span>, shall be conducted via <span class="redacted" style="padding:1px 20px;">████████████████</span> using protocols specified in Annex <span class="redacted" style="padding:1px 6px;">██</span>. Under no circumstances shall any electronic asset be transmitted via commercial or unclassified networks.</p>
+
+      <p>The Contractor shall verify, within <span class="redacted" style="padding:1px 6px;">██</span> days of transfer, the complete destruction of all copies of transferred materials from Contractor systems, including all backup media, development environments, and <span class="redacted" style="padding:1px 14px;">████████████</span>. A Certificate of Destruction (Form <span class="redacted" style="padding:1px 8px;">████████</span>) shall accompany the settlement proposal.</p>
+    </div>
+
+    <div class="marginalia later">
+      <span class="marginalia-date">[December 3]</span>
+      The address. I know that address. I've never been there, but I know what building that is. Everyone in this line of work knows. That's the building where things go when they want them to exist and not exist at the same time. We're not just being closed out. We're being <em>erased.</em> Four years of work. Eighteen careers. All of it going into that building and never coming back.
+    </div>
+
+    <span class="page-number">9 of 14</span>
+  </div>
+
+  <!-- PAGE 10 -->
+  <div class="page" id="page-10">
+    <div class="watermark">Gladius</div>
+
+    <div class="legal-body">
+      <p class="section-head">IX. NONDISCLOSURE AND CONTINUING OBLIGATIONS</p>
+
+      <p>The termination of Contract No. █████-2023-GLADIUS shall not relieve the Contractor or any of its personnel of any obligations under the Non-Disclosure Agreements (NDAs) executed on <span class="redacted" style="padding:1px 14px;">████████████</span>, <span class="redacted" style="padding:1px 14px;">████████████</span>, and <span class="redacted" style="padding:1px 14px;">████████████</span>. Such obligations shall survive termination and shall continue in perpetuity unless expressly waived in writing by the <span class="redacted" style="padding:1px 14px;">████████████</span>.</p>
+
+      <p>The Contractor and all associated personnel are specifically reminded that:</p>
+
+      <p class="no-indent" style="margin-left:28px;">(a) Disclosure of any aspect of the System's existence, purpose, design, or performance to any unauthorized person constitutes a violation of <span class="redacted" style="padding:1px 14px;">████████████</span> and may result in criminal prosecution;<br>
+      (b) "Unauthorized person" includes former colleagues, family members, mental health professionals, members of the media, and any person not possessing a current <span class="redacted" style="padding:1px 8px;">████████</span> clearance and a demonstrated need-to-know;<br>
+      (c) The Contractor shall not publish, present, or otherwise disseminate any information derived from work performed under this contract in any academic, professional, or public forum;<br>
+      (d) The Contractor shall not reference this contract, the System, or any associated personnel in any professional biography, résumé, or curriculum vitae.</p>
+    </div>
+
+    <div class="marginalia later">
+      <span class="marginalia-date">[December 4 — 2 AM]</span>
+      (b). <em>Mental health professionals.</em> That's the clause they chose to include. In a document about nondisclosure. They want me to be unable to talk about what I did even if it breaks me. Even if I need to. I built something for four years, it was <em>deployed</em>, and now I cannot tell a therapist that I built it. What did I build? What did I <em>build?</em>
+    </div>
+
+    <span class="page-number">10 of 14</span>
+  </div>
+
+  <!-- PAGE 11 -->
+  <div class="page" id="page-11">
+    <div class="watermark">Gladius</div>
+    <div class="stamp">Terminated</div>
+
+    <div class="legal-body">
+      <p class="no-indent" style="margin-left:28px;">(e) Violations of these provisions may be referred to the <span class="redacted" style="padding:1px 20px;">████████████████</span> for appropriate action, up to and including <span class="redacted" style="padding:1px 20px;">████████████████</span>.</p>
+
+      <p class="section-head">X. DISPUTE RESOLUTION</p>
+
+      <p>Any dispute arising under or relating to this termination shall be resolved exclusively in accordance with the procedures specified in <span class="redacted" style="padding:1px 14px;">████████████</span>, as supplemented by the Alternative Dispute Resolution provisions of <span class="redacted" style="padding:1px 14px;">████████████</span>.</p>
+
+      <p>All proceedings shall be conducted <span class="redacted" style="padding:1px 14px;">████████████</span> and shall be adjudicated before the <span class="redacted" style="padding:1px 20px;">████████████████</span>, sitting in <span class="redacted" style="padding:1px 20px;">████████████████</span>, <span class="redacted" style="padding:1px 12px;">██████████</span>.</p>
+
+      <p>The Contractor waives any right to seek judicial review in any civilian court of competent jurisdiction. The determination of the <span class="redacted" style="padding:1px 20px;">████████████████</span> shall be final and binding, and shall not be subject to appeal except as provided in <span class="redacted" style="padding:1px 14px;">████████████</span>.</p>
+
+      <p>The Contractor shall not initiate contact with any member of the <span class="redacted" style="padding:1px 20px;">████████████████</span>, the <span class="redacted" style="padding:1px 20px;">████████████████</span>, or the <span class="redacted" style="padding:1px 20px;">████████████████</span> regarding any aspect of this termination or the work performed under this contract.</p>
+    </div>
+
+    <div class="marginalia final">
+      <span class="marginalia-date">[December 5]</span>
+      A tribunal that doesn't exist, in a jurisdiction I can't name, overseen by agencies I'm not allowed to contact. Even our disputes don't exist. Even our grievances are classified. There is no recourse. There never was. That was the design. Not the System's design — the contract's design. From the beginning.
+    </div>
+
+    <span class="page-number">11 of 14</span>
+  </div>
+
+  <!-- PAGE 12 -->
+  <div class="page" id="page-12">
+    <div class="watermark">Gladius</div>
+
+    <div class="legal-body">
+      <p class="section-head">XI. GOVERNING PROVISIONS AND REFERENCES</p>
+
+      <p>This termination and all associated actions shall be governed by, and construed in accordance with, the following authorities:</p>
+
+      <p class="no-indent" style="margin-left:28px; line-height:2.0;">
+      Federal Acquisition Regulation (FAR) 52.249-2<br>
+      Defense Federal Acquisition Regulation Supplement (DFARS) <span class="redacted" style="padding:1px 14px;">████████████</span><br>
+      National Security Act of 1947, as amended, Section <span class="redacted" style="padding:1px 8px;">████████</span><br>
+      <span class="redacted" style="padding:1px 30px;">██████████████████████████████</span> Act of <span class="redacted" style="padding:1px 8px;">████████</span><br>
+      Executive Order <span class="redacted" style="padding:1px 14px;">████████████</span><br>
+      <span class="redacted" style="padding:1px 20px;">████████████████</span> Directive <span class="redacted" style="padding:1px 14px;">████████████</span><br>
+      Program Operating Instruction POI-<span class="redacted" style="padding:1px 14px;">████████████</span>-GLD<br>
+      <span class="redacted-long" style="width:60%;display:inline-block;height:1.2em;"></span><br>
+      <span class="redacted-long" style="width:75%;display:inline-block;height:1.2em;"></span>
+      </p>
+
+      <p>In the event of conflict between the above authorities, the more restrictive provision shall apply.</p>
+
+      <p class="section-head">XII. AMENDMENTS AND MODIFICATIONS</p>
+
+      <p>The Contracting Officer reserves the right to amend, modify, or supplement this termination notice as may be required to protect the interests of the Government. All such amendments shall be binding upon the Contractor upon receipt.</p>
+    </div>
+
+    <div class="marginalia final">
+      <span class="marginalia-date">[December 8 — after a walk, alone]</span>
+      I knew. I think I've known since page six. Maybe since page three. The contract was never a contract. It was a compartment. A sealed room. We were never building a product. We were building an instrument. And instruments don't have purposes — they have users. We met the spec. We exceeded the spec. The spec was perfect. And I will never know what it was a specification <em>for.</em>
+    </div>
+
+    <span class="page-number">12 of 14</span>
+  </div>
+
+  <!-- PAGE 13 -->
+  <div class="page" id="page-13">
+    <div class="watermark">Gladius</div>
+    <div class="stamp-corner">Final</div>
+
+    <div class="legal-body">
+      <p class="section-head">XIII. FINAL ACCEPTANCE AND RELEASE</p>
+
+      <p>Upon execution of the settlement agreement and completion of all transfers and destructions described herein, the Government shall issue a Final Acceptance and Release acknowledging that the Contractor has satisfied all obligations under Contract No. █████-2023-GLADIUS.</p>
+
+      <p>The undersigned Contracting Officer has determined that all deliverables accepted by the Government conform to the requirements of the contract in all material respects and that the Contractor is entitled to the settlement consideration described in the executed settlement agreement.</p>
+
+      <div class="sig-block">
+        <p class="no-indent">CONTRACTING OFFICER:</p>
+        <br>
+        <p class="no-indent"><span class="sig-line"></span></p>
+        <p class="no-indent typed-name"><span class="redacted" style="padding:1px 20px;">████████████████</span></p>
+        <p class="no-indent title-line">Contracting Officer, GS-<span class="redacted" style="padding:1px 6px;">████</span></p>
+        <p class="no-indent title-line">Defense Advanced Projects Office</p>
+        <p class="no-indent title-line">Special Contracts Division</p>
+        <br>
+        <p class="no-indent">Date: <span class="redacted" style="padding:1px 14px;">████████████</span></p>
+      </div>
+
+      <div class="sig-block" style="margin-top:36px;">
+        <p class="no-indent">CONTRACTOR ACKNOWLEDGMENT:</p>
+        <br>
+        <p class="no-indent">Receipt of this Termination Notice is hereby acknowledged.</p>
+        <br>
+        <p class="no-indent"><span class="sig-line"></span></p>
+        <p class="no-indent typed-name"><span class="redacted" style="padding:1px 20px;">████████████████</span></p>
+        <p class="no-indent title-line">Authorized Representative</p>
+        <p class="no-indent title-line"><span class="redacted" style="padding:1px 24px;">██████████████████████</span></p>
+      </div>
+    </div>
+
+    <div class="marginalia final">
+      <span class="marginalia-date">[December 12 — signed today]</span>
+      I signed it. Of course I signed it. What was the alternative? Refuse? And face the tribunal that doesn't exist under the statute I can't read? They sent me a box for my memories and a pen for my name. The pen worked. I remember that detail. The pen worked perfectly.
+    </div>
+
+    <div class="marginalia final" style="margin-top:24px; border-left-width:3px;">
+      <span class="marginalia-date">[undated — written in a different pen, later]</span>
+      This was never about convenience. That word was the only honest thing in the document. It was convenient — for <em>them.</em> Not that the project failed. Not that it succeeded. But that I would sign. That we would all sign. And then carry the weight of something we built, beautifully, completely, for a purpose we will never know, and be grateful for the silence. The silence is the payment. The silence is what they bought.
+    </div>
+
+    <span class="page-number">13 of 14</span>
+  </div>
+
+  <!-- PAGE 14 -->
+  <div class="page" id="page-14">
+    <div class="watermark">Gladius</div>
+    <div class="stamp">Terminated</div>
+
+    <div class="legal-body">
+      <p class="section-head" style="text-align:center;">XIV. FINAL SETTLEMENT INVOICE</p>
+
+      <div class="invoice-box">
+        <div class="label">Contract No. █████-2023-GLADIUS</div>
+        <div class="label" style="margin-top:4px;">Termination for Convenience — Final Settlement</div>
+
+        <div class="line-items">
+          <div class="line-item"><span>Module Alpha (Design, Development, Testing)</span> <span class="redacted" style="padding:1px 12px;">████████████</span></div>
+          <div class="line-item"><span>Module Beta (Design, Development, Testing, Deployment)</span> <span class="redacted" style="padding:1px 12px;">████████████</span></div>
+          <div class="line-item"><span>Interface (Design, Integration, Calibration)</span> <span class="redacted" style="padding:1px 12px;">████████████</span></div>
+          <div class="line-item"><span>Training Materials (Vols. I–<span class="redacted" style="padding:1px 4px;">██</span>)</span> <span class="redacted" style="padding:1px 12px;">████████████</span></div>
+          <div class="line-item"><span>Simulation Environment</span> <span class="redacted" style="padding:1px 12px;">████████████</span></div>
+          <div class="line-item"><span>Cryptographic Materials Transfer</span> <span class="redacted" style="padding:1px 12px;">████████████</span></div>
+          <div class="line-item"><span><span class="redacted" style="padding:1px 30px;">██████████████████████████████</span></span> <span class="redacted" style="padding:1px 12px;">████████████</span></div>
+          <div class="line-item"><span>Personnel Transition Costs</span> <span class="redacted" style="padding:1px 12px;">████████████</span></div>
+          <div class="line-item"><span>Facility Decommission</span> <span class="redacted" style="padding:1px 12px;">████████████</span></div>
+          <div class="line-item"><span>Materials Destruction &amp; Certification</span> <span class="redacted" style="padding:1px 12px;">████████████</span></div>
+          <div class="line-item"><span><span class="redacted" style="padding:1px 30px;">██████████████████████████████</span></span> <span class="redacted" style="padding:1px 12px;">████████████</span></div>
+          <div style="margin-top:12px; padding-top:12px; border-top:1px solid #999;">
+            <div class="line-item" style="font-weight:700;"><span>ADJUSTED TOTAL (Per Settlement Agreement)</span> <span>$0.00</span></div>
+          </div>
+        </div>
+
+        <div class="amount" style="margin-top:20px;">$0.00</div>
+        <div class="label">Payment in Full</div>
+      </div>
+
+      <p style="text-align:center; font-style:italic; color:var(--muted); margin-top:16px;">The Contractor acknowledges that all obligations have been satisfied and that no further payment is due or owed under Contract No. █████-2023-GLADIUS.</p>
+    </div>
+
+    <div class="final-note">
+      Payment in full upon receipt.<br><br>
+      <span style="font-size:13px; opacity:0.7;">— M.V.</span>
+    </div>
+
+    <span class="page-number" style="bottom:18px;">14 of 14 — END</span>
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav-bar" id="navbar">
+    <button class="nav-btn" id="prevBtn" onclick="changePage(-1)">◀ Previous</button>
+    <div class="page-dots" id="pageDots"></div>
+    <span class="page-indicator" id="pageIndicator">Page 1 of 14</span>
+    <button class="nav-btn" id="nextBtn" onclick="changePage(1)">Next ▶</button>
+  </div>
+
+</div>
+
+<div style="height:60px;"></div>
+
+<script>
+  let currentPage = 1;
+  const totalPages = 14;
+  const visited = new Set([1]);
+
+  function buildDots() {
+    const dots = document.getElementById('pageDots');
+    dots.innerHTML = '';
+    for (let i = 1; i <= totalPages; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'page-dot' + (i === currentPage ? ' active' : '') + (visited.has(i) ? ' visited' : '');
+      dot.addEventListener('click', () => goToPage(i));
+      dot.style.cursor = 'pointer';
+      dots.appendChild(dot);
+    }
+  }
+
+  function goToPage(n) {
+    if (n < 1 || n > totalPages) return;
+    document.getElementById('page-' + currentPage).classList.remove('active');
+    currentPage = n;
+    visited.add(n);
+    document.getElementById('page-' + currentPage).classList.add('active');
+    update();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function changePage(delta) {
+    goToPage(currentPage + delta);
+  }
+
+  function update() {
+    document.getElementById('pageIndicator').textContent = 'Page ' + currentPage + ' of ' + totalPages;
+    document.getElementById('prevBtn').disabled = (currentPage === 1);
+    document.getElementById('nextBtn').disabled = (currentPage === totalPages);
+    buildDots();
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      changePage(1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      changePage(-1);
+    }
+  });
+
+  update();
+</script>
+
+</body>
+</html>
