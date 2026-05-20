@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consolation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #0D0B0E;
+    --surface: #141216;
+    --card: #1A171E;
+    --border: #2A2530;
+    --fg: #E8E4E0;
+    --fg-dim: #B0AAA4;
+    --muted: #6B6570;
+    --accent: #C9A96E;
+    --accent-glow: rgba(201,169,110,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow-x: hidden; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+
+  #bgCanvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeUp 2s ease-out 0.4s forwards;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .container { opacity: 1; transform: none; animation: none; }
+  }
+
+  /* ---- Header ---- */
+  header {
+    text-align: center;
+    margin-bottom: 2.2rem;
+  }
+
+  header h1 {
+    font-weight: 300;
+    font-size: 2.6rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fg);
+    margin-bottom: 0.4rem;
+  }
+
+  .subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  .rule-counter {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 0.55rem;
+    transition: color 0.5s;
+  }
+
+  /* ---- Rules ---- */
+  .rules { margin-bottom: 2rem; }
+
+  .rule-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 0.4rem;
+    background: var(--card);
+    transition: border-color 0.5s, background 0.5s, box-shadow 0.5s;
+  }
+
+  .rule-item.violated {
+    border-color: var(--accent);
+    background: rgba(201,169,110,0.04);
+    box-shadow: 0 0 24px var(--accent-glow);
+  }
+
+  .rule-content { flex: 1; min-width: 0; }
+
+  .rule-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--fg-dim);
+    margin-bottom: 0.15rem;
+    letter-spacing: 0.02em;
+  }
+
+  .rule-hint {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.66rem;
+    color: var(--muted);
+    opacity: 0;
+    transition: opacity 0.6s;
+    line-height: 1.4;
+  }
+
+  .rule-item.violated .rule-hint {
+    opacity: 1;
+    color: var(--accent);
+  }
+
+  .rule-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--accent);
+    margin-left: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .rule-item.violated .rule-status { opacity: 1; }
+
+  /* ---- Toggle Switch ---- */
+  .toggle {
+    width: 42px;
+    height: 23px;
+    background: var(--border);
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: background 0.3s, box-shadow 0.3s;
+    outline: none;
+  }
+
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 19px; height: 19px;
+    background: var(--fg-dim);
+    border-radius: 50%;
+    transition: transform 0.3s, background 0.3s;
+  }
+
+  .toggle:focus-visible { box-shadow: 0 0 0 2px var(--accent); }
+
+  .toggle.active { background: var(--accent); }
+  .toggle.active::after {
+    transform: translateX(19px);
+    background: #0D0B0E;
+  }
+
+  /* ---- Player ---- */
+  .player-section {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .player-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.1rem;
+  }
+
+  .play-btn {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--card);
+    color: var(--fg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s;
+  }
+
+  .play-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .play-btn:disabled { opacity: 0.3; cursor: default; }
+  .play-btn:focus-visible { box-shadow: 0 0 0 2px var(--accent); }
+
+  .volume-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 72px; height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: var(--fg-dim);
+    cursor: pointer;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 13px; height: 13px;
+    border: none;
+    border-radius: 50%;
+    background: var(--fg-dim);
+    cursor: pointer;
+  }
+
+  .timeline {
+    margin-top: 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .progress-track {
+    flex: 1; height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.2s linear;
+  }
+
+  .time-display {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.66rem;
+    color: var(--muted);
+    min-width: 6.5rem;
+    text-align: left;
+  }
+
+  .measure-display {
+    min-width: 3rem;
+    text-align: right;
+  }
+
+  /* ---- Action ---- */
+  .action-area { text-align: center; margin: 1.3rem 0 1rem; }
+
+  .save-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.65rem 2rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--fg-dim);
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: all 0.3s;
+  }
+
+  .save-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .save-btn:disabled { opacity: 0.25; cursor: default; }
+  .save-btn:focus-visible { box-shadow: 0 0 0 2px var(--accent); }
+
+  /* ---- Toast ---- */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(70px);
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--fg-dim);
+    padding: 0.6rem 1.3rem;
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    opacity: 0;
+    transition: all 0.4s ease;
+    z-index: 1000;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ---- Reveal Overlay ---- */
+  .reveal-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.8s ease;
+  }
+
+  .reveal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .reveal-content {
+    max-width: 500px;
+    padding: 2.5rem;
+    text-align: center;
+  }
+
+  .reveal-title {
+    font-size: 1.9rem;
+    font-weight: 300;
+    color: var(--accent);
+    margin-bottom: 1.4rem;
+    letter-spacing: 0.08em;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: all 1.4s ease 0.6s;
+  }
+
+  .reveal-body {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 2;
+    color: var(--fg-dim);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 1.4s ease 1.8s;
+  }
+
+  .reveal-title.vis,
+  .reveal-body.vis,
+  .reveal-actions.vis {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-actions {
+    margin-top: 2.2rem;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 1s ease 3.8s;
+  }
+
+  .reveal-actions button {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.76rem;
+    padding: 0.55rem 1.4rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--fg-dim);
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 0 0.35rem;
+    transition: all 0.3s;
+  }
+
+  .reveal-actions button:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .reveal-actions button:focus-visible {
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+
+  .violation-list {
+    list-style: none;
+    margin-top: 0.9rem;
+    text-align: left;
+  }
+
+  .violation-list li {
+    padding: 0.35rem 0;
+    font-size: 0.72rem;
+    color: var(--accent);
+    border-bottom: 1px solid rgba(201,169,110,0.08);
+  }
+
+  .violation-list li:first-child { padding-top: 0.7rem; }
+
+  .none-note {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 0.8rem;
+    line-height: 1.6;
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 600px) {
+    header h1 { font-size: 2rem; letter-spacing: 0.12em; }
+    .container { padding: 1.5rem 1rem 3rem; }
+  }
+</style>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+
+<div class="container" id="app">
+  <header>
+    <h1>Consolation</h1>
+    <p class="subtitle">seven rules for a composition about grief</p>
+    <p class="rule-counter" id="ruleCounter">0 of 7 constraints released</p>
+  </header>
+
+  <section class="rules" id="rulesSection" aria-label="Composition rules"></section>
+
+  <section class="player-section" aria-label="Music player">
+    <div class="player-controls">
+      <div class="volume-wrap">
+        <i class="fas fa-volume-low"></i>
+        <input type="range" id="volumeSlider" min="0" max="100" value="60" aria-label="Volume">
+      </div>
+      <button class="play-btn" id="playBtn" aria-label="Play or pause">
+        <i class="fas fa-play" id="playIcon"></i>
+      </button>
+      <div style="width:85px"></div>
+    </div>
+    <div class="timeline">
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="time-display" id="timeDisplay">0:00 / 2:08</div>
+      <div class="time-display measure-display" id="measureDisplay">m.1</div>
+    </div>
+  </section>
+
+  <div class="action-area">
+    <button class="save-btn" id="saveBtn" disabled>Wait for the composition to begin</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="reveal-overlay" id="revealOverlay">
+  <div class="reveal-content">
+    <div class="reveal-title" id="revealTitle">What remains is what you changed</div>
+    <div class="reveal-body" id="revealBody"></div>
+    <div class="reveal-actions" id="revealActions">
+      <button id="replayBtn">Listen to what remains</button>
+      <button id="startOverBtn">Begin again</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ==========================================
+  //  CONSTANTS
+  // ==========================================
+  var BPM = 62;
+  var BEAT_DUR = 60 / BPM;          // seconds per beat
+  var BAR_DUR = BEAT_DUR * 4;       // seconds per bar
+  var TOTAL_BARS = 32;
+
+  // ==========================================
+  //  RULE DEFINITIONS
+  // ==========================================
+  var RULES = [
+    { id: 'noMinor3',  name: 'No minor thirds',                 hint: 'Let the sadness in' },
+    { id: 'noDescBass',name: 'No descending bass lines',        hint: 'Let it fall' },
+    { id: 'noSilence', name: 'No silence longer than two beats',hint: 'Let it breathe' },
+    { id: 'noDisson',  name: 'No unresolved dissonance',        hint: 'Let the tension speak' },
+    { id: 'noRepeat',  name: 'No repeating the same phrase',    hint: 'Let it echo' },
+    { id: 'noSolo',    name: 'No unaccompanied bass',           hint: 'Let it stand alone' },
+    { id: 'noUnres',   name: 'The final measure must resolve',  hint: 'Let it end unfinished' }
+  ];
+
+  // ==========================================
+  //  HARMONIC DATA
+  // ==========================================
+  // 8-bar chord progression rooted in D major:
+  //   I – V – vi – IV – I – V – iii – IV
+  var CHORD_ROOT  = [62, 67, 64, 57, 62, 67, 59, 57];
+  var BASS_ROOT   = [38, 43, 40, 31, 38, 43, 42, 31];
+  var VOICINGS    = [
+    [0, 4, 7],  // major
+    [0, 4, 7],  // major
+    [0, 3, 7],  // minor
+    [0, 4, 7],  // major
+    [0, 4, 7],  // major
+    [0, 4, 7],  // major
+    [0, 3, 7],  // minor
+    [0, 4, 7]   // major
+  ];
+  var CHORD_IS_MIN = [false, false, true, false, false, false, true, false];
+  var DESC_BASS_SEMITONE_STEP = -2;
+
+  // Melodic contour over one 8-bar cycle (32 entries = 32 beats)
+  var MELODY_BASE = [
+     0,  2,  4,  2,   5,  4,  2,  0,
+     0, -1, -3, -1,  -2,  0,  2,  4,
+     7,  5,  4,  2,   0, -2, -4, -2,
+     0,  2,  4,  7,   9,  7,  5,  4
+  ];
+
+  // ==========================================
+  //  STATE
+  // ==========================================
+  var violations      = {};
+  var violationTime   = {};
+  var idx;
+  for (idx = 0; idx < RULES.length; idx++) {
+    violations[RULES[idx].id] = false;
+    violationTime[RULES[idx].id] = null;
+  }
+
+  var isPlaying      = false;
+  var hasPlayedOnce  = false;
+  var isRevealed     = false;
+
+  // Audio graph nodes
+  var audioCtx        = null;
+  var masterGain      = null;
+  var compressorNode  = null;
+  var reverbNode      = null;
+  var soloSendBus     = null;
+  var soloSendGain    = null;
+
+  var activeOscillators = [];
+  var scheduleTimer     = null;
+  var playStartTime     = 0;
+  var currentBar        = 0;
+  var userVolume        = 0.6;
+
+  // Background visuals
+  var particles     = [];
+  var visualEnergy  = 0;
+  var visualHue     = 35;
+  var targetEnergy  = 0;
+  var targetHue     = 35;
+
+  // ==========================================
+  //  AUDIO INIT
+  // ==========================================
+  function initAudio() {
+    if (audioCtx) return;
+
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Master gain
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = userVolume;
+
+    // Dynamics compressor
+    compressorNode = audioCtx.createDynamicsCompressor();
+    compressorNode.threshold.value = -18;
+    compressorNode.knee.value      = 8;
+    compressorNode.ratio.value     = 6;
+    compressorNode.attack.value    = 0.003;
+    compressorNode.release.value   = 0.1;
+
+    // Solo send bus (for "unaccompanied bass" rule)
+    soloSendBus  = audioCtx.createGain();
+    soloSendBus.gain.value = 0;
+    soloSendGain = audioCtx.createGain();
+    soloSendGain.gain.value = 0.7;
+    soloSendBus.connect(soloSendGain);
+    soloSendGain.connect(compressorNode);
+
+    // Reverb (synthesised impulse response)
+    var reverbLen  = audioCtx.sampleRate * 2.8;
+    var reverbBuf  = audioCtx.createBuffer(2, reverbLen, audioCtx.sampleRate);
+    var ch, sampleData;
+    for (ch = 0; ch < 2; ch++) {
+      sampleData = reverbBuf.getChannelData(ch);
+      for (var s = 0; s < reverbLen; s++) {
+        sampleData[s] = (Math.random() * 2 - 1) * Math.pow(1 - s / reverbLen, 2.0) * 0.35;
+      }
+    }
+    reverbNode = audioCtx.createConvolver();
+    reverbNode.buffer = reverbBuf;
+
+    var wetGain = audioCtx.createGain();
+    wetGain.gain.value = 0.14;
+    reverbNode.connect(wetGain);
+
+    // Signal routing: master → compressor → destination
+    //                 master → reverb → wet → compressor
+    //                 soloBus → soloGain → compressor
+    masterGain.connect(compressorNode);
+    masterGain.connect(reverbNode);
+    wetGain.connect(compressorNode);
+    compressorNode.connect(audioCtx.destination);
+  }
+
+  // ==========================================
+  //  PITCH
+  // ==========================================
+  function midiToFreq(midi) {
+    return 440 * Math.pow(2, (midi - 69) / 12);
+  }
+
+  // ==========================================
+  //  LOW-LEVEL SYNTH VOICES
+  // ==========================================
+  function createOscVoice(freq, time, dur, type, vol, dest, attPct, decayTarget) {
+    dur = Math.max(0.05, dur);
+    var osc  = audioCtx.createOscillator();
+    var gain = audioCtx.createGain();
+
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, time);
+    osc.detune.setValueAtTime((Math.random() - 0.5) * 4, time);
+
+    var attack    = Math.min(0.06, dur * (attPct || 0.12));
+    var susLevel  = (decayTarget !== undefined) ? decayTarget : vol * 0.7;
+
+    gain.gain.setValueAtTime(0.001, time);
+    gain.gain.linearRampToValueAtTime(vol, time + attack);
+    gain.gain.linearRampToValueAtTime(susLevel, time + dur * 0.4);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + dur);
+
+    osc.connect(gain);
+    gain.connect(dest || masterGain);
+    osc.start(time);
+    osc.stop(time + dur + 0.02);
+    activeOscillators.push(osc);
+  }
+
+  /** Melody voice: detuned pair for chorus warmth */
+  function playMelodyVoice(freq, time, dur, vol, dest, sendSolo) {
+    var d = dest || masterGain;
+    createOscVoice(freq,          time, dur, 'sine',     vol,        d, 0.08, vol * 0.65);
+    createOscVoice(freq * 1.0005,  time, dur, 'sine',     vol * 0.4,  d, 0.08, vol * 0.25);
+    createOscVoice(freq * 0.9995,  time, dur, 'triangle', vol * 0.15, d, 0.10, vol * 0.10);
+    if (sendSolo) {
+      createOscVoice(freq, time, dur, 'sine', vol * 0.6, soloSendBus, 0.08, vol * 0.4);
+    }
+  }
+
+  /** Pad voice: sustained warm tone with faint harmonic */
+  function playPadVoice(freq, time, dur, vol, dest) {
+    var d = dest || masterGain;
+    createOscVoice(freq,       time, dur, 'triangle', vol,        d, 0.15, vol * 0.6);
+    createOscVoice(freq * 2.001, time, dur, 'sine',     vol * 0.18, d, 0.20, vol * 0.1);
+  }
+
+  /** Bass voice: fundamental + sub-octave + light overtone */
+  function playBassVoice(freq, time, dur, vol, dest) {
+    var d = dest || masterGain;
+    createOscVoice(freq,       time, dur, 'sine',     vol,        d, 0.04, vol * 0.8);
+    createOscVoice(freq * 0.5, time, dur, 'sine',     vol * 0.3,  d, 0.06, vol * 0.2);
+    createOscVoice(freq * 2,   time, dur, 'triangle', vol * 0.08, d, 0.05, vol * 0.04);
+  }
+
+  /** High sparkle: fast-attack, fast-decay sine */
+  function playSparkleVoice(freq, time, dur, vol) {
+    createOscVoice(freq, time, dur, 'sine', vol, masterGain, 0.02, vol * 0.3);
+  }
+
+  // ==========================================
+  //  COMPOSITION ENGINE
+  // ==========================================
+  function chordIndex(bar) {
+    return ((bar % 8) + 8) % 8;
+  }
+
+  /** Derive a melody MIDI note for a given bar & beat */
+  function getMelodyNote(bar, beat) {
+    var ci   = chordIndex(bar);
+    var root = CHORD_ROOT[ci];
+    var idx2 = (bar % 8) * 4 + beat;
+    var degree = (idx2 < MELODY_BASE.length)
+      ? MELODY_BASE[idx2]
+      : MELODY_BASE[idx2 % MELODY_BASE.length];
+
+    var midi = root + degree;
+    // Clamp into a singable range (C4 – C6)
+    while (midi < 60) midi += 12;
+    while (midi > 84) midi -= 12;
+    return midi;
+  }
+
+  /** Apply minor-third substitution when that rule is violated */
+  function applyMinorThird(midi, bar, beat) {
+    if (!violations.noMinor3) return midi;
+
+    var pattern = (bar * 4 + beat) % 12;
+    if (pattern >= 4) return midi;
+
+    var ci   = chordIndex(bar);
+    var root = CHORD_ROOT[ci];
+    var rel  = ((midi - root) % 12 + 12) % 12;
+
+    if (rel === 4) return midi - 1;       // major 3rd → minor 3rd
+    if (pattern === 0 && rel === 0) return root + 3; // root → minor 3rd
+
+    return midi;
+  }
+
+  /** Schedule every voice for a single bar */
+  function scheduleBar(bar, time) {
+    var ci   = chordIndex(bar);
+    var root = CHORD_ROOT[ci];
+    var bassNote = BASS_ROOT[ci];
+
+    // Descending bass transposition (violations)
+    if (violations.noDescBass) {
+      var cycle = Math.floor(bar / 8);
+      bassNote += DESC_BASS_SEMITONE_STEP * cycle;
+    }
+
+    // --- Bass ---
+    var bassFreq = midiToFreq(Math.max(24, bassNote));
+    var bassVol  = violations.noSolo ? 0.12 : 0.09;
+    playBassVoice(bassFreq, time, BAR_DUR * 0.95, bassVol);
+
+    // --- Chord pad ---
+    var padStart = time + BEAT_DUR * 0.3;
+    var padDur   = BAR_DUR * 0.85;
+    var padVol   = violations.noDisson ? 0.04 : 0.06;
+    var voicing  = VOICINGS[ci];
+
+    for (var vi = 0; vi < voicing.length; vi++) {
+      var noteMidi = root + voicing[vi];
+      // Minor-third substitution in pad voicing
+      if (violations.noMinor3 && !CHORD_IS_MIN[ci] && voicing[vi] === 4 && bar % 6 < 3) {
+        noteMidi = root + 3;
+      }
+      playPadVoice(midiToFreq(noteMidi), padStart, padDur, padVol);
+    }
+
+    // Unresolved dissonance: suspended clusters that never resolve
+    if (violations.noDisson && bar % 6 === 0) {
+      playPadVoice(midiToFreq(root + 2), padStart, padDur, 0.04);
+      playPadVoice(midiToFreq(root + 5), padStart, padDur, 0.03);
+    }
+    if (violations.noDisson && bar % 6 === 3) {
+      playPadVoice(midiToFreq(root + 1), padStart, padDur * 0.5, 0.025);
+      playPadVoice(midiToFreq(root + 6), padStart, padDur * 0.5, 0.025);
+    }
+
+    // --- Melody (beat by beat) ---
+    for (var b = 0; b < 4; b++) {
+      var beatTime = time + b * BEAT_DUR;
+
+      // Silence rule: selectively mute beats
+      var shouldRest = violations.noSilence &&
+        ((bar % 4 === 1 && b >= 2) || (bar % 6 === 3 && b >= 1 && b <= 2));
+      if (shouldRest) continue;
+
+      var melMidi = applyMinorThird(getMelodyNote(bar, b), bar, b);
+      var melDur  = BEAT_DUR * (violations.noSilence ? 0.85 : 0.65);
+      var melVol  = violations.noMinor3 ? 0.14 : 0.11;
+
+      var isSoloBar = violations.noSolo && bar % 8 === 7;
+      playMelodyVoice(midiToFreq(melMidi), beatTime, melDur, melVol, masterGain, isSoloBar);
+
+      // High sparkle on upper register
+      if (melMidi >= 76 && b % 2 === 0) {
+        playSparkleVoice(midiToFreq(melMidi + 12), beatTime + 0.05, BEAT_DUR * 0.3, 0.02);
+      }
+    }
+
+    // --- Echo / repeat (8-bar delay) ---
+    if (violations.noRepeat && bar >= 8) {
+      var echoBar = bar - 8;
+      for (var eb = 0; eb < 4; eb++) {
+        var echoNote = applyMinorThird(getMelodyNote(echoBar, eb), echoBar, eb);
+        playMelodyVoice(midiToFreq(echoNote), time + eb * BEAT_DUR + 0.06, BEAT_DUR * 0.45, 0.05, masterGain, false);
+      }
+    }
+
+    // --- Unresolved ending on last bar ---
+    if (violations.noUnres && bar === TOTAL_BARS - 1) {
+      var endRoot = CHORD_ROOT[chordIndex(bar)];
+      playPadVoice(midiToFreq(endRoot + 5),  time + BEAT_DUR * 2,   BEAT_DUR * 2.5, 0.06);
+      playPadVoice(midiToFreq(endRoot + 11), time + BEAT_DUR * 2.5, BEAT_DUR * 2,   0.04);
+      playSparkleVoice(midiToFreq(endRoot + 19), time + BEAT_DUR * 3, BEAT_DUR * 3, 0.015);
+    }
+  }
+
+  // ==========================================
+  //  PLAYBACK CONTROL
+  // ==========================================
+  function startPlayback() {
+    initAudio();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    stopPlayback(true);
+
+    isPlaying     = true;
+    playStartTime = audioCtx.currentTime;
+    currentBar    = 0;
+
+    document.getElementById('playBtn').innerHTML = '<i class="fas fa-pause"></i>';
+
+    if (!hasPlayedOnce) {
+      hasPlayedOnce = true;
+      var sb = document.getElementById('saveBtn');
+      sb.disabled   = false;
+      sb.textContent = 'Save this version';
+    }
+
+    var LOOK_AHEAD  = 0.18;   // seconds to schedule ahead
+    var nextBar     = 0;
+    var nextBarTime = playStartTime;
+
+    function schedulerTick() {
+      if (!isPlaying) return;
+
+      var now = audioCtx.currentTime;
+      while (nextBarTime < now + LOOK_AHEAD && nextBar < TOTAL_BARS) {
+        scheduleBar(nextBar, nextBarTime);
+        currentBar = nextBar;
+        nextBar++;
+        nextBarTime = playStartTime + nextBar * BAR_DUR;
+      }
+
+      if (nextBar >= TOTAL_BARS) {
+        if (!isRevealed) {
+          // Loop the composition
+          nextBar     = 0;
+          playStartTime = now;
+          nextBarTime = now;
+        } else {
+          setTimeout(function () { stopPlayback(); }, 500);
+          return;
+        }
+      }
+
+      scheduleTimer = setTimeout(schedulerTick, 50);
+    }
+
+    schedulerTick();
+    requestAnimationFrame(updateTimeline);
+  }
+
+  function stopPlayback(silent) {
+    isPlaying = false;
+    if (scheduleTimer) { clearTimeout(scheduleTimer); scheduleTimer = null; }
+
+    for (var j = 0; j < activeOscillators.length; j++) {
+      try { activeOscillators[j].stop(); } catch (e) { /* already stopped */ }
+    }
+    activeOscillators = [];
+
+    document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i>';
+  }
+
+  function togglePlayback() {
+    if (isPlaying) stopPlayback();
+    else startPlayback();
+  }
+
+  // ==========================================
+  //  PLAYBACK POSITION
+  // ==========================================
+  function getPlayheadPosition() {
+    if (!audioCtx || !isPlaying) return 0;
+    var elapsed = audioCtx.currentTime - playStartTime;
+    if (elapsed < 0) return 0;
+    if (!isRevealed) {
+      var loopLen = TOTAL_BARS * BAR_DUR;
+      return elapsed % loopLen;
+    }
+    return Math.min(elapsed, TOTAL_BARS * BAR_DUR);
+  }
+
+  // ==========================================
+  //  TIMELINE UI
+  // ==========================================
+  function updateTimeline() {
+    if (!isPlaying) return;
+
+    var pos     = getPlayheadPosition();
+    var barNum  = Math.floor(pos / BAR_DUR);
+    currentBar  = barNum;
+    var total   = TOTAL_BARS * BAR_DUR;
+    var pct     = Math.min(100, (pos / total) * 100);
+
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    var sec = Math.floor(pos % 60);
+    var min = Math.floor(pos / 60);
+    document.getElementById('timeDisplay').textContent =
+      min + ':' + (sec < 10 ? '0' : '') + sec + ' / 2:08';
+    document.getElementById('measureDisplay').textContent = 'm.' + (barNum + 1);
+
+    requestAnimationFrame(updateTimeline);
+  }
+
+  // ==========================================
+  //  VIOLATION BOOKMARKS
+  // ==========================================
+  function recordViolationTime(id) {
+    if (violationTime[id]) return;
+    var pos = getPlayheadPosition();
+    violationTime[id] = {
+      bar:  Math.floor(pos / BAR_DUR),
+      beat: Math.floor((pos % BAR_DUR) / BEAT_DUR),
+      time: pos
+    };
+  }
+
+  // ==========================================
+  //  SAVE / REVEAL
+  // ==========================================
+  var savedComposition = null;
+
+  function saveComposition() {
+    var broken = [];
+    for (var ri = 0; ri < RULES.length; ri++) {
+      if (violations[RULES[ri].id]) broken.push(RULES[ri]);
+    }
+    savedComposition = {
+      violations: broken.map(function (r) {
+        return {
+          name: r.name,
+          hint: r.hint,
+          bar:  violationTime[r.id] ? violationTime[r.id].bar  : null,
+          beat: violationTime[r.id] ? violationTime[r.id].beat : null
+        };
+      }),
+      timestamp: new Date().toISOString()
+    };
+    return savedComposition;
+  }
+
+  // ==========================================
+  //  VIOLATIONS-ONLY PLAYBACK
+  // ==========================================
+  function playViolationsOnly() {
+    initAudio();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    stopPlayback(true);
+
+    isPlaying     = true;
+    playStartTime = audioCtx.currentTime;
+    document.getElementById('playBtn').innerHTML = '<i class="fas fa-pause"></i>';
+
+    // Collect which rules were broken
+    var broken = [];
+    for (var ri = 0; ri < RULES.length; ri++) {
+      if (violations[RULES[ri].id]) broken.push(RULES[ri]);
+    }
+
+    if (broken.length === 0) {
+      showToast('Nothing remains — no constraints were released');
+      stopPlayback();
+      return;
+    }
+
+    // Build a sparse composition from ONLY violation-specific material
+    var events = [];
+    var rule, vt, startBar;
+
+    for (var bi = 0; bi < broken.length; bi++) {
+      rule     = broken[bi];
+      vt       = violationTime[rule.id];
+      startBar = vt ? Math.max(0, vt.bar - 1) : 4;
+
+      switch (rule.id) {
+
+        case 'noMinor3':
+          // Haunting minor-third intervals
+          for (var mi = 0; mi < 12; mi++) {
+            var mRoot = 62 + [0, 2, 4, 5, 7, 9, 11][mi % 7];
+            events.push({ bar: startBar + mi, beat: 0, freqs: [midiToFreq(mRoot), midiToFreq(mRoot + 3)], dur: BEAT_DUR * 2.5, vol: 0.1, voice: 'pad' });
+            if (mi % 3 === 0) {
+              events.push({ bar: startBar + mi, beat: 2, freqs: [midiToFreq(mRoot - 12)], dur: BEAT_DUR * 3, vol: 0.08, voice: 'bass' });
+            }
+          }
+          break;
+
+        case 'noDescBass':
+          // Descending bass line with thin accompaniment
+          for (var di = 0; di < 16; di++) {
+            events.push({ bar: startBar + di, beat: 0, freqs: [midiToFreq(45 - di)], dur: BEAT_DUR * 3.5, vol: 0.1, voice: 'bass' });
+            events.push({ bar: startBar + di, beat: 1, freqs: [midiToFreq(69 - di), midiToFreq(72 - di)], dur: BEAT_DUR * 2, vol: 0.04, voice: 'pad' });
+          }
+          break;
+
+        case 'noSilence':
+          // Sparse, quiet tones — the silences made audible
+          for (var si = 0; si < 8; si++) {
+            events.push({ bar: startBar + si * 2, beat: 2, freqs: [midiToFreq(69)], dur: BEAT_DUR * 0.3, vol: 0.03, voice: 'sparkle' });
+          }
+          break;
+
+        case 'noDisson':
+          // Dissonant clusters that never resolve
+          for (var dci = 0; dci < 8; dci++) {
+            var dr = 62 + [0, 2, 4, 5, 7, 9, 11][dci % 7];
+            events.push({ bar: startBar + dci, beat: 0, freqs: [midiToFreq(dr + 1), midiToFreq(dr + 6)], dur: BEAT_DUR * 3, vol: 0.06, voice: 'pad' });
+            events.push({ bar: startBar + dci, beat: 2, freqs: [midiToFreq(dr + 2)], dur: BEAT_DUR * 1.5, vol: 0.08, voice: 'mel' });
+          }
+          break;
+
+        case 'noRepeat':
+          // Echoing phrases
+          var ECHO_PHRASE = [0, 2, 4, 7, 5, 4, 2, 0, -1, 0, 2, 4, 2, 0, -1, -2];
+          for (var ei = 0; ei < 8; ei++) {
+            for (var eb = 0; eb < 4; eb++) {
+              var en = 62 + ECHO_PHRASE[(ei * 4 + eb) % ECHO_PHRASE.length];
+              events.push({ bar: startBar + ei, beat: eb, freqs: [midiToFreq(en)], dur: BEAT_DUR * 0.6, vol: 0.09, voice: 'mel' });
+              events.push({ bar: startBar + ei, beat: eb, freqs: [midiToFreq(en)], dur: BEAT_DUR * 0.35, vol: 0.04, voice: 'mel', delay: 0.12 });
+            }
+          }
+          break;
+
+        case 'noSolo':
+          // Bass solos, unaccompanied
+          for (var li = 0; li < 8; li++) {
+            events.push({ bar: startBar + li, beat: 0, freqs: [midiToFreq(38 + li % 5 * 2)], dur: BEAT_DUR * 3.5, vol: 0.12, voice: 'bass' });
+            events.push({ bar: startBar + li, beat: 2, freqs: [midiToFreq(50 + li % 3 * 3)], dur: BEAT_DUR * 1.5, vol: 0.08, voice: 'bass' });
+          }
+          break;
+
+        case 'noUnres':
+          // Unresolved suspended cluster
+          events.push({ bar: startBar,     beat: 0, freqs: [midiToFreq(67), midiToFreq(69), midiToFreq(73)], dur: BEAT_DUR * 8,  vol: 0.06, voice: 'pad' });
+          events.push({ bar: startBar + 1, beat: 0, freqs: [midiToFreq(64), midiToFreq(67)],                  dur: BEAT_DUR * 6,  vol: 0.04, voice: 'pad' });
+          events.push({ bar: startBar + 2, beat: 0, freqs: [midiToFreq(74), midiToFreq(79)],                  dur: BEAT_DUR * 10, vol: 0.02, voice: 'sparkle' });
+          break;
+      }
+    }
+
+    // Sort chronologically
+    events.sort(function (a, b) {
+      var ta = a.bar * BAR_DUR + a.beat * BEAT_DUR + (a.delay || 0);
+      var tb = b.bar * BAR_DUR + b.beat * BEAT_DUR + (b.delay || 0);
+      return ta - tb;
+    });
+
+    // Schedule every event
+    var latestEndTime = 0;
+    for (var ev = 0; ev < events.length; ev++) {
+      var e    = events[ev];
+      var evT  = playStartTime + e.bar * BAR_DUR + e.beat * BEAT_DUR + (e.delay || 0);
+      for (var fi = 0; fi < e.freqs.length; fi++) {
+        var f = Math.max(20, Math.min(8000, e.freqs[fi]));
+        switch (e.voice) {
+          case 'mel':     playMelodyVoice(f, evT, e.dur, e.vol, masterGain, false); break;
+          case 'pad':     playPadVoice(f, evT, e.dur, e.vol); break;
+          case 'bass':    playBassVoice(f, evT, e.dur, e.vol); break;
+          case 'sparkle': playSparkleVoice(f, evT, e.dur, e.vol); break;
+          default:        createOscVoice(f, evT, e.dur, 'sine', e.vol, masterGain);
+        }
+      }
+      var endTime = evT + e.dur;
+      if (endTime > latestEndTime) latestEndTime = endTime;
+    }
+
+    // Auto-stop when the last note fades
+    var msUntilEnd = Math.max(1000, (latestEndTime - audioCtx.currentTime + 1.5) * 1000);
+    scheduleTimer = setTimeout(function () {
+      if (isPlaying) stopPlayback();
+    }, msUntilEnd);
+
+    requestAnimationFrame(updateTimeline);
+  }
+
+  // ==========================================
+  //  BUILD RULE UI
+  // ==========================================
+  function buildRuleUI() {
+    var section = document.getElementById('rulesSection');
+
+    for (var ri = 0; ri < RULES.length; ri++) {
+      (function (rule) {
+        var item = document.createElement('div');
+        item.className = 'rule-item';
+        item.id = 'rule-' + rule.id;
+        item.innerHTML =
+          '<div class="rule-content">' +
+            '<span class="rule-name">' + rule.name + '<span class="rule-status"></span></span>' +
+            '<div class="rule-hint">' + rule.hint + '</div>' +
+          '</div>' +
+          '<div class="toggle" role="switch" tabindex="0"' +
+          ' aria-label="Release: ' + rule.name + '" aria-checked="false"></div>';
+
+        var toggle = item.querySelector('.toggle');
+        var handleToggle = function () { toggleRule(rule.id); };
+
+        toggle.addEventListener('click', handleToggle);
+        toggle.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleToggle();
+          }
+        });
+
+        section.appendChild(item);
+      })(RULES[ri]);
+    }
+  }
+
+  // ==========================================
+  //  TOGGLE A RULE
+  // ==========================================
+  function toggleRule(id) {
+    if (isRevealed) return;
+
+    violations[id] = !violations[id];
+    var item    = document.getElementById('rule-' + id);
+    var toggle  = item.querySelector('.toggle');
+    var status  = item.querySelector('.rule-status');
+
+    if (violations[id]) {
+      item.classList.add('violated');
+      toggle.classList.add('active');
+      toggle.setAttribute('aria-checked', 'true');
+      status.textContent = 'released';
+      recordViolationTime(id);
+
+      var rule = RULES.find(function (r) { return r.id === id; });
+      showToast(rule.hint);
+
+      targetEnergy = Math.min(1, targetEnergy + 0.18);
+      targetHue   += 15;
+    } else {
+      item.classList.remove('violated');
+      toggle.classList.remove('active');
+      toggle.setAttribute('aria-checked', 'false');
+      status.textContent = '';
+      violationTime[id] = null;
+
+      targetEnergy = Math.max(0, targetEnergy - 0.15);
+      targetHue    = Math.max(35, targetHue - 15);
+    }
+
+    updateViolationCounter();
+  }
+
+  function updateViolationCounter() {
+    var n = 0;
+    for (var ri = 0; ri < RULES.length; ri++) {
+      if (violations[RULES[ri].id]) n++;
+    }
+    var el = document.getElementById('ruleCounter');
+    el.textContent = n + ' of 7 constraints released';
+    el.style.color = n === 0 ? 'var(--muted)' : n >= 5 ? '#E8C078' : 'var(--accent)';
+    targetEnergy = n * 0.12;
+    targetHue    = 35 + n * 12;
+  }
+
+  // ==========================================
+  //  TOAST NOTIFICATIONS
+  // ==========================================
+  var toastTimer = null;
+
+  function showToast(msg) {
+    var el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2500);
+  }
+
+  // ==========================================
+  //  REVEAL SEQUENCE
+  // ==========================================
+  function showReveal() {
+    isRevealed = true;
+    var comp    = saveComposition();
+    var overlay = document.getElementById('revealOverlay');
+    var body    = document.getElementById('revealBody');
+    var title   = document.getElementById('revealTitle');
+    var actions = document.getElementById('revealActions');
+    var n       = comp.violations.length;
+
+    var html = '';
+    if (n > 0) {
+      html += '<p style="margin-bottom:0.7rem;">You released ' + n + ' of 7 constraints.</p>';
+      html += '<p style="margin-bottom:0.9rem;color:var(--muted);">Only the violations could be saved.</p>';
+      html += '<ul class="violation-list">';
+      for (var vi = 0; vi < comp.violations.length; vi++) {
+        var v    = comp.violations[vi];
+        var loc  = v.bar !== null ? ' at measure ' + (v.bar + 1) : '';
+        html += '<li>' + v.name + loc + '</li>';
+      }
+      html += '</ul>';
+      html += '<p class="none-note">The composition that followed every rule was not recorded.<br>You are listening to what you changed.</p>';
+    } else {
+      html += '<p>You kept every rule intact.</p>';
+      html += '<p style="margin-top:0.5rem;color:var(--muted);">Nothing was changed. Nothing was saved.</p>';
+      html += '<p class="none-note">The untouched composition exists only in the memory of having heard it.</p>';
+      document.getElementById('replayBtn').style.display = 'none';
+    }
+    body.innerHTML = html;
+
+    overlay.classList.add('active');
+    setTimeout(function () {
+      title.classList.add('vis');
+      body.classList.add('vis');
+      actions.classList.add('vis');
+    }, 100);
+  }
+
+  function hideReveal() {
+    var overlay = document.getElementById('revealOverlay');
+    overlay.classList.remove('active');
+    document.getElementById('revealTitle').classList.remove('vis');
+    document.getElementById('revealBody').classList.remove('vis');
+    document.getElementById('revealActions').classList.remove('vis');
+  }
+
+  function handleSave() {
+    if (isRevealed) return;
+    stopPlayback();
+
+    var sb = document.getElementById('saveBtn');
+    sb.disabled     = true;
+    sb.textContent  = 'Saving\u2026';
+
+    // Disable all toggles
+    var toggles = document.querySelectorAll('.toggle');
+    for (var ti = 0; ti < toggles.length; ti++) {
+      toggles[ti].style.pointerEvents = 'none';
+      toggles[ti].style.opacity        = '0.35';
+    }
+
+    setTimeout(showReveal, 1400);
+  }
+
+  function startOver() {
+    stopPlayback();
+    hideReveal();
+
+    isRevealed        = false;
+    savedComposition  = null;
+    hasPlayedOnce     = false;
+
+    for (var ri = 0; ri < RULES.length; ri++) {
+      violations[RULES[ri].id]    = false;
+      violationTime[RULES[ri].id] = null;
+    }
+
+    var items = document.querySelectorAll('.rule-item');
+    for (var ii = 0; ii < items.length; ii++) {
+      items[ii].classList.remove('violated');
+      items[ii].querySelector('.toggle').classList.remove('active');
+      items[ii].querySelector('.toggle').setAttribute('aria-checked', 'false');
+      items[ii].querySelector('.rule-status').textContent = '';
+    }
+
+    var toggles = document.querySelectorAll('.toggle');
+    for (var ti = 0; ti < toggles.length; ti++) {
+      toggles[ti].style.pointerEvents = '';
+      toggles[ti].style.opacity        = '';
+    }
+
+    document.getElementById('saveBtn').disabled     = true;
+    document.getElementById('saveBtn').textContent  = 'Wait for the composition to begin';
+    document.getElementById('replayBtn').style.display = '';
+
+    targetEnergy = 0;
+    targetHue    = 35;
+    updateViolationCounter();
+  }
+
+  // ==========================================
+  //  BACKGROUND VISUALS
+  // ==========================================
+  var canvas = document.getElementById('bgCanvas');
+  var ctx2d  = canvas.getContext('2d');
+
+  function resizeCanvas() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  function spawnParticle() {
+    particles.push({
+      x:       Math.random() * canvas.width,
+      y:       Math.random() * canvas.height,
+      radius:  1 + Math.random() * 2.5,
+      vx:      (Math.random() - 0.5) * 0.3,
+      vy:      -0.1 - Math.random() * 0.3,
+      life:    3 + Math.random() * 4,
+      maxLife: 0 // set below
+    });
+    particles[particles.length - 1].maxLife = particles[particles.length - 1].life;
+  }
+
+  // Seed initial particles at random life stages
+  for (var pi = 0; pi < 40; pi++) {
+    spawnParticle();
+    particles[particles.length - 1].life = Math.random() * particles[particles.length - 1].maxLife;
+  }
+
+  var lastFrameTime = 0;
+
+  function renderBackground(timestamp) {
+    var ts = timestamp || 0;
+    var dt = Math.min(0.05, (ts - lastFrameTime) / 1000);
+    lastFrameTime = ts;
+
+    // Smooth energy towards target
+    visualEnergy += (targetEnergy - visualEnergy) * 0.03;
+    visualHue    += (targetHue - visualHue) * 0.02;
+
+    ctx2d.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Central glow
+    var bgAlpha = 0.02 + visualEnergy * 0.03;
+    var hue     = visualHue % 360;
+    var grad    = ctx2d.createRadialGradient(
+      canvas.width / 2, canvas.height * 0.35, 0,
+      canvas.width / 2, canvas.height * 0.35, canvas.width * 0.7
+    );
+    grad.addColorStop(0, 'hsla(' + hue + ',30%,' + (12 + visualEnergy * 8) + '%,' + bgAlpha + ')');
+    grad.addColorStop(1, 'rgba(13,11,14,0)');
+    ctx2d.fillStyle = grad;
+    ctx2d.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Spawn new particles
+    var spawnRate = 0.3 + visualEnergy * 3;
+    if (Math.random() < spawnRate * dt * 2) spawnParticle();
+    if (isPlaying && Math.random() < 0.4)   spawnParticle();
+
+    // Update and draw
+    for (var ppi = particles.length - 1; ppi >= 0; ppi--) {
+      var p = particles[ppi];
+      p.life -= dt;
+      if (p.life <= 0) { particles.splice(ppi, 1); continue; }
+
+      p.x += p.vx + Math.sin(ts * 0.001 + p.y * 0.01) * 0.15;
+      p.y += p.vy;
+
+      var alpha = Math.min(1, p.life / p.maxLife) * 0.6;
+      var glowR = Math.max(0.5, p.radius * 3);
+      var pGrad = ctx2d.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR);
+      pGrad.addColorStop(0,   'rgba(201,169,110,' + alpha + ')');
+      pGrad.addColorStop(0.5, 'rgba(201,169,110,' + (alpha * 0.3) + ')');
+      pGrad.addColorStop(1,   'rgba(201,169,110,0)');
+      ctx2d.beginPath();
+      ctx2d.arc(p.x, p.y, glowR, 0, Math.PI * 2);
+      ctx2d.fillStyle = pGrad;
+      ctx2d.fill();
+    }
+
+    // Keep particle pool bounded
+    while (particles.length > 120) particles.shift();
+
+    requestAnimationFrame(renderBackground);
+  }
+
+  // ==========================================
+  //  INIT
+  // ==========================================
+  function init() {
+    buildRuleUI();
+    requestAnimationFrame(renderBackground);
+
+    document.getElementById('playBtn').addEventListener('click', togglePlayback);
+
+    document.getElementById('volumeSlider').addEventListener('input', function (e) {
+      userVolume = parseInt(e.target.value, 10) / 100;
+      if (masterGain) masterGain.gain.value = userVolume;
+    });
+
+    document.getElementById('saveBtn').addEventListener('click', handleSave);
+
+    document.getElementById('replayBtn').addEventListener('click', function () {
+      hideReveal();
+      setTimeout(playViolationsOnly, 700);
+    });
+
+    document.getElementById('startOverBtn').addEventListener('click', startOver);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>

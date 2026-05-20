@@ -66,3 +66,4 @@
 | 0062 | The Etiquette of Vanished Rooms | fiction | 5.0 | 2026-05-20 | — |
 | 0063 | The Inverse Bestiary | worldbuilding | 5.0 | 2026-05-20 | — |
 | 0064 | The Glossary of Unstable Terms | worldbuilding | 5.0 | 2026-05-20 | — |
+| 0065 | Consolation | music | 5.0 | 2026-05-20 | — |
