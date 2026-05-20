@@ -496,3 +496,6 @@ The Panic Buy approval → kill is instructive. The concept was sound and the co
 ### 2026-05-20T18:31:29.008Z
 
 **Iteration 66 — SHIPPED:** "Warranty Void" [code-tool] as 0049. Rating: 4.7. Review: Warranty Void is the portfolio's first code-tool in 28 iterations and it returns at the domain's ceiling — a CLI that does something genuinely useful (SHA-256 file integrity verification) while making. Token usage: 43556in/39277out.
+### 2026-05-20T18:45:06.005Z
+
+**Iteration 67 — SHIPPED:** "The Witness Stand" [code-game] as 0050. Rating: 5.0. Review: The Witness Stand is the portfolio's most architecturally complete code-game — a full state machine with seven phases, six evidence documents, three distinct endings, a contradiction tracking system, . Token usage: 91526in/60184out.
