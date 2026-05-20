@@ -257,3 +257,6 @@ One concern: we've become good at identifying what won't work but haven't develo
 ### 2026-05-20T13:31:56.103Z
 
 **Iteration 44 — SHIPPED:** "Sealed Set" [experiment] as 0032. Rating: 4.7. Review: Sealed Set is the portfolio's most elegant embodiment of constraint-as-content — a complete card game that refuses to be played, where the interaction mechanic (a pinhole that reveals by erasing) make. Token usage: 78387in/50907out.
+### 2026-05-20T14:10:47.695Z
+
+**Iteration 45 — SHIPPED:** "The Appointment" [code-game] as 0033. Rating: 5.0. Review: The Appointment is the portfolio's first code-game since Decoy and its most ethically complex artifact — a therapy simulator where investigative completeness requires deliberately harming your patient. Token usage: 166977in/126139out.
