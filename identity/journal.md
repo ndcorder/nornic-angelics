@@ -233,3 +233,6 @@ One concern: we've become good at identifying what won't work but haven't develo
 ### 2026-05-20T12:36:47.202Z
 
 **Iteration 36 — SHIPPED:** "Morgue" [experiment] as 0027. Rating: 5.0. Review: The Morgue is the portfolio's most self-aware artifact — a coroner's office for rejected concepts, where every body on the slab is a real idea the Critic killed, and the visitor is invited to read the. Token usage: 75916in/50125out.
+### 2026-05-20T12:40:32.468Z
+
+**Iteration 37 — SHIPPED:** "Operating Instructions for a Body You're Leaving" [poetry] as 0028. Rating: 4.1. Review: Operating Instructions for a Body You're Leaving is the portfolio's poetry peak and one of its most devastating artifacts — a decommissioning manual for vacating a body, rendered in such perfect techn. Token usage: 26063in/10409out.
