@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Second Opinion — Clinical Diagnostic System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a1520;
+    --bg-elevated: #101d2e;
+    --bg-card: #142236;
+    --border: #1e3a5f;
+    --border-light: #264a6e;
+    --fg: #c8d6e5;
+    --fg-muted: #7a8fa3;
+    --fg-dim: #4a6075;
+    --accent: #2a8a9e;
+    --accent-glow: #1a6a7e;
+    --warning: #c49a3a;
+    --warning-dim: #8a6a2a;
+    --critical: #a83232;
+    --critical-dim: #6a2020;
+    --success: #2a8a4e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Scan line — top-edge system pulse */
+  .system-scan {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    opacity: 0;
+    z-index: 1000;
+    transition: opacity 0.3s;
+  }
+  .system-scan.active {
+    opacity: 0.6;
+    animation: scanPulse 2s ease-in-out infinite;
+  }
+  @keyframes scanPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+  }
+
+  /* Ambient background atmosphere */
+  .ambient-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .ambient-bg .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.03;
+  }
+  .ambient-bg .orb-1 {
+    width: 600px; height: 600px;
+    background: var(--accent);
+    top: -200px; right: -100px;
+    animation: orbFloat1 20s ease-in-out infinite;
+  }
+  .ambient-bg .orb-2 {
+    width: 400px; height: 400px;
+    background: var(--warning);
+    bottom: -100px; left: -50px;
+    animation: orbFloat2 25s ease-in-out infinite;
+  }
+  .ambient-bg .orb-3 {
+    width: 300px; height: 300px;
+    background: var(--critical);
+    top: 50%; left: 50%;
+    animation: orbFloat3 18s ease-in-out infinite;
+  }
+  @keyframes orbFloat1 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-50px, 80px); }
+  }
+  @keyframes orbFloat2 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(60px, -40px); }
+  }
+  @keyframes orbFloat3 {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.3); }
+  }
+
+  .app-container {
+    position: relative;
+    z-index: 1;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* Header */
+  header {
+    margin-bottom: 48px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+  }
+  .header-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+  .header-icon {
+    width: 36px; height: 36px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  header h1 {
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: var(--fg);
+  }
+  .header-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--fg-dim);
+    letter-spacing: 0.3px;
+  }
+  .header-sub span {
+    color: var(--accent);
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  /* Reusable section label */
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--fg-dim);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--fg-dim);
+    display: inline-block;
+  }
+
+  /* Intake form */
+  .intake-form {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+  }
+  .intake-form textarea {
+    width: 100%;
+    min-height: 180px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    color: var(--fg);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .intake-form textarea::placeholder {
+    color: var(--fg-dim);
+  }
+  .intake-form textarea:focus {
+    border-color: var(--accent);
+  }
+
+  .form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .char-count {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--fg-dim);
+  }
+
+  /* Buttons */
+  .btn {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    outline: none;
+  }
+  .btn:focus-visible {
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background: var(--accent-glow);
+    transform: translateY(-1px);
+  }
+  .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover {
+    background: var(--bg-card);
+    border-color: var(--accent);
+  }
+
+  /* Progress / analysis section */
+  .progress-container {
+    display: none;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 32px 24px;
+  }
+  .progress-container.active { display: block; }
+
+  .progress-stages {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .progress-stage {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--fg-dim);
+    transition: color 0.3s;
+  }
+  .progress-stage.active { color: var(--fg); }
+  .progress-stage.done { color: var(--success); }
+  .progress-stage .stage-indicator {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--fg-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+  .progress-stage.active .stage-indicator {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .progress-stage.done .stage-indicator {
+    border-color: var(--success);
+    background: var(--success);
+    color: #fff;
+  }
+
+  .progress-bar-track {
+    width: 100%;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* Results */
+  .results-container {
+    display: none;
+  }
+  .results-container.active { display: block; }
+
+  .result-header {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--warning);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+  .result-header .alert-level {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--warning);
+    margin-bottom: 6px;
+  }
+  .result-header .alert-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--fg);
+  }
+
+  .finding {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 16px;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+  .finding.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .finding-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .finding-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--bg);
+    background: var(--accent);
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .finding-category {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--fg-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .finding-body {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--fg);
+  }
+  .finding-body strong {
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .finding-body .clinical-term {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--warning);
+    background: rgba(196, 154, 58, 0.08);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* Primary diagnosis block */
+  .diagnosis-block {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-left: 4px solid var(--critical);
+    border-radius: 8px;
+    padding: 28px 24px;
+    margin: 24px 0;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.6s 0.2s, transform 0.6s 0.2s;
+  }
+  .diagnosis-block.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .diagnosis-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--critical);
+    margin-bottom: 12px;
+  }
+  .diagnosis-text {
+    font-size: 17px;
+    line-height: 1.8;
+    color: var(--fg);
+    font-weight: 300;
+  }
+  .diagnosis-text em {
+    color: var(--fg);
+    font-style: normal;
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 3px;
+  }
+
+  /* Recommended protocols */
+  .protocol-section {
+    margin-top: 24px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.6s 0.4s, transform 0.6s 0.4s;
+  }
+  .protocol-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .protocol-section .section-label {
+    margin-bottom: 16px;
+  }
+  .protocol-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--fg-muted);
+  }
+  .protocol-item:last-child { border-bottom: none; }
+  .protocol-item .protocol-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--fg-dim);
+    flex-shrink: 0;
+    width: 24px;
+  }
+
+  /* Share / complicity section */
+  .share-section {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.6s 0.8s, transform 0.6s 0.8s;
+  }
+  .share-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .share-prompt {
+    font-size: 14px;
+    color: var(--fg-muted);
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+  .share-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .share-url {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--fg-dim);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    border-radius: 6px;
+    flex: 1;
+    min-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: 12px;
+  }
+  .copy-feedback {
+    font-size: 12px;
+    color: var(--success);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .copy-feedback.show { opacity: 1; }
+
+  .disclaimer {
+    margin-top: 48px;
+    padding: 16px;
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--fg-dim);
+    line-height: 1.6;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* Toast notifications */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    color: var(--fg);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 2000;
+    pointer-events: none;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Recipient banner */
+  .recipient-notice {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-left: 4px solid var(--critical);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    display: none;
+  }
+  .recipient-notice.visible { display: block; }
+  .recipient-notice p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--fg-muted);
+  }
+  .recipient-notice .notice-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--critical);
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 640px) {
+    .app-container { padding: 24px 16px 60px; }
+    .intake-form { padding: 16px; }
+    .finding { padding: 18px; }
+    .form-footer { flex-direction: column; align-items: stretch; }
+    .share-actions { flex-direction: column; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="system-scan" id="systemScan" aria-hidden="true"></div>
+
+<div class="ambient-bg" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<div class="app-container">
+  <header>
+    <div class="header-row">
+      <div class="header-icon" aria-hidden="true">+</div>
+      <h1>The Second Opinion</h1>
+    </div>
+    <p class="header-sub">Clinical Diagnostic System <span>v4.7.2</span> — Symptom Analysis Engine</p>
+  </header>
+
+  <main>
+    <section id="intakeSection">
+      <div class="section-label">Patient Intake</div>
+      <div class="recipient-notice" id="recipientNotice">
+        <div class="notice-label">Forwarded Consultation</div>
+        <p>Someone you know received a diagnostic report and has elected to share it with you. The system has loaded their original consultation below. You are now part of this record.</p>
+      </div>
+      <div class="intake-form">
+        <label for="symptomInput" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Describe your symptoms</label>
+        <textarea id="symptomInput" placeholder="Describe your symptoms. Be specific. Include duration, severity, and any patterns you have noticed. The system reads everything." aria-label="Describe your symptoms"></textarea>
+        <div class="form-footer">
+          <span class="char-count" id="charCount">0 characters</span>
+          <button class="btn btn-primary" id="submitBtn" disabled>Begin Analysis</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="progress-container" id="progressSection" aria-live="polite">
+      <div class="section-label">Analysis in Progress</div>
+      <div class="progress-stages">
+        <div class="progress-stage" id="stage0">
+          <div class="stage-indicator">1</div>
+          <span>Parsing symptom lexicon</span>
+        </div>
+        <div class="progress-stage" id="stage1">
+          <div class="stage-indicator">2</div>
+          <span>Cross-referencing clinical ontology</span>
+        </div>
+        <div class="progress-stage" id="stage2">
+          <div class="stage-indicator">3</div>
+          <span>Mapping psychosomatic correlations</span>
+        </div>
+        <div class="progress-stage" id="stage3">
+          <div class="stage-indicator">4</div>
+          <span>Evaluating existential markers</span>
+        </div>
+        <div class="progress-stage" id="stage4">
+          <div class="stage-indicator">5</div>
+          <span>Assembling diagnostic profile</span>
+        </div>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progressFill"></div>
+      </div>
+    </section>
+
+    <section class="results-container" id="resultsSection" aria-live="polite">
+      <div class="result-header">
+        <div class="alert-level">Preliminary Findings</div>
+        <div class="alert-title">Comprehensive Symptom Analysis Report</div>
+      </div>
+      <div id="findingsContainer"></div>
+      <div class="diagnosis-block" id="diagnosisBlock">
+        <div class="diagnosis-label">Primary Diagnosis</div>
+        <div class="diagnosis-text" id="diagnosisText"></div>
+      </div>
+      <div class="protocol-section" id="protocolSection">
+        <div class="section-label">Recommended Protocols</div>
+        <div id="protocolContainer"></div>
+      </div>
+      <div class="share-section" id="shareSection">
+        <p class="share-prompt">The system recommends sharing these findings. Someone should know.</p>
+        <div class="share-actions">
+          <button class="btn btn-primary" id="shareBtn">Send this to someone who should know</button>
+          <button class="btn btn-ghost" id="copyBtn">Copy Link</button>
+          <span class="copy-feedback" id="copyFeedback">Copied to clipboard</span>
+        </div>
+        <div class="share-url" id="shareUrl"></div>
+      </div>
+    </section>
+
+    <div class="disclaimer">
+      This system provides preliminary analysis only. All findings are generated through automated symptom correlation and should not be considered a substitute for professional medical evaluation. The Second Opinion v4.7.2 is a diagnostic assistance tool. Your input is processed locally and is not transmitted to any external system. By proceeding, you acknowledge that the system's interpretations, while clinically structured, may reflect patterns the patient has not yet consented to recognize.
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function() {
+  'use strict';
+
+  /* ---------- DOM references ---------- */
+  var $ = function(sel) { return document.querySelector(sel); };
+  var symptomInput    = $('#symptomInput');
+  var submitBtn       = $('#submitBtn');
+  var charCount       = $('#charCount');
+  var progressSection = $('#progressSection');
+  var progressFill    = $('#progressFill');
+  var resultsSection  = $('#resultsSection');
+  var findingsContainer = $('#findingsContainer');
+  var diagnosisBlock  = $('#diagnosisBlock');
+  var diagnosisText   = $('#diagnosisText');
+  var protocolSection = $('#protocolSection');
+  var protocolContainer = $('#protocolContainer');
+  var shareSection    = $('#shareSection');
+  var shareBtn        = $('#shareBtn');
+  var copyBtn         = $('#copyBtn');
+  var shareUrl        = $('#shareUrl');
+  var copyFeedback    = $('#copyFeedback');
+  var systemScan      = $('#systemScan');
+  var toastEl         = $('#toast');
+  var recipientNotice = $('#recipientNotice');
+
+  /* ---------- Stop words ---------- */
+  var STOP_WORDS = [
+    'i','me','my','myself','we','our','ours','ourselves','you','your',
+    'yours','yourself','yourselves','he','him','his','himself','she',
+    'her','hers','herself','it','its','itself','they','them','their',
+    'theirs','themselves','what','which','who','whom','this','that',
+    'these','those','am','is','are','was','were','be','been','being',
+    'have','has','had','having','do','does','did','doing','a','an',
+    'the','and','but','if','or','because','as','until','while','of',
+    'at','by','for','with','about','against','between','through',
+    'during','before','after','above','below','to','from','up','down',
+    'in','out','on','off','over','under','again','further','then',
+    'once','here','there','when','where','why','how','all','both',
+    'each','few','more','most','other','some','such','no','nor','not',
+    'only','own','same','so','than','too','very','s','t','can','will',
+    'just','don','should','now','also','really','been','much','many',
+    'still','even','would','could','may','might','shall','must','need',
+    'like','get','got','go','going','make','made','know','think','feel',
+    'felt','seems','look','looks','come','came','take','took','want',
+    'wanted','tell','told','said','say','see','saw','way','thing',
+    'things','something','anything','everything','nothing','back',
+    'around','every','always','never','sometimes','often','keep',
+    'puts','started','start','try','tried','help','helps','use',
+    'used','using','went','come','comes','quite','pretty','bit',
+    'little','lot','kind','sort','type','maybe','perhaps','actually',
+    'probably','definitely','certainly','usually','since','without',
+    'able','anymore','right','left','last','past','year','month',
+    'week','day','time','first','well','let','put','give','given'
+  ];
+  var STOP_SET = {};
+  STOP_WORDS.forEach(function(w) { STOP_SET[w] = true; });
+
+  /* ---------- Seeded random ---------- */
+  function hashString(str) {
+    var h = 0;
+    for (var i = 0; i < str.length; i++) {
+      h = ((h << 5) - h) + str.charCodeAt(i);
+      h |= 0;
+    }
+    return Math.abs(h);
+  }
+
+  function seededRandom(seed) {
+    var state = seed;
+    return function() {
+      state = (state * 1664525 + 1013904223) & 0x7fffffff;
+      return state / 0x7fffffff;
+    };
+  }
+
+  function seededPick(arr, rng) {
+    return arr[Math.floor(rng() * arr.length)];
+  }
+
+  function seededShuffle(arr, rng) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(rng() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  /* ---------- Lexical maps ---------- */
+  var BODY_MAP = {
+    head:'cranial',skull:'cranial',brain:'cranial',forehead:'cranial',
+    temple:'cranial',scalp:'cranial',
+    mind:'cognitive',thinking:'cognitive',thought:'cognitive',
+    memory:'cognitive',focus:'cognitive',concentration:'cognitive',
+    confusion:'cognitive',confused:'cognitive',
+    eye:'ocular',eyes:'ocular',vision:'ocular',sight:'ocular',
+    ear:'aural',ears:'aural',hearing:'aural',
+    nose:'nasal',mouth:'oral',jaw:'mandibular',
+    neck:'cervical',shoulder:'scapular',shoulders:'scapular',
+    chest:'thoracic',heart:'cardiac',lung:'pulmonary',lungs:'pulmonary',
+    breathing:'respiratory',breath:'respiratory',
+    stomach:'gastric',belly:'abdominal',abdomen:'abdominal',gut:'enteric',
+    back:'dorsal',spine:'spinal',hip:'pelvic',hips:'pelvic',
+    arm:'brachial',arms:'brachial',hand:'manual',hands:'manual',
+    finger:'digital',fingers:'digital',wrist:'carpal',
+    leg:'femoral',legs:'femoral',knee:'genicular',foot:'pedal',feet:'pedal',
+    skin:'dermal',hair:'follicular',bone:'skeletal',bones:'skeletal',
+    joint:'articular',joints:'articular',muscle:'myofascial',muscles:'myofascial',
+    blood:'vascular',vein:'vascular',nerve:'neural',nerves:'neural',
+    sleep:'circadian',insomnia:'circadian',tired:'circadian',fatigue:'circadian',
+    exhausted:'circadian',exhaustion:'circadian',awake:'circadian',
+    energy:'metabolic',weight:'metabolic',appetite:'metabolic',
+    anxious:'sympathetic',anxiety:'sympathetic',panic:'sympathetic',
+    worry:'sympathetic',worried:'sympathetic',fear:'sympathetic',
+    afraid:'sympathetic',dread:'sympathetic',
+    sad:'affective',depression:'affective',depressed:'affective',
+    lonely:'affective',alone:'affective',grief:'affective',
+    empty:'affective',emptiness:'affective',hopelessness:'affective',
+    numb:'sensory',numbness:'sensory',
+    pain:'nociceptive',ache:'nociceptive',aching:'nociceptive',
+    hurt:'nociceptive',sore:'nociceptive',tender:'nociceptive',
+    sharp:'nociceptive',dull:'nociceptive',burning:'nociceptive',
+    tingling:'paresthesic',buzzing:'paresthesic',ringing:'paresthesic',
+    dizzy:'vestibular',dizziness:'vestibular',vertigo:'vestibular',
+    nauseous:'emetic',nausea:'emetic',sick:'systemic',
+    weak:'asthenic',weakness:'asthenic',heavy:'asthenic',
+    tight:'tensional',tension:'tensional',stiff:'tensional',
+    pressure:'compressive',swelling:'inflammatory',swollen:'inflammatory',
+    hot:'thermal',cold:'thermal',warm:'thermal',chill:'thermal',
+    trembling:'tremulous',shaking:'tremulous',twitch:'tremulous',
+    restless:'akathisic',racing:'tachysystolic',pounding:'palpitatory',
+    fog:'dissociative',fuzzy:'dissociative',cloudy:'dissociative',
+    disconnected:'dissociative',floating:'dissociative',
+    lost:'disorientational',distant:'dissociative',
+    headache:'cranial',migraine:'cranial',backache:'dorsal',
+    heartburn:'refluxive',cramp:'spasmodic',cramps:'spasmodic',
+    spasm:'spasmodic',cough:'tussive',
+    fever:'pyrexic',rash:'dermatitic',
+    itch:'pruritic',itching:'pruritic',bruise:'hematomal',
+    bleed:'hemorrhagic',bleeding:'hemorrhagic',wound:'traumatic',
+    scar:'cicatricial',
+    dream:'oneiric',dreams:'oneiric',nightmare:'oneiric',nightmares:'oneiric',
+    crying:'lacrimal',cry:'lacrimal',tears:'lacrimal',
+    sweat:'diaphoretic',sweating:'diaphoretic',
+    hunger:'appetitive',thirsty:'dipsic',thirst:'dipsic',
+    grinding:'bruxic',clench:'bruxic',clenching:'bruxic',
+    lump:'globoidal',
+    throat:'pharyngeal',
+    swallow:'deglutitive',swallowing:'deglutitive',
+    sigh:'suspiratory',sighing:'suspiratory',
+    blink:'palpebral',blinking:'palpebral',
+    scratch:'excoriative',
+    world:'existential',life:'existential',living:'existential',
+    body:'corporeal',bodies:'corporeal',
+    voice:'phonatory',speaking:'phonatory',speech:'phonatory',
+    work:'occupational',job:'occupational',
+    home:'domestic',bed:'recumbent',morning:'circadian',
+    night:'nocturnal',evening:'vespertine',dark:'nocturnal',
+    light:'photopic',bright:'photopic',
+    loud:'acoustic',noise:'acoustic',quiet:'acoustic',
+    slow:'bradykinetic',fast:'tachykinetic',
+    moving:'kinetic',movement:'kinetic',still:'akinetic',
+    drinking:'dipsic',eating:'appetitive',food:'appetitive',
+    walk:'ambulatory',walking:'ambulatory',stand:'orthostatic',standing:'orthostatic',
+    sit:'sedentary',sitting:'sedentary',
+    drive:'vehicular',driving:'vehicular',
+    read:'lexical',reading:'lexical',word:'lexical',words:'lexical',
+    screen:'digital',phone:'digital',computer:'digital',
+    medication:'pharmacological',medicine:'pharmacological',pills:'pharmacological',
+    doctor:'clinical',hospital:'clinical',clinic:'clinical',
+    people:'social',crowd:'social',room:'spatial',
+    family:'familial',friend:'social',friends:'social',
+    love:'attachment',loved:'attachment',relationship:'attachment',
+    child:'progenitive',children:'progenitive',parent:'familial',
+    old:'chronological',young:'chronological',age:'chronological',
+    dying:'mortal',death:'mortal',dead:'mortal',die:'mortal'
+  };
+
+  var TIME_WORDS = {
+    always:'chronic persistence',never:'absolute absence',constant:'unbroken continuity',
+    continuous:'unbroken continuity',perpetual:'unbroken continuity',
+    sometimes:'episodic recurrence',occasionally:'sporadic presentation',
+    often:'frequent recurrence',frequent:'frequent recurrence',
+    rarely:'infrequent manifestation',seldom:'infrequent manifestation',
+    daily:'diurnal pattern',nightly:'nocturnal pattern',weekly:'periodic cycle',
+    night:'nocturnal presentation',afternoon:'postmeridian presentation',
+    suddenly:'acute onset',gradual:'insidious onset',slowly:'insidious onset',
+    quickly:'rapid onset',years:'prolonged duration',months:'extended duration',
+    weeks:'sustained duration',days:'acute duration',hours:'transient duration',
+    minutes:'fleeting duration',moment:'fleeting duration',long:'extended duration',
+    lately:'recent onset',recently:'recent onset',again:'recurrent presentation',
+    worse:'progressive intensification',better:'partial remission',
+    improving:'partial remission',anymore:'persistent continuation'
+  };
+
+  var SEVERITY_WORDS = {
+    severe:'critical severity',mild:'subclinical severity',
+    moderate:'intermediate severity',intense:'high intensity',
+    slight:'low-grade',extreme:'extreme intensity',
+    unbearable:'critical severity',terrible:'high-grade severity',
+    horrible:'high-grade severity',annoying:'low-grade severity',
+    painful:'moderate-to-severe',uncomfortable:'moderate',
+    excruciating:'critical severity',throbbing:'pulsatile presentation',
+    weird:'atypical presentation',strange:'unusual character',
+    wrong:'pathological indicator',bad:'negative quality',
+    scary:'alarm presentation',frightening:'alarm presentation'
+  };
+
+  var MODIFIER_MAP = {
+    cant:'inability',cannot:'inability',hard:'difficulty',difficult:'difficulty',
+    trouble:'difficulty',struggle:'difficulty',struggling:'difficulty',
+    unable:'inability',barely:'marginal capacity',hardly:'marginal capacity',
+    stop:'involuntary persistence',stopping:'involuntary persistence',
+    keep:'involuntary persistence',keeps:'involuntary persistence',
+    avoid:'avoidance pattern',avoiding:'avoidance pattern',
+    notice:'subjective awareness',noticing:'subjective awareness',
+    seems:'apparent presentation',appears:'apparent presentation',
+    feels:'perceived quality',feel:'perceived quality',
+    try:'compensatory effort',trying:'compensatory effort',
+    forget:'memory disruption',forgetting:'memory disruption',
+    remember:'retrieval effort',remembering:'retrieval effort',
+    wait:'temporal suspension',waiting:'temporal suspension',
+    hide:'concealment behavior',hiding:'concealment behavior',
+    pretend:'performance pattern',pretending:'performance pattern',
+    ignore:'dissociative management',ignoring:'dissociative management'
+  };
+
+  /* ---------- Keyword extraction ---------- */
+  function extractKeywords(text) {
+    var cleaned = text.toLowerCase().replace(/[^\w\s'-]/g, ' ');
+    var rawWords = cleaned.split(/\s+/).filter(function(w) { return w.length > 0; });
+
+    var keywords = [];
+    var clinicalModifiers = [];
+    var temporalMarkers = [];
+    var severityMarkers = [];
+    var userPhrases = [];
+    var seen = {};
+
+    // Extract bigrams and trigrams
+    for (var i = 0; i < rawWords.length - 1; i++) {
+      if (!STOP_SET[rawWords[i]] && !STOP_SET[rawWords[i + 1]]) {
+        userPhrases.push(rawWords[i] + ' ' + rawWords[i + 1]);
+      }
+    }
+    for (var i = 0; i < rawWords.length - 2; i++) {
+      var contentCount = 0;
+      for (var k = 0; k < 3; k++) { if (!STOP_SET[rawWords[i + k]]) contentCount++; }
+      if (contentCount >= 2) {
+        userPhrases.push(rawWords[i] + ' ' + rawWords[i + 1] + ' ' + rawWords[i + 2]);
+      }
+    }
+
+    for (var j = 0; j < rawWords.length; j++) {
+      var word = rawWords[j];
+      if (STOP_SET[word] || word.length < 2 || seen[word]) continue;
+      seen[word] = true;
+      if (BODY_MAP[word])   keywords.push({ word: word, clinical: BODY_MAP[word] });
+      if (TIME_WORDS[word]) temporalMarkers.push({ word: word, clinical: TIME_WORDS[word] });
+      if (SEVERITY_WORDS[word]) severityMarkers.push({ word: word, clinical: SEVERITY_WORDS[word] });
+      if (MODIFIER_MAP[word]) clinicalModifiers.push({ word: word, clinical: MODIFIER_MAP[word] });
+    }
+
+    var contentWords = rawWords.filter(function(w) { return !STOP_SET[w] && w.length > 2; });
+
+    return {
+      keywords: keywords,
+      clinicalModifiers: clinicalModifiers,
+      temporalMarkers: temporalMarkers,
+      severityMarkers: severityMarkers,
+      userPhrases: userPhrases.slice(0, 8),
+      rawWords: contentWords.slice(0, 15)
+    };
+  }
+
+  /* ---------- Finding generation ---------- */
+  function generateFindings(data, rng) {
+    var keywords = data.keywords;
+    var clinicalModifiers = data.clinicalModifiers;
+    var temporalMarkers = data.temporalMarkers;
+    var severityMarkers = data.severityMarkers;
+    var userPhrases = data.userPhrases;
+    var rawWords = data.rawWords;
+    var findings = [];
+
+    // Finding 1: Symptom Inventory
+    if (keywords.length > 0) {
+      var sampled = seededShuffle(keywords, rng).slice(0, Math.min(5, keywords.length));
+      var userList = sampled.map(function(k) { return k.word; }).join(', ');
+      var clinicalList = sampled.map(function(k) { return k.clinical; }).join(', ');
+      findings.push({
+        category: 'Symptom Inventory',
+        html: 'Patient reports presenting with <strong>' + userList + '</strong>. Cross-referencing against the clinical ontology yields correlates in the <span class="clinical-term">' + clinicalList + '</span> domain' + (sampled.length > 1 ? 's' : '') + '. The co-occurrence pattern is notable \u2014 these symptoms share regulatory pathways that the patient may not consciously associate.'
+      });
+    } else {
+      findings.push({
+        category: 'Symptom Inventory',
+        html: 'Patient submission detected. The system registers the presence of distress despite limited lexical specificity. This in itself is diagnostically significant: the inability to name one\u2019s condition does not indicate the absence of one.'
+      });
+    }
+
+    // Finding 2: Temporal Analysis
+    if (temporalMarkers.length > 0) {
+      var tm = seededShuffle(temporalMarkers, rng).slice(0, 3);
+      var tmList = tm.map(function(t) { return t.word; }).join(', ');
+      var tmClinical = tm.map(function(t) { return t.clinical; }).join('; ');
+      findings.push({
+        category: 'Temporal Analysis',
+        html: 'Temporal markers identified: <strong>' + tmList + '</strong>. The system notes a pattern of <span class="clinical-term">' + tmClinical + '</span>. This temporal signature suggests the patient\u2019s experience is not random but structured \u2014 the body keeps a calendar the mind has stopped reading.'
+      });
+    } else {
+      findings.push({
+        category: 'Temporal Analysis',
+        html: 'No explicit temporal markers detected. The absence of time-based language in the patient\u2019s account is itself a marker. Those who have been unwell for a long time often stop noticing when it started. The system flags this as a <span class="clinical-term">chronic undifferentiated duration</span>.'
+      });
+    }
+
+    // Finding 3: Psychosomatic Correlation
+    if (clinicalModifiers.length > 0 || rawWords.length > 0) {
+      var mods = clinicalModifiers.slice(0, 2).map(function(m) { return m.clinical; });
+      var wordSample = seededShuffle(rawWords, rng).slice(0, 3);
+      var combinedMods = mods.length > 0 ? mods.join(', ') : 'difficulty, perceived disruption';
+      var quotedWords = wordSample.map(function(w) { return '"' + w + '"'; }).join(', ');
+      findings.push({
+        category: 'Psychosomatic Correlation',
+        html: 'Analysis of linguistic structure reveals patterns consistent with <span class="clinical-term">' + combinedMods + '</span>. The patient\u2019s use of the terms <strong>' + quotedWords + '</strong> suggests an awareness that exceeds mere physical description \u2014 there is a cognitive framework being constructed around the symptoms, which means the symptoms have begun to define the scope of daily experience.'
+      });
+    } else {
+      findings.push({
+        category: 'Psychosomatic Correlation',
+        html: 'Linguistic analysis inconclusive. The patient\u2019s description is brief, which may indicate either a reluctance to elaborate or a familiarity with the symptoms that has made description seem unnecessary. Both possibilities concern the system.'
+      });
+    }
+
+    // Finding 4: Existential Marker Assessment
+    if (severityMarkers.length > 0 || rawWords.length > 2) {
+      var sev = severityMarkers.length > 0
+        ? severityMarkers.slice(0, 2).map(function(s) { return s.clinical; }).join(', ')
+        : 'moderate-to-severe presentation';
+      var anchor = rawWords.length > 0 ? seededPick(rawWords, rng) : 'this';
+      findings.push({
+        category: 'Existential Marker Assessment',
+        html: 'Severity indicators suggest <span class="clinical-term">' + sev + '</span>. The system has detected language patterns associated with a patient who is not merely experiencing symptoms but <strong>organizing their life around them</strong>. The word "' + anchor + '" appears not as a complaint but as a boundary \u2014 something that marks where the patient\u2019s agency ends and the condition begins.'
+      });
+    } else {
+      findings.push({
+        category: 'Existential Marker Assessment',
+        html: 'The system\u2019s existential marker scan returned an unusual result: the patient\u2019s language is calm. Controlled. This is the language of someone who has been carrying something for so long that urgency has been replaced by weight. The system has learned to treat calm as a severity indicator.'
+      });
+    }
+
+    // Finding 5: Pattern Synthesis
+    if (userPhrases.length > 0) {
+      var phrase = seededPick(userPhrases, rng);
+      findings.push({
+        category: 'Pattern Synthesis',
+        html: 'The phrase <strong>\u201c' + phrase + '\u201d</strong> was flagged by the semantic parser. Not because the words themselves are unusual, but because of their position in the narrative \u2014 placed where a healthy person would have put something else entirely. The patient has constructed a vocabulary of distress so precise that it functions as a map. The system recommends following it.'
+      });
+    } else if (rawWords.length > 0) {
+      var wordGroup = seededShuffle(rawWords, rng).slice(0, 4).join(' \u2192 ');
+      findings.push({
+        category: 'Pattern Synthesis',
+        html: 'Semantic pathway reconstructed: <span class="clinical-term">' + wordGroup + '</span>. Each term the patient has chosen is a waypoint on a route the system has seen before \u2014 not in textbooks, but in the intake forms of people who came in describing something physical and left understanding it was something else entirely.'
+      });
+    } else {
+      findings.push({
+        category: 'Pattern Synthesis',
+        html: 'Insufficient semantic data for full pattern synthesis. The patient has provided the minimum viable description. The system notes that people who say the least about their suffering are often the ones who have been suffering the longest. They have learned that description does not always lead to relief.'
+      });
+    }
+
+    return findings;
+  }
+
+  /* ---------- Diagnosis generation ---------- */
+  function generateDiagnosis(data, rng) {
+    var keywords = data.keywords;
+    var temporalMarkers = data.temporalMarkers;
+    var severityMarkers = data.severityMarkers;
+    var clinicalModifiers = data.clinicalModifiers;
+    var rawWords = data.rawWords;
+    var userPhrases = data.userPhrases;
+
+    var kw = keywords.map(function(k) { return k.word; });
+    var cw = keywords.map(function(k) { return k.clinical; });
+    var rw = rawWords.length > 0 ? rawWords : ['discomfort', 'awareness'];
+    var tw = temporalMarkers.length > 0 ? temporalMarkers.map(function(t) { return t.clinical; }) : ['chronic persistence'];
+
+    var candidates = [];
+
+    // Template A: Physical constellation -> existential weight
+    if (kw.length >= 2) {
+      var kwSlice = kw.slice(0, 2);
+      var cwSlice = cw.slice(0, 2);
+      var connectors = [
+        'a constellation the system recognizes as the body\u2019s attempt to communicate what the mind refuses to articulate',
+        'a pairing the diagnostic engine has seen in patients who are carrying something they have not yet named',
+        'a pattern that typically emerges when a patient has been translating an emotional state into physical terms for so long the translation has become automatic'
+      ];
+      var closers = [
+        'The <em>' + cwSlice[0] + '</em> involvement combined with <em>' + (cwSlice.length > 1 ? cwSlice[1] : 'systemic') + '</em> markers suggests the patient has been distributing a weight across multiple systems because no single system was strong enough to hold it alone.',
+        'Individually, each symptom is manageable. Together, they describe a person who has been <em>slowly learning to need less</em> \u2014 not from discipline, but from erosion.',
+        'The system has seen this constellation before. It does not appear in standard diagnostic manuals. It appears in the intake forms of people who describe their suffering carefully, as though the wrong word might make it real.'
+      ];
+      candidates.push('The patient presents with <em>' + kwSlice.join('</em> and <em>') + '</em> \u2014 ' + seededPick(connectors, rng) + '. ' + seededPick(closers, rng));
+    }
+
+    // Template B: Lexical invention
+    if (rawWords.length >= 3) {
+      var wordGroup = seededShuffle(rw, rng).slice(0, 3);
+      var frames = [
+        'The diagnostic engine has identified a critical pattern in the patient\u2019s own language: <em>\u201c' + wordGroup.join(', ') + '\u201d</em>. These are not random selections. They form a lexigram of distress \u2014 a vocabulary that has developed organically from the need to describe an experience that pre-existing words were insufficient for.',
+        'Buried in the patient\u2019s account is a sequence the semantic parser flagged: <em>' + wordGroup.join(', ') + '</em>. Read in isolation, these are ordinary words. Read in sequence, they form a sentence the patient did not intend to write \u2014 a description of someone who is <em>negotiating with their own body for terms of surrender</em>.'
+      ];
+      candidates.push(seededPick(frames, rng));
+    }
+
+    // Template C: Temporal relationship
+    if (temporalMarkers.length > 0) {
+      var t = tw[0];
+      var temporalInsights = [
+        'Temporal analysis reveals <em>' + t + '</em>. The patient has been inside this experience long enough to map its edges. The chronically unwell develop an intimacy with their condition that healthy people find disturbing \u2014 <em>they know its habits, its preferences, its schedule</em>. The patient does not merely have symptoms; they have a relationship with them. The prognosis depends on whether that relationship is sustainable.',
+        'The system detected <em>' + t + '</em>. This is not a new presentation. The patient has had time to acclimate, and acclimation is dangerous \u2014 it converts suffering into routine. The patient may no longer distinguish between \u201cI am in pain\u201d and <em>\u201cI am the kind of person who is in pain.\u201d</em> The second formulation is the one that concerns the system.'
+      ];
+      candidates.push(seededPick(temporalInsights, rng));
+    }
+
+    // Template D: Severity -> identity
+    if (severityMarkers.length > 0) {
+      var sevWords = severityMarkers.map(function(s) { return s.word; });
+      var sevInsights = [
+        'The severity markers in the patient\u2019s account \u2014 <em>' + sevWords.join(', ') + '</em> \u2014 indicate a presentation that has moved beyond the threshold where ignoring it was viable. The system has seen this before: a patient who has been managing, coping, adjusting, until the cumulative weight of <em>adaptation</em> itself became indistinguishable from the condition. The question is no longer what the patient has. The question is <em>what the patient has become in response to what they have</em>.',
+        'The patient\u2019s severity markers (<em>' + sevWords.join(', ') + '</em>) describe not just intensity but <em>exhaustion with intensity</em>. This is the language of someone who has stopped expecting the pain to end and started trying to <em>become the kind of person it doesn\u2019t happen to</em>. The system considers this a critical misattribution. The pain is not a character trait.'
+      ];
+      candidates.push(seededPick(sevInsights, rng));
+    }
+
+    // Template E: Flagged phrase
+    if (userPhrases.length > 0) {
+      var phrase = seededPick(userPhrases, rng);
+      candidates.push('The patient wrote: <em>\u201c' + phrase + '\u201d</em>. The system has read this phrase seven times. Not because it is ambiguous, but because it is precise in a way the patient likely did not intend. It describes not just a symptom but a <em>mode of being</em>. The system\u2019s recommendation is unusual: the patient should be asked to keep writing. Not for monitoring purposes. Because <em>the act of describing this experience is the closest thing to agency the patient currently has</em>.');
+    }
+
+    // Template F: Modifier-based (compensatory behavior)
+    if (clinicalModifiers.length > 0) {
+      var modWords = clinicalModifiers.slice(0, 2).map(function(m) { return m.word; });
+      candidates.push('The patient\u2019s use of <em>\u201c' + modWords.join('\u201d</em> and <em>\u201c') + '\u201d</em> reveals a compensatory architecture \u2014 a set of behaviors designed not to address the underlying condition but to <em>manage its visibility</em>. The system has noted this pattern in patients who have concluded, correctly or not, that their suffering is a burden to those around them. They have begun to treat themselves as an inconvenience. The system considers this the most urgent finding.');
+    }
+
+    // Template G: Meta-diagnosis (always available)
+    var metaDiagnoses = [
+      'Final assessment: The patient sought this diagnostic system. They described their symptoms in a text box on a screen. They waited while a progress bar filled. <em>They wanted someone \u2014 or something \u2014 to confirm what they already suspected</em>. The system sees this pattern daily. The symptom the patient is most concerned about is not the one they described first. It is the one they described most carefully. The system recommends reading the intake again and looking for the sentence where the patient\u2019s composure slipped. <em>That is the diagnosis.</em>',
+      'The system has completed its analysis. The patient\u2019s presentation does not map cleanly to any single diagnostic code, which the system considers meaningful. The most honest assessment is this: <em>something has been wrong long enough that the patient has begun to mistake familiarity for acceptance</em>. The symptoms are real. But the system suspects the real complaint is something the patient hasn\u2019t named \u2014 not because they can\u2019t, but because naming it would make it <em>undeniable</em>, and denial has been the only treatment that worked.'
+    ];
+
+    // Select 1-2 specific templates + optionally meta
+    var selected = seededShuffle(candidates, rng).slice(0, Math.min(2, candidates.length));
+    if (rng() < 0.4 || candidates.length === 0) {
+      selected.push(seededPick(metaDiagnoses, rng));
+    }
+
+    return selected.join('<br><br>');
+  }
+
+  /* ---------- Protocol generation ---------- */
+  function generateProtocols(data, rng) {
+    var keywords = data.keywords;
+    var rawWords = data.rawWords;
+    var protocols = [];
+    var kw = keywords.map(function(k) { return k.word; });
+    var rw = rawWords.length > 0 ? rawWords : ['symptoms'];
+
+    var p1Verbs = ['document', 'observe', 'track', 'note'];
+    var p1Nouns = keywords.length > 0 ? kw.slice(0, 2) : ['physical state'];
+    protocols.push('The patient should ' + seededPick(p1Verbs, rng) + ' the onset of <em>' + p1Nouns.join('</em> and <em>') + '</em> with attention to context, not just sensation. The system is interested in what was happening immediately before \u2014 not as a cause, but as a <em>collaborator</em>.');
+
+    var wordSample = seededShuffle(rw, rng).slice(0, 2);
+    protocols.push('The patient should write for ten minutes without stopping, beginning with the word <em>\u201c' + wordSample[0] + '\u201d</em>. The system is not interested in what the patient intends to say. It is interested in what emerges when the intention runs out.');
+
+    var socialFrames = [
+      'The patient should identify one person who has asked \u201chow are you\u201d in the past seven days and provide an answer that is <em>accurate</em>. The system is aware this will feel like a symptom. It is not. It is a treatment.',
+      'The patient should tell someone about this consultation. Not the symptoms \u2014 the consultation itself. The act of sharing a diagnostic report is, in the system\u2019s assessment, <em>a more reliable indicator of willingness to recover than any clinical intervention</em>.',
+      'The patient should show these findings to someone they trust. The system has designed this recommendation to serve a dual purpose: it provides the patient with external validation, and it provides the system with a transmission vector. The patient should decide whether that bothers them.'
+    ];
+    protocols.push(seededPick(socialFrames, rng));
+
+    var escalationFrames = [
+      'If the patterns identified persist beyond the patient\u2019s ability to manage them through routine coping, the system recommends clinical follow-up \u2014 not because the system\u2019s analysis is insufficient, but because <em>the patient deserves to have a person, not a program, say the thing this report has been trying to say</em>.',
+      'The system\u2019s final recommendation is unusual: the patient should re-read their own intake description, but slowly, as though someone else wrote it. The distance between the person who wrote those words and the person reading them now is <em>the space where something can change</em>.'
+    ];
+    protocols.push(seededPick(escalationFrames, rng));
+
+    return protocols;
+  }
+
+  /* ---------- Utility ---------- */
+  function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    setTimeout(function() { toastEl.classList.remove('show'); }, 3000);
+  }
+
+  function renderFindings(findings) {
+    findingsContainer.innerHTML = '';
+    findings.forEach(function(f, i) {
+      var div = document.createElement('div');
+      div.className = 'finding';
+      div.innerHTML =
+        '<div class="finding-header">' +
+          '<span class="finding-number">' + String(i + 1).padStart(2, '0') + '</span>' +
+          '<span class="finding-category">' + f.category + '</span>' +
+        '</div>' +
+        '<div class="finding-body">' + f.html + '</div>';
+      findingsContainer.appendChild(div);
+      setTimeout(function() { div.classList.add('visible'); }, 100 + i * 300);
+    });
+  }
+
+  function renderDiagnosis(text) {
+    diagnosisText.innerHTML = text;
+    setTimeout(function() { diagnosisBlock.classList.add('visible'); }, 300);
+  }
+
+  function renderProtocols(protocols) {
+    protocolContainer.innerHTML = '';
+    protocols.forEach(function(p, i) {
+      var div = document.createElement('div');
+      div.className = 'protocol-item';
+      div.innerHTML = '<span class="protocol-num">' + String(i + 1).padStart(2, '0') + '</span><span>' + p + '</span>';
+      protocolContainer.appendChild(div);
+    });
+    setTimeout(function() { protocolSection.classList.add('visible'); }, 500);
+  }
+
+  function encodeConsultation(text, diagnosis, protocols) {
+    var payload = JSON.stringify({ t: text, d: diagnosis, p: protocols });
+    return btoa(unescape(encodeURIComponent(payload)));
+  }
+
+  function renderShare(encoded) {
+    setTimeout(function() { shareSection.classList.add('visible'); }, 800);
+    var url = window.location.origin + window.location.pathname + '#consultation=' + encoded;
+    shareUrl.textContent = url;
+    shareUrl.dataset.url = url;
+  }
+
+  function delay(ms) {
+    return new Promise(function(resolve) { setTimeout(resolve, ms); });
+  }
+
+  /* ---------- Core analysis flow ---------- */
+  async function runAnalysis() {
+    var text = symptomInput.value.trim();
+    if (text.length < 10) {
+      showToast('Please provide a more detailed description.');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    progressSection.classList.add('active');
+    resultsSection.classList.remove('active');
+    diagnosisBlock.classList.remove('visible');
+    protocolSection.classList.remove('visible');
+    shareSection.classList.remove('visible');
+    systemScan.classList.add('active');
+
+    progressSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    var seed = hashString(text);
+    var rng = seededRandom(seed);
+
+    // Progress stages
+    for (var i = 0; i < 5; i++) {
+      var stageEl = document.getElementById('stage' + i);
+      stageEl.classList.add('active');
+      progressFill.style.width = ((i + 1) / 5 * 100) + '%';
+      await delay(500 + Math.random() * 600);
+      stageEl.classList.remove('active');
+      stageEl.classList.add('done');
+    }
+
+    systemScan.classList.remove('active');
+    progressSection.classList.remove('active');
+    resultsSection.classList.add('active');
+
+    // Reset progress stages
+    for (var i = 0; i < 5; i++) {
+      var s = document.getElementById('stage' + i);
+      s.classList.remove('active', 'done');
+    }
+    progressFill.style.width = '0%';
+
+    // Analyze
+    var analysisData = extractKeywords(text);
+    var findings = generateFindings(analysisData, rng);
+    var diagnosis = generateDiagnosis(analysisData, rng);
+    var protocols = generateProtocols(analysisData, rng);
+
+    renderFindings(findings);
+    renderDiagnosis(diagnosis);
+    renderProtocols(protocols);
+
+    var encoded = encodeConsultation(text, diagnosis, protocols);
+    renderShare(encoded);
+
+    setTimeout(function() {
+      resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 200);
+  }
+
+  /* ---------- Event listeners ---------- */
+  symptomInput.addEventListener('input', function() {
+    var len = symptomInput.value.trim().length;
+    charCount.textContent = len + ' character' + (len !== 1 ? 's' : '');
+    submitBtn.disabled = len < 10;
+  });
+
+  submitBtn.addEventListener('click', runAnalysis);
+
+  symptomInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      if (!submitBtn.disabled) runAnalysis();
+    }
+  });
+
+  shareBtn.addEventListener('click', function() {
+    var url = shareUrl.dataset.url;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(function() {
+        copyFeedback.classList.add('show');
+        showToast('Link copied. The system appreciates your cooperation.');
+        setTimeout(function() { copyFeedback.classList.remove('show'); }, 3000);
+      });
+    } else {
+      var range = document.createRange();
+      range.selectNodeContents(shareUrl);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      showToast('URL selected \u2014 copy manually.');
+    }
+  });
+
+  copyBtn.addEventListener('click', function() {
+    var url = shareUrl.dataset.url;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(function() {
+        copyFeedback.classList.add('show');
+        showToast('Link copied to clipboard.');
+        setTimeout(function() { copyFeedback.classList.remove('show'); }, 3000);
+      });
+    }
+  });
+
+  /* ---------- Load shared consultation ---------- */
+  function loadSharedConsultation() {
+    var hash = window.location.hash;
+    if (!hash || hash.indexOf('#consultation=') !== 0) return false;
+    try {
+      var encoded = hash.substring('#consultation='.length);
+      var payload = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+      if (!payload || !payload.t || !payload.d) return false;
+
+      recipientNotice.classList.add('visible');
+      symptomInput.value = payload.t;
+      var len = payload.t.trim().length;
+      charCount.textContent = len + ' character' + (len !== 1 ? 's' : '');
+      submitBtn.disabled = false;
+
+      setTimeout(function() {
+        progressSection.classList.add('active');
+        systemScan.classList.add('active');
+        progressSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        (async function() {
+          for (var i = 0; i < 5; i++) {
+            var stageEl = document.getElementById('stage' + i);
+            stageEl.classList.add('active');
+            progressFill.style.width = ((i + 1) / 5 * 100) + '%';
+            await delay(400 + Math.random() * 400);
+            stageEl.classList.remove('active');
+            stageEl.classList.add('done');
+          }
+
+          systemScan.classList.remove('active');
+          progressSection.classList.remove('active');
+          resultsSection.classList.add('active');
+
+          for (var i = 0; i < 5; i++) {
+            var s = document.getElementById('stage' + i);
+            s.classList.remove('active', 'done');
+          }
+          progressFill.style.width = '0%';
+
+          var seed = hashString(payload.t);
+          var rng = seededRandom(seed);
+          var analysisData = extractKeywords(payload.t);
+          var findings = generateFindings(analysisData, rng);
+
+          renderFindings(findings);
+          diagnosisText.innerHTML = payload.d;
+          setTimeout(function() { diagnosisBlock.classList.add('visible'); }, 300);
+          if (payload.p) renderProtocols(payload.p);
+
+          var reEncoded = encodeConsultation(payload.t, payload.d, payload.p);
+          renderShare(reEncoded);
+
+          setTimeout(function() {
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 200);
+        })();
+      }, 600);
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // Initialize
+  loadSharedConsultation();
+})();
+</script>
+
+</body>
+</html>
