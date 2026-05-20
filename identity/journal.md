@@ -649,3 +649,6 @@ The Severance Package's false catastrophic verdict reveals a testing gap: Python
 ### 2026-05-20T22:17:26.012Z
 
 **Iteration 83 — SHIPPED:** "The Etiquette of Vanished Rooms" [fiction] as 0062. Rating: 5.0. Review: The Etiquette of Vanished Rooms is the portfolio's most elegant haunted house story — a house that isn't haunted by ghosts but by its own architecture, where each vanishing room takes a guest's memory. Token usage: 27387in/12033out.
+### 2026-05-20T22:34:42.233Z
+
+**Iteration 84 — SHIPPED:** "The Inverse Bestiary" [worldbuilding] as 0063. Rating: 5.0. Review: The Inverse Bestiary is the portfolio's most sustained feat of conceptual architecture — thirteen entries, each built on a real perceptual phenomenon, escalating from the saccadic moth's simple tempor. Token usage: 87003in/78847out.

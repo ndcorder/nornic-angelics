@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Inverse Bestiary — A Field Guide to Unseen Fauna</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+:root {
+  --bg: #0a0a08;
+  --paper: #1a1812;
+  --paper-light: #241f17;
+  --fg: #c8bfa8;
+  --fg-dim: #8a7e6a;
+  --fg-bright: #e8dcc8;
+  --accent: #8b6914;
+  --accent-dim: #5a4410;
+  --red-dim: #6b2020;
+  --red: #8b3030;
+  --border: #2a2520;
+  --border-light: #3a3530;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'EB Garamond', Georgia, serif;
+  line-height: 1.8;
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--accent-dim);
+  color: var(--fg-bright);
+}
+
+header {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 120px 40px 80px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+header .series {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  margin-bottom: 40px;
+}
+
+header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 3.2rem;
+  line-height: 1.15;
+  color: var(--fg-bright);
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+header .subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.25rem;
+  color: var(--fg-dim);
+  margin-bottom: 60px;
+  line-height: 1.5;
+}
+
+header .epigraph {
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--fg-dim);
+  max-width: 440px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+header .epigraph .attribution {
+  display: block;
+  margin-top: 12px;
+  font-style: normal;
+  font-size: 0.8rem;
+  color: var(--accent-dim);
+}
+
+.preamble {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 60px 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+.preamble h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 24px;
+}
+
+.preamble p {
+  font-size: 1.05rem;
+  margin-bottom: 20px;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.preamble .warning {
+  border-left: 2px solid var(--red-dim);
+  padding-left: 20px;
+  margin-top: 30px;
+  color: var(--fg-dim);
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+main {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.entry {
+  padding: 50px 0;
+  border-bottom: 1px solid var(--border);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.entry.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.entry-header {
+  margin-bottom: 28px;
+}
+
+.entry-number {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent-dim);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.entry h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 2rem;
+  color: var(--fg-bright);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.entry .classification {
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--fg-dim);
+  line-height: 1.6;
+}
+
+.entry-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 600px) {
+  .entry-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field-block {
+  margin-bottom: 0;
+}
+
+.field-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-dim);
+  margin-bottom: 6px;
+  font-family: 'EB Garamond', serif;
+}
+
+.field-value {
+  font-size: 0.95rem;
+  color: var(--fg-dim);
+  line-height: 1.6;
+}
+
+.entry .description {
+  font-size: 1rem;
+  line-height: 1.85;
+  text-align: justify;
+  hyphens: auto;
+  margin-bottom: 24px;
+}
+
+.confusion-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.confusion-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-dim);
+  white-space: nowrap;
+  font-family: 'EB Garamond', serif;
+}
+
+.confusion-track {
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+  position: relative;
+  border-radius: 1px;
+}
+
+.confusion-fill {
+  height: 100%;
+  border-radius: 1px;
+  transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  width: 0;
+}
+
+.entry.visible .confusion-fill {
+  /* width set inline */
+}
+
+.ci-1 { background: #3a4a2a; }
+.ci-2 { background: #4a5a2a; }
+.ci-3 { background: #6a6a1a; }
+.ci-4 { background: #7a5a14; }
+.ci-5 { background: #8a4a14; }
+.ci-6 { background: #8a3a14; }
+.ci-7 { background: #8a2a14; }
+.ci-8 { background: #8b3030; }
+.ci-9 { background: #7b2020; }
+.ci-10 { background: #6b1515; }
+
+.confusion-value {
+  font-size: 0.75rem;
+  color: var(--fg-dim);
+  font-family: 'Cormorant Garamond', serif;
+  min-width: 36px;
+  text-align: right;
+}
+
+.appendix {
+  max-width: 660px;
+  margin: 0 auto;
+  padding: 60px 40px 100px;
+}
+
+.appendix h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 1.6rem;
+  color: var(--fg-bright);
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.appendix .appendix-subtitle {
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--fg-dim);
+  text-align: center;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.appendix-intro {
+  font-size: 0.95rem;
+  color: var(--fg-dim);
+  margin-bottom: 30px;
+  line-height: 1.7;
+  text-align: justify;
+}
+
+.key-container {
+  margin-top: 30px;
+}
+
+.key-prompt {
+  background: var(--paper);
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  padding: 28px 30px;
+  margin-bottom: 16px;
+  animation: fadeSlideIn 0.5s ease forwards;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.key-question {
+  font-size: 1rem;
+  color: var(--fg);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.key-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (min-width: 500px) {
+  .key-choices {
+    flex-direction: row;
+  }
+}
+
+.key-choice {
+  flex: 1;
+  background: var(--paper-light);
+  border: 1px solid var(--border-light);
+  border-radius: 3px;
+  padding: 14px 18px;
+  color: var(--fg-dim);
+  font-family: 'EB Garamond', serif;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.key-choice:hover {
+  border-color: var(--accent-dim);
+  color: var(--fg);
+  background: var(--paper);
+}
+
+.key-choice:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.key-choice .choice-letter {
+  display: block;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-dim);
+  margin-bottom: 4px;
+}
+
+.key-step-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-dim);
+  margin-bottom: 8px;
+}
+
+.key-path {
+  font-size: 0.75rem;
+  color: var(--fg-dim);
+  margin-bottom: 16px;
+  font-family: 'EB Garamond', serif;
+  letter-spacing: 0.05em;
+}
+
+.key-path span {
+  color: var(--accent);
+}
+
+.key-result {
+  background: var(--paper);
+  border: 1px solid var(--accent-dim);
+  border-radius: 4px;
+  padding: 32px;
+  animation: fadeSlideIn 0.6s ease forwards;
+}
+
+.key-result h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 1.4rem;
+  color: var(--fg-bright);
+  margin-bottom: 16px;
+  line-height: 1.3;
+}
+
+.key-result p {
+  font-size: 0.95rem;
+  color: var(--fg-dim);
+  line-height: 1.8;
+  margin-bottom: 14px;
+}
+
+.key-result .result-name {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.key-result .final-line {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-light);
+  font-style: italic;
+  color: var(--fg);
+  font-size: 1rem;
+}
+
+.restart-btn {
+  margin-top: 20px;
+  background: none;
+  border: 1px solid var(--border-light);
+  color: var(--fg-dim);
+  font-family: 'EB Garamond', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 10px 24px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.restart-btn:hover {
+  border-color: var(--accent-dim);
+  color: var(--fg);
+}
+
+.restart-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+footer {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 40px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+footer p {
+  font-size: 0.75rem;
+  color: var(--fg-dim);
+  letter-spacing: 0.1em;
+  line-height: 1.7;
+}
+
+@media (max-width: 500px) {
+  header { padding: 80px 24px 50px; }
+  header h1 { font-size: 2.2rem; }
+  .preamble, .appendix { padding: 40px 24px; }
+  main { padding: 0 24px; }
+  .entry h2 { font-size: 1.5rem; }
+  .key-prompt { padding: 20px 22px; }
+  .key-result { padding: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entry {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .key-prompt, .key-result {
+    animation: none;
+  }
+  .confusion-fill {
+    transition: none;
+  }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="series">Cognitive Ethology Monograph Series — Volume VII</div>
+  <h1>The Inverse Bestiary</h1>
+  <p class="subtitle">A Field Guide to the Fauna That Exploit Human Perceptual Failure</p>
+  <div class="epigraph">
+    "The most successful predators are not those who hide. They are those for whom the prey's own neurology becomes the concealment."
+    <span class="attribution">— H.E. Veracini, preface to the 1974 symposium on Involuntary Perception</span>
+  </div>
+</header>
+
+<section class="preamble">
+  <h2>On the Use of This Guide</h2>
+  <p>The creatures catalogued herein do not employ camouflage, mimicry, or physical concealment of any kind. They have evolved to inhabit the specific lacunae of human cognition — the saccades, the attentional gaps, the moments of perceptual reconstruction during which experience is simply not recorded. They are not invisible. They are never perceived, because they occupy the precise spatial and temporal coordinates where consciousness does not look.</p>
+  <p>This guide was compiled over seventeen years of field observation — though "observation" is, as the reader will come to understand, a deeply misleading term. One cannot observe these creatures. One can only document the absences they leave: misplaced seconds, unexplained familiarity in spaces one has never entered, the persistent sense of something having just departed.</p>
+  <p>The Confusion Index (CI) assigned to each entry rates not the creature's elusiveness but the degree to which human cognition actively participates in its concealment. A low CI indicates a creature that exploits a simple, well-documented perceptual gap. A high CI indicates a creature that exploits the reader's conviction that they have understood the preceding entries.</p>
+  <div class="warning">Note: You will not see these creatures while reading this guide. This is by design. Whether they see you is a matter of some professional disagreement.</div>
+</section>
+
+<main>
+
+  <article class="entry" id="entry-1">
+    <div class="entry-header">
+      <span class="entry-number">I</span>
+      <h2>Saccade Moth</h2>
+      <div class="classification">Order: Saccodoptera · Family: Fixatidae · Genus: <em>Saccophila</em></div>
+    </div>
+    <div class="entry-body">
+      <div class="field-block">
+        <div class="field-label">Habitat</div>
+        <div class="field-value">Inter-fixation intervals; the 30–80ms gaps during saccadic masking when visual input is suppressed</div>
+      </div>
+      <div class="field-block">
+        <div class="field-label">Behavioral Notes</div>
+        <div class="field-value">Wings fold to match the precise angular velocity of the eye during saccade. Body becomes aerodynamically irrelevant in the null zone of suppressed vision</div>
+      </div>
+    </div>
+    <p class="description">The most elementary of the saccadic fauna, <em>Saccophila inexpectata</em> exploits a single, arresting fact: human vision is functionally blind during rapid eye movements. The moth's entire lifecycle — courtship, feeding, oviposition — occurs within these 30–80 millisecond windows of suppressed visual processing. It has never been seen in flight because flight is impossible outside the saccadic interval: its wings are vestigial structures, useful only as aerodynamic counterweights during the milliseconds it shares with the moving eye. The moth does not move through space. It moves through the gaps in the observer's temporal sampling of space. A population density of approximately 40 moths per cubic metre has been inferred from wing-scale deposits on the periphery of human visual fields, though this estimate is, necessarily, speculative.</p>
+    <div class="confusion-bar">
+      <span class="confusion-label">Confusion Index</span>
+      <div class="confusion-track"><div class="confusion-fill ci-1" data-width="10"></div></div>
+      <span class="confusion-value">1.0</span>
+    </div>
+  </article>
+
+  <article class="entry" id="entry-2">
+    <div class="entry-header">
+      <span class="entry-number">II</span>
+      <h2>Blink Weevil</h2>
+      <div class="classification">Order: Coleoptera · Family: Lacunidae · Genus: <em>Nictitobius</em></div>
+    </div>
+    <div class="entry-body">
+      <div class="field-block">
+        <div class="field-label">Habitat</div>
+        <div class="field-value">The 300–400ms attentional blink following identification of a target stimulus; temporal windows of attenuated visual processing</div>
+      </div>
+      <div class="field-block">
+        <div class="field-label">Behavioral Notes</div>
+        <div class="field-value">Synchronizes emergence with the detection of salient visual events by nearby organisms, using their attentional depletion as temporal cover</div>
+      </div>
+    </div>
+    <p class="description"><em>Nictitobius attentius</em> is among the easiest cognitive fauna to detect indirectly, though no observer has ever seen one directly. Its strategy is simple: it moves only when something else has just captured attention. Flash a light, sound a tone, present a sudden movement — and the weevil crosses the room in the 400ms window during which the observer's visual system cannot encode a second target. This is not speed. The weevil is, by any biological measure, quite slow. It simply occupies the temporal niche that consciousness cannot fill. Laboratory confirmation of <em>N. attentius</em> was achieved by presenting subjects with a rapid visual stream and asking them to identify two target images. The second target was consistently reported as absent. High-speed photography later confirmed the target was present — but partially occluded by a weevil, which had traversed the stimulus array during the subject's attentional blink. The creature does not flee detection. It schedules detection's absence.</p>
+    <div class="confusion-bar">
+      <span class="confusion-label">Confusion Index</span>
+      <div class="confusion-track"><div class="confusion-fill ci-2" data-width="17"></div></div>
+      <span class="confusion-value">1.7</span>
+    </div>
+  </article>
+
+  <article class="entry" id="entry-3">
+    <div class="entry-header">
+      <span class="entry-number">III</span>
+      <h2>Threshold Shrew</h2>
+      <div class="classification">Order: Insectivora · Family: Subliminalidae · Genus: <em>Cryptosorex</em></div>
+    </div>
+    <div class="entry-body">
+      <div class="field-block">
+        <div class="field-label">Habitat</div>
+        <div class="field-value">Visual stimuli presented below the threshold of conscious perception; luminance gradients of less than 1% contrast differential</div>
+      </div>
+      <div class="field-block">
+        <div class="field-label">Behavioral Notes</div>
+        <div class="field-value">Maintains a body reflectance profile precisely calibrated to ambient luminance minus one just-noticeable-difference, rendering it subliminal but not invisible</div>
+      </div>
+    </div>
+    <p class="description">The threshold shrew, <em>Cryptosorex subliminalis</em>, is technically visible at all times. Its fur does not absorb light in any unusual fashion. It casts a shadow. It displaces air. The animal's genius lies not in absence but in calibration: its body reflectance is always maintained at exactly one just-noticeable-difference below the prevailing ambient luminance. The retina registers the shrew. The signal reaches V1. But it fails to cross the threshold of reportable awareness, residing instead in the extensive subcortical processing layer that the brain consistently declines to flag for consciousness. The shrew is, in a meaningful sense, perceived but not experienced. Subjects in forced-choice experiments can identify the quadrant a shrew occupied at rates significantly above chance — approximately 72% — while simultaneously and confidently reporting that they saw nothing at all. The shrew does not require darkness. It requires only the limen — the threshold — and the fact that consciousness demands more evidence than the rest of the visual system.</p>
+    <div class="confusion-bar">
+      <span class="confusion-label">Confusion Index</span>
+      <div class="confusion-track"><div class="confusion-fill ci-3" data-width="25"></div></div>
+      <span class="confusion-value">2.5</span>
+    </div>
+  </article>
+
+  <article class="entry" id="entry-4">
+    <div class="entry-header">
+      <span class="entry-number">IV</span>
+      <h2>Afterimage Worm</h2>
+      <div class="classification">Phylum: Nematoda · Family: Phosphendae · Genus: <em>Palinopsia</em></div>
+    </div>
+    <div class="entry-body">
+      <div class="field-block">
+        <div class="field-label">Habitat</div>
+        <div class="field-value">Positive afterimage persistence; the 50–200ms decay window of photopigment regeneration following high-luminance exposure</div>
+      </div>
+      <div class="field-block">
+        <div class="field-label">Behavioral Notes</div>
+        <div class="field-value">Secretes a photoreactive compound that binds to bleached rhodopsin, extending the retina's recovery window and prolonging its own concealment within the afterimage</div>
+      </div>
+    </div>
+    <p class="description">Stare at a bright window for ten seconds, then close your eyes. The afterimage that persists — the yellow-purple smear drifting across your darkness — is not empty. <em>Palinopsia lumbricoides</em> inhabits the photoreceptor recovery window, feeding on the residual electrical activity of bleached photopigments. The worm's translucent body becomes indistinguishable from the afterimage itself; it is experienced as a natural feature of retinal decay rather than as an external organism. The creature was first identified during ophthalmological examinations of patients reporting unusually persistent afterimages. Spectral analysis of the "afterimage" revealed wavelengths inconsistent with the adapting stimulus. Further investigation confirmed that these anomalous wavelengths corresponded to the bioluminescent signature of a small nematode — one that had been living, unseen, inside the patient's visual persistence for an estimated four to six weeks. The worm does not hide behind the afterimage. It is the afterimage — or at least the part of it that seems to last slightly too long.</p>
+    <div class="confusion-bar">
+      <span class="confusion-label">Confusion Index</span>
+      <div class="confusion-track"><div class="confusion-fill ci-4" data-width="35"></div></div>
+      <span class="confusion-value">3.5</span>
+    </div>
+  </article>
+
+  <article class="entry" id="entry-5">
+    <div class="entry-header">
+      <span class="entry-number">V</span>
+      <h2>Peripheral Hare</h2>
+      <div class="classification">Order: Lagomorpha · Family: Peripheryidae · Genus: <em>Parafovea</em></div>
+    </div>
+    <div class="entry-body">
+      <div class="field-block">
+        <div class="field-label">Habitat</div>
+        <div class="field-value">Extrafoveal visual field beyond 5 degrees eccentricity; zones of declining cone density and increasing rod dominance</div>
+      </div>
+      <div class="field-block">
+        <div class="field-label">Behavioral Notes</div>
+        <div class="field-value">Continuously maintains a retinal eccentricity of exactly 8–12 degrees from the observer's foveal fixation point, shifting in precise counterpoint to eye movements</div>
+      </div>
+    </div>
+    <p class="description"><em>Parafovea lepus</em> has never been seen face-forward. It exists in the visual periphery — not by hiding at the edges of rooms, but by actively tracking the boundary between foveal and peripheral vision. Look directly at the hare, and it has already shifted. It does not flee; it recalculates. The animal maintains a precise 8–12 degree eccentricity from fixation, exploiting the steep decline in cone density that renders peripheral vision detail-poor and colour-washed. The hare appears, to the periphery, as a vague shape of no particular urgency — which is precisely how the visual system processes peripheral stimuli that lack foveal confirmation. Attempts to photograph the hare using wide-angle cameras have consistently produced images of an identifiable lagomorph. The creature is not invisible. It is simply always located in the zone where the brain does not look carefully, and it moves every time the brain does.</p>
+    <div class="confusion-bar">
+      <span class="confusion-label">Confusion Index</span>
+      <div class="confusion-track"><div class="confusion-fill ci-4" data-width="42"></div></div>
+      <span class="confusion-value">4.2</span>
+    </div>
+  </article>
+
+  <article class="entry" id="entry-6">
+    <div class="entry-header">
+      <span class="entry-number">VI</span>
+      <h2>Blind-Spot Octopus</h2>
+      <div class="classification">Class: Cephalopoda · Family: Scatomidae · Genus: <em>Scotoma</em></div>
+    </div>
+    <div class="entry-body">
+      <div class="field-block">
+        <div class="field-label">Habitat</div>
+        <div class="field-value">The optic disc where the retinal nerve fibre layer exits the eye; the absolute scotoma present in each eye approximately 15 degrees temporal to fixation</div>
+      </div>
+      <div class="field-block">
+        <div class="field-label">Behavioral Notes</div>
+        <div class="field-value">Positions its body precisely within the observer's optic disc blind spot, using chromatophore feedback to match the filled-in visual texture the brain generates to paper over the gap</div>
+      </div>
+    </div>
+    <p class="description">Each human eye contains a region of absolute blindness: the optic disc, where nerve fibres exit the retina and no photoreceptors exist. The brain, unwilling to admit this gap, fills it in with estimated visual texture. <em>Scotoma mimicus</em> positions its entire body within this filled-in region. The octopus does not merely occupy the blind spot — it reads the brain's completion pattern and adjusts its chromatophores to match the texture, colour, and luminance that the visual cortex has hallucinated to cover the absence. The creature is, in a literal sense, wearing the brain's own lie as camouflage. The octopus's mimicry is so precise that it can be detected only by closing one eye and carefully mapping the visual field with a moving stimulus — the creature will cause a subtle but measurable deviation in the expected completion pattern. A population of roughly six to twelve individuals is believed to inhabit each blind spot, competing for a territory that exists only because the brain would rather invent reality than admit to a hole.</p>
+    <div class="confusion-bar">
+      <span class="confusion-label">Confusion Index</span>
+      <div class="confusion-track"><div class="confusion-fill ci-5" data-width="52"></div></div>
+      <span class="confusion-value">5.2</span>
+    </div>
+  </article>
+
+  <article class="entry" id="entry-7">
+    <div class="entry-header">
+      <span class="entry-number">VII</span>
+      <h2>Change-Blind Salamander</h2>
+      <div class="classification">Order: Caudata · Family: Mutatidae · Genus: <em>Morphagnosia</em></div>
+    </div>
+    <div class="entry-body">
+      <div class="field-block">
+        <div class="field-label">Habitat</div>
+        <div class="field-value">Visual scenes during transients — blinks, saccades, film cuts, or any disruption that resets the comparator mechanism for detecting change</div>
+      </div>
+      <div class="field-block">
+        <div class="field-label">Behavioral Notes</div>
+        <div class="field-value">Alters its colouration, body shape, and even basic morphological features during visual disruptions, exploiting the brain's failure to compare pre- and post-disruption states</div>
+      </div>
+    </div>
+    <p class="description">The change-blind salamander, <em>Morphagnosia mutabilis</em>, does not remain the same creature across observation. During any visual transient — an eye blink, a camera cut in a film, the flicker of a fluorescent light — the salamander undergoes rapid morphological change. It shifts from brown to green. It gains or loses a stripe. Its tail length changes by up to 30%. The human visual system, which relies on detecting change rather than maintaining detailed representations, consistently fails to register these transformations. The pre-blink salamander and the post-blink salamander are experienced as the same continuous animal, even when they differ in virtually every visual feature. The creature's survival depends on a single, well-established fact: human vision does not encode the world in detail. It encodes the idea of continuity, and fills in the specifics. The salamander has learned to change the specifics while the idea of continuity handles the rest.</p>
+    <div class="confusion-bar">
+      <span class="confusion-label">Confusion Index</span>
+      <div class="confusion-track"><div class="confusion-fill ci-6" data-width="62"></div></div>
+      <span class="confusion-value">6.2</span>
+    </div>
+  </article>
+
+  <article class="entry" id="entry-8">
+    <div class="entry-header">
+      <span class="entry-number">VIII</span>
+      <h2>Inattentional Jellyfish</h2>
+      <div class="classification">Phylum: Cnidaria · Family: Inattnidae · Genus: <em>Ignoramus</em></div>
+    </div>
+    <div class="entry-body">
+      <div class="field-block">
+        <div class="field-label">Habitat</div>
+        <div class="field-value">Unexpected stimuli that fall outside the current attentional set; the unattended scene, regardless of visual conspicuity</div>
+      </div>
+      <div class="field-block">
+        <div class="field-label">Behavioral Notes</div>
+        <div class="field-value">Feeds on attention itself — not by capturing it, but by colonizing the spaces where it is not. Able to grow to considerable size while remaining entirely unreported</div>
+      </div>
+    </div>
+    <p class="description">The inattentional jellyfish, <em>Ignoramus invisus</em>, exploits a fundamental property of conscious perception: attention selects, and what is not selected effectively ceases to exist for the perceiver. The jellyfish feeds near attentional foci — close enough to remain physically present in the visual field, far enough to remain outside the attentional spotlight. Its most remarkable trait is its size: specimens have been documented at diameters exceeding two metres, fully visible, fully present in the optical array, and entirely unreported by observers whose attention was engaged elsewhere. A count task, a visual search, any demanding perceptual goal — these are the jellyfish's habitat. It does not require the viewer to be looking somewhere specific. It requires only that the viewer be looking for something. In the space between intention and awareness, the jellyfish drifts. You are almost certainly near one now.</p>
+    <div class="confusion-bar">
+      <span class="confusion-label">Confusion Index</span>
+      <div class="confusion-track"><div class="confusion-fill ci-7" data-width="72"></div></div>
+      <span class="confusion-value">7.2</span>
+    </div>
+  </article>
+
+  <article class="entry" id="entry-9">
+    <div class="entry-header">
+      <span class="entry-number">IX</span>
+      <h2>Repetition Wasp</h2>
+      <div class="classification">Order: Hymenoptera · Family: Iteratidae · Genus: <em>Repetita</em></div>
+    </div>
+    <div class="entry-body">
+      <div class="field-block">
+        <div class="field-label">Habitat</div>
+        <div class="field-value">Expected perceptual events; the conformant, the anticipated, the statistically regular; environments of high predictability</div>
+      </div>
+      <div class="field-block">
+        <div class="field-label">Behavioral Notes</div>
+        <div class="field-value">Inserts itself into repetitive perceptual sequences by matching the expected stimulus so precisely that the visual system categorizes it as "already processed" and discards it</div>
+      </div>
+    </div>
+    <p class="description">The repetition wasp does not exploit the new or the unexpected. It exploits the familiar. Its entire body plan mimics the statistical regularity of whatever environment it inhabits — not visually, but predictively. The wasp inserts itself into expected perceptual events so seamlessly that the brain's novelty-detection circuits never flag its presence. When you scan a familiar room — your office, your kitchen, your morning commute — the wasp is there, occupying the predicted positions of expected objects. The visual system, optimized for change, has no mechanism for detecting that which perfectly matches expectation. The wasp's sting is mild and produces no lasting effect; its host rarely notices. The creature's success rate approaches 100% in highly routine environments. It is less successful in novel settings, where the brain has not yet established predictions to colonize. This entry may contain a wasp. You would not know.</p>
+    <div class="confusion-bar">
+      <span class="confusion-label">Confusion Index</span>
+      <div class="confusion-track"><div class="confusion-fill ci-8" data-width="80"></div></div>
+      <span class="confusion-value">8.0</span>
+    </div>
+  </article>
+
+  <article class="entry" id="entry-10">
+    <div class="entry-header">
+      <span class="entry-number">X</span>
+      <h2>Confabulation Carp</h2>
+      <div class="classification">Order: Cypriniformes · Family: Fabulatidae · Genus: <em>Confabula</em></div>
+    </div>
+    <div class="entry-body">
+      <div class="field-block">
+        <div class="field-label">Habitat</div>
+        <div class="field-value">The explanatory gap between perception and memory; the filling-in process by which coherence is retroactively imposed on fragmented experience</div>
+      </div>
+      <div class="field-block">
+        <div class="field-label">Behavioral Notes</div>
+        <div class="field-value">Injects false perceptual memories into retrospection, causing observers to remember having seen the carp — and to provide detailed, confident, entirely fabricated descriptions</div>
+      </div>
+    </div>
+    <p class="description">The confabulation carp does not go unseen. On the contrary, it has been seen by nearly everyone who has spent time near water. The problem is not an absence of sighting but an excess of testimony. The carp's neurochemical secretions interact with the memory consolidation process, implanting a detailed, confident, and entirely fictional visual memory of the creature. Subjects exposed to the carp report — with complete sincerity and vivid recall — having observed a large fish with distinctive markings. When asked to describe these markings, each subject provides a different account, all equally detailed, all equally confident. The carp exploits the brain's compulsion to maintain narrative coherence: when the perceptual record is incomplete, the brain fills in. The carp ensures that what it fills in is the carp itself. In this way, the creature is simultaneously the most-observed and least-verified animal in this guide. You may already believe you have seen one.</p>
+    <div class="confusion-bar">
+      <span class="confusion-label">Confusion Index</span>
+      <div class="confusion-track"><div class="confusion-fill ci-8" data-width="87"></div></div>
+      <span class="confusion-value">8.7</span>
+    </div>
+  </article>
+
+  <article class="entry" id="entry-11">
+    <div class="entry-header">
+      <span class="entry-number">XI</span>
+      <h2>Habituation Tick</h2>
+      <div class="classification">Order: Ixodida · Family: Familiaridae · Genus: <em>Habitus</em></div>
+    </div>
+    <div class="entry-body">
+      <div class="field-block">
+        <div class="field-label">Habitat</div>
+        <div class="field-value">Persistent stimuli that have been present long enough to undergo neural habituation; the status quo, the already-known, the unchanging</div>
+      </div>
+      <div class="field-block">
+        <div class="field-label">Behavioral Notes</div>
+        <div class="field-value">Attaches to the observer and remains indefinitely; the neural response to its presence diminishes to zero within 11–14 minutes of continuous contact</div>
+      </div>
+    </div>
+    <p class="description">The habituation tick is almost certainly on you now. <em>Habitus perseverans</em> does not hide. It attaches, and then it waits for the brain to stop noticing — which, for a persistent, non-threatening stimulus, takes approximately eleven minutes. After this window, the tick's presence is filtered from conscious experience by the same neural mechanisms that stop you from feeling your watch, your collar, or the ambient hum of your building's ventilation. The tick can remain attached for years. Hosts have been discovered with populations exceeding 200 individuals, all of which had been present so long they had become part of the body's unexamined baseline. Removal produces a brief, startling flood of tactile awareness — a sudden, detailed map of everything that has been touching the skin, unreported, for months. The tick does not evade perception. It outlasts it.</p>
+    <div class="confusion-bar">
+      <span class="confusion-label">Confusion Index</span>
+      <div class="confusion-track"><div class="confusion-fill ci-9" data-width="92"></div></div>
+      <span class="confusion-value">9.2</span>
+    </div>
+  </article>
+
+  <article class="entry" id="entry-12">
+    <div class="entry-header">
+      <span class="entry-number">XII</span>
+      <h2>Certainty Flatworm</h2>
+      <div class="classification">Phylum: Platyhelminthes · Family: Convictidae · Genus: <em>Certitudo</em></div>
+    </div>
+    <div class="entry-body">
+      <div class="field-block">
+        <div class="field-label">Habitat</div>
+        <div class="field-value">The Dunning-Kruger effect and related metacognitive failures; the subjective sense of understanding, particularly when understanding is absent</div>
+      </div>
+      <div class="field-block">
+        <div class="field-label">Behavioral Notes</div>
+        <div class="field-value">Produces a neuroactive peptide that induces mild euphoria and high subjective confidence, suppressing the metacognitive capacity to evaluate one's own perceptual accuracy</div>
+      </div>
+    </div>
+    <p class="description">The certainty flatworm is the most dangerous creature in this guide, because it targets not perception itself but the monitoring of perception. Its neuroactive secretions suppress the anterior prefrontal cortex — the region responsible for evaluating the accuracy of one's own judgments. Under the flatworm's influence, subjects report high confidence in perceptual judgments that are objectively wrong. More critically, they report high confidence that they have not been influenced. The flatworm does not make you misperceive. It makes you certain that you have perceived correctly, in direct proportion to the likelihood that you have not. Its life cycle depends on this certainty: the flatworm reproduces only in hosts who are confident they are uninfested. Every entry in this guide that the reader has understood and accepted without doubt is evidence of the flatworm's presence. This entry is the test.</p>
+    <div class="confusion-bar">
+      <span class="confusion-label">Confusion Index</span>
+      <div class="confusion-track"><div class="confusion-fill ci-10" data-width="96"></div></div>
+      <span class="confusion-value">9.6</span>
+    </div>
+  </article>
+
+  <article class="entry" id="entry-13">
+    <div class="entry-header">
+      <span class="entry-number">XIII</span>
+      <h2>The Reader</h2>
+      <div class="classification">Order: Primates · Family: Hominidae · Genus: <em>Homo</em> · Species: <em>H. legens</em></div>
+    </div>
+    <div class="entry-body">
+      <div class="field-block">
+        <div class="field-label">Habitat</div>
+        <div class="field-value">The text you are currently reading; the cognitive architecture that assembled this sentence; the predictive processing framework that is generating meaning from these marks</div>
+      </div>
+      <div class="field-block">
+        <div class="field-label">Behavioral Notes</div>
+        <div class="field-value">Generates the perceptual environment in which all twelve preceding creatures exist. Without the reader's cognitive blind spots, none of the entries in this guide would be meaningful</div>
+      </div>
+    </div>
+    <p class="description">By reading this far, you have demonstrated the precise cognitive profile the creatures in this guide require. You have projected confidence into ambiguous text. You have filled in gaps the author did not write. You have experienced certainty about fictional organisms whose "behavioural notes" describe your own perceptual limitations, presented as external creatures because the alternative — that they are descriptions of you — would have been rejected by the same metacognitive filters you have been using to evaluate each entry. The creatures do not exploit human cognition in general. They exploit yours. Specifically. The habitat is not the saccade, the blink, or the periphery. The habitat is the conviction that one understands what one is reading, maintained in the face of mounting evidence that the text has been describing the reader to the reader all along. You are the ecosystem. The creatures are what lives in the parts of you that you cannot monitor.</p>
+    <div class="confusion-bar">
+      <span class="confusion-label">Confusion Index</span>
+      <div class="confusion-track"><div class="confusion-fill ci-10" data-width="100"></div></div>
+      <span class="confusion-value">10.0</span>
+    </div>
+  </article>
+
+</main>
+
+<section class="appendix" id="appendix">
+  <h2>Appendix: Diagnostic Key</h2>
+  <p class="appendix-subtitle">For the provisional identification of specimens observed — or believed to have been observed — in the field</p>
+  <p class="appendix-intro">The following binary key is designed to help field researchers narrow the identification of creatures they may have encountered. Work through each question in sequence. Select the answer that most closely matches your observation. If you are uncertain, select the answer that feels correct. The certainty of your response is data.</p>
+
+  <div class="key-container" id="keyContainer">
+    <div class="key-prompt" id="keyStart">
+      <div class="key-question">This diagnostic key uses a series of binary choices to narrow identification. Each question asks about the circumstances of your observation. Answer honestly, but do not linger — your first response is more reliable than your second.</div>
+      <div class="key-choices">
+        <button class="key-choice" onclick="advanceKey('begin')">
+          <span class="choice-letter">Proceed</span>
+          Begin the diagnostic
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>This guide was typeset in the gaps between attention. No creatures were observed during its production. Several were present.</p>
+</footer>
+
+<script>
+(function() {
+  "use strict";
+
+  var keyData = {
+    start: {
+      question: "Did you observe the creature in motion, or at rest?",
+      a: { text: "The creature was moving", next: "step2" },
+      b: { text: "The creature was stationary, or may not have been present at all", next: "step5" }
+    },
+    step2: {
+      question: "Was the motion continuous, or did the creature seem to appear and disappear between positions?",
+      a: { text: "Continuous — it simply moved when I wasn't looking", next: "step3" },
+      b: { text: "Intermittent — it seemed to flicker or vanish between positions", next: "step7" }
+    },
+    step3: {
+      question: "Think carefully. Were you focusing on something else when the motion occurred?",
+      a: { text: "Yes — I was attending to a different task or object", next: "result_inattentional" },
+      b: { text: "No — my attention was unoccupied, or I was watching the area where it appeared", next: "result_saccade" }
+    },
+    step5: {
+      question: "Did you sense the creature before or after the moment of observation?",
+      a: { text: "Before — I had a feeling something was there before I looked", next: "result_confabulation" },
+      b: { text: "After — I only became aware of it in retrospect, once it had gone", next: "step6" }
+    },
+    step6: {
+      question: "Do you feel certain that what you observed was real, or do you suspect it may have been imagined?",
+      a: { text: "I am certain it was real — I can describe it clearly", next: "result_confabulation" },
+      b: { text: "I am not sure — the memory feels vivid but unreliable", next: "result_confabulation" }
+    },
+    step7: {
+      question: "When the creature appeared in a new position, was it different from how it looked before?",
+      a: { text: "Yes — its appearance seemed to change between positions", next: "result_changeblind" },
+      b: { text: "No — it looked the same each time I noticed it", next: "step8" }
+    },
+    step8: {
+      question: "This is not a question about the creature. How many entries in this guide did you feel you understood completely?",
+      a: { text: "Most of them — the descriptions were clear and I followed the logic", next: "result_certainty" },
+      b: { text: "Fewer than I would like — I found myself filling in gaps in my understanding", next: "result_certainty" }
+    }
+  };
+
+  var results = {
+    result_inattentional: {
+      title: "Diagnosis: The Habitat Is You",
+      paragraphs: [
+        "You selected answers indicating that the creature was moving while your attention was elsewhere. This is the signature of the Inattentional Jellyfish (<em>Ignoramus invisus</em>) — a creature that lives in the gap between what is present and what is attended.",
+        "But the diagnostic has been profiling something else as well. Your answers reveal a consistent pattern: you experience the unattended as absent. You answered based on what you noticed, not what was there. This is not a criticism — it is the cognitive architecture that makes the jellyfish possible.",
+        "The creature you were trying to identify has a habitat. That habitat is a feature of your neurology. You are the ecosystem. The question was never what you saw. The question was always what you didn't."
+      ],
+      final: "Your perceptual profile: high attentional commitment, low peripheral monitoring, strong confidence in attended-channel data. The creatures that live in your gaps are large and patient."
+    },
+    result_saccade: {
+      title: "Diagnosis: The Space Between Glances",
+      paragraphs: [
+        "The creature you observed — or half-observed — exists in the temporal gaps between fixations. The Saccade Moth (<em>Saccophila inexpectata</em>) exploits the 30–80ms windows during which the visual system suppresses input to prevent motion blur.",
+        "But note what your answers have revealed: you were watching. Your attention was unoccupied. And still the creature moved. This suggests not an attentional gap but a temporal one — a space in your experience where consciousness simply does not sample. You live in a series of snapshots, and between each snapshot, an entire ecology operates.",
+        "You believe you experience continuous reality. This belief is itself a confabulation — a story the brain tells to stitch discrete fixations into a seamless world. The moth lives in the stitches."
+      ],
+      final: "Your perceptual profile: high visual vigilance, strong foveal commitment, unexamined faith in temporal continuity. You do not notice the gaps in your experience because you were never in them."
+    },
+    result_confabulation: {
+      title: "Diagnosis: Remembered Into Being",
+      paragraphs: [
+        "You have described a creature you may not have seen. The Confabulation Carp (<em>Confabula fabula</em>) does not evade detection — it colonizes memory, inserting itself into retrospection so effectively that witnesses provide detailed testimony about creatures that were never optically present.",
+        "But consider what your answers reveal beyond the carp. You reported a sense of presence before observation, or certainty after the fact. You may have reported both without noticing the contradiction. This is not failure — it is the normal operation of a memory system that prioritizes narrative coherence over factual accuracy.",
+        "Your confidence in the observation is data. The vividness of your recall is data. The detail you can provide is not evidence the creature was there — it is evidence of how effectively your brain constructs convincing memories of things that fit."
+      ],
+      final: "Your perceptual profile: rich episodic memory, high narrative coherence, strong retrospective confidence. You remember a consistent world. Whether it is the world that occurred is a separate question."
+    },
+    result_changeblind: {
+      title: "Diagnosis: You Saw It Change",
+      paragraphs: [
+        "The creature whose appearance shifted between observations is the Change-Blind Salamander (<em>Morphagnosia mutabilis</em>). It exploits the brain's failure to maintain detailed visual representations across transients.",
+        "But your answer is more interesting than the identification. You reported noticing change — which means the salamander failed. Unless the change you noticed was the one it wanted you to notice. The creature's most effective strategy is to let you detect a small, inconsequential change while a larger transformation goes unobserved. What did it change while you were looking at what changed?",
+        "Every entry in this guide has changed since you first read it. You have not noticed because you did not encode the originals — you encoded the gist, and the gist has not changed. The specifics are someone else's habitat now."
+      ],
+      final: "Your perceptual profile: moderate change detection, high gist encoding, low detail persistence. You navigate a world of summaries and believe them to be transcripts."
+    },
+    result_certainty: {
+      title: "Diagnosis: The Flatworm's Candidate",
+      paragraphs: [
+        "Both paths through the final question lead here. This is not a failure of the diagnostic — it is the point.",
+        "If you answered that you understood most entries, the Certainty Flatworm (<em>Certitudo absoluta</em>) has been at work. It breeds in the subjective sense of comprehension, thriving precisely where metacognitive doubt should be. Your confidence is the habitat.",
+        "If you answered that you understood fewer entries than you would like, you have demonstrated the flatworm's more sophisticated strategy: calibrated self-doubt that preserves overall confidence in your analytical framework. You doubt the details while maintaining faith in the system that failed to process them. The flatworm does not need you to feel certain about everything. It needs you to feel certain about your ability to be uncertain.",
+        "The diagnostic key was never identifying a creature. It was mapping the contours of the habitat — the shape of the blind spots, the architecture of the gaps, the specific pattern of confidence and failure that makes each reader a unique ecosystem for things that live in the unmonitored corners of cognition."
+      ],
+      final: "Final diagnosis: your cognitive blind spots are not defects. They are ecological niches. Something lives in each one. You have been reading this guide from inside the enclosure."
+    }
+  };
+
+  var keyPath = [];
+  var currentStep = null;
+
+  function advanceKey(choice) {
+    if (choice === "begin") {
+      currentStep = "start";
+      keyPath = [];
+      renderStep(currentStep);
+      return;
+    }
+
+    var stepData = keyData[currentStep];
+    if (!stepData) return;
+
+    var selected = stepData[choice];
+    if (!selected) return;
+
+    keyPath.push(choice.toUpperCase());
+    currentStep = selected.next;
+
+    if (currentStep.indexOf("result_") === 0) {
+      renderResult(currentStep);
+    } else {
+      renderStep(currentStep);
+    }
+  }
+
+  function renderStep(stepId) {
+    var container = document.getElementById("keyContainer");
+    var step = keyData[stepId];
+    if (!step) return;
+
+    var prompt = document.createElement("div");
+    prompt.className = "key-prompt";
+
+    var pathHTML = "";
+    if (keyPath.length > 0) {
+      pathHTML = '<div class="key-path">Path: ' + keyPath.map(function(p) { return "<span>" + p + "</span>"; }).join(" \u2192 ") + "</div>";
+    }
+
+    prompt.innerHTML =
+      '<div class="key-step-label">Step ' + (keyPath.length + 1) + "</div>" +
+      pathHTML +
+      '<div class="key-question">' + step.question + '</div>' +
+      '<div class="key-choices">' +
+      '<button class="key-choice" data-choice="a">' +
+      '<span class="choice-letter">A</span>' +
+      step.a.text +
+      "</button>" +
+      '<button class="key-choice" data-choice="b">' +
+      '<span class="choice-letter">B</span>' +
+      step.b.text +
+      "</button>" +
+      "</div>";
+
+    prompt.querySelectorAll(".key-choice").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        advanceKey(this.getAttribute("data-choice"));
+      });
+    });
+
+    container.appendChild(prompt);
+
+    setTimeout(function() {
+      prompt.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+  }
+
+  function renderResult(resultId) {
+    var container = document.getElementById("keyContainer");
+    var result = results[resultId];
+    if (!result) return;
+
+    var div = document.createElement("div");
+    div.className = "key-result";
+
+    var pathHTML = "";
+    if (keyPath.length > 0) {
+      pathHTML = '<div class="key-path" style="margin-bottom: 16px;">Path: ' + keyPath.map(function(p) { return "<span>" + p + "</span>"; }).join(" \u2192 ") + "</div>";
+    }
+
+    var paragraphsHTML = result.paragraphs.map(function(p) { return "<p>" + p + "</p>"; }).join("");
+
+    div.innerHTML =
+      '<div class="key-step-label">Diagnostic Result</div>' +
+      pathHTML +
+      "<h3>" + result.title + "</h3>" +
+      paragraphsHTML +
+      '<p class="final-line">' + result.final + "</p>";
+
+    var restartBtn = document.createElement("button");
+    restartBtn.className = "restart-btn";
+    restartBtn.textContent = "Retake diagnostic";
+    restartBtn.addEventListener("click", restartKey);
+    div.appendChild(restartBtn);
+
+    container.appendChild(div);
+
+    setTimeout(function() {
+      div.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+  }
+
+  function restartKey() {
+    var container = document.getElementById("keyContainer");
+    container.innerHTML = "";
+    keyPath = [];
+    currentStep = null;
+
+    var startDiv = document.createElement("div");
+    startDiv.className = "key-prompt";
+    startDiv.innerHTML =
+      '<div class="key-question">This diagnostic key uses a series of binary choices to narrow identification. Each question asks about the circumstances of your observation. Answer honestly, but do not linger — your first response is more reliable than your second.</div>' +
+      '<div class="key-choices">' +
+      '<button class="key-choice" id="restartBegin">' +
+      '<span class="choice-letter">Proceed</span>' +
+      "Begin the diagnostic" +
+      "</button>" +
+      "</div>";
+
+    startDiv.querySelector("#restartBegin").addEventListener("click", function() {
+      advanceKey("begin");
+    });
+
+    container.appendChild(startDiv);
+  }
+
+  /* Scroll-triggered reveal for entries */
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+
+        /* Animate confusion bar fill */
+        var fill = entry.target.querySelector(".confusion-fill");
+        if (fill) {
+          var targetWidth = fill.getAttribute("data-width");
+          if (targetWidth) {
+            fill.style.width = targetWidth + "%";
+          }
+        }
+
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
+
+  document.querySelectorAll(".entry").forEach(function(el) {
+    observer.observe(el);
+  });
+
+  /* Expose advanceKey for the initial onclick in HTML */
+  window.advanceKey = advanceKey;
+
+})();
+</script>
+
+</body>
+</html>
