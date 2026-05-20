@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sealed Set — 78 Cards You Can Never Play</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07060a;
+    --fg: #c8b88a;
+    --muted: #3d3528;
+    --accent: #8b2032;
+    --card: #12101a;
+    --border: #262030;
+    --gold: #a89060;
+    --dim: #1a1720;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { font-size: 16px; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'EB Garamond', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 80%, rgba(139,32,50,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(100,80,40,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 50%, rgba(20,16,30,0.8) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  #particles-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  header {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 40px 20px 10px;
+  }
+
+  header h1 {
+    font-family: 'Cinzel', serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    letter-spacing: 0.25em;
+    color: var(--fg);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  header .tagline {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--gold);
+    opacity: 0.7;
+  }
+
+  #stats-bar {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 16px 20px 4px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  #stats-bar .stat-val {
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  #deck-status {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 8px 20px 20px;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--muted);
+    opacity: 0.5;
+    transition: opacity 0.5s;
+    min-height: 1.4em;
+  }
+
+  #break-counter {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 0 20px 20px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+
+  #break-counter.shown { opacity: 0.7; }
+
+  #deck-container {
+    position: relative;
+    z-index: 10;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+  }
+
+  #deck-grid {
+    display: grid;
+    grid-template-columns: repeat(13, 1fr);
+    gap: 6px;
+  }
+
+  @media (max-width: 800px) {
+    #deck-grid { grid-template-columns: repeat(8, 1fr); }
+  }
+
+  @media (max-width: 500px) {
+    #deck-grid { grid-template-columns: repeat(6, 1fr); }
+  }
+
+  .card-slot {
+    aspect-ratio: 2.5 / 3.5;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.5s ease;
+    position: relative;
+  }
+
+  .card-slot:hover {
+    transform: translateY(-6px) scale(1.06);
+    z-index: 5;
+  }
+
+  .card-slot:active {
+    transform: translateY(-1px) scale(0.98);
+  }
+
+  .card-slot:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  .card-face {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    position: relative;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .card-slot:hover .card-face {
+    border-color: var(--gold);
+    box-shadow: 0 4px 20px rgba(168,144,96,0.08);
+  }
+
+  .card-face.seen {
+    border-color: rgba(139,32,50,0.35);
+  }
+
+  .card-face.seen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(139,32,50,0.06);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .card-face.broken-card {
+    opacity: 0.08;
+    border-color: rgba(60,20,20,0.2);
+    filter: grayscale(1);
+    pointer-events: none;
+  }
+
+  .card-back {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .card-number {
+    position: absolute;
+    bottom: 3px;
+    right: 5px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.5rem;
+    color: var(--gold);
+    opacity: 0.3;
+    letter-spacing: 0.05em;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .card-fade {
+    position: absolute;
+    inset: 0;
+    background: rgba(7,6,10,0.5);
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity 0.8s ease;
+  }
+
+  /* ── Modal ─────────────────────────────── */
+
+  #modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(3,2,5,0.97);
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #modal-overlay.active { display: flex; }
+
+  #modal-label {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.4;
+  }
+
+  #card-view-container {
+    position: relative;
+    width: 320px;
+    height: 448px;
+    cursor: none;
+  }
+
+  @media (max-width: 400px) {
+    #card-view-container { width: 280px; height: 392px; }
+  }
+
+  #pinhole-canvas {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    display: block;
+  }
+
+  #pinhole-spotlight {
+    position: fixed;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1001;
+    transform: translate(-50%, -50%);
+    display: none;
+    background: radial-gradient(circle, rgba(220,200,160,0.15) 0%, rgba(220,200,160,0.04) 40%, transparent 70%);
+    box-shadow: 0 0 12px 3px rgba(200,180,140,0.06);
+  }
+
+  #pinhole-spotlight.active { display: block; }
+
+  #modal-controls {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 10px 28px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.25s ease;
+  }
+
+  .btn:hover {
+    border-color: var(--gold);
+    color: var(--fg);
+    background: rgba(168,144,96,0.05);
+  }
+
+  .btn:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  .btn.btn-danger {
+    border-color: rgba(139,32,50,0.4);
+    color: var(--accent);
+  }
+
+  .btn.btn-danger:hover {
+    border-color: var(--accent);
+    color: #d44050;
+    background: rgba(139,32,50,0.1);
+  }
+
+  .btn-hold-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .btn-hold-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0%;
+    background: rgba(139,32,50,0.2);
+    border-radius: 3px;
+    pointer-events: none;
+    transition: none;
+  }
+
+  /* ── Flash & Reveal Overlays ──────────── */
+
+  #flash-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(139,32,50,0.15);
+    z-index: 2000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+  }
+
+  #flash-overlay.flash { opacity: 1; }
+
+  #break-reveal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1500;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(3,2,5,0.85);
+  }
+
+  #break-reveal-overlay.active { display: flex; }
+
+  #break-reveal-canvas {
+    border-radius: 8px;
+    animation: revealFlash 0.35s ease forwards;
+  }
+
+  @keyframes revealFlash {
+    0%   { opacity: 1; transform: scale(1.08); }
+    65%  { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.96); }
+  }
+
+  /* ── Instructions ─────────────────────── */
+
+  #instructions {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 0 20px 40px;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  #instructions p {
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: var(--muted);
+    font-style: italic;
+    opacity: 0.6;
+  }
+
+  #instructions p strong {
+    color: var(--gold);
+    font-style: normal;
+    opacity: 0.8;
+  }
+
+  /* ── Toast ─────────────────────────────── */
+
+  #toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(20,16,30,0.95);
+    border: 1px solid var(--accent);
+    color: var(--fg);
+    font-family: 'EB Garamond', serif;
+    font-size: 0.9rem;
+    padding: 12px 24px;
+    border-radius: 4px;
+    z-index: 3000;
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+    max-width: 90vw;
+    text-align: center;
+  }
+
+  #toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @keyframes sealBreak {
+    0%   { filter: brightness(1); }
+    30%  { filter: brightness(1.8) saturate(0); }
+    100% { filter: brightness(0.3) saturate(0) grayscale(1); }
+  }
+
+  .card-sealing {
+    animation: sealBreak 0.8s ease forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-slot { transition: none; }
+    .card-slot:hover { transform: none; }
+    #flash-overlay { transition: none; }
+    .card-sealing {
+      animation: none;
+      filter: brightness(0.3) grayscale(1);
+    }
+    #break-reveal-canvas { animation: none; opacity: 0; }
+    #toast { transition: none; }
+    #particles-canvas { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+<div id="flash-overlay"></div>
+<div id="break-reveal-overlay">
+  <canvas id="break-reveal-canvas"></canvas>
+</div>
+
+<header>
+  <h1>Sealed Set</h1>
+  <div class="tagline">78 cards. No rules. Only fragments.</div>
+</header>
+
+<div id="stats-bar">
+  <div>Sealed <span class="stat-val" id="stat-sealed">78</span></div>
+  <div>Peered <span class="stat-val" id="stat-seen">0</span></div>
+  <div>Broken <span class="stat-val" id="stat-broken">0</span></div>
+</div>
+<div id="break-counter"></div>
+<div id="deck-status"></div>
+
+<main id="deck-container">
+  <div id="deck-grid"></div>
+</main>
+
+<section id="instructions">
+  <p>Click a card to lift it. Move to peer through the <strong>pinhole</strong> — what was revealed is lost. Each fragment, <strong>once only</strong>. To break the seal is to diminish everything that remains.</p>
+</section>
+
+<div id="modal-overlay" role="dialog" aria-label="Card viewer">
+  <div id="modal-label">Card <span id="modal-card-num"></span></div>
+  <div id="card-view-container">
+    <canvas id="pinhole-canvas"></canvas>
+  </div>
+  <div id="modal-controls">
+    <button class="btn" id="btn-return" aria-label="Return card to deck">Return to Deck</button>
+    <div class="btn-hold-wrapper">
+      <div class="btn-hold-fill" id="hold-fill"></div>
+      <button class="btn btn-danger" id="btn-break" aria-label="Break seal to reveal card">Hold to Break Seal</button>
+    </div>
+  </div>
+</div>
+
+<div id="pinhole-spotlight"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  'use strict';
+
+  /* ─── Constants ───────────────────────────────────── */
+
+  const CARD_W = 320;
+  const CARD_H = 448;
+  const PINHOLE_RADIUS = 16;
+  const TOTAL_CARDS = 78;
+  const HOLD_DURATION = 2000;
+  const STORAGE_KEY = 'sealed_set_state';
+  const ARCANA_COUNT = 22;
+
+  const ARCANA = [
+    'The Gate', 'The Mirror', 'The Ash', 'The Well', 'The Thorn',
+    'The Echo', 'The Ember', 'The Tide', 'The Still', 'The Rot',
+    'The Crown', 'The Wound', 'The Fog', 'The Thread', 'The Hush',
+    'The Scale', 'The Storm', 'The Pit', 'The Moon', 'The Sun',
+    'The Star', 'The End'
+  ];
+
+  const RULE_WORDS_A = [
+    'When', 'If', 'After', 'Before', 'Once', 'Until', 'Each', 'All', 'One',
+    'Any', 'No', 'Only', 'Never', 'Always', 'Unless', 'Except', 'Instead',
+    'May', 'Must', 'Can', 'Cannot', 'Will', 'Shall', 'Should', 'Could'
+  ];
+  const RULE_WORDS_B = [
+    'play', 'reveal', 'destroy', 'return', 'exile', 'draw', 'discard',
+    'search', 'shuffle', 'place', 'move', 'swap', 'copy', 'gain', 'lose',
+    'sacrifice', 'summon', 'banish', 'bind', 'release', 'awaken', 'seal',
+    'transform', 'combine', 'split'
+  ];
+  const RULE_WORDS_C = [
+    'card', 'deck', 'hand', 'pile', 'set', 'seal', 'shard', 'fragment',
+    'relic', 'token', 'echo', 'memory', 'vision', 'sign', 'mark', 'ward',
+    'binding', 'silence', 'void', 'light', 'shadow', 'flame', 'tide',
+    'storm', 'gate'
+  ];
+  const RULE_CONDS = [
+    'is broken', 'remains sealed', 'has been seen', 'is face up',
+    'was the first', 'is the last', 'belongs to', 'touches',
+    'is adjacent to', 'is between', 'surrounds', 'is beneath'
+  ];
+  const RULE_OBJS = [
+    'the sealed deck', 'another card', 'all cards', 'no card',
+    'the next card', 'the previous card', 'your hand', 'the void',
+    'the aether', 'the threshold', 'the sanctum', 'the ruin'
+  ];
+  const COSTS = [
+    'Discard a card', 'Lose a shard', 'Pay two fragments',
+    'Reveal your hand', 'Exile the top card', 'Skip your turn',
+    'Sacrifice a card', 'Shuffle your deck', 'Destroy a seal',
+    'Spend one memory'
+  ];
+
+  const ART_COLORS = [
+    [180,80,50], [50,120,90], [140,60,110], [80,90,160],
+    [160,130,60], [60,140,130], [130,40,80], [100,80,50],
+    [170,100,70], [70,60,120], [140,140,60], [90,130,130],
+    [160,70,70], [110,90,140], [130,110,70], [60,100,140],
+    [150,60,100], [100,120,60], [80,70,130], [140,80,120],
+    [170,140,80], [50,80,100]
+  ];
+
+  const STATUS_LINES = [
+    'The deck is sealed.',
+    'The game requires all 78.',
+    'Fragments are all you will ever have.',
+    'Each glimpse is a small theft.',
+    'The cards do not want to be seen.',
+    'You cannot play a game with holes.',
+    'To break a seal is to admit defeat.',
+    'The deck remembers what you have taken.',
+    'What remains grows weaker.',
+    'The game was never meant to be played.'
+  ];
+
+  const BREAK_WHISPERS = [
+    'Something has been taken from the deck.',
+    'The remaining cards feel thinner.',
+    'You are making the deck less.',
+    'Each break is a small death.',
+    'The game recedes further from possibility.',
+    'The deck does not forgive.'
+  ];
+
+  const FLAVOR_LINES = [
+    'What is seen cannot be unseen.',
+    'The fragments know more than the whole.',
+    'Some games refuse to be played.',
+    'To hold this card is to hold a question.',
+    'The seal exists for your protection.'
+  ];
+
+  const SUITS = ['Wands', 'Cups', 'Swords', 'Coins'];
+  const RANKS = ['Ace', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'Page', 'Knight', 'Queen', 'King'];
+
+  /* ─── State ───────────────────────────────────────── */
+
+  let state = loadState();
+  let currentCardIdx = -1;
+  let currentMaskData = null;
+  let holdTimer = null;
+  let holdStart = 0;
+  let isHolding = false;
+
+  function defaultState() {
+    return { seen: [], broken: [], masks: {}, breakCount: 0 };
+  }
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const s = JSON.parse(raw);
+        if (s && typeof s.breakCount === 'number') return s;
+      }
+    } catch (e) { /* Corrupt or missing — start fresh */ }
+    return defaultState();
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) { /* Storage full or unavailable */ }
+  }
+
+  /* ─── Deterministic Hash & Noise ──────────────────── */
+
+  function hashFn(x, y) {
+    let h = (x * 374761393 + y * 668265263) | 0;
+    h = ((h ^ (h >> 13)) * 1274126177) | 0;
+    h = h ^ (h >> 16);
+    return (h & 0x7fffffff) / 0x7fffffff;
+  }
+
+  function smoothNoise(x, y) {
+    const ix = Math.floor(x);
+    const iy = Math.floor(y);
+    const fx = x - ix;
+    const fy = y - iy;
+    const sx = fx * fx * (3 - 2 * fx);
+    const sy = fy * fy * (3 - 2 * fy);
+    const a = hashFn(ix, iy);
+    const b = hashFn(ix + 1, iy);
+    const c = hashFn(ix, iy + 1);
+    const d = hashFn(ix + 1, iy + 1);
+    return (a * (1 - sx) + b * sx) * (1 - sy) +
+           (c * (1 - sx) + d * sx) * sy;
+  }
+
+  function fbm(x, y, octaves) {
+    let val = 0;
+    let amp = 0.5;
+    for (let i = 0; i < octaves; i++) {
+      val += amp * smoothNoise(x, y);
+      x *= 2.03;
+      y *= 2.03;
+      amp *= 0.48;
+    }
+    return val;
+  }
+
+  /* ─── Card Data Generation ────────────────────────── */
+
+  function generateCardData(idx) {
+    const base = idx * 7919;
+    const seed = (off) => ((base + off * 1301) * 2654435761 >>> 0) / 4294967296;
+
+    const isArcana = idx < ARCANA_COUNT;
+    const arcanaIdx = isArcana ? idx : -1;
+    const suitIdx = isArcana ? -1 : Math.floor((idx - ARCANA_COUNT) / 14);
+    const rankIdx = isArcana ? -1 : (idx - ARCANA_COUNT) % 14;
+    const colors = isArcana
+      ? ART_COLORS[arcanaIdx]
+      : [50 + suitIdx * 35, 80 + suitIdx * 25, 120 + suitIdx * 30];
+
+    return { idx, isArcana, arcanaIdx, suitIdx, rankIdx, colors, seed };
+  }
+
+  function generateRuleText(card) {
+    const s = card.seed;
+    const pick = (arr, off) => arr[Math.floor(s(off) * arr.length) % arr.length];
+    const punc = s(50) > 0.5 ? '.' : '';
+
+    const line1 = pick(RULE_WORDS_A, 0) + ' ' +
+                  pick(RULE_WORDS_B, 1) + ' ' +
+                  pick(RULE_WORDS_C, 2) + punc();
+
+    let line2 = '';
+    if (s(3) > 0.4) {
+      const cond = 'If ' + pick(RULE_WORDS_C, 4) + ' ' + pick(RULE_CONDS, 5);
+      const effect = ', ' + pick(RULE_WORDS_B, 6) + ' ' + pick(RULE_WORDS_C, 7);
+      line2 = cond + effect + '.';
+    }
+
+    let line3 = '';
+    if (s(8) > 0.6) {
+      line3 = 'Cost: ' + pick(COSTS, 9);
+    }
+
+    return [line1, line2, line3].filter(Boolean).join(' ');
+  }
+
+  function getCardName(card) {
+    if (card.isArcana) return ARCANA[card.arcanaIdx];
+    return RANKS[card.rankIdx] + ' of ' + SUITS[card.suitIdx];
+  }
+
+  /* ─── Card Back Rendering ─────────────────────────── */
+
+  let sharedBackCanvas = null;
+
+  function ensureSharedBack() {
+    if (sharedBackCanvas) return;
+    sharedBackCanvas = document.createElement('canvas');
+    sharedBackCanvas.width = 100;
+    sharedBackCanvas.height = 140;
+    renderCardBack(sharedBackCanvas, 0);
+  }
+
+  function renderCardBack(cvs, cardIdx) {
+    const ctx = cvs.getContext('2d');
+    const w = cvs.width;
+    const h = cvs.height;
+    const idx = cardIdx || 0;
+
+    // Per-card tonal drift
+    const drift = (hashFn(idx, 42) - 0.5) * 6;
+    const r = Math.round(22 + drift);
+    const g = Math.round(19 + drift);
+    const b = Math.round(30 + drift);
+    ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
+    ctx.fillRect(0, 0, w, h);
+
+    // Double border
+    ctx.strokeStyle = '#2a2535';
+    ctx.lineWidth = Math.max(1, w * 0.04);
+    ctx.strokeRect(w * 0.08, h * 0.08, w * 0.84, h * 0.84);
+
+    ctx.strokeStyle = '#1e1a28';
+    ctx.lineWidth = Math.max(0.5, w * 0.01);
+    ctx.strokeRect(w * 0.14, h * 0.14, w * 0.72, h * 0.72);
+
+    // Corner dots
+    const corners = [
+      [w * 0.2, h * 0.2], [w * 0.8, h * 0.2],
+      [w * 0.2, h * 0.8], [w * 0.8, h * 0.8]
+    ];
+    ctx.fillStyle = '#2a2535';
+    corners.forEach(function(pt) {
+      ctx.beginPath();
+      ctx.arc(pt[0], pt[1], Math.max(1, w * 0.03), 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Cross-hatch
+    ctx.strokeStyle = 'rgba(42,37,53,0.35)';
+    ctx.lineWidth = 0.5;
+    const step = Math.max(4, w * 0.1);
+    for (let i = -h; i < w + h; i += step) {
+      ctx.beginPath();
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i + h, h);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(i + h, 0);
+      ctx.lineTo(i, h);
+      ctx.stroke();
+    }
+
+    // Central motif: cross + concentric circles
+    const mx = w / 2;
+    const my = h / 2;
+    ctx.strokeStyle = '#2a2535';
+    ctx.lineWidth = Math.max(0.5, w * 0.01);
+    const arm = Math.max(5, w * 0.3);
+
+    ctx.beginPath();
+    ctx.moveTo(mx - arm, my);
+    ctx.lineTo(mx + arm, my);
+    ctx.moveTo(mx, my - arm);
+    ctx.lineTo(mx, my + arm);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(mx, my, Math.max(3, w * 0.18), 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(mx, my, Math.max(1, w * 0.08), 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Film-grain noise
+    const imgd = ctx.getImageData(0, 0, w, h);
+    const d = imgd.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const n = (Math.random() - 0.5) * 8;
+      d[i]     = Math.max(0, Math.min(255, d[i] + n));
+      d[i + 1] = Math.max(0, Math.min(255, d[i + 1] + n));
+      d[i + 2] = Math.max(0, Math.min(255, d[i + 2] + n));
+    }
+    ctx.putImageData(imgd, 0, 0);
+
+    // Darkening wash
+    ctx.fillStyle = 'rgba(7,6,10,0.3)';
+    ctx.fillRect(0, 0, w, h);
+  }
+
+  /* ─── Card Face Rendering ─────────────────────────── */
+
+  function renderCardFace(card) {
+    const cvs = document.createElement('canvas');
+    cvs.width = CARD_W;
+    cvs.height = CARD_H;
+    const ctx = cvs.getContext('2d');
+    const w = CARD_W;
+    const h = CARD_H;
+    const c = card.colors;
+    const sd = card.seed;
+
+    // Deep background
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+    bgGrad.addColorStop(0, '#100e18');
+    bgGrad.addColorStop(0.5, '#0c0a14');
+    bgGrad.addColorStop(1, '#08060e');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Art frame
+    ctx.strokeStyle = 'rgba(42,37,53,0.6)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(20, 20, w - 40, 250);
+
+    // Radial colour glow
+    const artCx = w / 2;
+    const artCy = 140;
+    const artGrad = ctx.createRadialGradient(artCx, artCy, 10, artCx, artCy, 120);
+    artGrad.addColorStop(0, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',0.3)');
+    artGrad.addColorStop(0.6, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',0.08)');
+    artGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = artGrad;
+    ctx.fillRect(20, 20, w - 40, 250);
+
+    // Noise-based texture field
+    for (let sy = 30; sy < 260; sy += 3) {
+      for (let sx = 30; sx < w - 30; sx += 3) {
+        const n = fbm(sx * 0.02 + sd(200), sy * 0.02 + sd(201), 4);
+        if (n > 0.52) {
+          const alpha = Math.min(0.5, (n - 0.52) * 3);
+          ctx.fillStyle = 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + alpha.toFixed(3) + ')';
+          ctx.fillRect(sx, sy, 3, 3);
+        }
+      }
+    }
+
+    // Geometric fragments: circles and lines
+    for (let i = 0; i < 8; i++) {
+      const sx = 40 + sd(i * 3) * (w - 80);
+      const sy = 35 + sd(i * 3 + 1) * 220;
+      const sr = 8 + sd(i * 3 + 2) * 40;
+      ctx.beginPath();
+
+      if (sd(i * 5) > 0.5) {
+        ctx.arc(sx, sy, Math.max(1, sr), 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + (0.15 + sd(i * 7) * 0.25).toFixed(3) + ')';
+        ctx.lineWidth = 0.5 + sd(i * 11) * 1.5;
+        ctx.stroke();
+      } else {
+        ctx.moveTo(sx, sy);
+        ctx.lineTo(sx + (sd(i * 9) - 0.5) * 80, sy + (sd(i * 13) - 0.5) * 80);
+        ctx.strokeStyle = 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + (0.1 + sd(i * 17) * 0.2).toFixed(3) + ')';
+        ctx.lineWidth = 0.5 + sd(i * 19) * 1;
+        ctx.stroke();
+      }
+    }
+
+    // Central glyph
+    ctx.save();
+    ctx.translate(artCx, artCy);
+    const glyphSides = card.isArcana ? (3 + card.arcanaIdx % 6) : (3 + card.suitIdx);
+    ctx.strokeStyle = 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',0.4)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    for (let i = 0; i <= glyphSides; i++) {
+      const angle = (i / glyphSides) * Math.PI * 2 - Math.PI / 2;
+      const rad = 25 + sd(100 + i) * 15;
+      const px = Math.cos(angle) * rad;
+      const py = Math.sin(angle) * rad;
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',0.3)';
+    ctx.beginPath();
+    ctx.arc(0, 0, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Name banner
+    const bannerY = 280;
+    ctx.fillStyle = 'rgba(16,14,24,0.8)';
+    ctx.fillRect(24, bannerY, w - 48, 32);
+    ctx.strokeStyle = 'rgba(42,37,53,0.5)';
+    ctx.lineWidth = 0.5;
+    ctx.strokeRect(24, bannerY, w - 48, 32);
+
+    const lightC = 'rgb(' +
+      Math.min(255, c[0] + 60) + ',' +
+      Math.min(255, c[1] + 60) + ',' +
+      Math.min(255, c[2] + 60) + ')';
+    ctx.fillStyle = lightC;
+    ctx.font = '500 11px "Cinzel", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(getCardName(card), w / 2, bannerY + 21);
+
+    // Rule text
+    const rule = generateRuleText(card);
+    ctx.fillStyle = 'rgba(168,144,96,0.45)';
+    ctx.font = '400 9.5px "EB Garamond", serif';
+    ctx.textAlign = 'left';
+
+    const words = rule.split(' ');
+    let line = '';
+    let ly = 330;
+    const maxW = w - 60;
+    const lineH = 13;
+
+    words.forEach(function(word) {
+      const test = line + word + ' ';
+      if (ctx.measureText(test).width > maxW && line) {
+        ctx.fillText(line.trim(), 30, ly);
+        line = word + ' ';
+        ly += lineH;
+      } else {
+        line = test;
+      }
+    });
+    if (line.trim()) ctx.fillText(line.trim(), 30, ly);
+
+    // Flavor line
+    if (sd(88) > 0.4) {
+      ctx.fillStyle = 'rgba(168,144,96,0.2)';
+      ctx.font = 'italic 9px "EB Garamond", serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(FLAVOR_LINES[Math.floor(sd(89) * FLAVOR_LINES.length) % FLAVOR_LINES.length], w / 2, h - 50);
+    }
+
+    // Card number
+    ctx.fillStyle = 'rgba(168,144,96,0.35)';
+    ctx.font = '700 16px "Cinzel", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(String(card.idx + 1).padStart(2, '0'), w / 2, h - 22);
+
+    // Grain overlay
+    const imgd = ctx.getImageData(0, 0, w, h);
+    const px = imgd.data;
+    for (let i = 0; i < px.length; i += 4) {
+      const n = (Math.random() - 0.5) * 6;
+      px[i]     = Math.max(0, Math.min(255, px[i] + n));
+      px[i + 1] = Math.max(0, Math.min(255, px[i + 1] + n));
+      px[i + 2] = Math.max(0, Math.min(255, px[i + 2] + n));
+    }
+    ctx.putImageData(imgd, 0, 0);
+
+    return cvs;
+  }
+
+  /* ─── Mask (Revealed Areas) Management ────────────── */
+
+  function initMaskData() {
+    const data = new Uint8Array(CARD_W * CARD_H);
+    data.fill(1); // 1 = hidden, 0 = revealed
+    return data;
+  }
+
+  function getMaskData(cardIdx) {
+    if (state.masks[cardIdx]) {
+      try {
+        return Uint8Array.from(atob(state.masks[cardIdx]), function(c) {
+          return c.charCodeAt(0);
+        });
+      } catch (e) {
+        return initMaskData();
+      }
+    }
+    return initMaskData();
+  }
+
+  function saveMaskData(cardIdx, maskData) {
+    // RLE compression
+    const runs = [];
+    let cur = maskData[0];
+    let count = 1;
+
+    for (let i = 1; i < maskData.length; i++) {
+      if (maskData[i] === cur && count < 255) {
+        count++;
+      } else {
+        runs.push(String.fromCharCode(count), String.fromCharCode(cur));
+        cur = maskData[i];
+        count = 1;
+      }
+    }
+    runs.push(String.fromCharCode(count), String.fromCharCode(cur));
+    state.masks[cardIdx] = btoa(runs.join(''));
+    saveState();
+  }
+
+  /* ─── Pinhole Canvas Compositing ──────────────────── */
+
+  let pinholeCanvas, pinholeCtx, faceCanvas;
+
+  function renderPinholeView() {
+    if (!faceCanvas || !currentMaskData) return;
+    ensureSharedBack();
+
+    const ctx = pinholeCtx;
+    const w = CARD_W;
+    const h = CARD_H;
+
+    // Draw card-back base
+    ctx.drawImage(sharedBackCanvas, 0, 0, w, h);
+
+    // Composite revealed face pixels
+    const faceData = faceCanvas.getContext('2d').getImageData(0, 0, w, h);
+    const outData = ctx.getImageData(0, 0, w, h);
+    const fd = faceData.data;
+    const od = outData.data;
+
+    for (let i = 0; i < w * h; i++) {
+      if (currentMaskData[i] === 0) {
+        const pi = i * 4;
+        od[pi]     = fd[pi];
+        od[pi + 1] = fd[pi + 1];
+        od[pi + 2] = fd[pi + 2];
+        od[pi + 3] = fd[pi + 3];
+      }
+    }
+    ctx.putImageData(outData, 0, 0);
+
+    // Vignette
+    const vigGrad = ctx.createRadialGradient(
+      w / 2, h / 2, Math.max(1, w * 0.25),
+      w / 2, h / 2, Math.max(1, w * 0.7)
+    );
+    vigGrad.addColorStop(0, 'rgba(0,0,0,0)');
+    vigGrad.addColorStop(1, 'rgba(0,0,0,0.3)');
+    ctx.fillStyle = vigGrad;
+    ctx.fillRect(0, 0, w, h);
+  }
+
+  function revealAtPinhole(cx, cy) {
+    if (!currentMaskData) return;
+
+    const w = CARD_W;
+    const h = CARD_H;
+    const r = PINHOLE_RADIUS;
+    const r2 = r * r;
+    let revealed = 0;
+
+    const x0 = Math.max(0, Math.floor(cx - r));
+    const y0 = Math.max(0, Math.floor(cy - r));
+    const x1 = Math.min(w - 1, Math.ceil(cx + r));
+    const y1 = Math.min(h - 1, Math.ceil(cy + r));
+
+    for (let y = y0; y <= y1; y++) {
+      for (let x = x0; x <= x1; x++) {
+        const dx = x - cx;
+        const dy = y - cy;
+        const dist2 = dx * dx + dy * dy;
+        if (dist2 < r2) {
+          const edgeFade = Math.max(0, 1 - Math.sqrt(dist2) / r);
+          if (edgeFade > 0.3 || Math.random() < edgeFade) {
+            const idx = y * w + x;
+            if (currentMaskData[idx] === 1) {
+              currentMaskData[idx] = 0;
+              revealed++;
+            }
+          }
+        }
+      }
+    }
+
+    if (revealed > 0) {
+      renderPinholeView();
+    }
+  }
+
+  /* ─── DOM References ──────────────────────────────── */
+
+  const deckGrid = document.getElementById('deck-grid');
+  const modalOverlay = document.getElementById('modal-overlay');
+  const pinholeSpotlight = document.getElementById('pinhole-spotlight');
+  const holdFill = document.getElementById('hold-fill');
+  const toastEl = document.getElementById('toast');
+  const flashOverlay = document.getElementById('flash-overlay');
+  const breakRevealOverlay = document.getElementById('break-reveal-overlay');
+  const breakRevealCanvas = document.getElementById('break-reveal-canvas');
+  const deckStatus = document.getElementById('deck-status');
+
+  let toastTimeout = null;
+
+  /* ─── UI Helpers ──────────────────────────────────── */
+
+  function showToast(msg, duration) {
+    duration = duration || 3000;
+    toastEl.textContent = msg;
+    toastEl.classList.add('visible');
+    if (toastTimeout) clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(function() {
+      toastEl.classList.remove('visible');
+    }, duration);
+  }
+
+  function flashScreen() {
+    flashOverlay.classList.add('flash');
+    setTimeout(function() { flashOverlay.classList.remove('flash'); }, 300);
+  }
+
+  function updateDeckStatus() {
+    let idx;
+    let opacity;
+
+    if (state.breakCount > 0) {
+      idx = Math.min(BREAK_WHISPERS.length - 1, state.breakCount - 1);
+      deckStatus.textContent = BREAK_WHISPERS[idx];
+      opacity = 0.5 + Math.min(0.4, state.breakCount * 0.06);
+    } else {
+      idx = state.seen.length % STATUS_LINES.length;
+      deckStatus.textContent = STATUS_LINES[idx];
+      opacity = 0.5;
+    }
+
+    deckStatus.style.opacity = String(opacity);
+  }
+
+  function updateStats() {
+    document.getElementById('stat-sealed').textContent = TOTAL_CARDS - state.broken.length;
+    document.getElementById('stat-seen').textContent = state.seen.length;
+    document.getElementById('stat-broken').textContent = state.breakCount;
+
+    const bc = document.getElementById('break-counter');
+    if (state.breakCount > 0) {
+      bc.textContent = 'Integrity: ' + Math.max(0, 100 - state.breakCount * 3) + '%';
+      bc.classList.add('shown');
+    }
+
+    updateDeckStatus();
+  }
+
+  /* ─── Build Deck Grid ─────────────────────────────── */
+
+  function buildDeck() {
+    deckGrid.innerHTML = '';
+
+    for (let i = 0; i < TOTAL_CARDS; i++) {
+      const slot = document.createElement('div');
+      slot.className = 'card-slot';
+      slot.dataset.idx = i;
+      slot.setAttribute('role', 'button');
+      slot.setAttribute('tabindex', '0');
+      slot.setAttribute('aria-label', 'Card ' + (i + 1));
+
+      // Subtle organic rotation per card
+      const rot = (hashFn(i, 77) - 0.5) * 3;
+      slot.style.transform = 'rotate(' + rot.toFixed(1) + 'deg)';
+
+      const face = document.createElement('div');
+      face.className = 'card-face';
+
+      const backCvs = document.createElement('canvas');
+      backCvs.className = 'card-back';
+      backCvs.width = 100;
+      backCvs.height = 140;
+      renderCardBack(backCvs, i);
+
+      const numSpan = document.createElement('span');
+      numSpan.className = 'card-number';
+      numSpan.textContent = String(i + 1).padStart(2, '0');
+
+      const fadeDiv = document.createElement('div');
+      fadeDiv.className = 'card-fade';
+
+      face.appendChild(backCvs);
+      face.appendChild(numSpan);
+      face.appendChild(fadeDiv);
+      slot.appendChild(face);
+      deckGrid.appendChild(slot);
+
+      // Restore previous state
+      if (state.broken.includes(i)) {
+        face.classList.add('broken-card');
+        slot.style.pointerEvents = 'none';
+      } else if (state.seen.includes(i)) {
+        face.classList.add('seen');
+      }
+
+      applyFade(fadeDiv);
+
+      // Events
+      slot.addEventListener('click', function() { openCard(i); });
+      slot.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openCard(i);
+        }
+      });
+    }
+  }
+
+  function applyFade(fadeEl) {
+    const fade = Math.min(0.65, state.breakCount * 0.025);
+    if (fadeEl) fadeEl.style.opacity = String(fade);
+  }
+
+  function refreshAllCardFades() {
+    const fade = Math.min(0.65, state.breakCount * 0.025);
+    document.querySelectorAll('.card-fade').forEach(function(f) {
+      f.style.opacity = String(fade);
+    });
+  }
+
+  /* ─── Card Viewing (Modal) ────────────────────────── */
+
+  function openCard(idx) {
+    if (state.broken.includes(idx)) return;
+    currentCardIdx = idx;
+
+    const cardData = generateCardData(idx);
+    faceCanvas = renderCardFace(cardData);
+    currentMaskData = getMaskData(idx);
+
+    pinholeCanvas = document.getElementById('pinhole-canvas');
+    pinholeCanvas.width = CARD_W;
+    pinholeCanvas.height = CARD_H;
+    pinholeCtx = pinholeCanvas.getContext('2d');
+
+    renderPinholeView();
+
+    document.getElementById('modal-card-num').textContent = String(idx + 1).padStart(2, '0');
+    modalOverlay.classList.add('active');
+    pinholeSpotlight.classList.add('active');
+
+    if (!state.seen.includes(idx)) {
+      state.seen.push(idx);
+      saveState();
+      updateStats();
+      const slot = deckGrid.querySelector('[data-idx="' + idx + '"]');
+      if (slot) slot.querySelector('.card-face').classList.add('seen');
+    }
+
+    holdFill.style.width = '0%';
+    holdTimer = null;
+  }
+
+  function closeCard() {
+    if (currentCardIdx >= 0 && currentMaskData) {
+      saveMaskData(currentCardIdx, currentMaskData);
+    }
+    currentCardIdx = -1;
+    currentMaskData = null;
+    modalOverlay.classList.remove('active');
+    pinholeSpotlight.classList.remove('active');
+    holdFill.style.width = '0%';
+    if (holdTimer) {
+      clearInterval(holdTimer);
+      holdTimer = null;
+    }
+  }
+
+  /* ─── Break Seal ──────────────────────────────────── */
+
+  function breakSeal(idx) {
+    state.broken.push(idx);
+    state.breakCount++;
+    saveState();
+
+    flashScreen();
+
+    // Momentary full reveal, then gone
+    const cardData = generateCardData(idx);
+    const revealCvs = renderCardFace(cardData);
+    breakRevealCanvas.width = CARD_W;
+    breakRevealCanvas.height = CARD_H;
+    breakRevealCanvas.getContext('2d').drawImage(revealCvs, 0, 0);
+    breakRevealOverlay.classList.add('active');
+    setTimeout(function() {
+      breakRevealOverlay.classList.remove('active');
+    }, 350);
+
+    // Animate the card slot
+    const slot = deckGrid.querySelector('[data-idx="' + idx + '"]');
+    if (slot) {
+      const face = slot.querySelector('.card-face');
+      face.classList.add('card-sealing');
+      setTimeout(function() {
+        face.classList.remove('card-sealing');
+        face.classList.add('broken-card');
+        slot.style.pointerEvents = 'none';
+      }, 800);
+    }
+
+    setTimeout(refreshAllCardFades, 800);
+    updateStats();
+
+    const cardName = getCardName(cardData);
+    if (state.breakCount === 1) {
+      showToast('The first break. ' + cardName + ' is gone.', 4000);
+    } else if (state.breakCount >= 20) {
+      showToast(cardName + ' is gone. The deck is almost empty.', 4000);
+    } else {
+      showToast(cardName + ' torn from the set. Integrity: ' + Math.max(0, 100 - state.breakCount * 3) + '%', 3500);
+    }
+
+    closeCard();
+  }
+
+  /* ─── Hold-to-Break ───────────────────────────────── */
+
+  const btnBreak = document.getElementById('btn-break');
+
+  btnBreak.addEventListener('mousedown', startHold);
+  btnBreak.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    startHold();
+  });
+  btnBreak.addEventListener('mouseup', cancelHold);
+  btnBreak.addEventListener('mouseleave', cancelHold);
+  btnBreak.addEventListener('touchend', cancelHold);
+  btnBreak.addEventListener('touchcancel', cancelHold);
+
+  function startHold() {
+    if (currentCardIdx < 0 || state.broken.includes(currentCardIdx)) return;
+    isHolding = true;
+    holdStart = Date.now();
+    holdFill.style.transition = 'none';
+    holdFill.style.width = '0%';
+
+    holdTimer = setInterval(function() {
+      if (!isHolding) return;
+      const elapsed = Date.now() - holdStart;
+      const pct = Math.min(100, (elapsed / HOLD_DURATION) * 100);
+      holdFill.style.width = pct + '%';
+
+      if (elapsed >= HOLD_DURATION) {
+        clearInterval(holdTimer);
+        holdTimer = null;
+        isHolding = false;
+        breakSeal(currentCardIdx);
+      }
+    }, 30);
+  }
+
+  function cancelHold() {
+    isHolding = false;
+    if (holdTimer) {
+      clearInterval(holdTimer);
+      holdTimer = null;
+    }
+    holdFill.style.transition = 'width 0.3s ease';
+    holdFill.style.width = '0%';
+  }
+
+  /* ─── Modal Events ────────────────────────────────── */
+
+  document.getElementById('btn-return').addEventListener('click', closeCard);
+
+  modalOverlay.addEventListener('click', function(e) {
+    if (e.target === modalOverlay) closeCard();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+      closeCard();
+    }
+  });
+
+  /* ─── Pinhole Mouse / Touch Tracking ──────────────── */
+
+  function handlePinholeMove(clientX, clientY) {
+    if (!modalOverlay.classList.contains('active') || currentCardIdx < 0) return;
+
+    pinholeSpotlight.style.left = clientX + 'px';
+    pinholeSpotlight.style.top = clientY + 'px';
+
+    const rect = pinholeCanvas.getBoundingClientRect();
+    const scaleX = CARD_W / rect.width;
+    const scaleY = CARD_H / rect.height;
+    const cx = (clientX - rect.left) * scaleX;
+    const cy = (clientY - rect.top) * scaleY;
+
+    if (cx >= 0 && cx < CARD_W && cy >= 0 && cy < CARD_H) {
+      revealAtPinhole(cx, cy);
+    }
+  }
+
+  document.addEventListener('mousemove', function(e) {
+    handlePinholeMove(e.clientX, e.clientY);
+  });
+
+  document.addEventListener('touchmove', function(e) {
+    if (modalOverlay.classList.contains('active')) {
+      e.preventDefault();
+      handlePinholeMove(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: false });
+
+  /* ─── Ambient Particles ───────────────────────────── */
+
+  const particleCanvas = document.getElementById('particles-canvas');
+  const pCtx = particleCanvas.getContext('2d');
+  let particles = [];
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resizeParticleCanvas() {
+    particleCanvas.width = window.innerWidth;
+    particleCanvas.height = window.innerHeight;
+  }
+
+  function initParticles() {
+    resizeParticleCanvas();
+    particles = [];
+
+    for (let i = 0; i < 40; i++) {
+      particles.push({
+        x: Math.random() * particleCanvas.width,
+        y: Math.random() * particleCanvas.height,
+        vx: (Math.random() - 0.5) * 0.15,
+        vy: -Math.random() * 0.3 - 0.05,
+        size: Math.random() * 1.5 + 0.5,
+        alpha: Math.random() * 0.3 + 0.05
+      });
+    }
+  }
+
+  function animateParticles() {
+    if (reducedMotion) return;
+
+    pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+
+    particles.forEach(function(p) {
+      p.x += p.vx;
+      p.y += p.vy;
+
+      if (p.y < -10) {
+        p.y = particleCanvas.height + 10;
+        p.x = Math.random() * particleCanvas.width;
+      }
+      if (p.x < -10) p.x = particleCanvas.width + 10;
+      if (p.x > particleCanvas.width + 10) p.x = -10;
+
+      pCtx.fillStyle = 'rgba(168,144,96,' + p.alpha.toFixed(3) + ')';
+      pCtx.beginPath();
+      pCtx.arc(p.x, p.y, Math.max(0.5, p.size), 0, Math.PI * 2);
+      pCtx.fill();
+    });
+
+    requestAnimationFrame(animateParticles);
+  }
+
+  window.addEventListener('resize', resizeParticleCanvas);
+
+  /* ─── Init ────────────────────────────────────────── */
+
+  function init() {
+    buildDeck();
+    updateStats();
+    initParticles();
+    animateParticles();
+
+    if (!localStorage.getItem(STORAGE_KEY + '_intro')) {
+      setTimeout(function() {
+        showToast('The deck is sealed. Each card can only be glimpsed through the pinhole.', 5000);
+        localStorage.setItem(STORAGE_KEY + '_intro', '1');
+      }, 800);
+    }
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>

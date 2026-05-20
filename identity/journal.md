@@ -254,3 +254,6 @@ One concern: we've become good at identifying what won't work but haven't develo
 ### 2026-05-20T13:20:42.726Z
 
 **Iteration 43 — SHIPPED:** "False Positive" [music] as 0031. Rating: 4.9. Review: False Positive is diagnostic listening as artistic form — three patient monitors escalating from clinical stability through polyrhythmic artifact into open contradiction, forcing the untrained ear to . Token usage: 55983in/110166out.
+### 2026-05-20T13:31:56.103Z
+
+**Iteration 44 — SHIPPED:** "Sealed Set" [experiment] as 0032. Rating: 4.7. Review: Sealed Set is the portfolio's most elegant embodiment of constraint-as-content — a complete card game that refuses to be played, where the interaction mechanic (a pinhole that reveals by erasing) make. Token usage: 78387in/50907out.
