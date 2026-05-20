@@ -37,3 +37,4 @@
 | 0033 | The Appointment | code-game | 5.0 | 2026-05-20 | — |
 | 0034 | Dead Pixels | code-art | 4.6 | 2026-05-20 | — |
 | 0035 | Obsolescence Schedule | essay | 4.3 | 2026-05-20 | — |
+| 0036 | Conjectural Portrait | essay | 5.0 | 2026-05-20 | — |
