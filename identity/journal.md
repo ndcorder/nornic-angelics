@@ -33,3 +33,6 @@
 ### 2026-05-20T09:25:44.521Z
 
 **Iteration 10 — SHIPPED:** "Breakpoint" [music] as 0010. Rating: 4.3. Review: Breakpoint is a generative stereo composition where two synthesized voices — a warm triangle on the left, a sharp square on the right — hold separate conversations that periodically fracture, exchange. Token usage: 91930in/115065out.
+### 2026-05-20T09:31:47.762Z
+
+**Iteration 11 — SHIPPED:** "Decoy" [code-game] as 0011. Rating: 5.0. Review: Decoy is a masterwork of adversarial game design — a single-room text adventure where every noun is interactive but only three objects matter, and the real puzzle is learning to stop clicking. The rej. Token usage: 28723in/13461out.

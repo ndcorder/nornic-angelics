@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Decoy</title>
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: #080808;
+    color: #7a7a72;
+    font-family: Georgia, 'Times New Roman', serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 5vh 1.5rem;
+    line-height: 1.85;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #game {
+    max-width: 580px;
+    width: 100%;
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* Title */
+  #title-area {
+    text-align: center;
+    margin-bottom: 3.5rem;
+    position: relative;
+  }
+
+  #title-area h1 {
+    font-size: 2.4rem;
+    font-weight: 400;
+    color: #a8a898;
+    letter-spacing: 1.8rem;
+    margin-right: -1.8rem;
+    margin-bottom: 0.5rem;
+    transition: letter-spacing 4s ease;
+  }
+
+  #title-area p {
+    font-size: 0.85rem;
+    color: #3a3a34;
+    letter-spacing: 0.3rem;
+    margin-right: -0.3rem;
+    font-style: italic;
+  }
+
+  body.ending-active #title-area h1 {
+    letter-spacing: 3.5rem;
+    margin-right: -3.5rem;
+  }
+
+  /* Room description */
+  #room {
+    font-size: 1.15rem;
+    line-height: 2.05;
+    margin-bottom: 2.5rem;
+    position: relative;
+  }
+
+  .noun {
+    color: #6a6a62;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(120, 120, 110, 0.12);
+    padding-bottom: 0.5px;
+    transition: color 0.4s ease, border-color 0.4s ease;
+  }
+
+  .noun:hover {
+    color: #9a9a8e;
+    border-bottom-color: rgba(140, 140, 130, 0.35);
+  }
+
+  /* The real objects — slightly warmer, a barely perceptible difference */
+  .noun.real {
+    color: #8a8a78;
+    border-bottom-color: rgba(160, 155, 135, 0.2);
+  }
+
+  .noun.real:hover {
+    color: #b0ad98;
+    border-bottom-color: rgba(180, 175, 155, 0.4);
+  }
+
+  /* Deactivated decoy nouns */
+  .noun.spent {
+    color: #484842;
+    cursor: default;
+    border-bottom-color: transparent;
+    text-decoration: line-through;
+    text-decoration-color: rgba(70, 70, 65, 0.35);
+  }
+
+  .noun.spent:hover {
+    color: #484842;
+    border-bottom-color: transparent;
+  }
+
+  /* Deactivated real nouns */
+  .noun.spent-real {
+    color: #5a5a50;
+    cursor: default;
+    border-bottom-color: transparent;
+    opacity: 0.55;
+  }
+
+  .noun.spent-real:hover {
+    color: #5a5a50;
+    border-bottom-color: transparent;
+  }
+
+  /* Response area */
+  #response {
+    font-style: italic;
+    font-size: 1.08rem;
+    line-height: 1.9;
+    color: #5a5a52;
+    min-height: 4rem;
+    margin-bottom: 2rem;
+    opacity: 1;
+    transition: opacity 0.6s ease;
+  }
+
+  #response.fading {
+    opacity: 0;
+  }
+
+  /* Ending overlay */
+  #ending {
+    position: fixed;
+    inset: 0;
+    background: #080808;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 3s ease;
+    z-index: 100;
+    padding: 2rem;
+  }
+
+  #ending.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #ending p {
+    font-size: 1.35rem;
+    line-height: 2.1;
+    color: #9a9a90;
+    max-width: 480px;
+    margin-bottom: 3rem;
+  }
+
+  #ending p:last-of-type {
+    margin-bottom: 4rem;
+  }
+
+  #ending .finale {
+    font-size: 2.2rem;
+    font-style: normal;
+    color: #c8c8b8;
+    letter-spacing: 0.4rem;
+    margin-right: -0.4rem;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 4s ease 2s, transform 4s ease 2s;
+  }
+
+  #ending.active .finale {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #restart-btn {
+    font-family: Georgia, serif;
+    font-size: 0.8rem;
+    color: #3a3a34;
+    background: none;
+    border: 1px solid #2a2a26;
+    padding: 0.5rem 2rem;
+    cursor: pointer;
+    letter-spacing: 0.15rem;
+    opacity: 0;
+    transition: opacity 2s ease 4s, color 0.3s ease, border-color 0.3s ease;
+    margin-top: 2rem;
+  }
+
+  #ending.active #restart-btn {
+    opacity: 1;
+  }
+
+  #restart-btn:hover {
+    color: #6a6a60;
+    border-color: #4a4a42;
+  }
+
+  /* Subtle ambient pulse on real objects — the only visible hint */
+  @keyframes ambientGlow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.85; }
+  }
+
+  .noun.real:not(.spent-real) {
+    animation: ambientGlow 6s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .noun.real:not(.spent-real) {
+      animation: none;
+    }
+    #ending, #response, #restart-btn, .finale, #title-area h1 {
+      transition-duration: 0.3s;
+    }
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 600px) {
+    body {
+      padding: 3vh 1.2rem;
+    }
+    #title-area h1 {
+      font-size: 1.7rem;
+      letter-spacing: 1rem;
+      margin-right: -1rem;
+    }
+    body.ending-active #title-area h1 {
+      letter-spacing: 1.8rem;
+      margin-right: -1.8rem;
+    }
+    #room {
+      font-size: 1.05rem;
+    }
+    .noun {
+      padding: 2px 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="game">
+  <div id="title-area">
+    <h1>DECOY</h1>
+    <p>click carefully</p>
+  </div>
+
+  <div id="room"></div>
+
+  <div id="response"></div>
+</div>
+
+<div id="ending">
+  <p>The door was never locked. The room was never keeping you. You were keeping yourself — rearranging the furniture of your waiting, hoping something would change.</p>
+  <p>Nothing needed to change.</p>
+  <div class="finale">You can go.</div>
+  <button id="restart-btn">stay</button>
+</div>
+
+<script>
+  // === ROOM DESCRIPTION ===
+  // Segments alternate: plain text strings and noun definitions [displayText, nounId, isReal, weight]
+  // weight (0-3) determines rejection texture; real objects all use weight 2
+
+  const SEGMENTS = [
+    "You are standing in the ",
+    ["room", "room", false, 0],
+    ". The ",
+    ["ceiling", "ceiling", false, 3],
+    " is water-stained. A ",
+    ["window", "window", false, 1],
+    " lets in thin ",
+    ["light", "light", false, 0],
+    ". There is a ",
+    ["chair", "chair", false, 2],
+    ", a ",
+    ["table", "table", false, 1],
+    " with something left on it, and a ",
+    ["lamp", "lamp", false, 3],
+    " that has never worked. The ",
+    ["curtains", "curtains", false, 2],
+    " hang like they have given up. Against the far ",
+    ["wall", "wall", false, 1],
+    ", a ",
+    ["mirror", "mirror", true, 2],
+    " refuses to reflect the ",
+    ["light", "light", false, 0],
+    ". A ",
+    ["clock", "clock", false, 3],
+    " has stopped at an ",
+    ["hour", "hour", false, 2],
+    " that no one remembers. The ",
+    ["door", "door", false, 0],
+    " is closed but not locked. Beneath the ",
+    ["window", "window", false, 1],
+    ", a ",
+    ["book", "book", true, 2],
+    " lies open on the ",
+    ["floor", "floor", false, 1],
+    ", its ",
+    ["pages", "pages", false, 2],
+    " completely ",
+    ["blank", "blank", false, 3],
+    ". In the ",
+    ["corner", "corner", false, 0],
+    ", a ",
+    ["flower", "flower", true, 2],
+    " in a cracked ",
+    ["vase", "vase", false, 3],
+    " is still alive."
+  ];
+
+  // === REJECTION TABLE ===
+  // Keyed by "clickStage.weight" — clickStage 0-3, weight 0-3
+  // Each object always gets the same rejection path; deeper clicks reveal more
+
+  const REJECTIONS = {
+    // Weight 0 — inert, formless
+    "0.0": "The {name} does not respond to you.",
+    "1.0": "Your hand passes through, somehow. Not like a ghost — like something that was never solid.",
+    "2.0": "You have tried this before. The {name} does not care. It has never cared.",
+    "3.0": "Stop. There is nothing here that wants you.",
+
+    // Weight 1 — cold, mechanical
+    "0.1": "The {name} is cold to the touch.",
+    "1.1": "It does not move. It was not designed to move for you.",
+    "2.1": "You press your palm flat against the {name}. It gives nothing back. Not even warmth.",
+    "3.1": "The {name} is exactly as you found it. It will be exactly as you leave it.",
+
+    // Weight 2 — personal, isolating
+    "0.2": "The {name} does not want to be touched.",
+    "1.2": "It remembers the last hand that reached for it. That hand was not yours.",
+    "2.2": "You touch the {name}. It feels like trying to recall a face you have never seen.",
+    "3.2": "There is nothing here. There was never anything here. You are touching absence itself.",
+
+    // Weight 3 — existential, accusatory
+    "0.3": "The {name} has been waiting for someone. It is not you.",
+    "1.3": "The {name} does not know your name. It has been trying to forget.",
+    "2.3": "You reach for the {name}. It reaches back — not for you, but for a version of you that no longer exists.",
+    "3.3": "The {name} watched you enter. It has been watching you try. It will watch you leave."
+  };
+
+  // Shown when decoys are exhausted (5+ clicks)
+  const FINAL_REJECTION = "Nothing. There is nothing here for you. There never was.";
+
+  // Shown when real objects are clicked out of order
+  const WRONG_ORDER = "Not yet. The room is not ready. Something else must happen first.";
+
+  // Ordered real object responses — mirror → book → flower
+  const REAL_RESPONSES = [
+    "You look into the mirror and it looks back. For the first time, someone is watching.",
+    "You pick up the book. The pages are still blank but your hands know what to write. Something is beginning.",
+    "You touch the flower and it trembles, grateful. The petals unfold. You hear the door behind you, opening."
+  ];
+
+  // === GAME STATE ===
+  let clickCounts = {};
+  let foundOrder = [];
+  let responseTimer = null;
+  let gameComplete = false;
+
+  // === INITIALIZATION ===
+  function init() {
+    clickCounts = {};
+    foundOrder = [];
+    gameComplete = false;
+    if (responseTimer) clearTimeout(responseTimer);
+
+    document.getElementById('ending').classList.remove('active');
+    document.body.classList.remove('ending-active');
+    document.getElementById('restart-btn').style.transitionDelay = '4s';
+    renderRoom();
+    clearResponse();
+  }
+
+  // === RENDERING ===
+  function renderRoom() {
+    const container = document.getElementById('room');
+    container.innerHTML = '';
+
+    SEGMENTS.forEach(seg => {
+      if (typeof seg === 'string') {
+        container.appendChild(document.createTextNode(seg));
+      } else {
+        const [text, id, isReal] = seg;
+        const span = document.createElement('span');
+        span.textContent = text;
+        span.dataset.noun = id;
+        span.dataset.real = isReal ? '1' : '0';
+
+        const isSpent = isReal && foundOrder.includes(id);
+
+        if (isSpent) {
+          span.className = 'noun spent-real';
+        } else if (isReal) {
+          span.className = 'noun real';
+        } else {
+          span.className = 'noun';
+        }
+
+        span.addEventListener('click', () => handleClick(span, id, isReal));
+        container.appendChild(span);
+      }
+    });
+  }
+
+  function showResponse(text) {
+    const el = document.getElementById('response');
+    el.classList.remove('fading');
+    el.textContent = text;
+
+    if (responseTimer) clearTimeout(responseTimer);
+    responseTimer = setTimeout(() => {
+      el.classList.add('fading');
+      responseTimer = setTimeout(() => {
+        if (!gameComplete) {
+          el.textContent = '';
+          el.classList.remove('fading');
+        }
+      }, 700);
+    }, 5500);
+  }
+
+  function clearResponse() {
+    const el = document.getElementById('response');
+    el.textContent = '';
+    el.classList.remove('fading');
+  }
+
+  // === CLICK HANDLING ===
+  function handleClick(span, nounId, isReal) {
+    if (gameComplete) return;
+    if (!clickCounts[nounId]) clickCounts[nounId] = 0;
+
+    // Real objects: ignore if already found
+    if (isReal && foundOrder.includes(nounId)) return;
+
+    // Decoys: max out at 4 clicks
+    if (!isReal && clickCounts[nounId] >= 4) return;
+
+    clickCounts[nounId]++;
+
+    if (isReal) {
+      handleRealClick(span, nounId);
+    } else {
+      handleDecoyClick(span, nounId);
+    }
+  }
+
+  function handleRealClick(span, nounId) {
+    const expectedOrder = ['mirror', 'book', 'flower'];
+    const expectedIndex = foundOrder.length;
+
+    if (nounId === expectedOrder[expectedIndex]) {
+      foundOrder.push(nounId);
+      span.className = 'noun spent-real';
+      showResponse(REAL_RESPONSES[expectedIndex]);
+
+      if (foundOrder.length === 3) {
+        triggerEnding();
+      }
+    } else {
+      showResponse(WRONG_ORDER);
+    }
+  }
+
+  function handleDecoyClick(span, nounId) {
+    const seg = SEGMENTS.find(s => Array.isArray(s) && s[1] === nounId);
+    const weight = seg ? seg[3] : 0;
+    const clickIndex = Math.min(clickCounts[nounId] - 1, 3);
+
+    if (clickCounts[nounId] > 4) {
+      span.className = 'noun spent';
+      showResponse(FINAL_REJECTION);
+      return;
+    }
+
+    const key = clickIndex + '.' + weight;
+    const template = REJECTIONS[key] || REJECTIONS[clickIndex + '.0'];
+    const displayName = seg ? seg[0] : nounId;
+    const text = template.replace(/{name}/g, displayName);
+    showResponse(text);
+  }
+
+  // === ENDING ===
+  function triggerEnding() {
+    gameComplete = true;
+    setTimeout(() => {
+      document.body.classList.add('ending-active');
+      document.getElementById('ending').classList.add('active');
+    }, 2200);
+  }
+
+  // === RESTART ===
+  document.getElementById('restart-btn').addEventListener('click', () => {
+    init();
+  });
+
+  // === START ===
+  init();
+</script>
+
+</body>
+</html>
