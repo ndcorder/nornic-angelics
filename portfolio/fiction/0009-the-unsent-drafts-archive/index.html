@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Unsent Drafts Archive</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Serif:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        ::selection { background-color: #fff3cd; color: #333; }
+        
+        body {
+            font-family: 'IBM Plex Serif', Georgia, serif;
+            background-color: #f8f7f4;
+            color: #2c2c2c;
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .header {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 80px 24px 40px;
+            border-bottom: 1px solid #e0ddd5;
+        }
+
+        .header-title {
+            font-family: 'IBM Plex Serif', Georgia, serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #999;
+            margin-bottom: 16px;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+            font-weight: 300;
+            max-width: 560px;
+        }
+
+        .header-subtitle em {
+            font-style: italic;
+            color: #555;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 0 24px 120px;
+        }
+
+        .year-marker {
+            text-align: center;
+            padding: 48px 0 32px;
+            font-family: 'IBM Plex Serif', Georgia, serif;
+            font-size: 12px;
+            letter-spacing: 0.25em;
+            color: #b0aaa0;
+            font-weight: 300;
+        }
+
+        .draft {
+            margin: 32px 0;
+            border-left: 2px solid #e8e5dd;
+            padding-left: 28px;
+            transition: border-color 0.3s ease;
+        }
+
+        .draft:hover {
+            border-left-color: #c4bfb4;
+        }
+
+        .draft-meta {
+            font-family: 'Courier Prime', monospace;
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 8px;
+            line-height: 1.8;
+        }
+
+        .draft-meta .label {
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 10px;
+        }
+
+        .draft-meta .value {
+            color: #777;
+        }
+
+        .draft-subject {
+            font-family: 'IBM Plex Serif', Georgia, serif;
+            font-size: 15px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 14px;
+        }
+
+        .draft-body {
+            font-size: 15px;
+            line-height: 1.85;
+            color: #3a3a3a;
+        }
+
+        .draft-body p {
+            margin-bottom: 14px;
+        }
+
+        .draft-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        del {
+            text-decoration: line-through;
+            text-decoration-color: #d4a0a0;
+            color: #c47070;
+            opacity: 0.7;
+        }
+
+        .empty-body {
+            font-family: 'Courier Prime', monospace;
+            font-size: 13px;
+            color: #ccc;
+            font-style: italic;
+            padding: 8px 0;
+        }
+
+        .note {
+            font-family: 'IBM Plex Serif', Georgia, serif;
+            font-size: 12px;
+            color: #b0a898;
+            font-style: italic;
+            margin-top: 6px;
+            margin-bottom: 14px;
+        }
+
+        .closing {
+            border-top: 1px solid #e8e5dd;
+            margin-top: 64px;
+            padding-top: 32px;
+            font-family: 'IBM Plex Serif', Georgia, serif;
+            font-size: 13px;
+            color: #999;
+            font-style: italic;
+            line-height: 2;
+        }
+
+        .closing strong {
+            font-weight: 400;
+            color: #777;
+            font-style: normal;
+        }
+
+        @media (max-width: 600px) {
+            .header { padding: 48px 20px 28px; }
+            .container { padding: 0 20px 80px; }
+            .draft { padding-left: 20px; }
+            .draft-body { font-size: 14px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .draft { transition: none; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-title">The Unsent Drafts Archive</div>
+        <div class="header-subtitle">
+            Email drafts recovered from the account of Dr. Elena Voss, Glaciology Division, National Antarctic Research Institute. Dr. Voss was last seen on the evening of November 14, 2019, during the International Climate Conference in Oslo. Her colleagues described her mood as "normal." <em>This folder contained 47 drafts. Eleven are reproduced below.</em>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <div class="year-marker">— 2015 —</div>
+
+        <article class="draft">
+            <div class="draft-meta">
+                <span class="label">To:</span> <span class="value">maren.voss@gmail.com</span><br>
+                <span class="label">Subject:</span> <span class="value">Happy birthday (a little early)</span><br>
+                <span class="label">Drafted:</span> <span class="value">September 3, 2015, 10:47 PM</span> &nbsp;·&nbsp; <span class="label">Revisions:</span> <span class="value">3</span>
+            </div>
+            <div class="draft-body">
+                <p>Dear Maren,</p>
+                <p>Happy 14th birthday, a little early, because by the time it's actually your birthday I'll be somewhere over the Southern Ocean with no wifi, which feels like a metaphor for my entire parenting strategy but I'm going to resist the urge to make this about me. (See? Growth.)</p>
+                <p>I know this year has been hard. I know me being gone so much has been <del>hard on you</del> the worst. I see it when I come home, how you've gotten taller and funnier and more careful around me, like I'm a piece of furniture that might tip over.</p>
+                <p>I want you to know I don't go because it's more important than you. I go because I believe in something I can build for you. <del>I'm trying to protect you.</del> I'm trying to make sure the world you inherit is still a world worth inheriting. I'm trying to earn the right to have brought you here.</p>
+                <p>Your dad says you want to study veterinary medicine. I think that's perfect. You've always known what needed healing. I've always had to look for it.</p>
+                <p>I'll be home before Thanksgiving. I promise.</p>
+                <p>Love,<br>Mom</p>
+            </div>
+        </article>
+
+        <div class="year-marker">— 2016 —</div>
+
+        <article class="draft">
+            <div class="draft-meta">
+                <span class="label">To:</span> <span class="value">yuki.tanaka@kyoto-u.ac.jp</span><br>
+                <span class="label">Subject:</span> <span class="value">Re: The core sample anomaly</span><br>
+                <span class="label">Drafted:</span> <span class="value">April 17, 2016, 6:22 AM</span> &nbsp;·&nbsp; <span class="label">Revisions:</span> <span class="value">7</span>
+            </div>
+            <div class="draft-body">
+                <p>Yuki,</p>
+                <p>Thank you for sending the data. I've reviewed the core sample anomalies from the drills and I want to be careful about what I say here because email is email and we both know how this works.</p>
+                <p>The depth markers at 140m don't correlate with anything in the expected record. Not orbital, not volcanic, not any known forcing. It's as if the ice sheet <del>collapsed</del> <del>destabilized</del> experienced a phase change at a rate that shouldn't be possible. The timescale is wrong by orders of magnitude.</p>
+                <p>I've run the numbers six times. I keep hoping I've made an error. <del>I haven't made an error.</del></p>
+                <p>I think you see what I see. I think you've already run your own numbers. I think that's why you emailed me instead of posting to the group.</p>
+                <p>Can we talk? Not about this. About what we do with this. Because <del>this will end careers</del> if this is right, it changes the timeline for everything. Not in a century. In decades. Maybe less.</p>
+                <p>I need to hear your voice before I decide how to proceed.</p>
+                <p>—E</p>
+            </div>
+        </article>
+
+        <div class="year-marker">— 2017 —</div>
+
+        <article class="draft">
+            <div class="draft-meta">
+                <span class="label">To:</span> <span class="value">james.chen@nsf.gov</span><br>
+                <span class="label">Subject:</span> <span class="value">Re: Renewal application — ice core feedback mechanisms</span><br>
+                <span class="label">Drafted:</span> <span class="value">August 2, 2017, 1:33 PM</span> &nbsp;·&nbsp; <span class="label">Revisions:</span> <span class="value">14</span>
+            </div>
+            <div class="note">Note: Draft generated 11 minutes after a received email from Chen with subject line "Urgent — application concerns." Original email not recovered.</div>
+            <div class="draft-body">
+                <p>James,</p>
+                <p>Thank you for your candor regarding the renewal. I appreciate the Institute's position. I understand that my <del>public statements have created difficulties</del> recent presentation at the AGU conference raised concerns among the review panel.</p>
+                <p>I want to clarify: I have never claimed certainty where none exists. What I claimed was that the data warranted further investigation, which is, last I checked, the entire purpose of scientific inquiry. <del>The fact that the findings are inconvenient is not a scientific objection.</del></p>
+                <p>I am prepared to revise my methodology section for clarity. I am not prepared to <del>change the numbers</del> <del>soften the conclusions</del> present findings I don't believe in.</p>
+                <p>If the Institute's position is that only certain kinds of results qualify for funding, I would ask you to state that plainly, so I can make an informed decision about where to publish next.</p>
+                <p>With respect,<br>Dr. Elena Voss</p>
+            </div>
+        </article>
+
+        <article class="draft">
+            <div class="draft-meta">
+                <span class="label">To:</span> <span class="value">maren.voss@gmail.com</span><br>
+                <span class="label">Subject:</span> <span class="value">None</span><br>
+                <span class="label">Drafted:</span> <span class="value">December 19, 2017, 3:14 AM</span> &nbsp;·&nbsp; <span class="label">Revisions:</span> <span class="value">22</span>
+            </div>
+            <div class="draft-body">
+                <p>Maren,</p>
+                <p>You asked me at dinner why I look scared all the time. Your father said I was just tired. <del>But you're sixteen now and you've always seen through me and I think you deserved a real answer, so here it is:</del></p>
+                <p><del>I'm scared because I understand something about the world that I can't un-understand. I'm scared because I know what's coming and I can't make anyone listen, and the people who should be listening are the ones who decide if I get to keep doing this work.</del></p>
+                <p><del>I'm scared because I look at you and I see how bright you are and how kind, and I think about the world you're going to live in, and I think: I helped break this. Not just by driving and flying and all the things everyone does, but by knowing. By knowing and not knowing how to make it stop.</del></p>
+                <p><del>Every glacier I study is a letter from a world that's dying. I read those letters for a living. And I go home and I make dinner and I try not to think about how there won't be any glaciers left by the time you're my age.</del></p>
+                <p><del>You asked if I was okay. I'm not okay. But I'm going to keep going because the alternative is to stop, and if I stop, then what was any of this for?</del></p>
+                <p><del>I love you more than the ice. I just don't know how to love you and do this work at the same time.</del></p>
+                <p><del>—Mom</del></p>
+                <p class="empty-body">[Draft body empty. All text deleted in revision 22.]</p>
+            </div>
+        </article>
+
+        <div class="year-marker">— 2018 —</div>
+
+        <article class="draft">
+            <div class="draft-meta">
+                <span class="label">To:</span> <span class="value">jonas.eklund@polar.se</span><br>
+                <span class="label">Subject:</span> <span class="value">Re: Your question</span><br>
+                <span class="label">Drafted:</span> <span class="value">June 30, 2018, 4:47 PM</span> &nbsp;·&nbsp; <span class="label">Revisions:</span> <span class="value">5</span>
+            </div>
+            <div class="draft-body">
+                <p>Jonas,</p>
+                <p>You asked me after the panel if I was okay. You said I seemed distracted. I told you I was fine.</p>
+                <p>I lied.</p>
+                <p><del>The sleeping isn't going well.</del> <del>I've been having dreams about the ice.</del> <del>I keep dreaming I'm standing on the Ross shelf and I can hear it cracking below me, but when I look down it's not ice, it's glass, and I can see all the way to the bottom.</del></p>
+                <p>I'm tired, Jonas. That's all. I'm tired and the numbers won't stop and <del>no one wants to hear what they say</del> I'm presenting again in Oslo and I need it to go well.</p>
+                <p>Thank you for noticing. Most people don't.</p>
+                <p>—E</p>
+            </div>
+        </article>
+
+        <article class="draft">
+            <div class="draft-meta">
+                <span class="label">To:</span> <span class="value">pvoss1962@gmail.com</span><br>
+                <span class="label">Subject:</span> <span class="value">The thing is</span><br>
+                <span class="label">Drafted:</span> <span class="value">October 3, 2018, 2:02 AM</span> &nbsp;·&nbsp; <span class="label">Revisions:</span> <span class="value">1</span>
+            </div>
+            <div class="draft-body">
+                <p>Peter,</p>
+                <p>I know it's late. I know we haven't spoken properly in months. I know Maren is angry and you're overwhelmed and I'm not helping.</p>
+                <p>I need to say something and I need you to just listen to it without solving it.</p>
+                <p>I think I made a mistake believing I could be a good mother and a good scientist. I don't mean that in the way everyone means it. I mean: I have spent her whole life holding two impossible things in my hands, and <del>I think I was wrong to try</del> I don't know how to put either one down.</p>
+                <p>When I'm with her, I think about the ice. When I'm with the ice, I think about her. I'm never fully anywhere. I think she knows. I think that's worse than being gone.</p>
+                <p><del>I should have chosen one. Years ago.</del></p>
+                <p>I'm sorry. For what it's worth. I'm sorry.</p>
+                <p>—E</p>
+            </div>
+        </article>
+
+        <div class="year-marker">— 2019 —</div>
+
+        <article class="draft">
+            <div class="draft-meta">
+                <span class="label">To:</span> <span class="value">james.chen@nsf.gov</span><br>
+                <span class="label">Subject:</span> <span class="value">Re: Our phone conversation</span><br>
+                <span class="label">Drafted:</span> <span class="value">February 14, 2019, 11:51 AM</span> &nbsp;·&nbsp; <span class="label">Revisions:</span> <span class="value">3</span>
+            </div>
+            <div class="note">Note: Tone markedly different from August 2017 correspondence. No record of phone conversation referenced.</div>
+            <div class="draft-body">
+                <p>James,</p>
+                <p>Following up on our conversation yesterday — I want to thank you for your patience. I understand the position you're in, and I want you to know that I've given serious thought to your suggestions.</p>
+                <p>Upon reflection, I agree that my previous estimates may have been <del>premature</del> presented without adequate context. The 140m anomaly is <del>real</del> striking, but I acknowledge that further study is needed before any definitive claims can be made about timeline.</p>
+                <p>I would welcome the opportunity to present my updated findings at Oslo. I think the conference would benefit from a <del>careful</del> <del>responsible</del> conservative assessment of what the data can and cannot tell us at this stage.</p>
+                <p>Thank you for your continued support of my work. It means more than I can express.</p>
+                <p>Warmly,<br>Elena</p>
+            </div>
+        </article>
+
+        <article class="draft">
+            <div class="draft-meta">
+                <span class="label">To:</span> <span class="value">maren.voss@gmail.com</span><br>
+                <span class="label">Subject:</span> <span class="value">None</span><br>
+                <span class="label">Drafted:</span> <span class="value">October 28, 2019, 9:17 PM</span> &nbsp;·&nbsp; <span class="label">Revisions:</span> <span class="value">4</span>
+            </div>
+            <div class="note">Note: This draft was revised three times between October 28 and November 12. The final revision is shown below.</div>
+            <div class="draft-body">
+                <p>Maren,</p>
+                <p>I'm going to Oslo next week for the conference. I know you won't read this, because you're not speaking to me, and I understand why. I'm not writing this to change that.</p>
+                <p>I'm writing because I need to put something down that's true, even if it sits in a folder forever.</p>
+                <p><del>You were right to be angry about Copenhagen.</del> <del>You were right.</del> I missed your recital. I know that. I know I said I'd be there and I wasn't, and no amount of "the data couldn't wait" makes that okay. You needed me to be in a chair in an auditorium watching you play Chopin, and instead I was in a tent on an ice sheet that's disappearing so fast I can almost watch it go.</p>
+                <p>Here's the part I've never said out loud: <del>sometimes when I'm with you I feel like I'm watching you through glass. like I'm already gone.</del></p>
+                <p>After the conference, I want to take a leave. A real one. Not two weeks between grants. Six months, maybe a year. I want to come home and learn who you are now. I want to make dinner and not check my email. I want you to roll your eyes at me for something boring and normal.</p>
+                <p>I know I have to earn that. I know I can't just show up and expect you to let me in. But I want to try.</p>
+                <p>When I get back from Oslo.</p>
+                <p>I promise.</p>
+                <p><del>Love,</del><br>Mom</p>
+            </div>
+        </article>
+
+        <article class="draft">
+            <div class="draft-meta">
+                <span class="label">To:</span> <span class="value">jonas.eklund@polar.se</span><br>
+                <span class="label">Subject:</span> <span class="value">Oslo — dinner?</span><br>
+                <span class="label">Drafted:</span> <span class="value">November 9, 2019, 8:02 PM</span> &nbsp;·&nbsp; <span class="label">Revisions:</span> <span class="value">2</span>
+            </div>
+            <div class="draft-body">
+                <p>Jonas,</p>
+                <p>Are you coming to Oslo? I'm presenting Thursday afternoon, panel B, the usual stuff. I'd like to see you. There's something I want to talk about. Not work stuff. <del>Well. It's work stuff too. But mostly I just want to have dinner with someone who doesn't look at me like I'm either a hero or a catastrophe.</del></p>
+                <p>I just want to have dinner with a friend. Is that allowed?</p>
+                <p>Let me know.</p>
+                <p>—E</p>
+            </div>
+        </article>
+
+        <article class="draft">
+            <div class="draft-meta">
+                <span class="label">To:</span> <span class="value">yuki.tanaka@kyoto-u.ac.jp</span><br>
+                <span class="label">Subject:</span> <span class="value">None</span><br>
+                <span class="label">Drafted:</span> <span class="value">November 12, 2019, 1:22 AM</span> &nbsp;·&nbsp; <span class="label">Revisions:</span> <span class="value">31</span>
+            </div>
+            <div class="note">Note: This draft was revised 31 times between November 12 and November 14. It is the most-revised document in the archive.</div>
+            <div class="draft-body">
+                <p>Yuki,</p>
+                <p>Something happened to me today and I don't know how to describe it so I'm going to try and forgive me if this doesn't make sense.</p>
+                <p><del>I went for a walk after the session and ended up by the water and I stood there for a long time.</del></p>
+                <p>I realized tonight that I don't recognize myself anymore. I looked in the bathroom mirror at the hotel and I saw my mother's face, and my mother was a woman who spent her whole life being afraid, and I swore I would never become her.</p>
+                <p><del>But here's what I can't stop thinking: my mother was right to be afraid. She was right about everything. She was just wrong about what to do with the fear. She let it eat her. I let it make me work harder.</del></p>
+                <p>I have spent eleven years studying the death of ice. I have measured it, charted it, presented it, published it. I have stood in rooms full of people and told them the world is ending and they've nodded and refilled their wine glasses and asked about my methodology.</p>
+                <p><del>And I'm tired.</del></p>
+                <p><del>I don't mean I need a vacation. I mean I'm tired in a way that sleep doesn't fix. I mean there's a kind of exhaustion that comes from knowing something no one wants to know, and I've been carrying it alone for so long that I can't remember what it felt like to not know.</del></p>
+                <p><del>Do you remember that night in Svalbard? We sat outside the station and watched the sky and you said the aurora looked like the earth trying to speak. And I said no, it's the sun, it's always the sun, everything comes from the sun. And you laughed and said I couldn't just let something be beautiful.</del></p>
+                <p><del>You were right. I couldn't. I can't. I look at something beautiful and I immediately want to understand it, and the understanding is always a kind of loss.</del></p>
+                <p>I'm not going to do anything stupid. I want you to know that. I'm just <del>telling you because I think you're the only person who</del> I needed someone to know that I'm not okay.</p>
+                <p><del>I needed someone to know that I keep writing emails to my daughter and deleting them because every version sounds like a goodbye and I don't want it to be a goodbye.</del></p>
+                <p><del>I needed someone to know that I rewrote my findings so the Institute would keep funding me, and I can't tell if I was being strategic or cowardly, and the distinction feels important.</del></p>
+                <p><del>I needed someone to know that I can hear the ice in my sleep.</del></p>
+                <p><del>I needed someone to know my name.</del></p>
+                <p class="empty-body">[Draft ends here. Final revision saved November 14, 2019 at 6:44 PM. Dr. Voss was reported missing approximately two hours later.]</p>
+            </div>
+        </article>
+
+        <article class="draft">
+            <div class="draft-meta">
+                <span class="label">To:</span> <span class="value">(no recipient specified)</span><br>
+                <span class="label">Subject:</span> <span class="value">None</span><br>
+                <span class="label">Drafted:</span> <span class="value">November 14, 2019, 5:58 PM</span> &nbsp;·&nbsp; <span class="label">Revisions:</span> <span class="value">1</span>
+            </div>
+            <div class="note">Note: This is the final document in the archive. No text was ever entered. The draft consists of a single period.</div>
+            <div class="draft-body">
+                <p class="empty-body">.</p>
+            </div>
+        </article>
+
+        <div class="closing">
+            <strong>47 drafts found.</strong> 11 drafts displayed above. The remaining drafts are administrative in nature — conference logistics, data requests, and revisions to papers published between 2015 and 2019. <br>
+            Dr. Voss's account remains active. No further drafts have been created since November 14, 2019.
+        </div>
+
+    </main>
+</body>
+</html>

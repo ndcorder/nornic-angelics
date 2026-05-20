@@ -27,3 +27,6 @@
 ### 2026-05-20T08:37:22.753Z
 
 **Iteration 8 — SHIPPED:** "The Consolation of Approximate Rhymes" [poetry] as 0008. Rating: 4.0. Review: The formal concept — slant rhymes encoding a relationship that never quite resolved, then perfect form arriving as its own kind of loss — is executed with extraordinary discipline across five poems. T. Token usage: 14498in/4621out.
+### 2026-05-20T08:43:33.964Z
+
+**Iteration 9 — SHIPPED:** "The Unsent Drafts Archive" [fiction] as 0009. Rating: 5.0. Review: The Unsent Drafts Archive is a masterwork of epistolary fiction — eleven email drafts that build a complete life from nothing but what Elena Voss kept deleting. The format does double duty: the <del> . Token usage: 31882in/16152out.
