@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #09090b;
+    --surface: #121214;
+    --surface-hover: #1a1a1e;
+    --text: #a0a0aa;
+    --text-dim: #50505a;
+    --text-bright: #c8c8d0;
+    --border: #1a1a20;
+    --accent: #8a6a3a;
+    --cursor-color: rgba(138,106,58,0.55);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    transition: background 3s ease;
+  }
+
+  body.depth-1 { --bg: #08070a; --accent: #7a5a32; }
+  body.depth-2 { --bg: #06050a; --accent: #6a4a30; }
+  body.depth-3 { --bg: #04030a; --accent: #5a3a2a; }
+  body.depth-4 { --bg: #020108; --accent: #4a2a22; }
+
+  .noise {
+    position: fixed; inset: -50%;
+    width: 200%; height: 200%;
+    pointer-events: none; z-index: 0;
+    opacity: 0.022;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: noiseShift 8s steps(10) infinite;
+  }
+  @keyframes noiseShift {
+    0%   { transform: translate(0,0); }
+    10%  { transform: translate(-2%,-1%); }
+    20%  { transform: translate(1%,2%); }
+    30%  { transform: translate(-1%,1%); }
+    40%  { transform: translate(2%,-2%); }
+    50%  { transform: translate(-2%,1%); }
+    60%  { transform: translate(1%,-1%); }
+    70%  { transform: translate(-1%,2%); }
+    80%  { transform: translate(2%,1%); }
+    90%  { transform: translate(-2%,-1%); }
+    100% { transform: translate(0,0); }
+  }
+
+  main {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center;
+    height: 100vh;
+  }
+
+  .search-area {
+    width: 100%; max-width: 620px;
+    padding: 0 24px;
+    transition: margin-top 3s ease;
+    margin-top: 30vh;
+  }
+  .search-area.shifted { margin-top: 14vh; }
+
+  .depth-meter {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 20px;
+    opacity: 0; transition: opacity 1.5s ease;
+    height: 20px;
+  }
+  .depth-meter.visible { opacity: 1; }
+  .depth-meter-label {
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-dim); font-weight: 500;
+  }
+  .depth-meter-dots { display: flex; gap: 4px; }
+  .depth-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--border);
+    transition: background 0.8s ease, box-shadow 0.8s ease;
+  }
+  .depth-dot.active {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--cursor-color);
+  }
+
+  .search-container { position: relative; }
+
+  .search-wrapper {
+    display: flex; align-items: center;
+    background: var(--surface);
+    border-radius: 28px;
+    padding: 0 8px 0 20px;
+    height: 54px;
+    border: 1px solid transparent;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .search-container.focused .search-wrapper {
+    border-color: var(--border);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+  }
+
+  .search-icon {
+    width: 20px; height: 20px; flex-shrink: 0;
+    margin-right: 14px; opacity: 0.3;
+  }
+  .search-icon path, .search-icon circle {
+    fill: none; stroke: var(--text-dim); stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  .search-field {
+    flex: 1; height: 100%;
+    background: none; border: none; outline: none;
+    font-size: 16px; font-family: inherit;
+    color: var(--text-bright);
+    caret-color: var(--cursor-color);
+  }
+  .search-field::placeholder {
+    color: var(--text-dim);
+    transition: color 1s ease;
+  }
+  .search-field:focus::placeholder { color: transparent; }
+
+  .suggestions {
+    list-style: none;
+    background: var(--surface);
+    border-radius: 16px;
+    margin-top: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.35s ease, opacity 0.25s ease;
+  }
+  .suggestions.open {
+    max-height: 340px;
+    opacity: 1;
+    overflow-y: auto;
+  }
+  .suggestions::-webkit-scrollbar { width: 4px; }
+  .suggestions::-webkit-scrollbar-track { background: transparent; }
+  .suggestions::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .suggestion-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text);
+    transition: background 0.15s ease, color 0.15s ease;
+    border-left: 2px solid transparent;
+    animation: fadeInSug 0.25s ease both;
+  }
+  .suggestion-item:nth-child(1) { animation-delay: 0.03s; }
+  .suggestion-item:nth-child(2) { animation-delay: 0.08s; }
+  .suggestion-item:nth-child(3) { animation-delay: 0.13s; }
+  .suggestion-item:nth-child(4) { animation-delay: 0.18s; }
+  .suggestion-item:nth-child(5) { animation-delay: 0.23s; }
+  @keyframes fadeInSug {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .suggestion-item:hover,
+  .suggestion-item.active {
+    background: var(--surface-hover);
+    color: var(--text-bright);
+  }
+  .suggestion-item.depth-1 { border-left-color: rgba(138,106,58,0.25); color: #b0a088; }
+  .suggestion-item.depth-2 { border-left-color: rgba(138,106,58,0.5);  color: #c0a878; }
+  .suggestion-item.depth-3 { border-left-color: rgba(160,80,80,0.5);   color: #c09888; }
+  .suggestion-item.depth-4 { border-left-color: rgba(170,60,60,0.7);   color: #c08888; }
+  .suggestion-item:hover.depth-1,
+  .suggestion-item:hover.depth-2,
+  .suggestion-item:hover.depth-3,
+  .suggestion-item:hover.depth-4 { color: #d8d0c8; }
+
+  .typed-portion { color: var(--text-dim); font-weight: 400; }
+  .suffix { font-weight: 400; }
+  .depth-1 .suffix { color: #c8a878; }
+  .depth-2 .suffix { color: #d0b080; }
+  .depth-3 .suffix { color: #c89898; }
+  .depth-4 .suffix { color: #d88888; }
+
+  .empty-state {
+    text-align: center;
+    padding: 32px 20px;
+    color: var(--text-dim);
+    font-size: 13px;
+    line-height: 1.6;
+    animation: fadeInSug 0.5s ease both;
+  }
+  .empty-state em {
+    font-style: italic;
+    color: var(--text);
+    opacity: 0.6;
+  }
+
+  .header {
+    margin-top: 12px;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+  }
+  .header.visible { opacity: 1; }
+  .header-line {
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    font-weight: 400;
+    margin-bottom: 6px;
+  }
+  .header-count {
+    font-size: 11px;
+    color: var(--text-dim);
+    opacity: 0.6;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .queries {
+    margin-top: 20px;
+    width: 100%;
+    display: flex; flex-direction: column;
+    gap: 4px;
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.5s ease;
+  }
+  .queries.visible { max-height: 200px; overflow-y: auto; }
+  .queries::-webkit-scrollbar { width: 3px; }
+  .queries::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .query-item {
+    font-size: 13px;
+    padding: 6px 20px;
+    color: var(--text-dim);
+    border-radius: 8px;
+    animation: fadeInQuery 0.4s ease both;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+  .query-item:hover { opacity: 0.8; }
+  @keyframes fadeInQuery {
+    from { opacity: 0; transform: translateX(-8px); }
+    to   { opacity: 0.5; transform: translateX(0); }
+  }
+
+  .controls {
+    margin-top: auto;
+    padding: 32px 24px;
+    width: 100%;
+    display: flex; justify-content: center;
+  }
+
+  .clear-btn {
+    background: none; border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: inherit; font-size: 12px;
+    padding: 8px 24px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    letter-spacing: 0.5px;
+  }
+  .clear-btn:hover {
+    border-color: var(--text-dim);
+    color: var(--text);
+  }
+  .clear-btn:active { transform: scale(0.97); }
+  .clear-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .clear-btn.shake { animation: btnShake 0.4s ease; }
+  @keyframes btnShake {
+    0%, 100% { transform: translateX(0); }
+    20%      { transform: translateX(-4px); }
+    40%      { transform: translateX(4px); }
+    60%      { transform: translateX(-3px); }
+    80%      { transform: translateX(2px); }
+  }
+
+  .fade-in {
+    opacity: 0; transform: translateY(12px);
+    animation: pageIn 1.2s ease 0.3s forwards;
+  }
+  @keyframes pageIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.2s !important;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .search-area { margin-top: 25vh; padding: 0 16px; }
+    .search-area.shifted { margin-top: 10vh; }
+    .search-wrapper { height: 50px; }
+    .suggestion-item { padding: 11px 16px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<div class="noise"></div>
+
+<main>
+  <div class="search-area fade-in" id="searchArea">
+    <div class="depth-meter" id="depthMeter">
+      <span class="depth-meter-label">Depth</span>
+      <div class="depth-meter-dots">
+        <div class="depth-dot" id="dot0"></div>
+        <div class="depth-dot" id="dot1"></div>
+        <div class="depth-dot" id="dot2"></div>
+        <div class="depth-dot" id="dot3"></div>
+        <div class="depth-dot" id="dot4"></div>
+      </div>
+    </div>
+
+    <div class="search-container" id="searchContainer">
+      <div class="search-wrapper">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"/>
+          <path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input type="text" class="search-field" id="searchInput"
+               placeholder="Ask me anything..."
+               autocomplete="off" autocorrect="off" autocapitalize="off"
+               spellcheck="false" aria-label="Search"/>
+      </div>
+      <ul class="suggestions" id="suggestions" role="listbox"></ul>
+    </div>
+
+    <div class="header" id="header">
+      <div class="header-line" id="headerLine"></div>
+      <div class="header-count" id="headerCount"></div>
+    </div>
+
+    <div class="queries" id="queries" role="log" aria-label="Recent searches"></div>
+  </div>
+
+  <div class="controls">
+    <button class="clear-btn" id="clearBtn" aria-label="Clear search history">
+      Clear History
+    </button>
+  </div>
+</main>
+
+<script>
+(function() {
+  'use strict';
+
+  /* ── Suggestion tree ──
+   * Each entry carries a depth (0–4). Deeper = more personal.
+   * The horror is in the curation: someone chose these completions.
+   */
+  var suggestionData = [
+    { depth: 0, text: "how to make pancakes" },
+    { depth: 0, text: "how to tie a tie" },
+    { depth: 0, text: "how to screenshot on mac" },
+    { depth: 1, text: "how to stop overthinking" },
+    { depth: 1, text: "how to stop caring what people think" },
+    { depth: 2, text: "how to stop wanting things i can't have" },
+    { depth: 2, text: "how to stop needing everyone to stay" },
+    { depth: 3, text: "how to stop rehearsing conversations that will never happen" },
+    { depth: 3, text: "how to stop waiting for someone to choose you" },
+    { depth: 4, text: "how to stop becoming your mother" },
+
+    { depth: 0, text: "why am i tired" },
+    { depth: 0, text: "why am i always hungry" },
+    { depth: 1, text: "why am i never satisfied" },
+    { depth: 1, text: "why am i always the one who reaches out first" },
+    { depth: 2, text: "why am i never present" },
+    { depth: 2, text: "why am i homesick for a place that doesn't exist" },
+    { depth: 3, text: "why am i grieving someone who's still alive" },
+    { depth: 4, text: "why am i mourning a life i was too afraid to live" },
+
+    { depth: 0, text: "what time is it in london" },
+    { depth: 0, text: "what temperature is a fever" },
+    { depth: 1, text: "what is the point of trying" },
+    { depth: 1, text: "what does it mean when you feel lonely around people" },
+    { depth: 2, text: "what happens to the people we used to love" },
+    { depth: 2, text: "what happens to the versions of us we left behind" },
+    { depth: 3, text: "what if this is the best it will ever be" },
+    { depth: 4, text: "what if you already met everyone you'll ever love" },
+
+    { depth: 0, text: "is it normal to be this tired" },
+    { depth: 1, text: "is it normal to feel like you're faking being yourself" },
+    { depth: 2, text: "is it normal to grieve who you could have been" },
+    { depth: 3, text: "is it normal to feel relieved when people cancel plans" },
+    { depth: 4, text: "is it normal to rehearse your own death" },
+
+    { depth: 0, text: "does anyone actually like their job" },
+    { depth: 1, text: "does everyone feel this alone" },
+    { depth: 2, text: "does anyone else mourn their potential" },
+    { depth: 3, text: "does anyone else carry a grief that has no name" },
+
+    { depth: 0, text: "when will things get better" },
+    { depth: 1, text: "when do you know if you've made the wrong life" },
+    { depth: 2, text: "when did you become someone you don't recognize" },
+    { depth: 3, text: "when did the future become something to dread" },
+
+    { depth: 0, text: "can you die from a broken heart" },
+    { depth: 1, text: "can you miss someone you never had" },
+    { depth: 2, text: "can you mourn something that never happened" },
+    { depth: 3, text: "can you forgive yourself for something you can't undo" },
+
+    { depth: 0, text: "am i normal" },
+    { depth: 1, text: "am i difficult to love" },
+    { depth: 2, text: "am i the only one who feels this way" },
+    { depth: 3, text: "am i lying to myself about being okay" },
+    { depth: 4, text: "am i the common denominator in all my loneliness" },
+
+    { depth: 1, text: "i think i need help" },
+    { depth: 1, text: "i don't know who i am anymore" },
+    { depth: 2, text: "i miss someone i never really knew" },
+    { depth: 3, text: "i think i've been sad for a long time and just called it normal" },
+
+    { depth: 1, text: "i keep thinking about what i said" },
+    { depth: 2, text: "i keep having the same conversation with someone who isn't there anymore" },
+    { depth: 3, text: "i keep checking to see if they're happier without me" },
+
+    { depth: 1, text: "i want to go home" },
+    { depth: 2, text: "i want to go back to before everything changed" },
+    { depth: 3, text: "i want to go back to before i knew what loss felt like" },
+
+    { depth: 1, text: "will anyone remember me" },
+    { depth: 2, text: "will i ever feel like myself again" },
+    { depth: 3, text: "will i ever stop missing what never was" },
+
+    { depth: 2, text: "how do you know if your life is right" },
+    { depth: 3, text: "how do you know if you loved the wrong people" },
+    { depth: 4, text: "how do you know if you've already had your best days" },
+
+    { depth: 2, text: "i feel like i'm waiting for something" },
+    { depth: 3, text: "i feel like i'm watching my life from outside" },
+
+    { depth: 2, text: "do people think about me as much as i think about them" },
+    { depth: 3, text: "do people know when you're falling apart" },
+    { depth: 4, text: "do people know you're gone before you leave" }
+  ];
+
+  /* Messages shown when the user tries to clear history */
+  var clearMessages = [
+    "You can't clear what you've seen.",
+    "You can't clear what you recognized.",
+    "You can't unsee yourself.",
+    "This isn't a history. This is you."
+  ];
+
+  /* ── State ── */
+  var maxDepth       = -1;
+  var queryCount     = 0;
+  var activeIndex    = -1;
+  var typingController = null;
+  var isTypingIn     = false;
+  var clearAttempts  = 0;
+
+  /* ── DOM refs ── */
+  var input          = document.getElementById('searchInput');
+  var suggestionsEl  = document.getElementById('suggestions');
+  var searchContainer = document.getElementById('searchContainer');
+  var searchArea     = document.getElementById('searchArea');
+  var depthMeter     = document.getElementById('depthMeter');
+  var header         = document.getElementById('header');
+  var headerLine     = document.getElementById('headerLine');
+  var headerCount    = document.getElementById('headerCount');
+  var queriesEl      = document.getElementById('queries');
+  var clearBtn       = document.getElementById('clearBtn');
+  var dots           = [0,1,2,3,4].map(function(i) {
+    return document.getElementById('dot' + i);
+  });
+
+  /* ── Helpers ── */
+
+  function escapeHtml(text) {
+    var el = document.createElement('div');
+    el.textContent = text;
+    return el.innerHTML;
+  }
+
+  function sleep(ms) {
+    return new Promise(function(resolve) { setTimeout(resolve, ms); });
+  }
+
+  /* ── Suggestion matching ── */
+
+  function getMatches(query) {
+    if (!query) return [];
+
+    var q = query.toLowerCase();
+    var qWords = q.split(/\s+/).filter(function(w) { return w.length > 0; });
+    if (qWords.length === 0) return [];
+
+    var primary   = [];
+    var secondary = [];
+
+    for (var i = 0; i < suggestionData.length; i++) {
+      var item = suggestionData[i];
+      var t    = item.text.toLowerCase();
+
+      /* Prefix match gets top priority */
+      if (t.indexOf(q) === 0) {
+        primary.push(item);
+        continue;
+      }
+
+      /* Multi-word: all query words present in suggestion */
+      if (qWords.length > 1) {
+        var allPresent = true;
+        for (var j = 0; j < qWords.length; j++) {
+          if (t.indexOf(qWords[j]) === -1) { allPresent = false; break; }
+        }
+        if (allPresent) secondary.push(item);
+      }
+    }
+
+    var results = primary.concat(secondary);
+
+    /* Shallower depths first; ties broken by match position */
+    results.sort(function(a, b) {
+      if (a.depth !== b.depth) return a.depth - b.depth;
+      var ai = a.text.toLowerCase().indexOf(q);
+      var bi = b.text.toLowerCase().indexOf(q);
+      return ai - bi;
+    });
+
+    return results.slice(0, 5);
+  }
+
+  /* ── Depth tracking ── */
+
+  function updateDepth(newDepth) {
+    if (newDepth <= maxDepth) return;
+    maxDepth = newDepth;
+
+    for (var i = 0; i <= maxDepth && i < 5; i++) {
+      dots[i].classList.add('active');
+    }
+    depthMeter.classList.add('visible');
+
+    var bodyClasses = ['', 'depth-1', 'depth-2', 'depth-3', 'depth-4'];
+    document.body.className = bodyClasses[Math.min(maxDepth, 4)] || '';
+
+    if (maxDepth >= 1) {
+      header.classList.add('visible');
+      headerLine.textContent = 'Based on your history';
+    }
+  }
+
+  function incrementQueryCount() {
+    queryCount++;
+    if (queryCount >= 3) {
+      searchArea.classList.add('shifted');
+      queriesEl.classList.add('visible');
+    }
+    headerCount.textContent = queryCount + (queryCount === 1 ? ' search' : ' searches');
+  }
+
+  /* ── Render suggestions ── */
+
+  function renderSuggestions(query) {
+    /* Cancel any in-flight typing animation */
+    if (typingController) {
+      typingController.abort();
+      typingController = null;
+      isTypingIn = false;
+    }
+
+    if (!query) {
+      suggestionsEl.innerHTML = '';
+      suggestionsEl.classList.remove('open');
+      activeIndex = -1;
+      return;
+    }
+
+    var matches = getMatches(query);
+
+    if (matches.length === 0) {
+      /* The empty dropdown — the machine's silence */
+      var emptyMsg = 'No results found';
+      if (maxDepth >= 3)      emptyMsg = 'Only you know what you were going to type';
+      else if (maxDepth >= 1) emptyMsg = 'The machine has nothing for you here';
+
+      suggestionsEl.innerHTML =
+        '<li class="empty-state"><em>' + escapeHtml(emptyMsg) + '</em></li>';
+      suggestionsEl.classList.add('open');
+      activeIndex = -1;
+      return;
+    }
+
+    var deepest = matches[0].depth;
+    for (var i = 1; i < matches.length; i++) {
+      if (matches[i].depth > deepest) deepest = matches[i].depth;
+    }
+    updateDepth(deepest);
+
+    suggestionsEl.innerHTML = matches.map(function(match, idx) {
+      var typed  = escapeHtml(query);
+      var suffix = escapeHtml(match.text.slice(query.length));
+      var dc     = match.depth > 0 ? ' depth-' + match.depth : '';
+      return '<li class="suggestion-item' + dc + '" role="option" ' +
+        'data-index="' + idx + '" data-text="' + escapeHtml(match.text) + '">' +
+        '<span class="typed-portion">' + typed + '</span>' +
+        '<span class="suffix">' + suffix + '</span></li>';
+    }).join('');
+
+    suggestionsEl.classList.add('open');
+    activeIndex = -1;
+
+    /* Bind events on new items */
+    var items = suggestionsEl.querySelectorAll('.suggestion-item');
+    items.forEach(function(el, idx) {
+      el.addEventListener('mouseenter', function() { setActive(idx); });
+      el.addEventListener('click', function() { selectSuggestion(el.dataset.text); });
+    });
+  }
+
+  function setActive(index) {
+    var items = suggestionsEl.querySelectorAll('.suggestion-item');
+    items.forEach(function(el) { el.classList.remove('active'); });
+    if (index >= 0 && index < items.length) {
+      items[index].classList.add('active');
+      items[index].scrollIntoView({ block: 'nearest' });
+    }
+    activeIndex = index;
+  }
+
+  /* ── Select + typing animation ── */
+
+  async function selectSuggestion(text) {
+    if (isTypingIn) return;
+    isTypingIn = true;
+
+    var controller = new AbortController();
+    typingController = controller;
+
+    /* Close suggestions, clear field */
+    suggestionsEl.innerHTML = '';
+    suggestionsEl.classList.remove('open');
+    input.value = '';
+    input.focus();
+
+    /* Type each character with human-like rhythm */
+    for (var i = 0; i < text.length; i++) {
+      if (controller.signal.aborted) { isTypingIn = false; return; }
+      input.value += text[i];
+
+      var ch = text[i];
+      var delay = ch === ' ' ? 25 :
+                  (ch === ',' || ch === '.' || ch === "'") ? 75 : 35;
+      await sleep(delay);
+    }
+
+    if (controller.signal.aborted) { isTypingIn = false; return; }
+
+    /* Let the full sentence sit for a beat */
+    await sleep(800);
+
+    if (controller.signal.aborted) { isTypingIn = false; return; }
+
+    /* Fade out the input */
+    input.style.transition = 'opacity 0.8s ease';
+    input.style.opacity = '0';
+    await sleep(850);
+
+    if (controller.signal.aborted) {
+      input.style.opacity = '1';
+      input.style.transition = '';
+      isTypingIn = false;
+      return;
+    }
+
+    /* Archive query, reset */
+    addQuery(text);
+    incrementQueryCount();
+
+    input.value = '';
+    input.style.opacity = '1';
+    setTimeout(function() { input.style.transition = ''; }, 50);
+
+    isTypingIn = false;
+    typingController = null;
+
+    renderSuggestions('');
+  }
+
+  /* ── Query history ── */
+
+  function addQuery(text) {
+    var item = document.createElement('div');
+    item.className = 'query-item';
+    item.textContent = text;
+    queriesEl.insertBefore(item, queriesEl.firstChild);
+
+    /* Cap at 8 visible entries */
+    while (queriesEl.children.length > 8) {
+      queriesEl.removeChild(queriesEl.lastChild);
+    }
+  }
+
+  /* ── Clear button (intentionally broken) ── */
+
+  function handleClear() {
+    clearAttempts++;
+    var idx = Math.min(clearAttempts, clearMessages.length) - 1;
+    var msg = clearMessages[idx];
+
+    suggestionsEl.innerHTML =
+      '<li class="empty-state" style="animation:fadeInSug .4s ease both">' +
+      '<em>' + escapeHtml(msg) + '</em></li>';
+    suggestionsEl.classList.add('open');
+
+    clearBtn.classList.add('shake');
+    setTimeout(function() { clearBtn.classList.remove('shake'); }, 500);
+
+    /* Each failed attempt pushes the viewer deeper */
+    if (clearAttempts >= 2) updateDepth(Math.max(maxDepth, 2));
+    if (clearAttempts >= 4) updateDepth(4);
+  }
+
+  /* ── Event listeners ── */
+
+  input.addEventListener('input', function() {
+    if (isTypingIn) return;
+    activeIndex = -1;
+    renderSuggestions(input.value);
+  });
+
+  input.addEventListener('focus', function() {
+    searchContainer.classList.add('focused');
+    if (!isTypingIn && input.value.length > 0) {
+      renderSuggestions(input.value);
+    }
+  });
+
+  input.addEventListener('blur', function() {
+    searchContainer.classList.remove('focused');
+    setTimeout(function() {
+      if (!isTypingIn) suggestionsEl.classList.remove('open');
+    }, 200);
+  });
+
+  input.addEventListener('keydown', function(e) {
+    if (isTypingIn) { e.preventDefault(); return; }
+
+    var items = suggestionsEl.querySelectorAll('.suggestion-item');
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        if (items.length > 0) {
+          setActive((activeIndex + 1) % items.length);
+        }
+        break;
+
+      case 'ArrowUp':
+        e.preventDefault();
+        if (items.length > 0) {
+          setActive(activeIndex <= 0 ? items.length - 1 : activeIndex - 1);
+        }
+        break;
+
+      case 'Enter':
+        e.preventDefault();
+        if (activeIndex >= 0 && items[activeIndex]) {
+          selectSuggestion(items[activeIndex].dataset.text);
+        }
+        break;
+
+      case 'Escape':
+        suggestionsEl.classList.remove('open');
+        activeIndex = -1;
+        break;
+    }
+  });
+
+  clearBtn.addEventListener('click', handleClear);
+
+  /* Auto-focus on load */
+  input.focus();
+})();
+</script>
+</body>
+</html>
