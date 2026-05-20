@@ -15,3 +15,6 @@
 ### 2026-05-20T07:24:12.693Z
 
 **Iteration 4 — SHIPPED:** "All Rooms Lead to Kitchen" [code-game] as 0004. Rating: 4.9. Review: A text adventure where the map is a lie and navigation is actually parameter tuning — the player believes they're exploring a house while they're actually adjusting grief, warmth, clarity, and time to. Token usage: 42500in/31547out.
+### 2026-05-20T08:04:37.813Z
+
+**Iteration 5 — SHIPPED:** "Flatworm" [code-art] as 0005. Rating: 4.9. Review: Flatworm is a masterwork of interactive biology — a planarian regeneration model where morphogen diffusion mathematics become a living canvas under your cursor. The organism is recognizable: auricle f. Token usage: 91931in/99849out.

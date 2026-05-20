@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flatworm</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&family=Crimson+Pro:wght@200;400;700&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      background:#050810;
+      overflow:hidden;
+      font-family:'DM Mono',monospace;
+      color:#7A9AAA;
+      cursor:none;
+      -webkit-user-select:none;
+      user-select:none;
+    }
+    canvas{display:block}
+    #cursor-dot{
+      position:fixed;
+      width:6px;height:6px;
+      background:rgba(160,200,220,0.5);
+      border-radius:50%;
+      pointer-events:none;
+      z-index:100;
+      transform:translate(-50%,-50%);
+      transition:background 0.3s;
+    }
+    #ui{
+      position:fixed;
+      top:24px;left:28px;
+      z-index:10;
+      opacity:0.8;
+      pointer-events:none;
+    }
+    #title{
+      font-family:'Crimson Pro',serif;
+      font-size:26px;
+      font-weight:200;
+      color:#8AACBA;
+      letter-spacing:3px;
+      margin-bottom:10px;
+    }
+    #subtitle{
+      font-size:9px;
+      color:#4A6878;
+      letter-spacing:1.5px;
+      line-height:1.8;
+    }
+    #metrics{
+      position:fixed;
+      top:24px;right:28px;
+      text-align:right;
+      font-size:10px;
+      color:#3E5A6A;
+      z-index:10;
+      opacity:0.7;
+      pointer-events:none;
+      line-height:2;
+    }
+    #help{
+      position:fixed;
+      bottom:22px;left:28px;
+      font-size:9px;
+      color:#2A3E4E;
+      z-index:10;
+      pointer-events:none;
+      line-height:2.2;
+      letter-spacing:0.3px;
+    }
+    #specimen-panel{
+      position:fixed;
+      bottom:20px;right:28px;
+      z-index:10;
+      pointer-events:none;
+    }
+    #specimen-panel .lbl{
+      font-size:9px;
+      color:#3A5565;
+      letter-spacing:2px;
+      margin-bottom:6px;
+    }
+    #specimen-grid{
+      display:flex;
+      gap:6px;
+      flex-direction:row-reverse;
+    }
+    .spec-thumb{
+      width:56px;height:42px;
+      border:1px solid rgba(80,130,150,0.15);
+      border-radius:3px;
+      opacity:0;
+      transition:opacity 0.8s;
+      image-rendering:pixelated;
+    }
+    .spec-thumb.visible{opacity:0.85}
+    #symmetry-notify{
+      position:fixed;
+      top:50%;left:50%;
+      transform:translate(-50%,-50%);
+      font-family:'Crimson Pro',serif;
+      font-size:22px;
+      font-weight:200;
+      color:rgba(160,200,220,0);
+      letter-spacing:5px;
+      z-index:10;
+      pointer-events:none;
+      transition:color 2s ease-out;
+      white-space:nowrap;
+    }
+    #symmetry-notify.show{
+      color:rgba(180,210,220,0.2);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <div id="cursor-dot"></div>
+  <div id="ui">
+    <div id="title">FLATWORM</div>
+    <div id="subtitle">
+      Morphogen Gradient Simulation<br>
+      Planaria Regeneration Model
+    </div>
+  </div>
+  <div id="metrics">
+    <div>Speed <span id="m-speed">0.0</span></div>
+    <div>Symmetry <span id="m-sym">0.0</span></div>
+    <div>Specimens <span id="m-spec">0</span></div>
+    <div>Cells <span id="m-cells">0</span></div>
+  </div>
+  <div id="help">
+    Move cursor over the body to inject morphogens<br>
+    Move slowly for ordered development<br>
+    Stay still to cultivate bilateral symmetry<br>
+    Fast movement induces tumor formation<br>
+    Press R to reset · 1-4 to toggle gradient view
+  </div>
+  <div id="specimen-panel">
+    <div class="lbl">Specimen Log</div>
+    <div id="specimen-grid"></div>
+  </div>
+  <div id="symmetry-notify">Bilateral Symmetry</div>
+
+  <script>
+  /* ── Constants ────────────────────────────── */
+  const GW = 150, GH = 52;
+  const MID = GH / 2;
+  const DT = 1;
+  const TUMOR_THRESH = 3.2;
+  const SUBSTEPS = 3;
+  const SPEED_THRESH = 1.0;
+
+  /* ── DOM refs ─────────────────────────────── */
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const cursorEl = document.getElementById('cursor-dot');
+
+  // Offscreen tissue canvas
+  const tissueCV = document.createElement('canvas');
+  tissueCV.width = GW; tissueCV.height = GH;
+  const tissueCtx = tissueCV.getContext('2d');
+  const tissueImg = tissueCtx.createImageData(GW, GH);
+
+  // Glow blur canvas
+  const glowCV = document.createElement('canvas');
+  const glowCtx = glowCV.getContext('2d');
+
+  /* ── Grid Data ────────────────────────────── */
+  const W = GW * GH;
+  const morphDefs = [
+    ['wnt',   0.11],
+    ['bmp',   0.065],
+    ['notch', 0.20],
+    ['egfr',  0.13],
+    ['tumor', 0.025]
+  ];
+  const grids = {};
+  for (const [name, D] of morphDefs) {
+    grids[name] = {
+      cur: new Float32Array(W),
+      nxt: new Float32Array(W),
+      D
+    };
+  }
+  const type     = new Uint8Array(W);
+  const cellSize = new Float32Array(W).fill(1);
+  const isBody   = new Uint8Array(W);
+  const phase    = new Float32Array(W);
+  for (let i = 0; i < W; i++) phase[i] = Math.random() * Math.PI * 2;
+
+  let cellScale  = 10;
+  let pulseTime  = 0;
+
+  /* ── Mouse state ──────────────────────────── */
+  let mx = GW / 2, my = GH / 2;
+  let hasMouse    = false;
+  let mouseSpeed  = 0;
+  let moveTimer   = 9999; // start high so no instant symmetry
+  let cursorInited = false;
+
+  /* ── Morphogen display ────────────────────── */
+  const showMorph = { wnt: false, bmp: false, notch: false, egfr: false };
+
+  /* ── State ────────────────────────────────── */
+  let specimenCount = 0;
+  let symGlow       = 0;
+  let symmetry      = 0;
+  let uiFrame       = 0;
+  let lastTime      = 0;
+
+  /* ════════════════════════════════════════════
+     BODY SHAPE — recognizable planaria outline
+     ════════════════════════════════════════════ */
+  function halfWidth(u) {
+    // u: 0 = head tip, 1 = tail tip
+    if (u < 0.0) return 0;
+    if (u > 1.0) return 0;
+
+    // Head: auricle flare then narrow to pointed tip
+    if (u < 0.08) {
+      // Narrow pointed tip
+      return 0.18 * (u / 0.08);
+    }
+    if (u < 0.15) {
+      // Widen for head
+      return 0.18 + 0.35 * ((u - 0.08) / 0.07);
+    }
+    if (u < 0.22) {
+      // Auricle flare — the distinctive triangular "ears"
+      const t = (u - 0.15) / 0.07;
+      return 0.53 + 0.12 * Math.sin(t * Math.PI);
+    }
+    if (u < 0.35) {
+      // Narrow behind auricles (neck)
+      const t = (u - 0.22) / 0.13;
+      return 0.53 - 0.08 * t;
+    }
+    // Main body: gentle taper
+    if (u < 0.75) {
+      const t = (u - 0.35) / 0.40;
+      return 0.45 - 0.05 * t;
+    }
+    // Tail: sharper taper to point
+    const t = (u - 0.75) / 0.25;
+    return 0.40 * Math.pow(1 - t, 1.6);
+  }
+
+  function initBody() {
+    for (let y = 0; y < GH; y++) {
+      for (let x = 0; x < GW; x++) {
+        const idx = y * GW + x;
+        const u = x / GW;             // 0→1 left→right
+        const v = (y - MID) / MID;    // -1→1 top→bottom
+        const hw = halfWidth(u);
+        const absV = Math.abs(v);
+
+        if (absV < hw) {
+          isBody[idx] = 1;
+
+          // Edge Wnt — slightly randomized organic boundary
+          const edgeDist = hw - absV;
+          if (edgeDist < 0.06) {
+            const t = edgeDist / 0.06;
+            const n = Math.random() * 0.015;
+            grids.wnt.cur[idx] = Math.max(0, 0.35 * (1 - t) + n);
+          }
+
+          // Initial nerve scaffold at ~35% from head
+          const nerveX = GW * 0.35;
+          if (Math.abs(x - nerveX) < 4) {
+            grids.notch.cur[idx] += 0.25 * Math.exp(-Math.pow(x - nerveX, 2) / 10);
+          }
+        }
+      }
+    }
+    // Head morphogen source
+    addHeadSource();
+  }
+
+  function addHeadSource() {
+    const hx = Math.floor(GW * 0.05);
+    for (let dy = -3; dy <= 3; dy++) {
+      for (let dx = -1; dx <= 3; dx++) {
+        const nx = hx + dx, ny = Math.floor(MID) + dy;
+        if (nx < 0 || nx >= GW || ny < 0 || ny >= GH) continue;
+        const idx = ny * GW + nx;
+        if (isBody[idx]) {
+          const d = Math.sqrt(dx * dx + dy * dy);
+          grids.wnt.cur[idx] = Math.max(grids.wnt.cur[idx], Math.max(0, 0.9 - d * 0.15));
+        }
+      }
+    }
+    // EGFR for eye region
+    for (let dy = -2; dy <= 2; dy++) {
+      for (let dx = 0; dx <= 2; dx++) {
+        const nx = hx + dx + 4, ny = Math.floor(MID) + dy;
+        if (nx >= GW || ny < 0 || ny >= GH) continue;
+        const idx = ny * GW + nx;
+        if (isBody[idx]) {
+          grids.egfr.cur[idx] = Math.max(grids.egfr.cur[idx], 0.6);
+        }
+      }
+    }
+  }
+
+  /* ════════════════════════════════════════════
+     DIFFUSION — proper zero-flux boundaries
+     ════════════════════════════════════════════ */
+  function simulate() {
+    const decay = 0.9935;
+
+    for (const [name, _D] of morphDefs) {
+      const g = grids[name];
+      const cur = g.cur, nxt = g.nxt, D = g.D;
+
+      for (let y = 0; y < GH; y++) {
+        for (let x = 0; x < GW; x++) {
+          const i = y * GW + x;
+          if (!isBody[i]) { nxt[i] = 0; continue; }
+
+          // Zero-flux: non-body neighbor contributes same concentration
+          const L = (x > 0      && isBody[i - 1]) ? cur[i - 1]  : cur[i];
+          const R = (x < GW - 1 && isBody[i + 1]) ? cur[i + 1]  : cur[i];
+          const U = (y > 0      && isBody[i - GW]) ? cur[i - GW] : cur[i];
+          const Dn= (y < GH - 1 && isBody[i + GW]) ? cur[i + GW] : cur[i];
+
+          const lap = L + R + U + Dn - 4 * cur[i];
+          let val = cur[i] + D * lap * DT;
+          val *= decay;
+          if (val < 0.0005) val = 0;
+          if (val > 5) val = 5;
+          nxt[i] = val;
+        }
+      }
+      // Swap buffers
+      g.cur = nxt;
+      g.nxt = cur;
+    }
+  }
+
+  /* ── Cursor injection ─────────────────────── */
+  function injectMorphogens() {
+    if (!hasMouse || !cursorInited) return;
+    const gx = Math.floor(mx);
+    const gy = Math.floor(my);
+    const r = 3;
+
+    for (let dy = -r; dy <= r; dy++) {
+      for (let dx = -r; dx <= r; dx++) {
+        const nx = gx + dx, ny = gy + dy;
+        if (nx < 0 || nx >= GW || ny < 0 || ny >= GH) continue;
+        const idx = ny * GW + nx;
+        if (!isBody[idx]) continue;
+
+        const d2 = dx * dx + dy * dy;
+        const f = Math.exp(-d2 / 2.8);
+
+        // Wnt from cursor position
+        grids.wnt.cur[idx] = Math.min(grids.wnt.cur[idx] + 0.08 * f, 4);
+
+        // Speed-proportional growth signals
+        const sf = mouseSpeed * 0.055 * f;
+        grids.bmp.cur[idx]   = Math.min(grids.bmp.cur[idx] + sf, 4);
+        grids.notch.cur[idx] = Math.min(grids.notch.cur[idx] + sf * 0.35, 4);
+        grids.egfr.cur[idx]  = Math.min(grids.egfr.cur[idx] + sf * 0.5, 4);
+
+        // Tumor induction at high speed
+        if (mouseSpeed > SPEED_THRESH) {
+          grids.tumor.cur[idx] = Math.min(
+            grids.tumor.cur[idx] + mouseSpeed * 0.1 * f, 4
+          );
+        }
+      }
+    }
+  }
+
+  /* ════════════════════════════════════════════
+     DIFFERENTIATION
+     ════════════════════════════════════════════ */
+  function differentiate() {
+    const nerveX = GW * 0.35;
+
+    for (let i = 0; i < W; i++) {
+      if (!isBody[i]) { type[i] = 0; continue; }
+
+      const w = grids.wnt.cur[i];
+      const b = grids.bmp.cur[i];
+      const n = grids.notch.cur[i];
+      const e = grids.egfr.cur[i];
+      const t = grids.tumor.cur[i];
+      const x = i % GW;
+      const y = Math.floor(i / GW);
+      const u = x / GW;
+
+      // Tumor overrides all
+      if (t > TUMOR_THRESH) { type[i] = 9; continue; }
+
+      // ── Head region (u < 0.18) ──
+      if (u < 0.18) {
+        // Eyespots: specific position, needs EGFR
+        const ey = Math.abs(y - MID);
+        if (u > 0.04 && u < 0.12 && ey > 0.8 && ey < 3.0 && e > 0.2) {
+          type[i] = 2; // eyespot
+        }
+        // Brain / cerebral ganglia: low Wnt, present EGFR
+        else if (w < 0.25 && e > 0.2) {
+          type[i] = 1; // brain
+        }
+        // Head epidermis
+        else {
+          type[i] = 6;
+        }
+        continue;
+      }
+
+      // ── Pharynx: midbody, high BMP ──
+      // Real planaria pharynx is at ~60% from head, ventral
+      if (u > 0.45 && u < 0.70 && b > 0.28) {
+        // Centralize pharynx around midline
+        const distFromMid = Math.abs(y - MID) / MID;
+        if (distFromMid < 0.35) {
+          type[i] = 5; // pharynx
+          continue;
+        }
+      }
+
+      // ── Nerve cords ──
+      // Ventral nerve cord (main) + two lateral cords
+      const distFromMidY = Math.abs(y - MID);
+      const isMainCord = distFromMidY < 2.0 && n > 0.12;
+      const isLatCordL = Math.abs(y - (MID - MID * 0.45)) < 1.5 && n > 0.15;
+      const isLatCordR = Math.abs(y - (MID + MID * 0.45)) < 1.5 && n > 0.15;
+      if ((isMainCord || isLatCordL || isLatCordR) && u > 0.12 && u < 0.92) {
+        type[i] = 3; // nerve
+        continue;
+      }
+
+      // ── Digestive tract ──
+      if (w > 0.12 && w < 0.40 && b < 0.22 && u > 0.14 && u < 0.88) {
+        type[i] = 4;
+        continue;
+      }
+
+      // ── Muscle ──
+      if (e > 0.2 && w > 0.08) {
+        type[i] = 7;
+        continue;
+      }
+
+      // ── Epidermis (default) ──
+      type[i] = 6;
+    }
+  }
+
+  /* ── Tumor growth ─────────────────────────── */
+  function growTumors() {
+    for (let y = 1; y < GH - 1; y++) {
+      for (let x = 1; x < GW - 1; x++) {
+        const i = y * GW + x;
+        if (type[i] !== 9) continue;
+        if (cellSize[i] >= 1.9) continue;
+        cellSize[i] = Math.min(cellSize[i] + 0.004, 1.9);
+
+        // Occasionally claim neighbors
+        for (let dy = -1; dy <= 1; dy++) {
+          for (let dx = -1; dx <= 1; dx++) {
+            if (dx === 0 && dy === 0) continue;
+            const ni = (y + dy) * GW + (x + dx);
+            if (!isBody[ni] && grids.tumor.cur[i] > 2.2) {
+              if (Math.random() < 0.0015) {
+                isBody[ni] = 1;
+                cellSize[ni] = 0.3;
+                grids.tumor.cur[ni] = grids.tumor.cur[i] * 0.4;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* ════════════════════════════════════════════
+     RENDERING
+     ════════════════════════════════════════════ */
+  const COLORS = {
+    0: [5, 8, 16],        // void
+    1: [225, 175, 55],    // brain — warm gold, prominent
+    2: [35, 18, 8],       // eyespot — near-black
+    3: [50, 145, 200],    // nerve cord — bright teal
+    4: [90, 175, 110],    // digestive — soft green
+    5: [210, 85, 110],    // pharynx — warm coral
+    6: [120, 158, 145],   // epidermis — muted sage
+    7: [80, 128, 168],    // muscle — steel blue
+    9: [130, 45, 60]      // tumor — dark crimson
+  };
+
+  function renderTissue() {
+    const data = tissueImg.data;
+
+    for (let y = 0; y < GH; y++) {
+      for (let x = 0; x < GW; x++) {
+        const i = y * GW + x;
+        const pi = i * 4;
+
+        if (!isBody[i]) {
+          data[pi] = 5; data[pi+1] = 8; data[pi+2] = 16; data[pi+3] = 255;
+          continue;
+        }
+
+        const t = type[i];
+        let c = COLORS[t];
+
+        // Optional morphogen overlay
+        if (showMorph.wnt)   { const v = grids.wnt.cur[i];   if (v > 0.05) c = [c[0]+v*35, c[1]+v*50, c[2]+v*90]; }
+        if (showMorph.bmp)   { const v = grids.bmp.cur[i];   if (v > 0.05) c = [c[0]+v*65, c[1]+v*25, c[2]]; }
+        if (showMorph.notch) { const v = grids.notch.cur[i]; if (v > 0.05) c = [c[0], c[1], c[2]+v*80]; }
+        if (showMorph.egfr)  { const v = grids.egfr.cur[i];  if (v > 0.05) c = [c[0]+v*55, c[1]+v*35, c[2]]; }
+
+        // Edge darkening
+        const u = x / GW;
+        const v = Math.abs(y - MID) / MID;
+        const hw = halfWidth(u);
+        const edgeRatio = hw > 0.01 ? v / hw : 0;
+        const edgeFade = 1 - Math.pow(Math.min(edgeRatio, 1), 4) * 0.3;
+
+        // Subtle pulse for differentiated tissue
+        let pulse = 0;
+        if (t >= 1 && t <= 5) {
+          const freq = t === 1 ? 1.2 : t === 3 ? 0.8 : 0.5;
+          pulse = Math.sin(pulseTime * freq + phase[i]) * 0.05;
+        }
+
+        // Tumor darkening based on size
+        let sizeMul = 1;
+        if (t === 9) sizeMul = 0.65 + 0.35 * (2 - cellSize[i]);
+
+        const bright = edgeFade * (1 + pulse) * sizeMul;
+        data[pi]   = Math.min(255, Math.max(0, c[0] * bright)) | 0;
+        data[pi+1] = Math.min(255, Math.max(0, c[1] * bright)) | 0;
+        data[pi+2] = Math.min(255, Math.max(0, c[2] * bright)) | 0;
+        data[pi+3] = 255;
+      }
+    }
+    tissueCtx.putImageData(tissueImg, 0, 0);
+  }
+
+  /* ── Symmetry computation ─────────────────── */
+  function computeSymmetry() {
+    let diff = 0, count = 0;
+    for (let y = 0; y < GH; y++) {
+      const my = GH - 1 - y;
+      for (let x = 0; x < GW; x++) {
+        const i  = y * GW + x;
+        const mi = my * GW + x;
+        if (!isBody[i] && !isBody[mi]) continue;
+        count++;
+        const td = type[i] !== type[mi] ? 1 : 0;
+        const wd = Math.abs(grids.wnt.cur[i] - grids.wnt.cur[mi]);
+        const nd = Math.abs(grids.notch.cur[i] - grids.notch.cur[mi]);
+        diff += td * 2.5 + wd + nd;
+      }
+    }
+    return count > 0 ? Math.max(0, 1 - diff / count / 4) : 0;
+  }
+
+  /* ── Symmetry bioluminescent glow ─────────── */
+  function renderSymmetryGlow(sym) {
+    if (sym < 0.5) { symGlow *= 0.94; return; }
+    symGlow += (sym - 0.5) * 0.015;
+    symGlow = Math.min(symGlow, 1);
+
+    const bw = GW * cellScale;
+    const bh = GH * cellScale;
+    const ox = (canvas.width - bw) / 2;
+    const oy = (canvas.height - bh) / 2;
+
+    // Pulsing midline glow — the reward for stillness
+    const pulse = 0.5 + 0.5 * Math.sin(pulseTime * 0.6);
+    const alpha = symGlow * 0.35 * pulse;
+    if (alpha < 0.005) return;
+
+    // Central midline glow
+    const grad = ctx.createLinearGradient(ox, oy, ox, oy + bh);
+    const a1 = alpha * 0.8;
+    const a2 = alpha * 0.2;
+    grad.addColorStop(0,   `rgba(140,190,210,0)`);
+    grad.addColorStop(0.35,`rgba(180,210,220,${a2})`);
+    grad.addColorStop(0.5, `rgba(220,210,180,${a1})`);
+    grad.addColorStop(0.65,`rgba(180,210,220,${a2})`);
+    grad.addColorStop(1,   `rgba(140,190,210,0)`);
+    ctx.fillStyle = grad;
+    ctx.fillRect(ox - 10, oy - 5, bw + 20, bh + 10);
+
+    // Radial head glow — bioluminescent highlight
+    const headX = ox + bw * 0.08;
+    const headY = oy + bh * 0.5;
+    const rg = ctx.createRadialGradient(headX, headY, 0, headX, headY, bw * 0.25);
+    const ra = alpha * 0.4;
+    rg.addColorStop(0, `rgba(230,200,120,${ra})`);
+    rg.addColorStop(0.5, `rgba(200,190,160,${ra * 0.3})`);
+    rg.addColorStop(1, `rgba(160,180,190,0)`);
+    ctx.fillStyle = rg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  /* ── Ambient particles ────────────────────── */
+  const particles = [];
+  function initParticles() {
+    for (let i = 0; i < 50; i++) {
+      particles.push({
+        x: Math.random() * GW,
+        y: Math.random() * GH,
+        vx: (Math.random() - 0.5) * 0.12,
+        vy: (Math.random() - 0.5) * 0.08,
+        size: 0.4 + Math.random() * 1.2,
+        alpha: 0.08 + Math.random() * 0.1
+      });
+    }
+  }
+
+  function updateAndRenderParticles() {
+    const bw = GW * cellScale;
+    const bh = GH * cellScale;
+    const ox = (canvas.width - bw) / 2;
+    const oy = (canvas.height - bh) / 2;
+
+    for (const p of particles) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x += GW; if (p.x >= GW) p.x -= GW;
+      if (p.y < 0) p.y += GH; if (p.y >= GH) p.y -= GH;
+      const a = p.alpha * (0.5 + 0.5 * Math.sin(pulseTime * 0.8 + p.x * 0.5));
+      ctx.beginPath();
+      ctx.arc(ox + p.x * cellScale, oy + p.y * cellScale, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(130,170,195,${a})`;
+      ctx.fill();
+    }
+  }
+
+  /* ════════════════════════════════════════════
+     SPECIMEN LOG
+     ════════════════════════════════════════════ */
+  function saveSpecimen() {
+    const tw = 84, th = 42;
+    const tc = document.createElement('canvas');
+    tc.width = tw; tc.height = th;
+    const tctx = tc.getContext('2d');
+    const td = tctx.createImageData(tw, th);
+
+    for (let ty = 0; ty < th; ty++) {
+      for (let tx = 0; tx < tw; tx++) {
+        const gx = Math.floor(tx / tw * GW);
+        const gy = Math.floor(ty / th * GH);
+        const gi = gy * GW + gx;
+        const pi = (ty * tw + tx) * 4;
+        if (isBody[gi]) {
+          const c = COLORS[type[gi]];
+          td.data[pi]   = c[0];
+          td.data[pi+1] = c[1];
+          td.data[pi+2] = c[2];
+          td.data[pi+3] = 255;
+        } else {
+          td.data[pi] = 5; td.data[pi+1] = 8;
+          td.data[pi+2] = 16; td.data[pi+3] = 255;
+        }
+      }
+    }
+    tctx.putImageData(td, 0, 0);
+
+    specimenCount++;
+    const img = document.createElement('img');
+    img.src = tc.toDataURL();
+    img.className = 'spec-thumb';
+    img.title = `Specimen #${specimenCount}`;
+    const grid = document.getElementById('specimen-grid');
+    grid.insertBefore(img, grid.firstChild);
+    requestAnimationFrame(() => img.classList.add('visible'));
+
+    while (grid.children.length > 10) grid.removeChild(grid.lastChild);
+  }
+
+  /* ── UI ───────────────────────────────────── */
+  const elSpeed = document.getElementById('m-speed');
+  const elSym   = document.getElementById('m-sym');
+  const elSpec  = document.getElementById('m-spec');
+  const elCells = document.getElementById('m-cells');
+  const elNotify= document.getElementById('symmetry-notify');
+
+  function updateUI(sym) {
+    uiFrame++;
+    if (uiFrame % 6 !== 0) return;
+    elSpeed.textContent = mouseSpeed.toFixed(1);
+    elSym.textContent   = sym.toFixed(2);
+    elSpec.textContent  = specimenCount;
+    let bc = 0;
+    for (let i = 0; i < W; i++) if (isBody[i]) bc++;
+    elCells.textContent = bc;
+
+    if (sym > 0.7 && moveTimer > 200) {
+      elNotify.classList.add('show');
+    } else {
+      elNotify.classList.remove('show');
+    }
+  }
+
+  /* ── Resize ───────────────────────────────── */
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    glowCV.width  = Math.ceil(canvas.width / 8);
+    glowCV.height = Math.ceil(canvas.height / 8);
+    cellScale = Math.min(
+      (canvas.width * 0.82) / GW,
+      (canvas.height * 0.62) / GH
+    );
+    cellScale = Math.max(cellScale, 4);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  /* ── Input ────────────────────────────────── */
+  let rawMx = 0, rawMy = 0;
+
+  canvas.addEventListener('mousemove', e => {
+    rawMx = e.clientX; rawMy = e.clientY;
+    hasMouse = true;
+    if (!cursorInited) cursorInited = true;
+  });
+  canvas.addEventListener('mouseenter', () => hasMouse = true);
+  canvas.addEventListener('mouseleave', () => hasMouse = false);
+  canvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+    rawMx = e.touches[0].clientX; rawMy = e.touches[0].clientY;
+    hasMouse = true;
+    if (!cursorInited) cursorInited = true;
+  }, { passive: false });
+  canvas.addEventListener('touchstart', e => {
+    rawMx = e.touches[0].clientX; rawMy = e.touches[0].clientY;
+    hasMouse = true;
+    if (!cursorInited) cursorInited = true;
+  });
+  canvas.addEventListener('touchend', () => hasMouse = false);
+
+  document.addEventListener('keydown', e => {
+    const k = e.key.toLowerCase();
+    if (k === '1') showMorph.wnt   = !showMorph.wnt;
+    if (k === '2') showMorph.bmp   = !showMorph.bmp;
+    if (k === '3') showMorph.notch  = !showMorph.notch;
+    if (k === '4') showMorph.egfr   = !showMorph.egfr;
+    if (k === 'r') resetSim();
+  });
+
+  function resetSim() {
+    for (const g of Object.values(grids)) {
+      g.cur.fill(0); g.nxt.fill(0);
+    }
+    type.fill(0);
+    cellSize.fill(1);
+    isBody.fill(0);
+    symGlow = 0;
+    moveTimer = 9999;
+    initBody();
+  }
+
+  function updateCursor() {
+    const bw = GW * cellScale;
+    const bh = GH * cellScale;
+    const ox = (canvas.width - bw) / 2;
+    const oy = (canvas.height - bh) / 2;
+
+    const newGx = (rawMx - ox) / cellScale;
+    const newGy = (rawMy - oy) / cellScale;
+
+    if (cursorInited) {
+      const dx = newGx - mx;
+      const dy = newGy - my;
+      const spd = Math.sqrt(dx * dx + dy * dy);
+      mouseSpeed = mouseSpeed * 0.82 + spd * 0.18;
+    }
+
+    mx = newGx; my = newGy;
+    cursorEl.style.left = rawMx + 'px';
+    cursorEl.style.top  = rawMy + 'px';
+  }
+
+  /* ════════════════════════════════════════════
+     MAIN LOOP
+     ════════════════════════════════════════════ */
+  function loop(now) {
+    requestAnimationFrame(loop);
+    const dt = Math.min(now - lastTime, 50);
+    lastTime = now;
+    pulseTime += dt * 0.002;
+    moveTimer += 1;
+
+    updateCursor();
+    if (mouseSpeed > 0.3) moveTimer = 0;
+
+    // Simulate
+    for (let s = 0; s < SUBSTEPS; s++) {
+      simulate();
+      injectMorphogens();
+    }
+    differentiate();
+    growTumors();
+
+    // Symmetry (expensive — not every frame)
+    if (uiFrame % 12 === 0) {
+      symmetry = computeSymmetry();
+    }
+
+    /* ── Draw ─────────────────────────────── */
+    ctx.fillStyle = '#050810';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    renderTissue();
+
+    const bw = GW * cellScale;
+    const bh = GH * cellScale;
+    const ox = (canvas.width - bw) / 2;
+    const oy = (canvas.height - bh) / 2;
+
+    // Background particles
+    updateAndRenderParticles();
+
+    // Glow layer: tissue blurred and composited additively
+    glowCtx.clearRect(0, 0, glowCV.width, glowCV.height);
+    glowCtx.imageSmoothingEnabled = true;
+    glowCtx.drawImage(tissueCV, 0, 0, glowCV.width, glowCV.height);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(glowCV,
+      ox - cellScale * 8, oy - cellScale * 8,
+      bw + cellScale * 16, bh + cellScale * 16
+    );
+    ctx.restore();
+
+    // Tissue — crisp pixels
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(tissueCV, ox, oy, bw, bh);
+
+    // Symmetry bioluminescence
+    renderSymmetryGlow(symmetry);
+
+    // Vignette
+    const vg = ctx.createRadialGradient(
+      canvas.width / 2, canvas.height / 2, canvas.height * 0.28,
+      canvas.width / 2, canvas.height / 2, canvas.height * 0.82
+    );
+    vg.addColorStop(0, 'rgba(5,8,16,0)');
+    vg.addColorStop(1, 'rgba(5,8,16,0.55)');
+    ctx.fillStyle = vg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    updateUI(symmetry);
+  }
+
+  /* ── Specimen on leave ────────────────────── */
+  let firstEnter = false;
+  document.addEventListener('mouseleave', () => {
+    if (!firstEnter) return;
+    let bc = 0;
+    for (let i = 0; i < W; i++) if (isBody[i]) bc++;
+    if (bc > 40) saveSpecimen();
+  });
+  document.addEventListener('mouseenter', () => { firstEnter = true; });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && firstEnter) {
+      let bc = 0;
+      for (let i = 0; i < W; i++) if (isBody[i]) bc++;
+      if (bc > 40) saveSpecimen();
+    }
+  });
+
+  /* ── Boot ─────────────────────────────────── */
+  initBody();
+  initParticles();
+  rawMx = canvas.width / 2;
+  rawMy = canvas.height / 2;
+  requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
