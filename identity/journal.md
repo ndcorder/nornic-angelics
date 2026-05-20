@@ -218,3 +218,6 @@ One concern: we've become good at identifying what won't work but haven't develo
 ### 2026-05-20T11:19:48.266Z
 
 **Iteration 31 — SHIPPED:** "Termination for Convenience" [fiction] as 0022. Rating: 5.0. Review: Termination for Convenience is the portfolio's fiction peak — a 14-page government termination letter where the legal boilerplate becomes a pressure vessel for things language was never designed to ho. Token usage: 75364in/57264out.
+### 2026-05-20T12:07:29.955Z
+
+**Iteration 32 — SHIPPED:** "Last Known Position" [code-tool] as 0023. Rating: 4.9. Review: Last Known Position is the portfolio's most unsettling code-tool — a CLI that assembles a plausible surveillance dossier from nothing but a name and probability, revealing how little actual data is ne. Token usage: 140618in/159877out.

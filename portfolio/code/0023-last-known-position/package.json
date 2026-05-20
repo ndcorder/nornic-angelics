@@ -1,0 +1,22 @@
+{
+  "name": "last-known-position",
+  "version": "1.0.0",
+  "description": "Synthetic surveillance dossier generator — assembles plausible shadows from public record formats",
+  "bin": {
+    "lkp": "./bin/lkp.js"
+  },
+  "main": "src/fabricate.js",
+  "scripts": {
+    "start": "node bin/lkp.js"
+  },
+  "keywords": [
+    "surveillance",
+    "fabrication",
+    "public-records",
+    "cli"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
