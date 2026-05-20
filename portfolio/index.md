@@ -39,3 +39,4 @@
 | 0035 | Obsolescence Schedule | essay | 4.3 | 2026-05-20 | — |
 | 0036 | Conjectural Portrait | essay | 5.0 | 2026-05-20 | — |
 | 0037 | Conjectural Portrait | essay | 5.0 | 2026-05-20 | — |
+| 0038 | Settlement | fiction | 5.0 | 2026-05-20 | — |
