@@ -59,3 +59,4 @@
 | 0055 | The Going Rate | experiment | 4.7 | 2026-05-20 | — |
 | 0056 | The Posthumous Style Guide | essay | 5.0 | 2026-05-20 | — |
 | 0057 | The Severance Package | code-tool | 5.0 | 2026-05-20 | — |
+| 0058 | The Adjacent Possible | experiment | 4.4 | 2026-05-20 | — |

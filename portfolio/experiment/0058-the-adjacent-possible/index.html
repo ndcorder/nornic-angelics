@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Adjacent Possible</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; }
+  body {
+    background: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Georgia', 'Times New Roman', serif;
+  }
+  #text-container {
+    max-width: 640px;
+    padding: 2rem;
+    text-align: center;
+    line-height: 1.9;
+    font-size: 1.45rem;
+    color: #1a1a1a;
+    letter-spacing: 0.01em;
+    min-height: 3rem;
+  }
+  #text-container .word {
+    display: inline;
+    opacity: 0;
+  }
+  #text-container .word.visible {
+    opacity: 1;
+    transition: opacity 0.8s ease;
+  }
+  #text-container .word.latest {
+    animation: wordAppear 2s ease forwards;
+  }
+  @keyframes wordAppear {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  #text-container .word.resolving {
+    animation: wordResolve 1.2s ease forwards;
+  }
+  @keyframes wordResolve {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  #text-container .word.fading {
+    transition: opacity 1.4s ease;
+    opacity: 0 !important;
+    animation: none;
+  }
+  #reset-indicator {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.65rem;
+    color: #ccc;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 3s ease;
+  }
+  #reset-indicator.show {
+    opacity: 1;
+  }
+</style>
+</head>
+<body>
+<div id="text-container"></div>
+<div id="reset-indicator">again</div>
+<script>
+// ═══════════════════════════════════════════════════════════
+//  THE ADJACENT POSSIBLE
+//  A sentence that never completes. A reader who never stops
+//  waiting for it to. The complicity of sense-making.
+// ═══════════════════════════════════════════════════════════
+
+// ─── CORPUS ────────────────────────────────────────────
+// Found language fragments. Ambiguity is the material.
+const corpus = [
+  "the morning light was something we had agreed to forget",
+  "the truth about what happened depends on who is no longer alive",
+  "the last time I saw her she was standing in the doorway not leaving",
+  "the problem with memory is that it improves with distance",
+  "the silence between two people who have finished each other's sentences",
+  "the distance between wanting and having is where we spend our lives",
+  "the difference between a warning and a prophecy is timing",
+  "the house was quiet in the way that houses are when someone has died",
+  "the feeling that you have been here before is never proof",
+  "the light through the window was the color of an ending",
+  "the plan was never to arrive only to keep moving",
+  "the whole time we thought we were building something",
+  "the sound of a door closing in a house you have left",
+  "the same argument repeated until it became a kind of music",
+  "we kept the lights on even after there was nothing to see",
+  "we had been talking for so long we forgot what the first word was",
+  "we built a structure out of apologies and called it home",
+  "we never spoke about it directly which was the whole point",
+  "she said the words as though they belonged to someone else",
+  "she walked ahead of me through the entire city",
+  "he was waiting for something that had already happened",
+  "he remembered the warmth but not the face",
+  "he arrived early to avoid the feeling of being expected",
+  "I wanted to explain but the explanation was the problem",
+  "I have been carrying this for longer than it weighed anything",
+  "I opened the letter and found a sentence I had written years ago",
+  "I tried to describe the color to someone who had always seen it",
+  "I returned to the place where something had been taken from me",
+  "I dreamed I was explaining a dream to someone who was in it",
+  "I kept finding reasons to stay until staying became the reason",
+  "you told me it would feel like this and I did not believe you",
+  "you could see the whole valley from where we stopped talking",
+  "you were right but not in the way you thought",
+  "they said it was an accident but accidents have to happen to someone",
+  "they found the letter hidden in a book that no one would read",
+  "it happened so slowly that by the time we noticed it had already happened",
+  "it was the kind of quiet that means someone is listening",
+  "it took a long time to understand that leaving was not the same as going",
+  "it was too late by the time we realized what we had built",
+  "it was never about forgiveness it was about the shape of the wound",
+  "it was always going to end this way we just did not know the words yet",
+  "there is a version of this story where nobody leaves",
+  "there was a sound like someone trying to remember a song",
+  "there is nothing between us now except everything that happened",
+  "there was nothing to hold onto so we held onto nothing",
+  "there was no way to say it without making it smaller",
+  "what we lost was not the thing itself but the possibility of it",
+  "what remained after the fire was not ruins but the absence of expectation",
+  "what we wanted was so simple it could not survive contact with language",
+  "what I remember is not the event but the light around it",
+  "what she meant was something she could only say by not saying it",
+  "this is not the same room though the walls insist otherwise",
+  "this was supposed to be the year everything became clear",
+  "this is the part where the story changes direction",
+  "time moves differently for people who are waiting for an answer",
+  "time passes and the wound becomes a feature of the landscape",
+  "someone I loved once told me that all tunnels have two ends",
+  "someone is always leaving even when they stay in the room",
+  "no one noticed because noticing would have required admitting",
+  "no one is coming and that is not a threat or a promise",
+  "nothing about the house suggested anyone had ever been happy there",
+  "nothing was missing only the sense that something had been",
+  "a door opened somewhere in the house that had no doors left",
+  "a sentence is a room someone has already left",
+  "a word is a container that leaks",
+  "a gap in the conversation where the truth was supposed to go",
+  "an ending is something you recognize only from the middle",
+  "one of us was always pretending not to hear the other",
+  "one day the door will open and it will be the wind",
+  "by the time I found the words the person who needed them was gone",
+  "by then the snow had covered everything including the path back",
+  "all morning I tried to remember what I had decided to forget",
+  "all maps of the same territory look different in the dark",
+  "every object in the room reminded me of a person who had touched it",
+  "every story about the past is a story about the present",
+  "every time I tried to leave I found I had already arrived",
+  "everything that could be said had been said and still nothing changed",
+  "everything we built is still standing but no one lives there now",
+  "if I could go back I would not change anything except everything",
+  "if you listen carefully the silence has a particular quality",
+  "if you wait long enough even the waiting becomes a form of hope",
+  "once there was a word for what we were but it has been lost",
+  "once we stopped pretending the room felt different but not better",
+  "perhaps the hardest part is not the loss but the way it stays",
+  "perhaps we were always just describing the same emptiness differently",
+  "how strange to survive the thing you were most afraid of",
+  "how long can you stand in a doorway before you become the threshold",
+  "how do you prove you loved someone when the evidence is gone",
+  "remembering is just a way of keeping the ending from happening again",
+  "love is what happens between the first word and the last",
+  "meaning is the shape your hand makes when grasping at nothing",
+  "loss has a grammar that takes years to learn",
+  "grief is just love with nowhere to go",
+  "hope is the thing with feathers that beats against a closed window",
+  "the past is not behind us it is the ground we are standing on",
+  "the future was supposed to be clearer from this distance",
+  "the sky that morning was the color of a promise being broken",
+  "the wind carried a sound that might have been a voice",
+  "the mirror showed someone who looked like me but moved a second later",
+  "the street was empty in the way that streets are when someone is coming",
+  "the rain stopped and left behind the smell of something forgiven",
+  "the clock on the wall had stopped at an hour that never existed",
+  "the last word was always going to be the hardest one to say",
+  "the sentence continued long after the meaning had stopped",
+  "the words came out in the wrong order and made a different sense",
+  "the page was blank but it was not empty",
+  "the letter arrived one day after it would have mattered",
+  "the photograph showed a happiness that no one in it remembered feeling",
+  "the phone rang once in the middle of the night and then was silent",
+  "the answer was so simple we spent years looking past it",
+  "the only honest thing was the silence between us",
+  "the space between words is where the meaning lives or dies",
+  "the half-built thing is more honest than what it was supposed to become",
+  "the voice on the phone sounded like someone trying to remember my name",
+  "we stood at the edge and called it the beginning",
+  "we watched the house burn from a distance that felt like permission",
+  "we walked until the city ended and then we kept walking",
+  "we drove past the exit and did not mention it",
+  "we sat across from each other and built a silence",
+  "we did not mean to build a wall but we kept stacking stones",
+  "she turned around not to look back but to check if anyone was following",
+  "she held the photograph the way you hold something that has already been broken",
+  "she looked at me as if I were a window she had forgotten was there",
+  "she paused before the word as though the word were a door she was afraid to open",
+  "she smiled in a way that suggested she knew how the story ended",
+  "he watched the rain and thought about how water has no memory",
+  "he said the name carefully as if it might break",
+  "he left the room and took the silence with him",
+  "he packed only the things that would not remind him of staying",
+  "I kept the voicemail not because of what it said but because of the pause",
+  "I recognized the place but not the feeling of being there",
+  "I closed the door quietly so the silence could not follow",
+  "I did not know I was waiting until the waiting was over",
+  "I asked a question that had no answer and the room filled with it",
+  "you said it was nothing and that was the truest thing anyone had said",
+  "you turned away before I could see whether you were leaving",
+  "you once told me that every ending is also a beginning but you were crying",
+  "they were so still they might have been waiting for something that was never coming",
+  "they rebuilt the house exactly as it was but the light was different",
+  "they found nothing because nothing was what was lost",
+  "they left without explaining which is its own kind of explanation",
+  "it would be years before I understood what you meant by enough",
+  "it was not the ending that hurt but the way it kept almost happening",
+  "it took losing everything to see that everything was not what I wanted",
+  "there was a pause that contained the entire history of not speaking",
+  "there are words for what happened but none of them are the right ones",
+  "there is a kind of darkness that comes from keeping your eyes closed",
+  "what we call forgetting is just the silence between two memories",
+  "what we had was not nothing but it was not enough to build on",
+  "what she left behind was not objects but the shape of her absence",
+  "what we did not say filled the room until we could not breathe",
+  "this is not a story because stories end and this keeps beginning",
+  "this is the sound of a room after everyone has left",
+  "time does not heal it just rearranges the furniture of loss",
+  "time is the distance between the word and the wound",
+  "time has a way of making the worst thing feel like weather",
+  "someone once said that every room contains a conversation that never happened",
+  "no one warned us that the hardest part would be the stillness after",
+  "no one tells you that grief is just a room you learn to live in",
+  "nothing was ever solved only survived",
+  "nothing prepares you for the exact quality of the silence",
+  "a house is not a home it is a container for leaving",
+  "a sentence begins with a breath it does not know it will finish",
+  "a story is a way of putting distance between yourself and the truth",
+  "a hand opened and closed around something that was no longer there",
+  "an absence can be more present than whatever it replaced",
+  "one of us would remember this differently and that would be the truth",
+  "by the time the ambulance arrived the street had already forgotten",
+  "all night the house made sounds like a person trying to fall asleep",
+  "every turn we took led to a place we had already decided to leave",
+  "every time I describe it the description becomes a different event",
+  "everything we touched became a kind of evidence",
+  "everything we said to each other was both true and not enough",
+  "everything was still there except the reason for keeping it",
+  "if you stare long enough at anything it will stare back",
+  "if you listen carefully enough even silence has a syntax",
+  "once there was a house where everyone was welcome and no one stayed",
+  "perhaps what we call love is just paying attention until it hurts",
+  "perhaps the sentence was never meant to end only to keep meaning",
+  "how quiet the house becomes when the conversation has moved elsewhere",
+  "how do you mourn something that was only ever a possibility",
+  "love is not enough but it is the only thing that makes the not enough bearable",
+  "meaning is not found it is made and it can be unmade",
+  "the year ended the way a sentence ends when the pen runs out of ink",
+  "the word home became a room I could no longer enter",
+  "the keys were still on the table but the locks had been changed",
+  "the room was empty except for a chair that remembered the shape of someone sitting",
+  "the snow erased everything that was not permanent",
+  "the word for what we lost does not exist in any language we know",
+  "the coffee grew cold while we tried to find a word that could hold the morning",
+  "the body remembers what the mind has already tried to forget",
+  "the sound of breathing in a room where someone is sleeping",
+  "the answer was always there underneath the question like a body under ice",
+  "the moment before the phone rings is indistinguishable from the moment after",
+  "the kitchen was clean in the way that kitchens are after something has been decided",
+  "the hallway was long enough to reconsider but not long enough to change course",
+  "the phrase I did not mean to hurt you is just another way of saying I did",
+  "the ghost of a sentence still visible on the page after erasure",
+  "the air between two people who have just stopped pretending",
+  "the shape of the wound tells you something about the instrument",
+  "the feeling of almost recognizing your own face in an old photograph",
+  "the temperature of grief is lower than you would expect",
+  "the question that can be answered is not the question that matters",
+  "the simplest explanation is usually the one we refuse to accept",
+  "the pause between the lightning and the thunder is where we live",
+  "we arranged the furniture of our lives around an absence we refused to name",
+  "we promised we would never become our parents and then we slowly did",
+  "we held hands in the way that people do when they are about to let go",
+  "she placed the flowers on the table as if they were an apology from the earth",
+  "she described the color blue to me and I believed her completely",
+  "she spoke about the past as if it were a country she had once visited",
+  "he arranged his books by the order in which he had lost interest in them",
+  "he left a message that said only the sound of breathing and it was enough",
+  "he said the word home and it sounded like a question",
+  "I have been carrying this sentence for years waiting for someone to finish it",
+  "I sat with the silence until the silence sat with me",
+  "I kept your number in my phone under a name that was not yours",
+  "I opened the curtains and the light was unspeakably ordinary",
+  "I said nothing and the nothing became the thing I said",
+  "you described a room I had never been in but I recognized it completely",
+  "you were so quiet that the quiet became a kind of sound",
+  "you called at the exact moment I was thinking about calling you",
+  "you did not cry at the funeral and no one asked why",
+  "you were so gentle with the truth that the truth did not recognize itself",
+  "they continued to live in the house as if the absence was temporary",
+  "they spoke about the weather because the weather could not disappoint them",
+  "it began the way all things begin with a sound that could have been anything",
+  "it happened on a day so ordinary the light has never forgiven itself",
+  "it occurred to me later that I had been the one who closed the door",
+  "there should be a word for the moment when you stop expecting someone to call",
+  "there are sentences that change direction midstream because the current is stronger",
+  "there was a moment that lasted longer than the hour that contained it",
+  "what we carry is not the memory but the weight of having remembered",
+  "what was left was not what remained but what could not be taken",
+  "what we do not say accumulates in the walls",
+  "this is not a sentence this is a room you have entered",
+  "this is the place in the story where the narrator becomes unreliable",
+  "this is where the path diverges and both roads lead to the same place",
+  "time is just the distance between two losses measured in breaths",
+  "time will pass and the passing will be its own form of mercy",
+  "someone will find this room and wonder who lived here before the silence",
+  "no one warned us about the weight of ordinary mornings",
+  "nothing is ever truly lost it just becomes part of the silence",
+  "a locked door is not a wall it is a question about who has the key",
+  "a road that leads nowhere is still a road if you are walking on it",
+  "a sentence is the shortest distance between two silences",
+  "a photograph is a proof that the past existed but not that it mattered",
+  "one day the longing will stop and you will miss it more than what you were longing for",
+  "by morning the snow had covered everything we had been unable to say",
+  "every word I say to you is a word I have already said to myself",
+  "everything that once seemed permanent now seems like a long gentle pause",
+  "everything about the house was exactly the same except for the silence being louder",
+  "if only we could see the whole shape of it from the beginning",
+  "if you hold still long enough the world forgets you are there",
+  "once the door opened and what came in was not what went out",
+  "once upon a time is just a way of saying far enough away to be safe",
+  "perhaps we are just sentences that have not yet found their periods",
+  "perhaps what we are looking for is not an ending but a reason to keep going",
+  "how many times can you say goodbye to the same person before the word breaks",
+  "how strange it is to be the one who stays when the one who leaves was always you",
+  "remember the way the light fell across the table as if it knew something",
+  "love is not a word it is a direction and we were always walking opposite ways",
+  "love arrived without warning and left without permission",
+  "meaning is the shadow cast by a sentence that was never finished",
+  "loss is just love that has run out of places to go",
+  "grief is a room you enter knowing there is no other exit",
+  "the half-finished sentence on the tip of the tongue of someone no longer there",
+  "the way the light falls in late afternoon as if apologizing for something",
+  "the sound of someone breathing in the next room when you are the only one home",
+  "the moment before a word is spoken when every word is still possible",
+  "the sense that everything has already happened and you are just catching up",
+  "the silence between two people who have just realized they are alone together",
+  "the ghost of a word that was almost said still hanging in the air",
+  "the quality of attention you give to something you are about to lose",
+  "the pause before the last note of a song that you know is ending",
+  "the particular silence of a house that has just been emptied",
+  "the look on the face of someone who has just understood something they cannot un-understand",
+  "the distance between your hand and the phone is the distance between now and then",
+  "the place where the road ends and the map becomes a picture",
+  "the light in the kitchen at four in the morning",
+  "the gap between the story and the truth is where the meaning lives",
+  "the word that would have changed everything if you had thought of it in time",
+  "the feeling of a hand on your shoulder from someone who is no longer there",
+  "the silence that follows the last word of a conversation that mattered",
+  "the sense that you have been here before but the here was different",
+  "the direction the smoke goes when there is no longer a fire",
+  "the taste of a word you have been holding in your mouth for too long",
+  "the cold spot on the pillow where someone's head used to rest",
+  "the moment when the sentence you are reading becomes the sentence you are living",
+  "the way the light changes when someone leaves the room and does not come back",
+  "the feeling that there is a word for this but no one has found it yet",
+  "the window was open and the curtain moved as if someone had just walked through",
+  "the sky that evening was the color of a sentence being erased",
+  "the morning after the night you said the thing you promised you would never say",
+  "the distance between the word and the wound is the distance you have already traveled",
+  "the sound of a key turning in a lock that was already open",
+  "the room fell silent and the silence was the loudest thing in it",
+  "the wind carried something that might have been a voice or might have been a memory",
+  "the rain fell so gently it seemed like an apology for all the storms before",
+  "the distance between almost and always is the distance we were never able to cross",
+  "the question is not whether the sentence will end but whether it ever truly began",
+  "the word hung in the air like smoke from a fire that had already gone out",
+  "we never found the beginning and the end was always arriving too soon",
+  "we called it a conversation but it was really just two silences taking turns",
+  "she looked at me as though I were a sentence she had stopped reading",
+  "he carried the silence in his pocket like a stone from a beach he could not return to",
+  "I have been standing at this window so long the glass has started to soften",
+  "you were right but being right did not make the room any less empty",
+  "it was not the kind of silence that means nothing it was the kind that means everything",
+  "there was a word for what we were doing but we had agreed not to use it",
+  "what we did not know then was that this was the last ordinary afternoon",
+  "this is not the sentence you thought you were reading but here we are",
+  "time passed and what was unbearable became merely heavy and what was heavy became merely present",
+  "no one remembers the words that were said only the way the room felt afterward",
+  "nothing about the light suggested that anything had changed but everything had",
+  "a sentence is just a hallway with doors on either side most of them locked",
+  "by the time we reached the clearing the forest had already forgotten we were there",
+  "every window is a frame for a painting that keeps changing",
+  "if you could hear the silence in this room you would never stop listening",
+  "once we stopped pretending the truth felt like a room with no furniture",
+  "perhaps the question is not what the sentence means but what it is trying to become",
+  "how long does it take for a house to forget the sound of someone's footsteps",
+  "remember that the words we did not say are still here waiting in the room",
+  "love is what remains after the sentence has forgotten its own beginning",
+  "meaning is the light that falls between the words on a page you have already read",
+  "loss has a grammar and the first rule is that the past tense is always present",
+  "the sentence you are waiting for has already been written but not by you"
+];
+
+// ─── RESOLUTIONS ──────────────────────────────────────
+// Complete. Devastating. Then gone.
+const resolutions = [
+  "you were always the one who was going to leave and I was always the one who was going to watch",
+  "what I meant to say was that the light has changed and I do not think it is coming back",
+  "the wound was not the loss but the way the loss kept pretending it might be temporary",
+  "I said I was fine and the word fine became a house I lived in alone for years",
+  "there was never going to be a right time and that was the only time we had",
+  "I kept waiting for the feeling to pass and then one day I realized it had become the ground I was standing on",
+  "the truth is simpler than any sentence could hold it is just this we were here and now we are not",
+  "what we lost was not a thing but a direction and without it the compass just spins",
+  "it took me years to understand that the silence between us was the most honest thing we ever shared",
+  "the hardest part was not the leaving it was the moment when leaving became ordinary",
+  "the room is still there and the light still falls the same way but the light does not know who left",
+  "grief is just love that has outlived its welcome and refuses to leave"
+];
+
+// ═══════════════════════════════════════════════════════════
+//  N-GRAM MODEL
+// ═══════════════════════════════════════════════════════════
+const bigrams = {};
+const trigrams = {};
+const fourgrams = {};
+
+function clean(s) {
+  return s.toLowerCase().replace(/[^a-z\s']/g, '').replace(/\s+/g, ' ').trim();
+}
+
+function tokenize(s) {
+  return clean(s).split(/\s+/).filter(w => w.length > 0);
+}
+
+function learn(sentence) {
+  const words = tokenize(sentence);
+  for (let i = 0; i < words.length; i++) {
+    if (i < words.length - 1) {
+      const key = words[i];
+      if (!bigrams[key]) bigrams[key] = [];
+      bigrams[key].push(words[i + 1]);
+    }
+    if (i < words.length - 2) {
+      const key = words[i] + ' ' + words[i + 1];
+      if (!trigrams[key]) trigrams[key] = [];
+      trigrams[key].push(words[i + 2]);
+    }
+    if (i < words.length - 3) {
+      const key = words[i] + ' ' + words[i + 1] + ' ' + words[i + 2];
+      if (!fourgrams[key]) fourgrams[key] = [];
+      fourgrams[key].push(words[i + 3]);
+    }
+  }
+}
+
+corpus.forEach(learn);
+resolutions.forEach(learn);
+
+function pick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function generateNext(currentWords) {
+  const w = currentWords.map(clean);
+  if (w.length >= 3) {
+    const key3 = w.slice(-3).join(' ');
+    if (fourgrams[key3] && fourgrams[key3].length > 0) return pick(fourgrams[key3]);
+  }
+  if (w.length >= 2) {
+    const key2 = w.slice(-2).join(' ');
+    if (trigrams[key2] && trigrams[key2].length > 0) return pick(trigrams[key2]);
+  }
+  if (w.length >= 1) {
+    const key1 = w[w.length - 1];
+    if (bigrams[key1] && bigrams[key1].length > 0) return pick(bigrams[key1]);
+  }
+  const fallback = corpus.flatMap(tokenize).filter(w => w.length > 3);
+  return pick(fallback.length > 0 ? fallback : corpus.flatMap(tokenize));
+}
+
+// ─── SEED ──────────────────────────────────────────────
+function seed() {
+  const sentence = pick(corpus);
+  const words = tokenize(sentence);
+  const len = 2 + Math.floor(Math.random() * 2);
+  return words.slice(0, Math.min(len, words.length));
+}
+
+// ─── PIVOTAL WORDS ────────────────────────────────────
+const pivotals = new Set([
+  'not', 'no', 'never', 'nothing', 'nowhere',
+  'was', 'is', 'were', 'are', 'been', 'had', 'has',
+  'always', 'already', 'still', 'yet',
+  'only', 'just', 'even',
+  'because', 'before', 'after', 'until', 'when', 'where', 'while',
+  'but', 'and', 'or', 'if', 'though',
+  'that', 'this', 'what', 'which', 'who',
+  'once', 'perhaps', 'between', 'without', 'through',
+  'again', 'too', 'enough',
+  'alone', 'empty', 'gone', 'left', 'lost', 'last',
+  'silence', 'absence', 'dark', 'door', 'end', 'room',
+  'remember', 'forget', 'happened', 'meant', 'became',
+  'said', 'told', 'knew', 'thought', 'understood', 'realized'
+]);
+
+function getDelay(word) {
+  const w = clean(word);
+  const base = 2600;
+  const lengthBonus = Math.min(w.length * 90, 900);
+  const pivotalBonus = pivotals.has(w) ? 2000 + Math.random() * 1000 : 0;
+  const jitter = (Math.random() - 0.5) * 800;
+  return Math.max(1600, base + lengthBonus + pivotalBonus + jitter);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ENGINE
+// ═══════════════════════════════════════════════════════════
+const container = document.getElementById('text-container');
+const resetEl = document.getElementById('reset-indicator');
+
+let words = [];        // array of lowercase words
+let wordCount = 0;     // how many are currently visible
+let running = false;
+let timers = [];
+let isResolving = false;
+
+function clearTimers() {
+  timers.forEach(t => clearTimeout(t));
+  timers = [];
+}
+
+// ─── RENDER ────────────────────────────────────────────
+// Append-only: add new span, manage classes on existing ones
+function addWordSpan(word, cssClass) {
+  const span = document.createElement('span');
+  span.className = 'word ' + (cssClass || '');
+  span.textContent = word;
+  // Add space before if not first
+  if (container.childNodes.length > 0) {
+    container.appendChild(document.createTextNode(' '));
+  }
+  container.appendChild(span);
+  return span;
+}
+
+function getAllSpans() {
+  return container.querySelectorAll('span.word');
+}
+
+// ─── COLLAPSE ─────────────────────────────────────────
+function collapse() {
+  running = false;
+  isResolving = false;
+  clearTimers();
+
+  const spans = getAllSpans();
+  spans.forEach((span, i) => {
+    const t = setTimeout(() => {
+      span.classList.add('fading');
+    }, i * 100);
+    timers.push(t);
+  });
+
+  const totalFade = spans.length * 100 + 1600;
+  timers.push(setTimeout(() => {
+    resetEl.classList.add('show');
+  }, totalFade));
+
+  timers.push(setTimeout(() => {
+    resetEl.classList.remove('show');
+    startFresh();
+  }, totalFade + 4000));
+}
+
+// ─── RESOLUTION ───────────────────────────────────────
+function checkResolution() {
+  // ~1 in 500 chance per word
+  if (wordCount < 8 || Math.random() >= 1 / 500) return false;
+
+  isResolving = true;
+  running = false;
+  clearTimers();
+
+  const sentence = pick(resolutions);
+  const resWords = sentence.split(/\s+/);
+
+  // Display all resolution words with staggered reveal
+  resWords.forEach((w, i) => {
+    timers.push(setTimeout(() => {
+      const span = addWordSpan(w, 'resolving');
+    }, i * 180));
+  });
+
+  // Hold in silence after last word
+  const holdStart = resWords.length * 180 + 5000;
+  timers.push(setTimeout(collapse, holdStart));
+  return true;
+}
+
+// ─── STEP ─────────────────────────────────────────────
+function step() {
+  if (!running) return;
+
+  // Check for resolution
+  if (checkResolution()) return;
+
+  // Generate next word
+  const next = generateNext(words);
+  words.push(next);
+  wordCount++;
+
+  // Remove 'latest' from previous word
+  const spans = getAllSpans();
+  if (spans.length > 0) {
+    spans[spans.length - 1].classList.remove('latest');
+  }
+
+  // Add new word with latest class
+  addWordSpan(next, 'latest');
+
+  // Max length: collapse and restart
+  if (wordCount >= 60) {
+    timers.push(setTimeout(collapse, 2500));
+    return;
+  }
+
+  // Schedule next
+  const delay = getDelay(next);
+  timers.push(setTimeout(step, delay));
+}
+
+// ─── INIT ─────────────────────────────────────────────
+function startFresh() {
+  clearTimers();
+  container.innerHTML = '';
+  words = seed();
+  wordCount = words.length;
+  running = false;
+  isResolving = false;
+
+  // Reveal seed words with stagger
+  words.forEach((w, i) => {
+    timers.push(setTimeout(() => {
+      addWordSpan(w, 'visible');
+    }, i * 500 + 300));
+  });
+
+  // Begin growing after seed is visible
+  const startDelay = words.length * 500 + 2500;
+  timers.push(setTimeout(() => {
+    running = true;
+    step();
+  }, startDelay));
+}
+
+// ─── GO ────────────────────────────────────────────────
+startFresh();
+</script>
+</body>
+</html>
