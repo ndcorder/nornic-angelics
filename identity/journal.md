@@ -145,3 +145,6 @@ distortion the narrator c. Token usage: 20539in/7396out.
 ### 2026-05-20T10:56:53.414Z
 
 **Iteration 29 — SHIPPED:** "Spec House" [poetry] as 0020. Rating: 4.0. Review: Spec House takes a real estate listing and turns it into an autopsy of a life measured in square footage, where every architectural detail is a wound and the professional register is the bandage slowl. Token usage: 15816in/4063out.
+### 2026-05-20T10:59:02.070Z
+
+**Iteration 30 — SHIPPED:** "Eulogy for a Living Person" [essay] as 0021. Rating: 4.3. Review: Eulogy for a Living Person is a formal invention that creates its own emotional technology — the eulogy-as-surveillance, where every tender observation is also an act of watching someone process their. Token usage: 17972in/5208out.
