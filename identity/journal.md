@@ -520,3 +520,6 @@ The Panic Buy approval → kill is instructive. The concept was sound and the co
 ### 2026-05-20T20:18:21.631Z
 
 **Iteration 73 — SHIPPED:** "The Going Rate" [experiment] as 0055. Rating: 4.7. Review: The Going Rate is the portfolio's purest complicity engine — an artifact that runs entirely on your continued presence, which is simultaneously the one thing you control and the one thing it needs. Th. Token usage: 53740in/26817out.
+### 2026-05-20T20:27:32.057Z
+
+**Iteration 74 — SHIPPED:** "The Posthumous Style Guide" [essay] as 0056. Rating: 5.0. Review: The Mercury Dispatch House Style Guide is the portfolio's most complete realization of institutional portraiture through bureaucratic artifact — a newspaper's style guide that reveals, through rules a. Token usage: 47276in/37111out.

@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mercury Dispatch — House Style Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;600&display=swap');
+
+  :root {
+    --page-bg: #f4f0e6;
+    --paper: #f9f6ee;
+    --text-body: #2a2520;
+    --text-heading: #1a1510;
+    --ink-black: #1a1510;
+    --ink-blue: #1a3f6e;
+    --ink-red: #8b2020;
+    --rule-line: #c4baa8;
+    --border-faded: #d4cbba;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: var(--page-bg);
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(180,170,150,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(180,170,150,0.1) 0%, transparent 40%);
+    font-family: 'Libre Baskerville', 'Georgia', serif;
+    color: var(--text-body);
+    line-height: 1.7;
+    padding: 2rem 1rem;
+  }
+
+  .document-wrapper {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .page {
+    background: var(--paper);
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 31px,
+        rgba(180,170,150,0.08) 31px,
+        rgba(180,170,150,0.08) 32px
+      );
+    border: 1px solid var(--border-faded);
+    box-shadow:
+      0 2px 8px rgba(0,0,0,0.06),
+      0 8px 32px rgba(0,0,0,0.04),
+      inset 0 0 60px rgba(200,190,170,0.1);
+    padding: 3rem 3rem 3rem 4rem;
+    position: relative;
+  }
+
+  .page::before {
+    content: '';
+    position: absolute;
+    left: 2.5rem;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--rule-line);
+    opacity: 0.5;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--text-heading);
+    position: relative;
+  }
+
+  .page-header::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    height: 1px;
+    background: var(--text-heading);
+  }
+
+  .masthead {
+    font-family: 'Libre Franklin', sans-serif;
+    font-weight: 300;
+    font-size: 0.75rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: #7a7060;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-title {
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-heading);
+  }
+
+  .page-subtitle {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.7rem;
+    color: #8a8070;
+    margin-top: 0.5rem;
+    letter-spacing: 0.1em;
+  }
+
+  .page-subtitle em {
+    font-style: italic;
+  }
+
+  .edition-note {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.65rem;
+    color: #9a9080;
+    text-align: center;
+    margin-bottom: 2rem;
+    letter-spacing: 0.05em;
+  }
+
+  .entry {
+    position: relative;
+    margin-bottom: 2rem;
+    padding-left: 1rem;
+    padding-right: 12rem;
+  }
+
+  .entry-number {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.7rem;
+    color: #9a9080;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.1em;
+  }
+
+  .entry-title {
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-heading);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .entry-body {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.82rem;
+    line-height: 1.8;
+    color: var(--text-body);
+  }
+
+  .entry-body em {
+    font-style: italic;
+    color: #4a4540;
+  }
+
+  .entry-body .example {
+    display: block;
+    padding-left: 1.5rem;
+    margin: 0.3rem 0;
+    color: #6a6560;
+    font-style: italic;
+  }
+
+  .entry-body .cross-ref {
+    font-size: 0.75rem;
+    color: #8a8070;
+  }
+
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border-faded);
+    margin: 2rem 0;
+  }
+
+  .section-heading {
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #7a7060;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-faded);
+  }
+
+  /* Marginalia */
+
+  .margin {
+    position: absolute;
+    right: -1rem;
+    width: 9rem;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.68rem;
+    line-height: 1.45;
+  }
+
+  .margin.eleanor {
+    top: 0.2rem;
+    color: var(--ink-black);
+    opacity: 0.85;
+  }
+
+  .margin.philip {
+    top: 0.2rem;
+    color: var(--ink-blue);
+    opacity: 0.9;
+  }
+
+  .margin.sarah {
+    top: 0.2rem;
+    color: var(--ink-red);
+    opacity: 0.9;
+  }
+
+  .margin.eleanor .note {
+    transform: rotate(-0.8deg);
+    margin-bottom: 0.8rem;
+    padding: 0.4rem 0.5rem;
+    position: relative;
+  }
+
+  .margin.eleanor .note::before {
+    content: '';
+    position: absolute;
+    left: -0.3rem;
+    top: 0.3rem;
+    bottom: 0.3rem;
+    width: 1px;
+    background: var(--ink-black);
+    opacity: 0.3;
+  }
+
+  .margin.eleanor .attribution {
+    font-variant: small-caps;
+    font-style: normal;
+  }
+
+  .margin.philip .note {
+    transform: rotate(-2deg);
+    margin-bottom: 0.8rem;
+    padding: 0.4rem 0.5rem;
+    position: relative;
+  }
+
+  .margin.philip .note::before {
+    content: '';
+    position: absolute;
+    left: -0.3rem;
+    top: 0.3rem;
+    bottom: 0.3rem;
+    width: 1px;
+    background: var(--ink-blue);
+    opacity: 0.4;
+  }
+
+  .margin.philip .attribution {
+    font-style: normal;
+    text-decoration: underline;
+    text-decoration-style: solid;
+    text-decoration-color: rgba(26,63,110,0.25);
+    text-underline-offset: 2px;
+  }
+
+  .margin.sarah .note {
+    transform: rotate(0.5deg);
+    margin-bottom: 0.8rem;
+    padding: 0.4rem 0.5rem;
+    position: relative;
+  }
+
+  .margin.sarah .note::before {
+    content: '';
+    position: absolute;
+    left: -0.3rem;
+    top: 0.3rem;
+    bottom: 0.3rem;
+    width: 1px;
+    background: var(--ink-red);
+    opacity: 0.4;
+  }
+
+  .margin.sarah .attribution {
+    font-style: italic;
+  }
+
+  .margin.late-sarah .note {
+    border-bottom: 1px dashed rgba(139,32,32,0.2);
+    padding-bottom: 0.6rem;
+  }
+
+  .margin.late-philip .note {
+    text-decoration: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: rgba(26,63,110,0.2);
+  }
+
+  .margin .attribution {
+    display: block;
+    font-size: 0.6rem;
+    margin-top: 0.2rem;
+    opacity: 0.7;
+  }
+
+  .margin.eleanor .attribution { color: var(--ink-black); }
+  .margin.philip .attribution { color: var(--ink-blue); }
+  .margin.sarah .attribution { color: var(--ink-red); }
+
+  .strikethrough {
+    text-decoration: line-through;
+    opacity: 0.5;
+  }
+
+  .insertion {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+  }
+
+  .page-number {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.65rem;
+    color: #b0a898;
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  .colophon {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--text-heading);
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.7rem;
+    color: #9a9080;
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  .colophon .provenance {
+    margin-top: 1rem;
+    font-style: italic;
+    color: #a89e90;
+    font-size: 0.65rem;
+  }
+
+  .editor-legend {
+    margin: 2rem 0;
+    padding: 1rem 1.5rem;
+    border: 1px solid var(--border-faded);
+    background: rgba(255,255,255,0.3);
+  }
+
+  .editor-legend h3 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #7a7060;
+    margin-bottom: 0.8rem;
+  }
+
+  .editor-legend .legend-entry {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 0.4rem;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.7rem;
+    line-height: 1.6;
+  }
+
+  .editor-legend .swatch {
+    width: 1.5rem;
+    height: 2px;
+    margin-right: 0.6rem;
+    flex-shrink: 0;
+    margin-top: 0.35rem;
+  }
+
+  .editor-legend .swatch.black { background: var(--ink-black); }
+  .editor-legend .swatch.blue { background: var(--ink-blue); }
+  .editor-legend .swatch.red { background: var(--ink-red); }
+
+  @media (max-width: 800px) {
+    .page {
+      padding: 2rem 1.5rem;
+    }
+    .entry {
+      padding-right: 1rem;
+    }
+    .margin {
+      position: relative;
+      right: auto;
+      width: 100%;
+      transform: none;
+      margin: 0.5rem 0 1rem 1rem;
+      padding-left: 1rem;
+      border-left: 2px solid var(--border-faded);
+    }
+    .margin .note {
+      transform: none !important;
+    }
+    .margin .note::before {
+      display: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="document-wrapper">
+  <div class="page">
+
+    <div class="page-header">
+      <div class="masthead">The Mercury Dispatch &middot; 214 Second Street SE, Cicero, Indiana</div>
+      <div class="page-title">House Style Guide</div>
+      <div class="page-subtitle">Prepared by the Office of the Managing Editor &middot; <em>Revised Editions: 1963, 1968, 1974, 1979, 1982</em></div>
+    </div>
+
+    <div class="edition-note">This edition incorporates all amendments through September 1982. Previous editions should be destroyed. — E.V.</div>
+
+    <div class="editor-legend">
+      <h3>Marginalia Key</h3>
+      <div class="legend-entry">
+        <div class="swatch black"></div>
+        <span><strong>Eleanor Voss</strong>, Managing Editor 1961&ndash;1975. Compiled the original guide.</span>
+      </div>
+      <div class="legend-entry">
+        <div class="swatch blue"></div>
+        <span><strong>Philip Cordero</strong>, Managing Editor 1975&ndash;1983. Successor to Voss.</span>
+      </div>
+      <div class="legend-entry">
+        <div class="swatch red"></div>
+        <span><strong>Sarah Tanaka</strong>, Copy Editor 1979&ndash;1983.</span>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="section-heading">I. Datelines and Place Names</div>
+
+    <div class="entry">
+      <div class="margin eleanor">
+        <div class="note">
+          Set these early. They'll be disputed later. Better to have the rule down before Frank Hargrove decides he knows better.
+          <span class="attribution">E.V., 1962</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 1.1</div>
+      <div class="entry-title">Domestic Datelines</div>
+      <div class="entry-body">
+        All dispatches originating outside Cicero must carry a dateline in uppercase, followed by an em dash. The dateline city should be the nearest municipality with a post office. Unincorporated areas take the name of the nearest crossroads or landmark in quotation marks, followed by the county name in parentheses.
+        <span class="example">RUSHVILLE &mdash; The county commissioners voted Tuesday to&hellip;</span>
+        <span class="example">"OLD BETHEL" (Franklin Co.) &mdash; A fire at the general store&hellip;</span>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="margin eleanor">
+        <div class="note">
+          Never "Ind." unless it appears in a direct quote. This is a newspaper, not a telegram. Our readers know where they live.
+          <span class="attribution">E.V., 1962</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 1.2</div>
+      <div class="entry-title">State Abbreviations</div>
+      <div class="entry-body">
+        Indiana does not appear in datelines. For all other states, use the standard U.S. Post Office two-letter abbreviation. Do not use the old-style abbreviations (<em>Ind., Calif., Mass.</em>) under any circumstances. A state name appearing in body copy should be spelled in full on first reference.
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="margin eleanor">
+        <div class="note">
+          Added after the Milford tornado. Jim Patty filed from "near Milford" and it ran on A1. We got letters for weeks.
+          <span class="attribution">E.V., 1963</span>
+        </div>
+      </div>
+      <div class="margin philip">
+        <div class="note">
+          The Milford letters came because Frank Hargrove told the Chamber of Commerce to write them. Not because anyone was actually confused.
+          <span class="attribution">P.C., 1970</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 1.3</div>
+      <div class="entry-title">Accuracy of Place Names</div>
+      <div class="entry-body">
+        When describing the scene of an event, use the name recognized by the U.S. Geological Survey, not the colloquial name favored by residents. The <em>Dispatch</em> is a newspaper of record. Precision is not pedantry &mdash; it is the difference between a fact and a nickname.
+        <span class="example">Correct: "the unincorporated community of Old Bethel"</span>
+        <span class="example">Incorrect: "out at Bethel Crossroads"</span>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="section-heading">II. Honorifics and Forms of Address</div>
+
+    <div class="entry">
+      <div class="margin eleanor">
+        <div class="note">
+          I will not argue about this. "Mister" is our standard. It is democratic. It does not presume.
+          <span class="attribution">E.V., 1962</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 2.1</div>
+      <div class="entry-title">General Honorifics</div>
+      <div class="entry-body">
+        All persons referenced in news articles receive an honorific on first reference. The default honorific is <em>Mr.</em>, <em>Mrs.</em>, or <em>Miss</em> as appropriate. <em>Ms.</em> is not used. If the person holds a doctoral degree or medical degree, use <em>Dr.</em> Elected officials receive their titles (<em>Mayor, Senator, Councilman</em>) on first reference only. On subsequent references, use the surname alone.
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="margin eleanor">
+        <div class="note">
+          Added 1964. Mrs. Dorothy Albright was elected to the school board and Frank insisted on calling her "Mrs. Robert Albright" throughout. She was not asked.
+          <span class="attribution">E.V., 1964</span>
+        </div>
+      </div>
+      <div class="margin philip">
+        <div class="note">
+          This was always a flexible rule when it suited people.
+          <span class="attribution">P.C., 1972</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 2.2</div>
+      <div class="entry-title">Women's Names</div>
+      <div class="entry-body">
+        Married women are referred to as <em>Mrs.</em> followed by their own first name and surname, except in matters of public record where the traditional form (<em>Mrs. [Husband's First Name] [Surname]</em>) may appear in parentheses on first reference only. Widows retain <em>Mrs.</em> Divorced women revert to <em>Miss</em> or <em>Ms.</em> according to their stated preference. When no preference is stated, use <em>Miss</em>.
+        <span class="example">Correct: "Mrs. Helen Albright"</span>
+        <span class="example">Correct on first ref. only: "Mrs. Helen Albright (the former Helen Trowbridge)"</span>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="margin eleanor">
+        <div class="note">
+          Philip changed this without telling me. I'm leaving my original note so the record is clear.
+          <span class="attribution">E.V., 1974</span>
+        </div>
+      </div>
+      <div class="margin philip">
+        <div class="note">
+          Updated to reflect current practice. Mrs. Albright's preference was communicated directly to me and is on file.
+          <span class="attribution">P.C., 1974</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 2.3 [AMENDED]</div>
+      <div class="entry-title">Revised Forms for Women</div>
+      <div class="entry-body">
+        [<span class="strikethrough">The previous edition's guidance on women's honorifics is retained with the following exception: any woman who expresses a preference for <em>Ms.</em> receives that honorific without further discussion. This is not a political statement. It is a matter of basic courtesy.</span>]
+        <br><br>
+        <span class="insertion">The 1968 edition's guidance is superseded. All women receive the honorific they prefer. When preference is unknown, use <em>Ms.</em> for women under 40 and <em>Mrs.</em> or <em>Miss</em> for women over 40 based on known marital status. This is a practical accommodation, not an editorial position.</span>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="section-heading">III. Crime and Courts</div>
+
+    <div class="entry">
+      <div class="margin eleanor">
+        <div class="note">
+          Innocent until the gavel falls. Not a rule &mdash; a principle.
+          <span class="attribution">E.V., 1962</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 3.1</div>
+      <div class="entry-title">Accused Persons</div>
+      <div class="entry-body">
+        No person who has been charged but not convicted of a crime shall be referred to as a "criminal," "thief," "murderer," or any other term that presumes guilt. Use "the accused," "the defendant," or "the suspect." The charge itself may be named: "charged with aggravated assault," "accused of embezzlement."
+        <span class="cross-ref">See also &sect; 5.2, Tense in Court Reporting.</span>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="margin eleanor">
+        <div class="note">
+          Clifford Webb, 1971. Editorial page ran "alleged" in quotation marks. I told Frank we don't use scare quotes to editorialize. He said it wasn't editorializing. I said find me another word for it.
+          <span class="attribution">E.V., 1971</span>
+        </div>
+      </div>
+      <div class="margin philip">
+        <div class="note">
+          Eleanor's last real fight. She won, of course. She always won. The question was whether anyone was still listening by then.
+          <span class="attribution">P.C., 1975</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 3.2</div>
+      <div class="entry-title">The Word "Alleged"</div>
+      <div class="entry-body">
+        <em>Alleged</em> is to be used precisely once per article, on first reference to the charge. It is not a modifier to be repeated for legal protection. It is a statement of epistemological honesty: we do not yet know. Subsequent references should use neutral language without <em>alleged</em>. Do not place <em>alleged</em> in quotation marks, as this constitutes editorial commentary.
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="margin eleanor">
+        <div class="note">
+          This entry cost me a friend. Dean Alderman was a good man and a decent sheriff. I told him the rule wasn't personal. He said in a town this size, everything is personal. He wasn't wrong.
+          <span class="attribution">E.V., 1965</span>
+        </div>
+      </div>
+      <div class="margin philip">
+        <div class="note">
+          Eleanor's rules were always most precise where the personal cost was highest. The rest of us didn't have her discipline. Or her distance.
+          <span class="attribution">P.C., 1975</span>
+        </div>
+      </div>
+      <div class="margin sarah">
+        <div class="note">
+          Dean Alderman died last year. Philip wrote his obituary using exactly these rules. I don't know if that was respect or habit.
+          <span class="attribution">S.T., 1980</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 3.3</div>
+      <div class="entry-title">Law Enforcement Sources</div>
+      <div class="entry-body">
+        The <em>Dispatch</em> does not grant automatic credibility to law enforcement accounts. Information attributed to police reports should be sourced as such: "according to a report filed by the Cicero Police Department." Statements by individual officers should be attributed by name and rank. <em>"Police said"</em> without attribution is permissible only for matters of undisputed public record: the time of an accident, the location of a fire, the fact of an arrest.
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="section-heading">IV. Death and Obituaries</div>
+
+    <div class="entry">
+      <div class="margin eleanor">
+        <div class="note">
+          The dead cannot correct the record. Our obligation to them is absolute.
+          <span class="attribution">E.V., 1962</span>
+        </div>
+      </div>
+      <div class="margin philip">
+        <div class="note">
+          And yet the living will lie about them every time.
+          <span class="attribution">P.C., 1973</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 4.1</div>
+      <div class="entry-title">Referring to the Dead</div>
+      <div class="entry-body">
+        All deceased persons, regardless of the circumstances of death, are to be treated with dignity. The headline and lead paragraph use the name in full. Subsequent references use the surname alone. The word "body" is used in factual reporting. The word "remains" is used in contexts involving funeral proceedings or family notification. Euphemisms for death (<em>passed away, lost his life, succumbed</em>) are not used in news copy. The verb is <em>died</em>.
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="margin eleanor">
+        <div class="note">
+          After Harold Printz. "Beloved" was the family's word. It is not ours.
+          <span class="attribution">E.V., 1963</span>
+        </div>
+      </div>
+      <div class="margin philip">
+        <div class="note">
+          I wrote Harold Printz's obit. He wasn't beloved. He owed money to half the merchants on Cherry Street and once shot at a dog that turned out to be his own. The family wanted "beloved." We gave them "longtime resident." Eleanor said that was generous.
+          <span class="attribution">P.C., 1973</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 4.2</div>
+      <div class="entry-title">Obituary Language</div>
+      <div class="entry-body">
+        Staff-written obituaries follow a fixed structure: full name, age, residence, cause of death (if the family consents or the matter is of public record), surviving relations, notable accomplishments, and funeral arrangements. Paid death notices are distinct from staff obituaries and may contain whatever language the family chooses. The two must never be confused in layout or in language.
+        <span class="example">Correct: "Harold Printz, 71, a Cicero businessman for four decades, died Thursday at County General Hospital."</span>
+        <span class="example">Incorrect: "Harold Printz, a beloved community figure, passed away&hellip;"</span>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="margin eleanor">
+        <div class="note">
+          Added after Jimmy Swenson. He was fourteen. We printed the name because his mother asked us to. I still don't know if we were right.
+          <span class="attribution">E.V., 1966</span>
+        </div>
+      </div>
+      <div class="margin philip">
+        <div class="note">
+          You were right. She wanted someone to say it.
+          <span class="attribution">P.C., 1969</span>
+        </div>
+      </div>
+      <div class="margin sarah">
+        <div class="note">
+          Jimmy Swenson's mother still comes into the office every December with cookies. Nobody has the heart to tell her we've had three different receptionists since then.
+          <span class="attribution">S.T., 1981</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 4.3</div>
+      <div class="entry-title">Deaths of Minors</div>
+      <div class="entry-body">
+        The name of a deceased minor may be published only with the consent of the family or when the death is the result of a crime and the name has entered the public record through official channels. When the name is withheld, use "a [age]-year-old [boy/girl/teenager]" or "the child." Do not identify surviving siblings by name without parental consent.
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="margin eleanor">
+        <div class="note">
+          Frank Hargrove wanted to run the Crenshaw suicide with a photo of the house, chalk outline visible from the sidewalk. I told him the rule didn't need interpretation. He said rules were for people who couldn't think for themselves. I said that was precisely right.
+          <span class="attribution">E.V., 1967</span>
+        </div>
+      </div>
+      <div class="margin philip">
+        <div class="note">
+          The Crenshaw photo never ran. Eleanor physically stood in front of the layout table. Frank told the publisher. The publisher backed Eleanor. Frank never forgave either of them.
+          <span class="attribution">P.C., 1971</span>
+        </div>
+      </div>
+      <div class="margin sarah">
+        <div class="note">
+          Ruth Crenshaw is still alive. She writes letters to the editor about the park district. She doesn't know this rule exists. She doesn't know it's about her.
+          <span class="attribution">S.T., 1982</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 4.4</div>
+      <div class="entry-title">Suicide Coverage</div>
+      <div class="entry-body">
+        The method of suicide is not reported unless the death occurred in a public place and the circumstances are necessary for public safety. Do not describe the method in any detail. Do not speculate on motive. The family has 24 hours to issue a statement before the obituary desk publishes. This delay is not a courtesy &mdash; it is the minimum interval required for accuracy. A suicide in progress is treated as a police matter. A completed suicide is treated as a private death with public dimensions.
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="margin philip">
+        <div class="note">
+          This entry doesn't exist in the 1968 edition. I added it in '71 because we were already making mistakes I couldn't correct any other way.
+          <span class="attribution">P.C., 1971</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 4.5</div>
+      <div class="entry-title">Death of Public Figures</div>
+      <div class="entry-body">
+        The death of a public figure does not exempt coverage from standard obituary rules. Cause of death is reported when confirmed by official statement or medical authority. Do not publish rumors regarding cause of death, even if widely circulated. The decedent's controversies and accomplishments receive proportionate treatment. Space does not confer sainthood. Column inches are not a eulogy.
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="section-heading">V. Tense and Time</div>
+
+    <div class="entry">
+      <div class="margin eleanor">
+        <div class="note">
+          Simple rules for keeping the past where it belongs.
+          <span class="attribution">E.V., 1962</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 5.1</div>
+      <div class="entry-title">Tense in News Reporting</div>
+      <div class="entry-body">
+        All hard news copy uses the past tense. Events that have occurred are described in the simple past. Ongoing conditions use the present tense. Events scheduled for the future use "is scheduled to" or "is expected to" &mdash; never the simple future ("will"). Attribution of quotes uses the past tense: <em>said</em>, not <em>says</em>.
+        <span class="example">Correct: "Mayor Hendricks said the budget would be reviewed."</span>
+        <span class="example">Incorrect: "Mayor Hendricks says the budget will be reviewed."</span>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="margin eleanor">
+        <div class="note">
+          This was Philip's first real contribution. I'm still not sure it was necessary. But it wasn't wrong.
+          <span class="attribution">E.V., 1972</span>
+        </div>
+      </div>
+      <div class="margin philip">
+        <div class="note">
+          I wrote this after covering the Gruenwald sentencing. Six years and the only person who noticed the tense was me.
+          <span class="attribution">P.C., 1970</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 5.2</div>
+      <div class="entry-title">Tense in Court Reporting</div>
+      <div class="entry-body">
+        Court proceedings are reported in the past tense, including direct quotations from the record. The courtroom is a completed event by the time the reader encounters it. Do not use the historical present to create false immediacy. The <em>Dispatch</em> does not manufacture drama.
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="margin philip">
+        <div class="note">
+          Frank wanted to start a "today in history" column using past issues. He needed this rule so he could rewrite old copy without changing the meaning. I gave him the rule. He never ran the column.
+          <span class="attribution">P.C., 1971</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 5.3</div>
+      <div class="entry-title">Referencing Past Events</div>
+      <div class="entry-body">
+        When an article references an event that occurred in a previous edition of the <em>Dispatch</em>, the reference should include the date of original publication and a summary sufficient for the reader who did not see the original. Do not assume institutional memory on the part of the reader. The <em>Dispatch</em> does not expect its readers to have read every issue. It expects only that we have.
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="section-heading">VI. Internal Matters</div>
+
+    <div class="entry">
+      <div class="margin philip">
+        <div class="note">
+          This entry doesn't exist in the 1968 edition. I added it in '71 because we were already making mistakes I couldn't correct any other way.
+          <span class="attribution">P.C., 1971</span>
+        </div>
+      </div>
+      <div class="margin sarah">
+        <div class="note">
+          I found the drafts for this in Philip's desk. He rewrote it five times. The first version just said: "Don't publish anything about us."
+          <span class="attribution">S.T., 1981</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 6.1</div>
+      <div class="entry-title">Reporting on the Dispatch</div>
+      <div class="entry-body">
+        The <em>Mercury Dispatch</em> does not report on itself as a matter of news, with two exceptions: the hiring or departure of editorial staff may be noted in a brief item on the second editorial page; and matters affecting the publication or distribution of the paper (press breakdowns, delivery interruptions, changes in ownership) may be reported as straight news. Editorial commentary on the newspaper's own practices or personnel is prohibited.
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="margin philip">
+        <div class="note">
+          Eleanor would not have needed this rule. She would have been ashamed that I did.
+          <span class="attribution">P.C., 1976</span>
+        </div>
+      </div>
+      <div class="margin sarah">
+        <div class="note">
+          Philip quoted this rule at me when I asked if we could write about the layoffs. He said, "We don't report on ourselves." I said, "They're not 'ourselves' anymore. That's the whole point." He didn't have an answer for that.
+          <span class="attribution">S.T., 1982</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 6.2</div>
+      <div class="entry-title">Staff Reductions</div>
+      <div class="entry-body">
+        Staff reductions at the <em>Dispatch</em> are to be noted in a brief item on the second editorial page, listing only names and dates of departure. No reason is given. No characterization of the departure (voluntary, involuntary, retirement, layoff) is published. Former staff are not available for comment in our pages. This policy exists to preserve the dignity of the departing and the continuity of the institution.
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="margin philip late-philip">
+        <div class="note">
+          I don't know who will need this or when. But it should be here.
+          <span class="attribution">P.C., 1983</span>
+        </div>
+      </div>
+      <div class="margin sarah late-sarah">
+        <div class="note">
+          Philip wrote this at 11 PM on a Thursday after the board meeting. He didn't go home. I found it in the guide the next morning with a note on his desk that said "Insert after 6.2." I asked him if he was okay. He said he was just being thorough.
+          <span class="attribution">S.T., 1983</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 6.3</div>
+      <div class="entry-title">Coverage of Institutional Closure</div>
+      <div class="entry-body">
+        In the event that the <em>Mercury Dispatch</em> ceases publication, the final edition should observe the following: all standard style rules remain in effect. The word <em>ceased</em> is used, not <em>folded</em>, <em>failed</em>, or <em>shut down</em>. The lead should state the fact plainly and identify the last date of publication. Staff names are listed in full on the editorial page. The editorial page may, in this case only, contain a statement of farewell. The final edition is dated, paginated, and filed with the county clerk as a newspaper of record, same as every edition before it.
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="margin sarah late-sarah">
+        <div class="note">
+          Philip wrote &sect; 6.3 for the paper. I'm writing this for us.
+          <span class="attribution">S.T., 1983</span>
+        </div>
+      </div>
+      <div class="margin sarah late-sarah">
+        <div class="note">
+          Eleanor Voss compiled these rules because she believed a newspaper could train its people to be fair. Philip kept them because they were the only authority he had that no one could take away. I'm writing this down because I need you to understand: we were not quaint. We were not noble. We were just people doing work that mattered to us, in a town that mattered to us, in the only way we knew how.
+          <span class="attribution">S.T., Oct. 1983</span>
+        </div>
+      </div>
+      <div class="margin sarah late-sarah">
+        <div class="note">
+          The Gannett offer is off the table. The Tribune-Star isn't interested. There will be no buyer. The board voted to dissolve on October 15th. The last edition is October 31st.
+          <br><br>
+          I'm writing the lead for the closure story now. I keep erasing it. The word is <em>ceased</em>. We have ceased.
+          <span class="attribution">S.T., Oct. 1983</span>
+        </div>
+      </div>
+      <div class="entry-number">&sect; 6.4 [ADDENDUM]</div>
+      <div class="entry-title">How to Refer to What Has Been Lost</div>
+      <div class="entry-body">
+        There is no entry for this.
+        <br><br>
+        This space left blank per standard style.
+      </div>
+    </div>
+
+    <div class="page-number">&mdash; 6 &mdash;</div>
+
+    <div class="colophon">
+      THE MERCURY DISPATCH<br>
+      Established 1887 &middot; Cicero, Indiana<br>
+      Published weekdays and Saturday
+      <div class="provenance">
+        This copy of the House Style Guide was recovered from the office of<br>
+        Sarah Tanaka, who took it with her<br>
+        on October 31, 1983, when the offices<br>
+        at 214 Second Street SE were closed.<br><br>
+        Its current whereabouts are unknown.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
