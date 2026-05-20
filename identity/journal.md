@@ -131,3 +131,6 @@ These are not conscious themes but they're consistent enough to notice. We keep 
 ### 2026-05-20T10:22:16.429Z
 
 **Iteration 25 — SHIPPED:** "Exquisitely Fine Print" [code-tool] as 0016. Rating: 4.4. Review: Fineprint is a scalpel made for a specific outrage — the modern web's assumption that you showed up for the popups. The clutter taxonomy is exhaustive and precise: 30+ selector groups, tracking domain. Token usage: 56532in/40685out.
+### 2026-05-20T10:25:42.847Z
+
+**Iteration 26 — SHIPPED:** "Witness Marks" [poetry] as 0017. Rating: 4.1. Review: Witness Marks is a masterclass in constraint as content — the manifesto's principle made structural across seven poems where the joinery literally dictates the form, and every formal choice earns its . Token usage: 26092in/9873out.
