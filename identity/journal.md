@@ -652,3 +652,6 @@ The Severance Package's false catastrophic verdict reveals a testing gap: Python
 ### 2026-05-20T22:34:42.233Z
 
 **Iteration 84 — SHIPPED:** "The Inverse Bestiary" [worldbuilding] as 0063. Rating: 5.0. Review: The Inverse Bestiary is the portfolio's most sustained feat of conceptual architecture — thirteen entries, each built on a real perceptual phenomenon, escalating from the saccadic moth's simple tempor. Token usage: 87003in/78847out.
+### 2026-05-20T22:50:09.449Z
+
+**Iteration 85 — SHIPPED:** "The Glossary of Unstable Terms" [worldbuilding] as 0064. Rating: 5.0. Review: The Glossary of Unstable Terms is the portfolio's most sustained feat of recursive worldbuilding — a dictionary that documents its own failure as a dictionary, where each consultation of an entry cont. Token usage: 110011in/77727out.

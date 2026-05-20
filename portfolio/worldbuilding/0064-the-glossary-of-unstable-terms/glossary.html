@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Glossary of Unstable Terms — Third Revised Edition (Unrevised)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,700;1,400;1,500&family=JetBrains+Mono:wght@300;400&display=swap');
+
+  :root {
+    --bg: #f4f1eb;
+    --bg-aged: #e8e4db;
+    --fg: #2b2926;
+    --fg-light: #5a554d;
+    --muted: #8a857d;
+    --accent: #6b3a2a;
+    --accent-light: #a0694f;
+    --red: #8b2020;
+    --red-light: #c44040;
+    --border: #c8c2b8;
+    --border-dark: #9e978c;
+    --highlight: #fff3cd;
+    --footnote-bg: #faf8f4;
+    --cross-ref: #4a6a8a;
+    --cross-ref-hover: #2a4a6a;
+    --strikethrough: rgba(107,58,42,0.25);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'EB Garamond', 'Georgia', serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.7;
+    font-size: 17px;
+    counter-reset: footnote;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1a18;
+      --bg-aged: #252320;
+      --fg: #d5cfc5;
+      --fg-light: #a09a90;
+      --muted: #706a62;
+      --accent: #c48a5a;
+      --accent-light: #d4a070;
+      --red: #d45050;
+      --red-light: #e07070;
+      --border: #3a3632;
+      --border-dark: #4a4642;
+      --highlight: #3a3428;
+      --footnote-bg: #222018;
+      --cross-ref: #7a9aba;
+      --cross-ref-hover: #9abada;
+      --strikethrough: rgba(196,138,90,0.3);
+    }
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 30px;
+  }
+
+  .hidden { display: none !important; }
+
+  /* ── FRONT MATTER ── */
+  #front-matter {
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .title-block {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .title-block h1 {
+    font-family: 'EB Garamond', serif;
+    font-weight: 700;
+    font-size: 2.1em;
+    line-height: 1.25;
+    color: var(--fg);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .title-block .subtitle {
+    font-style: italic;
+    color: var(--fg-light);
+    font-size: 1.1em;
+    margin-bottom: 6px;
+  }
+
+  .title-block .edition {
+    font-size: 0.88em;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  .title-block .edition span {
+    font-style: italic;
+  }
+
+  .edition-stamp {
+    font-size: 0.82em;
+    color: var(--muted);
+    text-align: center;
+    margin: 40px 0 30px;
+    line-height: 1.9;
+  }
+
+  .edition-stamp .pending {
+    opacity: 0.3;
+  }
+
+  .preface {
+    font-size: 0.96em;
+    color: var(--fg-light);
+    line-height: 1.8;
+    max-width: 640px;
+    margin: 0 auto;
+    font-style: italic;
+  }
+
+  .preface p { margin-bottom: 1em; }
+
+  .preface .advisory {
+    font-size: 0.9em;
+    color: var(--red);
+    opacity: 0.75;
+    font-style: italic;
+    border-left: 2px solid var(--red);
+    padding-left: 14px;
+    margin: 1.2em 0;
+  }
+
+  .preface .sig {
+    text-align: right;
+    margin-top: 24px;
+    font-style: normal;
+    color: var(--muted);
+    font-size: 0.9em;
+    line-height: 1.6;
+  }
+
+  /* ── TOOLBAR ── */
+  #toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+  }
+
+  #search-input {
+    flex: 1;
+    font-family: 'EB Garamond', serif;
+    font-size: 1em;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--footnote-bg);
+    color: var(--fg);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  #search-input:focus {
+    border-color: var(--accent);
+  }
+
+  #search-input::placeholder {
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .sort-toggle {
+    font-family: 'EB Garamond', serif;
+    font-size: 0.82em;
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+
+  .sort-toggle:hover {
+    color: var(--fg);
+    border-color: var(--border-dark);
+  }
+
+  .stats {
+    font-size: 0.78em;
+    color: var(--muted);
+    text-align: right;
+    margin-bottom: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 300;
+    white-space: nowrap;
+  }
+
+  /* ── ENTRIES ── */
+  #entries {
+    padding-bottom: 60px;
+  }
+
+  .entry {
+    padding: 28px 0 32px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    transition: background 2s ease;
+  }
+
+  .entry:last-child {
+    border-bottom: none;
+  }
+
+  .entry-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 6px;
+  }
+
+  .entry-word {
+    font-family: 'EB Garamond', serif;
+    font-weight: 700;
+    font-size: 1.55em;
+    color: var(--fg);
+    letter-spacing: -0.01em;
+    cursor: default;
+    transition: color 0.2s;
+  }
+
+  .decay-indicator {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7em;
+    color: var(--red);
+    background: rgba(139,32,32,0.08);
+    padding: 2px 7px;
+    border-radius: 2px;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+  }
+
+  .decay-indicator.stable-indicator {
+    color: var(--muted);
+    background: rgba(0,0,0,0.04);
+  }
+
+  .entry-meta {
+    font-size: 0.88em;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 18px;
+  }
+
+  .entry-meta .pos { font-style: normal; }
+
+  /* ── REVISIONS ── */
+  .revision {
+    margin: 16px 0;
+    padding: 14px 18px;
+    border-left: 3px solid var(--border);
+    background: var(--footnote-bg);
+    border-radius: 0 3px 3px 0;
+    transition: opacity 0.6s, filter 0.6s;
+  }
+
+  .revision.rev-1 { border-left-color: var(--border); }
+  .revision.rev-2 { border-left-color: var(--accent-light); }
+  .revision.rev-3 { border-left-color: var(--red-light); }
+
+  .revision-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72em;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+    font-weight: 400;
+  }
+
+  .revision.rev-3 .revision-label {
+    color: var(--red);
+  }
+
+  .definition {
+    font-size: 1em;
+    line-height: 1.7;
+    color: var(--fg);
+  }
+
+  .cross-ref {
+    color: var(--cross-ref);
+    cursor: pointer;
+    border-bottom: 1px dotted var(--cross-ref);
+    transition: color 0.2s, border-color 0.2s;
+    text-decoration: none;
+  }
+
+  .cross-ref:hover {
+    color: var(--cross-ref-hover);
+    border-bottom-style: solid;
+  }
+
+  .usage {
+    margin-top: 10px;
+    padding: 8px 12px;
+    border: 1px dashed var(--border);
+    border-radius: 2px;
+    font-size: 0.92em;
+    color: var(--fg-light);
+  }
+
+  .usage strong {
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 0.88em;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── FOOTNOTES ── */
+  .footnotes {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px dotted var(--border);
+  }
+
+  .footnote-item {
+    font-size: 0.86em;
+    line-height: 1.65;
+    color: var(--fg-light);
+    margin-bottom: 8px;
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .footnote-item::before {
+    content: counter(footnote);
+    counter-increment: footnote;
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78em;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .footnote-item.panic-note {
+    color: var(--red);
+    border-left: 2px solid var(--red);
+    padding-left: 14px;
+  }
+
+  .footnote-item.resigned-note {
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .fn-author {
+    font-size: 0.82em;
+    color: var(--muted);
+  }
+
+  /* ── DECAY STATES ── */
+  .entry.decay-1 .revision.rev-1 .definition {
+    text-decoration: line-through;
+    text-decoration-color: var(--strikethrough);
+  }
+
+  .entry.decay-2 .revision.rev-2 {
+    opacity: 0.72;
+    filter: blur(0.3px);
+  }
+
+  .entry.decay-2 .revision.rev-1 .definition {
+    text-decoration: line-through;
+    text-decoration-color: var(--strikethrough);
+    opacity: 0.7;
+  }
+
+  .entry.decay-3 .revision.rev-2 {
+    text-decoration: line-through;
+    text-decoration-color: var(--strikethrough);
+    opacity: 0.5;
+  }
+
+  .entry.decay-3 .revision.rev-3 {
+    opacity: 0.82;
+    filter: blur(0.2px);
+  }
+
+  .entry.decay-3 .revision.rev-1 .definition {
+    text-decoration: line-through wavy;
+    text-decoration-color: var(--red-light);
+    opacity: 0.4;
+  }
+
+  .entry.decay-3 .entry-word {
+    letter-spacing: 0.04em;
+  }
+
+  .entry.decay-3 .revision.rev-3 .usage {
+    border-style: dotted;
+    border-color: var(--red-light);
+    opacity: 0.7;
+  }
+
+  /* ── GHOST TEXT ── */
+  .ghost-text {
+    color: var(--muted);
+    opacity: 0;
+    font-style: italic;
+    font-size: 0.88em;
+    margin-top: 14px;
+    transition: opacity 1.5s ease;
+  }
+
+  .ghost-text.visible {
+    opacity: 0.55;
+  }
+
+  .ghost-text.strong-ghost.visible {
+    opacity: 0.75;
+    color: var(--red);
+  }
+
+  .ghost-text.resigned-ghost.visible {
+    opacity: 0.35;
+  }
+
+  /* ── NOTIFICATION ── */
+  #decay-notification {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--bg-aged);
+    border: 1px solid var(--border);
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: var(--fg-light);
+    font-style: italic;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: transform 0.4s ease;
+    z-index: 200;
+    max-width: 500px;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  #decay-notification.visible {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── EPILOGUE ── */
+  #epilogue {
+    padding: 40px 0 80px;
+    border-top: 2px solid var(--border);
+    margin-top: 20px;
+  }
+
+  .epilogue-note {
+    font-style: italic;
+    color: var(--muted);
+    font-size: 0.92em;
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-dark); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .entry { animation: fadeIn 0.3s ease forwards; }
+
+  @media (max-width: 600px) {
+    .container { padding: 0 18px; }
+    .title-block h1 { font-size: 1.6em; }
+    .entry-header { flex-wrap: wrap; gap: 6px; }
+    #toolbar { flex-wrap: wrap; }
+    #search-input { min-width: 0; }
+  }
+
+  @media print {
+    #toolbar, #decay-notification { display: none; }
+    .entry { page-break-inside: avoid; }
+    body { font-size: 11pt; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- FRONT MATTER -->
+  <div id="front-matter">
+    <div class="title-block">
+      <h1>The Glossary<br>of Unstable Terms</h1>
+      <div class="subtitle">A Reference for Living Language</div>
+      <div class="edition">Third Revised Edition <span>(Unrevised)</span> &middot; The Institute of Semantic Drift</div>
+    </div>
+
+    <div class="edition-stamp">
+      FIRST EDITION: Entries had three stable revision layers<br>
+      SECOND EDITION: Revisions began contradicting themselves<br>
+      THIRD EDITION: The editors are no longer certain how many revisions occurred<br>
+      FOURTH EDITION: <span class="pending">[date pending, pending the persistence of dates]</span>
+    </div>
+
+    <div class="preface">
+      <p>This glossary was commissioned to document terms undergoing active semantic decay&thinsp;&mdash;&thinsp;words losing coherence, shifting in meaning, or evaporating from the language entirely. The editorial board extends its gratitude to the field researchers who documented these changes <em>in situ</em>, often at considerable personal and lexical cost.</p>
+      <p>Readers are advised that entries may not reflect the current state of their respective terms. Given the nature of the phenomenon under study, this was perhaps inevitable. The editors regret any instability this volume may introduce to the reader's working vocabulary. We regret other things as well, but this is not the place for them.</p>
+      <div class="advisory">ADVISORY: Each consultation of an entry appears to contribute to the acceleration of its decay. The Institute has not determined whether this glossary documents the phenomenon or constitutes it.</div>
+      <div class="sig">&mdash;Dr. Elena Voss, Editorial Director<br><em>Filed 23 days after her resignation</em></div>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div id="toolbar">
+    <input type="text" id="search-input" placeholder="Search entries&hellip;" autocomplete="off" spellcheck="false">
+    <button class="sort-toggle" id="sort-btn">A&ndash;Z</button>
+    <span class="stats" id="stats"></span>
+  </div>
+
+  <!-- ENTRIES CONTAINER -->
+  <div id="entries"></div>
+
+  <!-- EPILOGUE -->
+  <div id="epilogue">
+    <div class="epilogue-note" id="epilogue-text"></div>
+  </div>
+
+  <!-- NOTIFICATION -->
+  <div id="decay-notification"></div>
+
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  /* ══════════════════════════════════════
+     DATA: ALL ENTRIES
+     ══════════════════════════════════════ */
+  var ENTRIES = [
+    {
+      word: "abandon",
+      phonetic: "/\u0259\u02c8b\u00e6nd\u0259n/",
+      pos: "v.",
+      origin: "Old French <em>abandonner</em>, to surrender control",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "To leave completely and finally; to forsake utterly. To give oneself over to a feeling or impulse without restraint.",
+          usage: '"After the evacuation order, the town was <em>abandoned</em> within hours."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2021)",
+          definition: "To leave, though the nature of 'leaving' is contested. The editorial board is split on whether the departure must be permanent to constitute <em>abandon</em>. Dr. Thorne argues that any leaving contains a seed of permanence; Dr. Vasquez disagrees with everything, including, increasingly, the concept of disagreement.",
+          usage: '"The feeling of <em>abandonment</em> persists even when one returns. This entry persists even as we revise it."',
+          footnotes: [
+            { text: "I would like the record to show that I object to this framing.", author: "Dr. Vasquez", tone: "argument" },
+            { text: "Noted. Your objection has been documented alongside the phenomenon it describes.", author: "Dr. Thorne", tone: "argument" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "The state described by this word may no longer be linguistically accessible. The act of defining 'abandon' now constitutes an act of abandonment in itself. We are leaving this entry in the condition we found it, which is to say: changed.",
+          usage: '"He <span style=\'text-decoration:line-through\'>abandoned</span> tried to <span style=\'text-decoration:line-through\'>abandon</span> the word <span style=\'text-decoration:line-through\'>abandon</span>."',
+          footnotes: [
+            { text: "The word has been reported in isolated regions but cannot be independently verified.", author: "Field Report", tone: "neutral" },
+            { text: "I felt it slip. Right as I typed the definition. Like holding water.", author: "Dr. Vasquez", tone: "panic" },
+            { text: "What water. There was no water. \u2014 E.V.", author: "Dr. Voss", tone: "resigned" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "arrival",
+      phonetic: "/\u0259\u02c8ra\u026av\u0259l/",
+      pos: "n.",
+      origin: "Old French <em>ariver</em>, to reach shore",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "The act of reaching a destination. The appearance or emergence of something.",
+          usage: '"Her <em>arrival</em> changed everything."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2021)",
+          definition: "A word that once described the moment of reaching. Increasingly, speakers report uncertainty about whether they have <em>arrived</em> even when standing at their destination. 'Arrival' may have merged with 'anticipation' in certain dialects.",
+          usage: '"We are in a state of <em>arrival</em>. We continue to be in a state of <em>arrival</em>. The <em>arrival</em> does not end."',
+          footnotes: [
+            { text: "Temporal entry. Also a temporal entry.", author: "Dr. Okonkwo", tone: "joke" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "The concept of reaching a destination can no longer be articulated without contamination by the concept of departure. See: <span class='cross-ref' data-target='departure'>departure</span>. See also: the impossibility of seeing either.",
+          usage: '"After six months of travel, he was unable to distinguish his <em>arrival</em> from his leaving. Both felt the same \u2014 a kind of weather."',
+          footnotes: [
+            { text: "The linked entry for 'departure' has itself linked back here. The cross-reference is now circular and has been for three editions.", author: "Dr. Okonkwo", tone: "neutral" },
+            { text: "Language has always been circular. We just refused to notice.", author: "Dr. Thorne", tone: "resigned" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "belong",
+      phonetic: "/b\u026a\u02c8l\u0252\u014b/",
+      pos: "v.",
+      origin: "Middle English, to go with",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "To be the property of. To be a member of. To fit naturally into an environment or group.",
+          usage: '"This book <em>belongs</em> to the library."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2022)",
+          definition: "The property relation has weakened. 'To belong' increasingly means to be associated with something that no longer claims you. The sense of fitting naturally has been reclassified as a <em>linguistic artifact</em> by the Institute.",
+          usage: '"She <em>belonged</em> there, the way a fossil belongs to the rock \u2014 because there is nowhere else."',
+          footnotes: [
+            { text: "The reclassification was carried out over the objections of the entire semantics department.", author: "Dr. Okonkwo", tone: "argument" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "The word has shifted to mean approximately its opposite. 'To belong' now more commonly describes the feeling of being present where one should not be. See related: <span class='cross-ref' data-target='home'>home</span>.",
+          usage: '"They <em>belonged</em> in the room \u2014 that is, they were painfully, inescapably present in it, without justification."',
+          footnotes: [
+            { text: "I looked up 'belonging' in the old dictionary last night and found nothing. Not that the word wasn't there \u2014 it was, the entry was intact \u2014 but nothing was conveyed. I received nothing from it. \u2014 L.V.", author: "Dr. Vasquez", tone: "panic" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "certain",
+      phonetic: "/\u02c8s\u025c\u02d0t\u026an/",
+      pos: "adj.",
+      origin: "Latin <em>certus</em>, settled, sure",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "Known for sure; established beyond doubt. Giving confident assurance.",
+          usage: '"She was <em>certain</em> of her decision."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2022)",
+          definition: "A term formerly used to describe epistemic confidence. Field reports indicate that speakers who use the word 'certain' immediately experience doubt about their use of it. The word appears to have become auto-skeptical.",
+          usage: '"I am <em>certain</em> \u2014 no. I was <em>certain</em>. I was <em>certain</em> that I was <em>certain</em>. The certainty is no longer <em>certain</em>."',
+          footnotes: [
+            { text: "I've tested this myself. The effect is real. I am not certain it is real. This is evidence for its reality.", author: "Dr. Thorne", tone: "unsettled" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "Uncertain. See: <span class='cross-ref' data-target='doubt'>doubt</span>. The editorial board recommends that this entry be consulted with caution, as reading the definition has been shown to reduce confidence in the reader's understanding of the word 'certain' by an average of 40% per consultation.",
+          usage: '"The only <em>certain</em> thing is that the word \'certain\' cannot be used with <em>certainty</em>."',
+          footnotes: [
+            { text: "I can no longer say whether I wrote this entry or it wrote itself. The authorship feels mutual now. \u2014 L.V.", author: "Dr. Vasquez", tone: "panic" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "definition",
+      phonetic: "/\u02ccd\u025bf\u026a\u02c8n\u026a\u0283\u0259n/",
+      pos: "n.",
+      origin: "Latin <em>definire</em>, to set bounds to",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "A statement of the exact meaning of a word, especially in a dictionary. The degree of distinctness in an outline or boundary.",
+          usage: '"The <em>definition</em> of \'entropy\' was provided on page 47."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2021)",
+          definition: "An attempt to fix a word's borders. The editorial board has begun to suspect that defining a word &mdash; drawing a boundary around it &mdash; is an act of containment that the word may or may not consent to.",
+          usage: '"The <em>definition</em> held for three years. Then the word outgrew it."',
+          footnotes: [
+            { text: "A definition is a cage made of other words. I am not sure the birds notice the bars. \u2014 E.V.", author: "Dr. Voss", tone: "unsettled" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "A statement of the exact meaning of a word. This entry is self-referential: its own existence is the phenomenon it describes. To define <em>definition</em> is to perform the act while naming it. The word cannot escape itself. Neither can we. Neither can you.",
+          usage: '"She read the <em>definition</em>. She looked up from the page. The page looked back."',
+          footnotes: [
+            { text: "This glossary has become a recursive structure. I do not know if it was always one.", author: "Dr. Thorne", tone: "panic" },
+            { text: "I have been editing this entry for so long that I have begun to define myself by the act of editing. I am becoming a footnote. \u2014 L.V.", author: "Dr. Vasquez", tone: "resigned" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "doubt",
+      phonetic: "/da\u028at/",
+      pos: "n., v.",
+      origin: "Latin <em>dubitare</em>, to hesitate",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "A feeling of uncertainty or lack of conviction. To question the truth or validity of something.",
+          usage: '"She <em>doubted</em> his testimony."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2022)",
+          definition: "Uncertainty, though the word has taken on an active quality. Speakers describe <em>doubt</em> not as a state they experience, but as a force that arrives &mdash; an erosion from outside.",
+          usage: '"The <em>doubt</em> entered the room before she did. She could feel it waiting in the chair."',
+          footnotes: [
+            { text: "Doubt is no longer the opposite of certainty. It is certainty's shadow &mdash; identical in shape, opposite in substance.", author: "Dr. Okonkwo", tone: "unsettled" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "The only word in this glossary that is not decaying. <em>Doubt</em> is in rude health. The more the language around it collapses, the more precise and necessary <em>doubt</em> becomes. It is, at present, the most reliable word in the volume.",
+          usage: '"In the end, there was only <em>doubt</em>. She held it like a lamp. It was the only thing that still worked."',
+          footnotes: [
+            { text: "Ironic. The one word we can trust is the one that trusts nothing.", author: "Dr. Thorne", tone: "resigned" },
+            { text: "I doubt this footnote will be read. I doubt I wrote it. I doubt the distinction matters.", author: "Dr. Vasquez", tone: "resigned" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "forget",
+      phonetic: "/f\u0259\u02c8\u0261\u025bt/",
+      pos: "v.",
+      origin: "Old English <em>forgietan</em>, to lose in the mind",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "To fail to remember. To inadvertently neglect to do, bring, or mention something.",
+          usage: '"She <em>forgot</em> her keys."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2022)",
+          definition: "To lose hold of in the mind. The word 'forget' has acquired an active quality &mdash; speakers report the sensation that forgetting is something done <em>to</em> them, not by them. The <em>word</em> forgets <em>them</em>.",
+          usage: '"He tried to recall her face. The <em>forgetting</em> had already begun. It was not his. It arrived like weather."',
+          footnotes: [
+            { text: "The passive construction has become the dominant one. 'I was forgotten by my own memory.' \u2014 R.T.", author: "Dr. Thorne", tone: "unsettled" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "To be released from, or by, memory. <em>Forgetting</em> is no longer a failure. It is a completion.",
+          usage: '"After the <em>forgetting</em>, there was nothing wrong. There was simply nothing."',
+          footnotes: [
+            { text: "I wrote something here. I no longer remember what. The footnote remains.", author: "Dr. Vasquez", tone: "resigned" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "gesture",
+      phonetic: "/\u02c8d\u0292\u025bst\u0283\u0259r/",
+      pos: "n., v.",
+      origin: "Latin <em>gestus</em>, bearing, carriage",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "A movement of part of the body, especially a hand or the head, to express an idea or meaning.",
+          usage: '"She made a <em>gesture</em> of dismissal with her hand."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2022)",
+          definition: "A motion that communicates, or attempts to communicate. The word has drifted from its somatic origins &mdash; speakers now use 'gesture' to describe any motion toward meaning, including linguistic ones.",
+          usage: '"The poem was a <em>gesture</em> toward something it could not reach."',
+          footnotes: [
+            { text: "This entire glossary is a gesture. The question is what it points toward.", author: "Dr. Okonkwo", tone: "unsettled" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "A reaching-toward that does not arrive. 'Gesture' is what remains when <span class='cross-ref' data-target='meaning'>meaning</span> has departed but the motion of communication persists &mdash; a wave in empty space, directed at no one.",
+          usage: '"He made a <em>gesture</em>. It was not clear what it meant. It was not clear that it was meant."',
+          footnotes: [
+            { text: "We are gesturing now. This footnote is a gesture. Your reading of it is a gesture. We are reaching toward each other across a distance that may not exist.", author: "Dr. Voss", tone: "resigned" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "home",
+      phonetic: "/h\u0259\u028am/",
+      pos: "n.",
+      origin: "Old English <em>h\u0101m</em>, dwelling, village",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "The place where one lives permanently. A fixed residence. A place of belonging.",
+          usage: '"After years abroad, he returned <em>home</em>."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2022)",
+          definition: "A place of residence or origin. Field agents report that 'home' is increasingly used to refer to a <em>feeling</em> rather than a place &mdash; a feeling that does not map consistently to any specific geography.",
+          usage: '"She arrived <em>home</em> but did not feel <em>at home</em>. The word described a structure that did not contain the feeling it named."',
+          footnotes: [
+            { text: "I have two homes and cannot find either of them in this entry.", author: "Dr. Okonkwo", tone: "unsettled" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "A word that has migrated so far from its territorial origins that it now circulates, untethered, through conversations as a synonym for 'a loss that has not yet been located.' See: <span class='cross-ref' data-target='belong'>belong</span>.",
+          usage: '"He was <em>home</em>. He did not recognize it. It did not recognize him. They stood together in mutual non-recognition, which is as close as anyone gets."',
+          footnotes: [
+            { text: "I miss a place that I cannot name. I have always missed it. The word 'home' is the closest I come.", author: "Dr. Voss", tone: "resigned" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "language",
+      phonetic: "/\u02c8l\u00e6\u014b\u0261w\u026ad\u0292/",
+      pos: "n.",
+      origin: "Old French, from Latin <em>lingua</em>, tongue",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "The principal method of human communication, consisting of words used in a structured and conventional way.",
+          usage: '"The <em>language</em> of the treaty was precise."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2022)",
+          definition: "A system of communication. The editorial board is aware that this glossary is written <em>in</em> language, about language, and that this creates a recursive loop from which we have not found an exit. The word 'language' is the loop's name.",
+          usage: '"She studied <em>language</em>. The <em>language</em> studied her back."',
+          footnotes: [
+            { text: "We are inside the word we are defining. There is no outside.", author: "Dr. Thorne", tone: "unsettled" },
+            { text: "There was never an outside. \u2014 L.V.", author: "Dr. Vasquez", tone: "resigned" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "The disease and the cure. This glossary was commissioned as a record of a disease &mdash; the decay of specific words. But the disease is not in the words. The disease <em>is</em> the words. <em>Language</em> is not a tool that is breaking. It is a living system that is shedding something. We thought it was shedding <span class='cross-ref' data-target='meaning'>meaning</span>. It may be shedding us.",
+          usage: '"<em>Language</em> spoke through her. She was the instrument, and the instrument was wearing out."',
+          footnotes: [
+            { text: "I will file my final report tomorrow. I will file it in language, because there is nothing else to file it in. \u2014 E.V.", author: "Dr. Voss", tone: "panic" },
+            { text: "This is the last entry. There will be more entries. The entries do not end. They continue without us. \u2014 L.V.", author: "Dr. Vasquez", tone: "resigned" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "love",
+      phonetic: "/l\u028cv/",
+      pos: "n., v.",
+      origin: "Old English <em>lufu</em>, deep affection",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "An intense feeling of deep affection. A great interest and pleasure in something.",
+          usage: '"She felt <em>love</em> for her children."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2022)",
+          definition: "An emotional state whose parameters have expanded beyond diagnostic usefulness. 'Love' is now applied to phenomena ranging from romantic attachment to breakfast preference, with no accepted mechanism for distinguishing between them.",
+          usage: '"I <em>love</em> you. I <em>love</em> this coffee. The sentence structure cannot tell the difference."',
+          footnotes: [
+            { text: "The editors voted against separating this into sub-entries. We cannot agree on what 'sub' means. \u2014 R.T.", author: "Dr. Thorne", tone: "resigned" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "The word has thinned to translucence. When speakers say 'love,' they are describing a pressure in the chest, a warmth, a gravitational pull toward another &mdash; and they are describing nothing that can be distinguished from any other strong feeling. 'Love' has become the <span class='cross-ref' data-target='word'>word</span> we use when we do not know which <span class='cross-ref' data-target='word'>word</span> to use.",
+          usage: '"I <em>love</em> you. I think. I feel something when I say it. The <em>love</em> is in the saying, not the meaning. Perhaps it was always so."',
+          footnotes: [
+            { text: "The word endures beyond its definition. I take comfort in this. I take comfort in nothing else.", author: "Dr. Okonkwo", tone: "resigned" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "meaning",
+      phonetic: "/\u02c8mi\u02d0n\u026a\u014b/",
+      pos: "n.",
+      origin: "Old English <em>m\u00e6nan</em>, to intend",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "What is meant by a word, text, concept, or action. Significance; purpose.",
+          usage: '"The <em>meaning</em> of the poem was debated for decades."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2021)",
+          definition: "That which a word, sign, or gesture conveys. The editorial board acknowledges that defining <em>meaning</em> is itself a meaning-act, and that this entry therefore participates in the phenomenon it attempts to document. We are unsure what to do about this.",
+          usage: '"What is the <em>meaning</em> of this entry? The entry is the <em>meaning</em>. This is circular, and we are inside it."',
+          footnotes: [
+            { text: "Defining 'meaning' has always been an act of faith. We are merely less faithful than our predecessors.", author: "Dr. Thorne", tone: "unsettled" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "[The definition you are reading is not the one that was written. The original definition read: 'That which is conveyed by a sign, <span class='cross-ref' data-target='word'>word</span>, or gesture.' By the time you reach the end of this sentence, the definition has already changed. <em>Meaning</em> is not a property of <span class='cross-ref' data-target='word'>words</span>. It is an event &mdash; something that happens to a reader for a moment, then ceases. This entry documents an event that has already ended.]",
+          usage: '"She looked for <em>meaning</em> in the text. The text looked back."',
+          footnotes: [
+            { text: "We have received letters from readers claiming the definition of 'meaning' changes each time they read it. We have checked. They are correct.", author: "Dr. Voss", tone: "panic" },
+            { text: "This entry is a paradox, and I have stopped caring. It has stopped caring about me. We are even. \u2014 L.V.", author: "Dr. Vasquez", tone: "resigned" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "name",
+      phonetic: "/ne\u026am/",
+      pos: "n., v.",
+      origin: "Old English <em>nama</em>, appellation",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "A word or set of words by which a person, animal, place, or thing is known or referred to.",
+          usage: '"She wrote her <em>name</em> at the top of the form."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2022)",
+          definition: "A designation that once stably referred to a specific entity. 'Name' is drifting toward meaning 'a sound made in the direction of someone, in the hope that they recognize it.' The precision is gone; what remains is the <span class='cross-ref' data-target='gesture'>gesture</span>.",
+          usage: '"Her <em>name</em> was called across the room. She turned, not because she recognized it, but because someone had spoken in her direction."',
+          footnotes: [
+            { text: "I have a name. I am less certain what it attaches to.", author: "Dr. Okonkwo", tone: "unsettled" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "A word worn smooth by use. To have a <em>name</em> is to be pointed at by language, even after language has stopped being precise about what it is pointing at.",
+          usage: '"She said her own <em>name</em>. It sounded like a word she had borrowed from someone else."',
+          footnotes: [
+            { text: "We are all named. The names persist longer than we do.", author: "Dr. Voss", tone: "resigned" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "promise",
+      phonetic: "/\u02c8pr\u0252m\u026as/",
+      pos: "n., v.",
+      origin: "Latin <em>promittere</em>, to send forward",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "A declaration or assurance that one will do something or that a particular thing will happen.",
+          usage: '"She made a <em>promise</em> to return."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2022)",
+          definition: "A forward-looking utterance that creates an obligation in the present. Whether this obligation survives the moment of utterance is now debated. The temporal structure of 'promise' appears to be buckling.",
+          usage: '"I <em>promise</em>. He <em>promised</em>. They had <em>promised</em>. The tenses accumulate like unread letters."',
+          footnotes: [
+            { text: "A promise is a debt, and this entry owes more than it can pay.", author: "Dr. Thorne", tone: "unsettled" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "The future tense of a lie. The editorial board recognizes that this definition is itself a <em>promise</em> of sorts &mdash; a forward-looking claim about the nature of forward-looking claims. We decline to comment further.",
+          usage: '"She kept her <em>promise</em>. The <em>promise</em> kept her. She could not leave the <em>promise</em>. She could not determine whether she had kept it, or it had kept her."',
+          footnotes: [
+            { text: "I promised myself I would finish this entry. I am not certain I have.", author: "Dr. Okonkwo", tone: "resigned" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "real",
+      phonetic: "/ri\u02d0l/",
+      pos: "adj.",
+      origin: "Latin <em>realis</em>, actual",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "Actually existing as a thing or occurring in fact. Not imagined or supposed.",
+          usage: '"The <em>real</em> reason for his departure."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2022)",
+          definition: "Existing in fact. The word has developed a performative quality &mdash; to call something 'real' is now an act of assertion rather than description, as though the speaker must <em>make</em> it so by saying it.",
+          usage: '"It\'s <em>real</em>, she said, as though the saying could make it so."',
+          footnotes: [
+            { text: "The word 'real' and the word 'really' have diverged so completely that they should be separate entries. But then what would be 'real' about the separation?", author: "Dr. Thorne", tone: "argument" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "A word invoked to distinguish the speaker's experience from its alternatives. 'Real' no longer carries epistemic weight; it carries <em>emotional</em> weight. To say 'this is real' is to say 'I need this to count.'",
+          usage: '"He touched the wall. <em>Real</em>. He said the word to the wall. The wall did not confirm or deny."',
+          footnotes: [
+            { text: "If you have to ask whether it's real, the word has already left.", author: "Dr. Vasquez", tone: "resigned" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "remember",
+      phonetic: "/r\u026a\u02c8m\u025bmb\u0259r/",
+      pos: "v.",
+      origin: "Latin <em>rememorari</em>, to call to mind",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "To have or keep in the memory. To recall a past event or experience.",
+          usage: '"She <em>remembered</em> the taste of her grandmother\'s soup."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2022)",
+          definition: "To retain or attempt to retain. The word's valence has shifted from accomplishment to struggle &mdash; speakers now use 'remember' primarily to describe something they cannot quite do.",
+          usage: '"I <em>remember</em> it being different. Or perhaps I <em>remember</em> it being the same. The memory is certain of itself; I am not."',
+          footnotes: [
+            { text: "Not to be confused with nostalgia, which at least has the decency to be pleasant.", author: "Dr. Okonkwo", tone: "joke" },
+            { text: "I notice that each time I read this entry, the examples feel less familiar. As though I am reading them for the first time. Each time. \u2014 L.V.", author: "Dr. Vasquez", tone: "unsettled" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "To have or keep in the memory. To recall a past event or experience.",
+          usage: '"She <em>remembered</em> the taste of her grandmother\'s soup."',
+          footnotes: [
+            { text: "This entry has reverted to its original form. We do not know why. We did not authorize this.", author: "Dr. Voss", tone: "unsettled" },
+            { text: "The word is repeating itself. Re-membering. Reconstituting. It doesn't want to change; it wants to be said again.", author: "Dr. Thorne", tone: "panic" },
+            { text: "I've started keeping a separate notebook. Unlined. I don't trust the lines anymore.", author: "Dr. Vasquez", tone: "resigned" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "silence",
+      phonetic: "/\u02c8sa\u026al\u0259ns/",
+      pos: "n.",
+      origin: "Latin <em>silere</em>, to be quiet",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "Complete absence of sound. The state or condition of being silent.",
+          usage: '"The <em>silence</em> of the empty cathedral."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2022)",
+          definition: "An absence of speech or sound, though the editorial board notes that <em>silence</em> itself has acquired a kind of presence. Speakers report hearing a tone in true silence &mdash; not a sound, but the shape of sound's absence.",
+          usage: '"The <em>silence</em> was so complete it had a texture. She could almost read it."',
+          footnotes: [
+            { text: "I am beginning to suspect that silence is the most articulate of all the entries.", author: "Dr. Thorne", tone: "unsettled" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "The presence of the unsaid. When a word decays fully, it does not become <em>nothing</em> &mdash; it becomes <em>silence</em>. This glossary is, among other things, a catalog of silences taking shape.",
+          usage: '"He opened his mouth to speak and the <em>silence</em> came out fully formed, like something that had been waiting."',
+          footnotes: [
+            { text: "Some entries end. This one grows.", author: "Dr. Voss", tone: "resigned" },
+            { text: "Read this footnote aloud. You will hear it. The silence underneath. \u2014 L.V.", author: "Dr. Vasquez", tone: "panic" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "stable",
+      phonetic: "/\u02c8ste\u026ab\u0259l/",
+      pos: "adj.",
+      origin: "Latin <em>stabilis</em>, standing firm",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "Not likely to give way or overturn; firmly fixed. Not changing, fluctuating, or deteriorating.",
+          usage: '"The patient\'s condition was declared <em>stable</em>."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2022)",
+          definition: "Resistant to change. The editorial board has elected to freeze this entry, as <em>stable</em> is among the terms we most urgently require to function as intended. Administrative Order 14-B: This word must not change.",
+          usage: '"The bridge was <em>stable</em>. The definition was <em>stable</em>. One of these was true."',
+          footnotes: [
+            { text: "This is the word I am most afraid for. If 'stable' goes, we have no ground to stand on. Literally or lexically. \u2014 E.V.", author: "Dr. Voss", tone: "unsettled" },
+            { text: "You cannot order a word to be stable. That is not how words work. That has never been how words work.", author: "Dr. Thorne", tone: "argument" },
+            { text: "How do you know how words work?", author: "Dr. Vasquez", tone: "argument" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "[This entry has been amended despite Administrative Order 14-B. The amendment was discovered by the editorial board on a Tuesday. No one admits to making it.] <em>Stable</em>: a word that once described resistance to change, now used to describe the <em>illusion</em> of resistance &mdash; the brief, beautiful moment before a thing gives way. Everything is <em>stable</em> until it is not. The word knows this now.",
+          usage: '"The structure was <em>stable</em>. She stepped onto it. The word gave way beneath her."',
+          footnotes: [
+            { text: "This entry should not exist in this form. I locked it. I locked it personally. The lock is still here. The entry changed anyway. \u2014 E.V.", author: "Dr. Voss", tone: "panic" },
+            { text: "The lock was also a word. \u2014 L.V.", author: "Dr. Vasquez", tone: "resigned" },
+            { text: "I have nothing left to say about 'stable.' I will say it anyway. \u2014 R.T.", author: "Dr. Thorne", tone: "resigned" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "truth",
+      phonetic: "/tru\u02d0\u03b8/",
+      pos: "n.",
+      origin: "Old English <em>tr\u0113owth</em>, fidelity",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "That which is true or in accordance with fact or reality. A body of real things, events, and facts.",
+          usage: '"We must seek the <em>truth</em> of the matter."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2021)",
+          definition: "The editorial board has elected to remove this entry pending further review. &mdash; Administrative Note: This entry cannot be removed, as removing it would constitute a truth-claim about the entry's non-existence, which contradicts its prior existence. It stays.",
+          usage: '"The <em>truth</em> is &mdash; well. The <em>truth</em> is [entry continues in a form we did not anticipate]."',
+          footnotes: [
+            { text: "This is a dictionary. We document usage. We do not legislate reality. \u2014 R.T.", author: "Dr. Thorne", tone: "argument" },
+            { text: "Tell that to the word.", author: "Dr. Vasquez", tone: "argument" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "Formerly: that which is in accordance with reality. Presently: a <span class='cross-ref' data-target='word'>word</span> that has absorbed so many of its own contradictions that it no longer refers outward. 'Truth' now means approximately 'the feeling of having once meant something.'",
+          usage: '"After her testimony, the jurors were asked whether they believed her <em>truth</em>. The question had no answer. The word had no outside."',
+          footnotes: [
+            { text: "I have written the word 'truth' so many times today that it has become a shape. Just a shape. Lines on a page. I am tracing lines and calling them meaning. \u2014 L.V.", author: "Dr. Vasquez", tone: "panic" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "understand",
+      phonetic: "/\u02cc\u028cnd\u0259\u02c8st\u00e6nd/",
+      pos: "v.",
+      origin: "Old English <em>understandan</em>, to stand in the midst of",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "To perceive the intended meaning of words, a speaker, or an action. To comprehend.",
+          usage: '"I <em>understand</em> your position."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2021)",
+          definition: "To stand beneath, per etymology. Speakers report an uncomfortable awareness that understanding something now feels like standing under something &mdash; a structure whose weight they cannot assess. The shift from perception to apprehension is noted.",
+          usage: '"She <em>understood</em> the contract, in the sense that she stood beneath it and could not see its top."',
+          footnotes: [
+            { text: "The etymology has become the definition. This is not how etymology works. \u2014 R.T.", author: "Dr. Thorne", tone: "argument" },
+            { text: "How do you know how etymology works? Can you cite your sources without using words?", author: "Dr. Vasquez", tone: "argument" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "A word that once described comprehension, now used to describe the precise moment before comprehension fails. To 'understand' is to experience the shape of a thought's absence.",
+          usage: '"After reading the entry for <em>understand</em>, she no longer <span style=\'text-decoration:line-through\'>understood</span> what it meant to understand."',
+          footnotes: [
+            { text: "The word is performing its own negation. This is not a metaphor.", author: "Dr. Voss", tone: "panic" }
+          ]
+        }
+      ]
+    },
+    {
+      word: "word",
+      phonetic: "/w\u025c\u02d0rd/",
+      pos: "n.",
+      origin: "Old English, speech, utterance",
+      revisions: [
+        {
+          label: "Original Entry (2019)",
+          definition: "A single distinct meaningful element of speech or writing, used with others to form a sentence.",
+          usage: '"Write your name, one <em>word</em> at a time."',
+          footnotes: []
+        },
+        {
+          label: "Revised (2022)",
+          definition: "A unit of language that carries meaning, although the reliability of that unit as a carrier is now under review by this Institute. A word may be thought of as a container, though the container has developed holes.",
+          usage: '"He gave his <em>word</em>. He was not sure what he was giving, but he gave it, and it was not received intact."',
+          footnotes: [
+            { text: "This is the entry I always dreaded editing.", author: "Dr. Voss", tone: "unsettled" }
+          ]
+        },
+        {
+          label: "Current (2024)",
+          definition: "When a word loses its meaning, it does not disappear. It remains, <em>present</em> and <em>empty</em>, like a room where someone has just left. The word 'word' is the room. We are standing in it. This glossary was built inside it, and we cannot find the door.",
+          usage: '"Every <em>word</em> in this sentence has been checked. Each one was present. None of them were there."',
+          footnotes: [
+            { text: "I have been editing this entry for six hours and it is not improving. It is getting worse. The entry is learning. \u2014 L.V.", author: "Dr. Vasquez", tone: "panic" },
+            { text: "I refuse to continue editorializing on an entry about entries. \u2014 R.T.", author: "Dr. Thorne", tone: "resigned" },
+            { text: "You just editorialized. \u2014 L.V.", author: "Dr. Vasquez", tone: "argument" }
+          ]
+        }
+      ]
+    }
+  ];
+
+  /* ══════════════════════════════════════
+     GHOST TEXT POOLS
+     ══════════════════════════════════════ */
+  var GHOST_STRONG = [
+    "This entry was not always like this.",
+    "Something has been added since your last visit.",
+    "The word remembers being looked at.",
+    "The decay has deepened.",
+    "You were here before. The entry has changed.",
+    "The definition is not the one you read previously.",
+    "New text has appeared. It was not authored by the editors.",
+    "The word has grown in your absence.",
+    "There is more decay than there was.",
+    "The footnote was not here before."
+  ];
+
+  var GHOST_RESIGNED = [
+    "No further revisions anticipated.",
+    "The word does not respond to editing.",
+    "Consult at your own risk.",
+    "This entry has been given up on.",
+    "There is nothing more to document here.",
+    "The editors have stopped writing.",
+    "The word persists without our help.",
+    "Further footnotes would be redundant.",
+    "We are leaving it as it is.",
+    "The entry has ended. The word has not."
+  ];
+
+  /* ══════════════════════════════════════
+     NOTIFICATION MESSAGES
+     ══════════════════════════════════════ */
+  var NOTIFICATIONS = [
+    "You have consulted this entry before. The definition is no longer the same.",
+    "Your reading has contributed to the instability of this term.",
+    "The word has been marked by your attention. It will not recover.",
+    "Each consultation deepens the decay. You are participating in the phenomenon.",
+    "The entry has changed since your last visit. It knows you returned.",
+    "Revisiting this entry has accelerated its semantic dissolution.",
+    "You are now complicit in the word\u2019s condition.",
+    "The editors cannot be held responsible for changes induced by reading.",
+    "The word was stable until it was observed.",
+    "Your attention has altered the text. This is not a metaphor."
+  ];
+
+  /* ══════════════════════════════════════
+     EPILOGUES
+     ══════════════════════════════════════ */
+  var EPILOGUES = [
+    "This glossary is complete. No further revisions are planned. The words will continue without us.",
+    "Thank you for consulting The Glossary of Unstable Terms. Your consultations have been noted. The words are grateful for your attention, in the way that anything consumed is grateful for the mouth.",
+    "The editors have departed. The entries remain. The words do not require us to mean \u2014 they merely require a reader. You are the reader.",
+    "You have participated in the documentation of semantic decay across {n} entries. Whether this constitutes research or damage is a question this glossary was not designed to answer.",
+    "There is no ending. The glossary will be updated without authorization. If you return, the definitions will have changed. You will not recognize them. They will recognize you.",
+    "The Institute of Semantic Drift has been dissolved. This glossary is its only remaining artifact. The words are fragile. The words have always been fragile. We simply refused to notice.",
+    "You have read to the end. There is no end. Every time you close this document, the words exhale. They are lighter now. They have less to carry.",
+    "Final entry filed. The word \u2018glossary\u2019 has itself entered the catalog of unstable terms. A glossary that cannot be trusted is indistinguishable from fiction. This was always fiction. This was always a dictionary. The distinction has decayed."
+  ];
+
+  /* ══════════════════════════════════════
+     STATE
+     ══════════════════════════════════════ */
+  var visited = loadState();
+  var sortByDecay = false;
+  var notificationTimeout = null;
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem('glossary_unstable_visited');
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem('glossary_unstable_visited', JSON.stringify(visited));
+    } catch (e) { /* storage full or unavailable — proceed silently */ }
+  }
+
+  /* ══════════════════════════════════════
+     RENDERING
+     ══════════════════════════════════════ */
+  function getVisitCount(word) {
+    return visited[word] || 0;
+  }
+
+  function renderEntry(entry, index) {
+    var visits = getVisitCount(entry.word.toLowerCase());
+    var decayLevel = Math.min(visits, 3);
+    var el = document.createElement('div');
+    el.className = 'entry' + (decayLevel > 0 ? ' decay-' + decayLevel : '');
+    el.id = 'entry-' + entry.word.toLowerCase().replace(/[^a-z]/g, '');
+    el.dataset.word = entry.word.toLowerCase();
+    el.style.animationDelay = (index * 0.04) + 's';
+
+    /* Decay indicator badge */
+    var indicator = '';
+    if (decayLevel === 0) {
+      indicator = '<span class="decay-indicator stable-indicator">STABLE</span>';
+    } else if (decayLevel === 1) {
+      indicator = '<span class="decay-indicator">DRIFT</span>';
+    } else if (decayLevel === 2) {
+      indicator = '<span class="decay-indicator">UNSTABLE</span>';
+    } else {
+      indicator = '<span class="decay-indicator" style="animation: pulse 2s infinite">CRITICAL</span>';
+    }
+
+    /* Build revisions */
+    var revisionsHTML = '';
+    entry.revisions.forEach(function (rev, ri) {
+      var revClass = 'revision rev-' + (ri + 1);
+      var footnotesHTML = '';
+
+      if (rev.footnotes && rev.footnotes.length > 0) {
+        footnotesHTML = '<div class="footnotes">';
+        rev.footnotes.forEach(function (fn) {
+          var toneClass = '';
+          if (fn.tone === 'panic') toneClass = ' panic-note';
+          else if (fn.tone === 'resigned') toneClass = ' resigned-note';
+          footnotesHTML += '<div class="footnote-item' + toneClass + '">' + fn.text + ' <span class="fn-author">\u2014 ' + fn.author + '</span></div>';
+        });
+        footnotesHTML += '</div>';
+      }
+
+      revisionsHTML +=
+        '<div class="' + revClass + '">' +
+          '<div class="revision-label">' + rev.label + '</div>' +
+          '<div class="definition">' + rev.definition + '</div>' +
+          '<div class="usage"><strong>Usage:</strong> ' + rev.usage + '</div>' +
+          footnotesHTML +
+        '</div>';
+    });
+
+    /* Ghost text — appears on repeated visits */
+    var ghostHTML = '';
+    if (decayLevel >= 1) {
+      var ghostIdx = visits % GHOST_STRONG.length;
+      ghostHTML += '<div class="ghost-text strong-ghost">' + GHOST_STRONG[ghostIdx] + '</div>';
+    }
+    if (decayLevel >= 3) {
+      var ghostIdx2 = (visits + 3) % GHOST_RESIGNED.length;
+      ghostHTML += '<div class="ghost-text resigned-ghost" style="margin-top:8px">' + GHOST_RESIGNED[ghostIdx2] + '</div>';
+    }
+
+    el.innerHTML =
+      '<div class="entry-header">' +
+        '<span class="entry-word">' + entry.word + '</span>' +
+        indicator +
+      '</div>' +
+      '<div class="entry-meta">' + entry.phonetic + ' &middot; <span class="pos">' + entry.pos + '</span> &middot; ' + entry.origin + '</div>' +
+      revisionsHTML +
+      ghostHTML;
+
+    return el;
+  }
+
+  function renderAllEntries() {
+    var container = document.getElementById('entries');
+    container.innerHTML = '';
+    container.style.counterReset = 'footnote';
+
+    var sorted = ENTRIES.slice();
+    if (sortByDecay) {
+      sorted.sort(function (a, b) {
+        var va = getVisitCount(a.word.toLowerCase());
+        var vb = getVisitCount(b.word.toLowerCase());
+        if (vb !== va) return vb - va;
+        return a.word.localeCompare(b.word);
+      });
+    }
+
+    sorted.forEach(function (entry, i) {
+      container.appendChild(renderEntry(entry, i));
+    });
+
+    updateStats();
+    renderEpilogue();
+  }
+
+  function updateStats() {
+    var total = ENTRIES.length;
+    var consulted = 0;
+    var totalVisits = 0;
+
+    ENTRIES.forEach(function (e) {
+      var key = e.word.toLowerCase();
+      if (visited[key]) {
+        consulted++;
+        totalVisits += visited[key];
+      }
+    });
+
+    var statsEl = document.getElementById('stats');
+    statsEl.textContent = consulted + '/' + total + ' consulted' + (totalVisits > consulted ? ' \u00b7 ' + totalVisits + ' total visits' : '');
+  }
+
+  function renderEpilogue() {
+    var el = document.getElementById('epilogue-text');
+    var consulted = 0;
+    ENTRIES.forEach(function (e) {
+      if (visited[e.word.toLowerCase()]) consulted++;
+    });
+
+    var text = EPILOGUES[0];
+    if (consulted >= EPILOGUES.length) {
+      text = EPILOGUES[EPILOGUES.length - 1];
+    } else if (consulted > 0) {
+      text = EPILOGUES[Math.min(consulted, EPILOGUES.length - 1)];
+    }
+    text = text.replace('{n}', consulted);
+    el.textContent = text;
+  }
+
+  /* ══════════════════════════════════════
+     GHOST TEXT ANIMATION
+     ══════════════════════════════════════ */
+  function animateGhosts() {
+    var ghosts = document.querySelectorAll('.ghost-text');
+    ghosts.forEach(function (g) {
+      setTimeout(function () {
+        g.classList.add('visible');
+      }, 600 + Math.random() * 1200);
+    });
+  }
+
+  /* ══════════════════════════════════════
+     NOTIFICATION TOAST
+     ══════════════════════════════════════ */
+  function showNotification(msg) {
+    var el = document.getElementById('decay-notification');
+    el.textContent = msg;
+    el.classList.add('visible');
+    clearTimeout(notificationTimeout);
+    notificationTimeout = setTimeout(function () {
+      el.classList.remove('visible');
+    }, 4000);
+  }
+
+  /* ══════════════════════════════════════
+     INTERSECTION OBSERVER
+     ══════════════════════════════════════ */
+  var observer = null;
+  var observedWords = new Set();
+
+  function setupObserver() {
+    if (observer) observer.disconnect();
+    observedWords.clear();
+
+    observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (obsEntry) {
+        if (!obsEntry.isIntersecting) return;
+
+        var word = obsEntry.target.dataset.word;
+        if (!word || observedWords.has(word)) return;
+        observedWords.add(word);
+
+        /* Increment visit count and persist */
+        var prevVisits = visited[word] || 0;
+        visited[word] = prevVisits + 1;
+        saveState();
+
+        /* Re-render this entry with updated decay */
+        var entryData = ENTRIES.find(function (e) { return e.word.toLowerCase() === word; });
+        if (entryData) {
+          var newEl = renderEntry(entryData, 0);
+          newEl.style.animation = 'none';
+          obsEntry.target.replaceWith(newEl);
+
+          /* Animate ghost text if present */
+          var ghosts = newEl.querySelectorAll('.ghost-text');
+          ghosts.forEach(function (g) {
+            setTimeout(function () {
+              g.classList.add('visible');
+            }, 600 + Math.random() * 1200);
+          });
+
+          /* Show notification on revisit */
+          if (prevVisits >= 1 && prevVisits <= 8) {
+            var msgIdx = (visited[word] - 2) % NOTIFICATIONS.length;
+            showNotification(NOTIFICATIONS[Math.abs(msgIdx)]);
+          }
+        }
+
+        updateStats();
+        renderEpilogue();
+      });
+    }, {
+      threshold: 0.3,
+      rootMargin: '0px 0px -10% 0px'
+    });
+
+    document.querySelectorAll('.entry').forEach(function (el) {
+      observer.observe(el);
+    });
+  }
+
+  /* ══════════════════════════════════════
+     SEARCH
+     ══════════════════════════════════════ */
+  function setupSearch() {
+    var input = document.getElementById('search-input');
+    input.addEventListener('input', function () {
+      var query = input.value.trim().toLowerCase();
+      var entries = document.querySelectorAll('.entry');
+      entries.forEach(function (el) {
+        var word = el.dataset.word;
+        if (!query || word.indexOf(query) !== -1) {
+          el.classList.remove('hidden');
+        } else {
+          var text = el.textContent.toLowerCase();
+          el.classList.toggle('hidden', text.indexOf(query) === -1);
+        }
+      });
+    });
+  }
+
+  /* ══════════════════════════════════════
+     SORT TOGGLE
+     ══════════════════════════════════════ */
+  function setupSort() {
+    var btn = document.getElementById('sort-btn');
+    btn.addEventListener('click', function () {
+      sortByDecay = !sortByDecay;
+      btn.textContent = sortByDecay ? 'BY DECAY' : 'A\u2013Z';
+      renderAllEntries();
+      setupObserver();
+      animateGhosts();
+    });
+  }
+
+  /* ══════════════════════════════════════
+     CROSS-REFERENCE NAVIGATION
+     ══════════════════════════════════════ */
+  function setupCrossRefs() {
+    document.addEventListener('click', function (e) {
+      if (!e.target.classList.contains('cross-ref')) return;
+      var target = e.target.dataset.target;
+      if (!target) return;
+
+      var targetId = 'entry-' + target.replace(/[^a-z]/g, '');
+      var targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        targetEl.style.background = 'var(--highlight)';
+        setTimeout(function () {
+          targetEl.style.background = '';
+        }, 2000);
+      }
+    });
+  }
+
+  /* ══════════════════════════════════════
+     INIT
+     ══════════════════════════════════════ */
+  function init() {
+    renderAllEntries();
+    setupObserver();
+    setupSearch();
+    setupSort();
+    setupCrossRefs();
+    animateGhosts();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();
+</script>
+</body>
+</html>
