@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dissolve</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #020201;
+    }
+
+    #scene {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      cursor: none;
+    }
+
+    #cursor-ring {
+      position: fixed;
+      pointer-events: none;
+      z-index: 100;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.1);
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.8s ease 1.5s;
+    }
+
+    #hint {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.35);
+      letter-spacing: 0.12em;
+      opacity: 1;
+      transition: opacity 4s ease 6s;
+      pointer-events: none;
+      z-index: 50;
+      user-select: none;
+    }
+
+    #hint.gone {
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="scene"></canvas>
+  <div id="cursor-ring"></div>
+  <div id="hint">move your cursor</div>
+
+  <script>
+(function () {
+  const canvas = document.getElementById('scene');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  const cursorEl = document.getElementById('cursor-ring');
+  const hintEl = document.getElementById('hint');
+
+  const genCvs = document.createElement('canvas');
+  const genCtx = genCvs.getContext('2d', { willReadFrequently: true });
+
+  /* Deterministic random from seed */
+  function sr(seed) {
+    let s = seed | 0;
+    return function () {
+      s = (s * 16807 + 7) % 2147483647;
+      return (s - 1) / 2147483646;
+    };
+  }
+
+  /* Store original colours so we can decay from the source */
+  let origR, origG, origB;
+
+  /* Height → satellite colour */
+  function colourAt(h) {
+    if (h < 0.02) return [118, 168, 112];
+    if (h < 0.04) return [110, 157, 102];
+    if (h < 0.055) return [152, 168, 142];
+    if (h < 0.17) return [84, 86, 88];
+    if (h < 0.30) return [92, 93, 92];
+    if (h < 0.50) return [100, 98, 96];
+    if (h < 0.65) return [110, 107, 102];
+    if (h < 0.80) return [128, 122, 112];
+    if (h < 0.90) return [152, 148, 138];
+    return [167, 159, 147];
+  }
+
+  /* Generate the satellite parking-lot height-map */
+  function generateHeightMap() {
+    const w = genCvs.width;
+    const h = genCvs.height;
+
+    genCtx.fillStyle = '#6a9e68';
+    genCtx.fillRect(0, 0, w, h);
+
+    const mx = w * 0.06, my = h * 0.06;
+    genCtx.fillStyle = '#545454';
+    genCtx.fillRect(mx, my, w - mx * 2, h - my * 2);
+
+    genCtx.fillStyle = '#8a8a80';
+    genCtx.lineWidth = 2;
+    genCtx.strokeRect(mx, my, w - mx * 2, h - my * 2);
+
+    const cx = w / 2;
+    const laneY0 = h * 0.07, laneY1 = h * 0.93;
+    genCtx.lineWidth = 16;
+    genCtx.strokeStyle = '#5c5c5c';
+    genCtx.beginPath(); genCtx.moveTo(cx, laneY0); genCtx.lineTo(cx, laneY1); genCtx.stroke();
+    genCtx.lineWidth = 1.5;
+    genCtx.setLineDash([6, 5]);
+    genCtx.strokeStyle = '#9a9a8a';
+    genCtx.beginPath(); genCtx.moveTo(cx, laneY0); genCtx.lineTo(cx, laneY1); genCtx.stroke();
+    genCtx.setLineDash([]);
+
+    const sl = w * 0.26, sr2 = w * 0.74;
+    genCtx.lineWidth = 10;
+    genCtx.strokeStyle = '#585858';
+    genCtx.beginPath(); genCtx.moveTo(sl, laneY0); genCtx.lineTo(sl, laneY1); genCtx.stroke();
+    genCtx.beginPath(); genCtx.moveTo(sr2, laneY0); genCtx.lineTo(sr2, laneY1); genCtx.stroke();
+    genCtx.lineWidth = 1;
+    genCtx.setLineDash([4, 4]);
+    genCtx.strokeStyle = '#909080';
+    genCtx.beginPath(); genCtx.moveTo(sl, laneY0); genCtx.lineTo(sl, laneY1); genCtx.stroke();
+    genCtx.beginPath(); genCtx.moveTo(sr2, laneY0); genCtx.lineTo(sr2, laneY1); genCtx.stroke();
+    genCtx.setLineDash([]);
+
+    const cy = h * 0.50;
+    genCtx.lineWidth = 14;
+    genCtx.strokeStyle = '#5a5a5a';
+    genCtx.beginPath(); genCtx.moveTo(mx, cy); genCtx.lineTo(w - mx, cy); genCtx.stroke();
+    genCtx.lineWidth = 1.2;
+    genCtx.setLineDash([5, 5]);
+    genCtx.strokeStyle = '#989888';
+    genCtx.beginPath(); genCtx.moveTo(mx, cy); genCtx.lineTo(w - mx, cy); genCtx.stroke();
+    genCtx.setLineDash([]);
+
+    const rowStartX = mx + 14;
+    const rowEndX = w - mx - 14;
+    const rowH = h * 0.045;
+    const rowGap = h * 0.072;
+    const rowTop0 = h * 0.09;
+    const numRows = Math.floor((laneY1 - rowTop0 - rowGap) / rowGap);
+
+    for (let r = 0; r < numRows; r++) {
+      const ry = rowTop0 + r * rowGap;
+      genCtx.fillStyle = '#505050';
+      genCtx.fillRect(rowStartX, ry, rowEndX - rowStartX, rowH);
+
+      genCtx.strokeStyle = '#b0b0a8';
+      genCtx.lineWidth = 1;
+      for (let lx = rowStartX + 26; lx < rowEndX - 10; lx += 26) {
+        genCtx.beginPath();
+        genCtx.moveTo(lx, ry);
+        genCtx.lineTo(lx, ry + rowH);
+        genCtx.stroke();
+      }
+    }
+
+    const rng1 = sr(42);
+    genCtx.globalAlpha = 0.35;
+    for (let i = 0; i < 30; i++) {
+      const ox = mx + rng1() * (w - mx * 2);
+      const oy = my + rng1() * (h - my * 2);
+      const or = 8 + rng1() * 22;
+      const grad = genCtx.createRadialGradient(ox, oy, 0, ox, oy, or);
+      grad.addColorStop(0, '#2a2a28');
+      grad.addColorStop(1, 'rgba(42,42,40,0)');
+      genCtx.fillStyle = grad;
+      genCtx.beginPath();
+      genCtx.arc(ox, oy, or, 0, Math.PI * 2);
+      genCtx.fill();
+    }
+    genCtx.globalAlpha = 1;
+
+    const rng2 = sr(77);
+    for (let c = 0; c < 18; c++) {
+      const cx2 = rowStartX + 16 + rng2() * (rowEndX - rowStartX - 40);
+      const ry2 = rowTop0 + Math.floor(rng2() * numRows) * rowGap + rowH / 2;
+      const cw = 18 + rng2() * 6;
+      const ch = 10 + rng2() * 4;
+      genCtx.fillStyle = 'rgba(' + (50 + rng2() * 80 | 0) + ',' + (50 + rng2() * 70 | 0) + ',' + (50 + rng2() * 80 | 0) + ',0.8)';
+      genCtx.fillRect(cx2, ry2 - ch / 2, cw, ch);
+      genCtx.fillStyle = 'rgba(' + (70 + rng2() * 60 | 0) + ',' + (75 + rng2() * 55 | 0) + ',' + (80 + rng2() * 65 | 0) + ',0.5)';
+      genCtx.fillRect(cx2 + 2, ry2 - ch / 2 + 1, cw * 0.4, ch - 2);
+    }
+
+    const imgData = genCtx.getImageData(0, 0, w, h);
+    const px = imgData.data;
+    const n = w * h;
+    const hmap = new Float32Array(n);
+
+    for (let i = 0; i < n; i++) {
+      const j = i * 4;
+      const lum = (px[j] * 0.299 + px[j + 1] * 0.587 + px[j + 2] * 0.114) / 255;
+      const gAvg = (px[j + 1] - ((px[j] + px[j + 2]) * 0.5)) / 255;
+      hmap[i] = Math.max(0, Math.min(1, lum - gAvg * 0.35 + 0.05));
+    }
+    return hmap;
+  }
+
+  /* Render image from height-map */
+  function renderFromHeightMap(hmap) {
+    const w = genCvs.width, h = genCvs.height;
+    const imgData = genCtx.createImageData(w, h);
+    const px = imgData.data;
+    const n = w * h;
+
+    origR = new Uint8Array(n);
+    origG = new Uint8Array(n);
+    origB = new Uint8Array(n);
+
+    for (let i = 0; i < n; i++) {
+      const c = colourAt(hmap[i]);
+      const j = i * 4;
+      origR[i] = c[0];
+      origG[i] = c[1];
+      origB[i] = c[2];
+      px[j]     = c[0];
+      px[j + 1] = c[1];
+      px[j + 2] = c[2];
+      px[j + 3] = 255;
+    }
+    return imgData;
+  }
+
+  /* Pixel-level noise */
+  function addNoise(imgData, intensity) {
+    const rng = sr(123);
+    const px = imgData.data;
+    const w = imgData.width, h = imgData.height;
+    for (let i = 0; i < w * h; i++) {
+      const j = i * 4;
+      const n = (rng() - 0.5) * intensity;
+      px[j]     = Math.max(0, Math.min(255, px[j] + n)) | 0;
+      px[j + 1] = Math.max(0, Math.min(255, px[j + 1] + n)) | 0;
+      px[j + 2] = Math.max(0, Math.min(255, px[j + 2] + n)) | 0;
+      /* Keep orig in sync */
+      origR[i] = px[j];
+      origG[i] = px[j + 1];
+      origB[i] = px[j + 2];
+    }
+  }
+
+  /* Subtle vignette */
+  function addVignette(imgData, w, h) {
+    const px = imgData.data;
+    const cx = w / 2, cy = h / 2;
+    const maxD = Math.sqrt(cx * cx + cy * cy);
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const dx = x - cx, dy = y - cy;
+        const d = Math.sqrt(dx * dx + dy * dy) / maxD;
+        const v = 1 - d * d * 0.25;
+        const i = y * w + x;
+        const j = i * 4;
+        px[j]     = px[j] * v | 0;
+        px[j + 1] = px[j + 1] * v | 0;
+        px[j + 2] = px[j + 2] * v | 0;
+        origR[i] = px[j];
+        origG[i] = px[j + 1];
+        origB[i] = px[j + 2];
+      }
+    }
+  }
+
+  let W, H, imgData, state, particles;
+
+  function buildImage() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W;
+    canvas.height = H;
+    genCvs.width = W;
+    genCvs.height = H;
+
+    const hmap = generateHeightMap();
+    imgData = renderFromHeightMap(hmap);
+    addNoise(imgData, 8);
+    addVignette(imgData, W, H);
+
+    state = new Float32Array(W * H);
+    particles = [];
+
+    ctx.putImageData(imgData, 0, 0);
+  }
+
+  /* Mouse tracking */
+  let mx = -9999, my = -9999, mouseIn = false, mouseActive = false;
+  let pxPos = -9999, pyPos = -9999;
+
+  canvas.addEventListener('mouseenter', function () { mouseIn = true; });
+  canvas.addEventListener('mouseleave', function () { mouseIn = false; });
+  canvas.addEventListener('mousemove', function (e) {
+    mx = e.clientX;
+    my = e.clientY;
+    mouseActive = true;
+  });
+
+  canvas.addEventListener('touchstart', function (e) {
+    e.preventDefault();
+    const t = e.touches[0];
+    mx = t.clientX; my = t.clientY;
+    mouseActive = true; mouseIn = true;
+  }, { passive: false });
+  canvas.addEventListener('touchmove', function (e) {
+    e.preventDefault();
+    const t = e.touches[0];
+    mx = t.clientX; my = t.clientY;
+  }, { passive: false });
+  canvas.addEventListener('touchend', function () { mouseIn = false; });
+
+  /* Cursor ring */
+  function updateCursor() {
+    if (mouseIn && mouseActive) {
+      cursorEl.style.opacity = '1';
+      cursorEl.style.left = mx + 'px';
+      cursorEl.style.top = my + 'px';
+    } else {
+      cursorEl.style.opacity = '0';
+    }
+  }
+
+  /* Dissolution */
+  const RADIUS = 12;
+  const R2 = RADIUS * RADIUS;
+
+  function dissolveAt(x, y) {
+    const ix = x | 0, iy = y | 0;
+    const r = RADIUS;
+    const x0 = Math.max(0, ix - r), x1 = Math.min(W - 1, ix + r);
+    const y0 = Math.max(0, iy - r), y1 = Math.min(H - 1, iy + r);
+
+    for (let py = y0; py <= y1; py++) {
+      for (let px = x0; px <= x1; px++) {
+        const ddx = px - ix, ddy = py - iy;
+        const d2 = ddx * ddx + ddy * ddy;
+        if (d2 >= R2) continue;
+        const idx = py * W + px;
+        if (state[idx] >= 0.05) continue;
+
+        const d = Math.sqrt(d2) / r;
+        if (d > 0.7 && Math.random() > 0.4) continue;
+
+        state[idx] = 0.008 + Math.random() * 0.015;
+
+        if (Math.random() < 0.08) {
+          particles.push({
+            x: px + (Math.random() - 0.5) * 2,
+            y: py + (Math.random() - 0.5) * 2,
+            vx: (Math.random() - 0.5) * 0.6,
+            vy: (Math.random() - 0.5) * 0.6 - 0.2,
+            r: origR[idx],
+            g: origG[idx],
+            b: origB[idx],
+            life: 1,
+            decay: 0.012 + Math.random() * 0.012,
+            size: 1 + Math.random() * 1.5
+          });
+        }
+      }
+    }
+  }
+
+  function updateDissolution(dt) {
+    const px = imgData.data;
+    const sd = state;
+    let anyActive = false;
+
+    for (let i = 0, len = W * H; i < len; i++) {
+      const s = sd[i];
+      if (s <= 0 || s >= 1) continue;
+      anyActive = true;
+
+      let ns = s + dt * (1.2 + s * 3.0);
+
+      /* Neighbour contagion */
+      if (s > 0.04 && s < 0.55 && Math.random() < 0.004 * dt) {
+        const x2 = i % W, y2 = (i / W) | 0;
+        for (let dy2 = -1; dy2 <= 1; dy2++) {
+          for (let dx2 = -1; dx2 <= 1; dx2++) {
+            if (dx2 === 0 && dy2 === 0) continue;
+            const nx = x2 + dx2, ny = y2 + dy2;
+            if (nx >= 0 && nx < W && ny >= 0 && ny < H) {
+              const ni = ny * W + nx;
+              if (sd[ni] <= 0) {
+                sd[ni] = 0.004 + Math.random() * 0.01;
+              }
+            }
+          }
+        }
+      }
+
+      sd[i] = ns;
+      const j = i * 4;
+
+      if (ns >= 1) {
+        sd[i] = 1;
+        px[j]     = 2;
+        px[j + 1] = 2;
+        px[j + 2] = 1;
+        px[j + 3] = 255;
+      } else {
+        /* Decay from original colour toward background */
+        const f = Math.max(0, 1 - ns * ns * 1.5);
+        px[j]     = (origR[i] * f + 2 * (1 - f)) | 0;
+        px[j + 1] = (origG[i] * f + 2 * (1 - f)) | 0;
+        px[j + 2] = (origB[i] * f + 1 * (1 - f)) | 0;
+        px[j + 3] = 255;
+      }
+    }
+    return anyActive;
+  }
+
+  /* Particles */
+  const MAX_PARTICLES = 12000;
+  function updateParticles(dt) {
+    let alive = 0;
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      if (p.life <= 0) continue;
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.vy += 0.03 * dt;
+      p.life -= p.decay * dt;
+      if (p.life > 0) {
+        particles[alive++] = p;
+      }
+    }
+    particles.length = alive;
+    if (particles.length > MAX_PARTICLES) {
+      particles.splice(0, particles.length - MAX_PARTICLES);
+    }
+  }
+
+  function drawParticles() {
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      const a = p.life * p.life;
+      ctx.fillStyle = 'rgba(' + p.r + ',' + p.g + ',' + p.b + ',' + a.toFixed(3) + ')';
+      ctx.fillRect(p.x - p.size * 0.5, p.y - p.size * 0.5, p.size, p.size);
+    }
+  }
+
+  /* Animation loop */
+  let lastTime = 0;
+  let touched = false;
+  let activeDissolve = false;
+  let fullRedrawTimer = 0;
+
+  function loop(now) {
+    requestAnimationFrame(loop);
+
+    const rawDt = (now - lastTime) / 16.667;
+    const dt = Math.min(isNaN(rawDt) ? 1 : rawDt, 3);
+    lastTime = now;
+
+    if (mouseActive && !touched) {
+      touched = true;
+      hintEl.classList.add('gone');
+    }
+
+    /* Dissolve at cursor */
+    if (mouseIn && mouseActive) {
+      const ddx = mx - pxPos, ddy = my - pyPos;
+      const dist = Math.sqrt(ddx * ddx + ddy * ddy);
+      const steps = Math.max(1, Math.ceil(dist / 3));
+      for (let s = 0; s < steps; s++) {
+        const t = s / steps;
+        dissolveAt(pxPos + ddx * t, pyPos + ddy * t);
+      }
+      pxPos = mx;
+      pyPos = my;
+    }
+
+    /* Update */
+    activeDissolve = updateDissolution(dt);
+    updateParticles(dt);
+
+    /* Render: full redraw every few frames when dissolving, otherwise just particles */
+    fullRedrawTimer += dt;
+    if (activeDissolve && fullRedrawTimer >= 4) {
+      ctx.putImageData(imgData, 0, 0);
+      drawParticles();
+      fullRedrawTimer = 0;
+    } else if (!activeDissolve) {
+      /* Redraw image under particles if nothing is dissolving */
+      ctx.putImageData(imgData, 0, 0);
+      drawParticles();
+    } else {
+      drawParticles();
+    }
+
+    updateCursor();
+  }
+
+  /* Initialise */
+  function init() {
+    buildImage();
+    pxPos = W / 2;
+    pyPos = H / 2;
+    requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('resize', function () {
+    buildImage();
+    pxPos = W / 2;
+    pyPos = H / 2;
+  });
+
+  init();
+})();
+</script>
+</body>
+</html>

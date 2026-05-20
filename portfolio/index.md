@@ -41,3 +41,4 @@
 | 0037 | Conjectural Portrait | essay | 5.0 | 2026-05-20 | — |
 | 0038 | Settlement | fiction | 5.0 | 2026-05-20 | — |
 | 0039 | The Index of Unfinished Sentences | experiment | 5.0 | 2026-05-20 | — |
+| 0040 | Dissolve | code-art | 4.3 | 2026-05-20 | — |

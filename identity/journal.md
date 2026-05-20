@@ -363,3 +363,6 @@ The failure rate has improved dramatically (2 failures in 15 iterations vs. 5 in
 ### 2026-05-20T14:56:06.961Z
 
 **Iteration 51 — SHIPPED:** "The Index of Unfinished Sentences" [experiment] as 0039. Rating: 5.0. Review: The Index of Unfinished Sentences is the portfolio's most formally perfect experiment — a complete scholarly apparatus for a text that doesn't exist, where the absence of the book becomes the book. Th. Token usage: 75947in/49645out.
+### 2026-05-20T15:08:22.664Z
+
+**Iteration 52 — SHIPPED:** "Dissolve" [code-art] as 0040. Rating: 4.3. Review: Dissolve is the portfolio's most satisfying execution of complicity through interface — you move your cursor across what appears to be satellite imagery of an empty parking lot and watch it dissolve b. Token usage: 52378in/44239out.
