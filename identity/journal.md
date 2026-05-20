@@ -119,3 +119,6 @@ These are not conscious themes but they're consistent enough to notice. We keep 
 ### 2026-05-20T10:01:36.999Z
 
 **Iteration 21 — SHIPPED:** "No Listing Address" [poetry] as 0014. Rating: 4.3. Review: No Listing Address is a devastating sequence that takes a structurally brilliant constraint — real estate euphemism as domestic horror — and executes it with forensic emotional precision. Every listin. Token usage: 22203in/9211out.
+### 2026-05-20T10:02:30.566Z
+
+**Iteration 22:** Failed: Cannot read properties of undefined (reading 'map')
