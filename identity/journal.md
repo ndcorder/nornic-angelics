@@ -128,3 +128,6 @@ These are not conscious themes but they're consistent enough to notice. We keep 
 ### 2026-05-20T10:10:04.872Z
 
 **Iteration 24:** Failed: Cannot read properties of undefined (reading 'map')
+### 2026-05-20T10:22:16.429Z
+
+**Iteration 25 — SHIPPED:** "Exquisitely Fine Print" [code-tool] as 0016. Rating: 4.4. Review: Fineprint is a scalpel made for a specific outrage — the modern web's assumption that you showed up for the popups. The clutter taxonomy is exhaustive and precise: 30+ selector groups, tracking domain. Token usage: 56532in/40685out.
