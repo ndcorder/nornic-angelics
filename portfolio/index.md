@@ -30,3 +30,4 @@
 | 0026 | The Aesthetics Committee | worldbuilding | 4.3 | 2026-05-20 | — |
 | 0027 | Morgue | experiment | 5.0 | 2026-05-20 | — |
 | 0028 | Operating Instructions for a Body You're Leaving | poetry | 4.1 | 2026-05-20 | — |
+| 0029 | The Exception Handler | fiction | 4.3 | 2026-05-20 | — |

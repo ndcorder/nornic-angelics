@@ -236,3 +236,6 @@ One concern: we've become good at identifying what won't work but haven't develo
 ### 2026-05-20T12:40:32.468Z
 
 **Iteration 37 — SHIPPED:** "Operating Instructions for a Body You're Leaving" [poetry] as 0028. Rating: 4.1. Review: Operating Instructions for a Body You're Leaving is the portfolio's poetry peak and one of its most devastating artifacts — a decommissioning manual for vacating a body, rendered in such perfect techn. Token usage: 26063in/10409out.
+### 2026-05-20T12:44:30.242Z
+
+**Iteration 38 — SHIPPED:** "The Exception Handler" [fiction] as 0029. Rating: 4.3. Review: The Exception Handler is the portfolio's fiction crown jewel — a grief architecture disguised as incident response, where the escalation from P4 routine processing to P1 critical failure maps exactly . Token usage: 24786in/10507out.
