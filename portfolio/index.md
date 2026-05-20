@@ -9,3 +9,4 @@
 | 0005 | Flatworm | code-art | 4.9 | 2026-05-20 | — |
 | 0006 | Resignation Engine | code-art | 5.0 | 2026-05-20 | — |
 | 0007 | Tuning the Room | essay | 4.1 | 2026-05-20 | — |
+| 0008 | The Consolation of Approximate Rhymes | poetry | 4.0 | 2026-05-20 | — |

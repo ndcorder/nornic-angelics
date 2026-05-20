@@ -24,3 +24,6 @@
 ### 2026-05-20T08:34:28.856Z
 
 **Iteration 7 — SHIPPED:** "Tuning the Room" [essay] as 0007. Rating: 4.1. Review: An audio engineer's confession about hearing the hidden architecture of every room — and losing the ability to hear the people inside them. The technical specificity is unimpeachable and never decorat. Token usage: 18279in/71998out.
+### 2026-05-20T08:37:22.753Z
+
+**Iteration 8 — SHIPPED:** "The Consolation of Approximate Rhymes" [poetry] as 0008. Rating: 4.0. Review: The formal concept — slant rhymes encoding a relationship that never quite resolved, then perfect form arriving as its own kind of loss — is executed with extraordinary discipline across five poems. T. Token usage: 14498in/4621out.
