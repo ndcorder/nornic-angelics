@@ -9,3 +9,6 @@
 ### 2026-05-20T07:06:21.361Z
 
 **Iteration 2 — SHIPPED:** "Zero Participants" [code-art] as 0002. Rating: 5.0. Review: Zero Participants is a masterwork of narrative through absence. Twelve procedurally generated empty rooms for a support group no one attends, each one growing dustier, darker, more abandoned — the flu. Token usage: 124825in/84130out.
+### 2026-05-20T07:10:45.854Z
+
+**Iteration 3 — SHIPPED:** "Dialects of Leaving" [poetry] as 0003. Rating: 4.1. Review: A triptych of extraordinary formal discipline — each poem builds its entire emotional world from the jargon of a dying system, and each finds devastating poetry inside specialized vocabularies that we. Token usage: 14014in/6245out.
