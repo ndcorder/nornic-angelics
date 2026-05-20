@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>False Positive</title>
+  <script src="https://unpkg.com/strudel.js@latest"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #060606;
+      --monitor: #00dd00;
+      --alarm: #ff2e2e;
+      --text: #a0a0a0;
+      --dim: #444;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', 'Lucida Console', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0.06) 0px,
+        rgba(0,0,0,0.06) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.7;
+    }
+
+    @keyframes ambientPulse {
+      0%, 100% { box-shadow: inset 0 0 80px rgba(0,221,0,0.01); }
+      50% { box-shadow: inset 0 0 120px rgba(0,221,0,0.025); }
+    }
+    body { animation: ambientPulse 4s ease-in-out infinite; }
+
+    .container {
+      text-align: center;
+      padding: 2rem;
+      max-width: 640px;
+    }
+
+    .title {
+      font-size: 0.8rem;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 3rem;
+      opacity: 0.65;
+      user-select: none;
+    }
+
+    .play-btn {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 2px solid var(--monitor);
+      background: transparent;
+      color: var(--monitor);
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      outline: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2.5rem;
+    }
+
+    .play-btn:hover {
+      background: rgba(0,221,0,0.04);
+      box-shadow: 0 0 40px rgba(0,221,0,0.08);
+    }
+
+    .play-btn:focus-visible {
+      box-shadow: 0 0 0 3px rgba(0,221,0,0.3);
+    }
+
+    .play-btn.playing {
+      border-color: var(--alarm);
+      color: var(--alarm);
+      animation: heartPulse 0.857s ease-in-out infinite;
+    }
+
+    @keyframes heartPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255,46,46,0.08); }
+      7% { transform: scale(1.08); box-shadow: 0 0 50px rgba(255,46,46,0.2); }
+      14% { transform: scale(0.98); }
+      21% { transform: scale(1.05); box-shadow: 0 0 35px rgba(255,46,46,0.12); }
+      35% { transform: scale(1); box-shadow: 0 0 20px rgba(255,46,46,0.05); }
+    }
+
+    .btn-label { pointer-events: none; user-select: none; }
+
+    .instruction {
+      font-size: 0.85rem;
+      color: var(--text);
+      opacity: 0.4;
+      line-height: 2;
+      margin-bottom: 2.5rem;
+    }
+
+    .hint {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--dim);
+      margin-top: 0.5rem;
+    }
+
+    .status {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--dim);
+      margin-bottom: 2.5rem;
+      min-height: 1.2em;
+      transition: color 0.5s;
+      user-select: none;
+    }
+    .status.alarming { color: var(--alarm); opacity: 0.7; }
+    .status.silenced { color: var(--dim); opacity: 0.3; }
+
+    .context-toggle {
+      font-family: 'Courier New', monospace;
+      font-size: 0.6rem;
+      color: var(--dim);
+      background: none;
+      border: none;
+      border-bottom: 1px solid transparent;
+      cursor: pointer;
+      padding: 0.2em 0;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      transition: border-color 0.3s;
+      outline: none;
+    }
+    .context-toggle:hover { border-bottom-color: var(--dim); }
+    .context-toggle:focus-visible { box-shadow: 0 1px 0 var(--dim); }
+
+    .context-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.6s ease, opacity 0.5s ease;
+      text-align: left;
+      font-size: 0.65rem;
+      line-height: 2;
+      color: var(--dim);
+      margin-top: 1.5rem;
+      opacity: 0;
+      padding: 0 0.5rem;
+    }
+    .context-content.open {
+      max-height: 400px;
+      opacity: 0.6;
+    }
+    .context-content p { margin-bottom: 0.8rem; }
+    .context-content em {
+      font-style: normal;
+      color: var(--text);
+      opacity: 0.7;
+    }
+
+    @media (max-width: 480px) {
+      .play-btn { width: 110px; height: 110px; font-size: 0.65rem; }
+      .title { font-size: 0.65rem; }
+      .instruction { font-size: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">False Positive</h1>
+
+    <button class="play-btn" id="playBtn" aria-label="Play or pause the composition">
+      <span class="btn-label">Listen</span>
+    </button>
+
+    <p class="instruction">
+      Listen. Decide if what you hear is real.
+      <span class="hint">Duration: approximately 3 minutes</span>
+    </p>
+
+    <p class="status" id="status"></p>
+
+    <div class="context-section">
+      <button class="context-toggle" id="ctxToggle" aria-expanded="false">
+        Clinical Context
+      </button>
+      <div class="context-content" id="ctxContent">
+        <p>You are hearing three patient monitors simultaneously: <em>cardiac telemetry</em> (heart rate), a <em>mechanical ventilator</em> (respiratory cycling), and an <em>IV infusion pump</em> (medication delivery). A fourth trace — <em>EEG</em> — is present as harmonic content rather than rhythm.</p>
+        <p>In critical care, these devices alarm constantly. Most alerts are <em>artifacts</em>: loose leads, sensor shifts, patient movement. Nurses develop an internal taxonomy of false alarms. The rhythm of the wrongness tells them whether to run or to adjust a cable.</p>
+        <p>This composition asks you to perform that diagnostic listening — without the training that makes it possible. The monitors will begin in agreement. They will diverge. What happens next is a question of interpretation.</p>
+        <p style="opacity:0.4; margin-top:1.5rem;">No further information is provided. Listen.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ═══════════════════════════════════════════════════════
+  // FALSE POSITIVE — A Strudel.js composition
+  // Medical monitor sounds escalating from stability
+  // through polyrhythmic artifact to silence.
+  // ═══════════════════════════════════════════════════════
+
+  const playBtn = document.getElementById('playBtn');
+  const statusEl = document.getElementById('status');
+  const ctxToggle = document.getElementById('ctxToggle');
+  const ctxContent = document.getElementById('ctxContent');
+  const btnLabel = playBtn.querySelector('.btn-label');
+
+  let isPlaying = false;
+  let hasEnded = false;
+  let timeouts = [];
+
+  // ─── UI ──────────────────────────────────────────────
+
+  ctxToggle.addEventListener('click', () => {
+    const open = ctxContent.classList.toggle('open');
+    ctxToggle.setAttribute('aria-expanded', open);
+  });
+
+  playBtn.addEventListener('click', () => {
+    if (hasEnded) {
+      hasEnded = false;
+      btnLabel.textContent = 'Listen';
+      playBtn.classList.remove('playing');
+      statusEl.textContent = '';
+      statusEl.className = 'status';
+      return;
+    }
+    if (isPlaying) {
+      stopPlayback();
+    } else {
+      startPlayback();
+    }
+  });
+
+  function scheduleStatus(ms, text, cls) {
+    const id = setTimeout(() => {
+      if (isPlaying) {
+        statusEl.textContent = text;
+        statusEl.className = 'status' + (cls ? ' ' + cls : '');
+      }
+    }, ms);
+    timeouts.push(id);
+  }
+
+  function startPlayback() {
+    isPlaying = true;
+    playBtn.classList.add('playing');
+    btnLabel.textContent = '\u25A0 \u25A0';
+    statusEl.textContent = 'MONITORS ACTIVE';
+    statusEl.className = 'status';
+
+    const DUR = 182000; // total duration in ms
+
+    // Phase transitions: status text
+    scheduleStatus(45000,  'SUSPICIOUS VARIANCE', 'alarming');
+    scheduleStatus(92000,  'CONFLICTING READINGS', 'alarming');
+    scheduleStatus(132000, 'EQUIPMENT MALFUNCTION?', 'alarming');
+
+    // Chair scrape via Web Audio API — the human sound
+    scheduleStatus(DUR - 4500, 'SOMEONE IS PRESENT', 'alarming');
+
+    const chairId = setTimeout(() => {
+      if (!isPlaying) return;
+      playChairScrape();
+    }, DUR - 4000);
+    timeouts.push(chairId);
+
+    // Silence — someone silenced the alarms
+    const silenceId = setTimeout(() => {
+      if (!isPlaying) return;
+      statusEl.textContent = '';
+      statusEl.className = 'status silenced';
+      playBtn.classList.remove('playing');
+      btnLabel.textContent = 'Listen';
+      isPlaying = false;
+      hasEnded = true;
+      try { stop(); } catch(e) {}
+    }, DUR);
+    timeouts.push(silenceId);
+
+    // ─── PLAY STRUDEL ──────────────────────────────────
+    try {
+      play(
+        stack(
+          heartbeat(),
+          ventilator(),
+          ivPump(),
+          eegTrace(),
+          alarmTones()
+        )
+      );
+    } catch (err) {
+      console.error('Strudel playback error:', err);
+      statusEl.textContent = 'PLAYBACK ERROR';
+      statusEl.className = 'status alarming';
+    }
+  }
+
+  function stopPlayback() {
+    isPlaying = false;
+    playBtn.classList.remove('playing');
+    btnLabel.textContent = 'Listen';
+    statusEl.textContent = 'PAUSED';
+    statusEl.className = 'status';
+    timeouts.forEach(clearTimeout);
+    timeouts = [];
+    try { stop(); } catch(e) {}
+  }
+
+  // ─── CHAIR SCRAPE (Web Audio, not Strudel) ──────────
+  function playChairScrape() {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const dur = 1.2;
+    const sr = ctx.sampleRate;
+    const len = sr * dur;
+
+    // Noise buffer
+    const buf = ctx.createBuffer(1, len, sr);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) {
+      // Amplitude envelope: quick attack, resonant tail
+      const t = i / sr;
+      const env = Math.exp(-t * 4) * (1 - Math.exp(-t * 80));
+      data[i] = (Math.random() * 2 - 1) * env;
+    }
+
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+
+    // Bandpass: resonant scrape on linoleum
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 3200;
+    bp.Q.value = 6;
+
+    // Highpass: remove rumble
+    const hp = ctx.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 1800;
+
+    const gain = ctx.createGain();
+    gain.gain.value = 0.18;
+
+    src.connect(bp);
+    bp.connect(hp);
+    hp.connect(gain);
+    gain.connect(ctx.destination);
+    src.start();
+
+    // Cleanup
+    setTimeout(() => ctx.close(), (dur + 1) * 1000);
+  }
+
+  // ═══════════════════════════════════════════════════════
+  // COMPOSITION VOICES
+  // Each voice uses slowcat for 4 phases of escalation.
+  // Phases: Stable → Subtle Artifacts → Overt Contradiction → Crisis
+  // ═══════════════════════════════════════════════════════
+
+  // Phase durations (seconds): 44 + 46 + 40 + 52 ≈ 182s total
+  // Strudel slowcat distributes equally, so each phase ≈ 45.5s
+
+  // ─── HEARTBEAT ──────────────────────────────────────
+  // Lub-dub pattern. Phase 1: stable 72 BPM.
+  // Phase 2: S2 split widens (5-against-4 polyrhythm).
+  // Phase 3: S1-S2 relationship degrades.
+  // Phase 4: Two contradictory rates.
+
+  function heartbeat() {
+    return slowcat(
+      // Phase 1: Stable 72 BPM, clean lub-dub
+      $ => $.s("sine")
+        .struct("[x [~ x*4]]")
+        .speed("<0.82 0.82 0.97 0.97>")
+        .attack(0.002).release(0.12)
+        .gain(0.55)
+        .room(0.05).roomsize(0.3),
+
+      // Phase 2: Slight S2 irregularity — 5-against-4 drift
+      $ => $.s("sine")
+        .struct("[x(5,16) [~ x*4]]")
+        .speed("<0.82 0.84 0.97 0.95>")
+        .attack(0.002).release(0.13)
+        .gain(0.55)
+        .room(0.05).roomsize(0.3),
+
+      // Phase 3: Beat structure fragmenting
+      $ => $.s("sine")
+        .struct("[x(3,8) [~ x*3]]")
+        .speed("<0.80 0.84 0.99 1.0 0.92>")
+        .attack(0.002).release(0.14)
+        .gain(0.50)
+        .sometimes(x => x.gain(0.15)) // dropped beat
+        .room(0.08).roomsize(0.4),
+
+      // Phase 4: Two incompatible rhythms overlaid
+      $ => stack(
+        $ => $.s("sine")
+          .struct("x(5,8)")
+          .speed(0.85)
+          .attack(0.002).release(0.10)
+          .gain(0.35),
+        $ => $.s("sine")
+          .struct("x*4")
+          .speed(0.98)
+          .attack(0.002).release(0.10)
+          .gain(0.30)
+          .delay(0.12).delaytime(0.18).delayfeedback(0.2).delaygain(0.25)
+      )
+    );
+  }
+
+  // ─── VENTILATOR ─────────────────────────────────────
+  // Slow breath cycle. Phase 1: every 5 seconds.
+  // Phase 2: slight acceleration.
+  // Phase 3: noticeable mismatch with heartbeat.
+  // Phase 4: contradictory respiratory rate.
+
+  function ventilator() {
+    return slowcat(
+      // Phase 1: 12 breaths/min = 1 per 5s
+      $ => slow(5,
+        $ => $.s("sawtooth")
+          .lpf(200).lpq(6)
+          .attack(0.3).release(0.8)
+          .speed(0.5)
+          .gain(0.30)
+          .delay(0.25).delaytime(0.5).delayfeedback(0.15).delaygain(0.15)
+      ),
+
+      // Phase 2: 14 breaths/min = 1 per 4.3s
+      $ => slow(4.3,
+        $ => $.s("sawtooth")
+          .lpf(210).lpq(6)
+          .attack(0.28).release(0.75)
+          .speed("<0.5 0.52>")
+          .gain(0.30)
+          .delay(0.25).delaytime(0.5).delayfeedback(0.15).delaygain(0.15)
+      ),
+
+      // Phase 3: 18 breaths/min = 1 per 3.3s — clearly wrong
+      $ => slow(3.3,
+        $ => $.s("sawtooth")
+          .lpf(230).lpq(5)
+          .attack(0.22).release(0.6)
+          .speed("<0.5 0.55 0.48>")
+          .gain(0.28)
+          .delay(0.2).delaytime(0.4).delayfeedback(0.2).delaygain(0.2)
+      ),
+
+      // Phase 4: 24 breaths/min = 1 per 2.5s — tachypneic contradiction
+      $ => slow(2.5,
+        $ => $.s("sawtooth")
+          .lpf(260).lpq(4)
+          .attack(0.15).release(0.4)
+          .speed("<0.5 0.58 0.45 0.53>")
+          .gain(0.25)
+          .delay(0.15).delaytime(0.3).delayfeedback(0.25).delaygain(0.25)
+      )
+    );
+  }
+
+  // ─── IV PUMP ────────────────────────────────────────
+  // Double beep at regular intervals. Phase 1: every 30s.
+  // Phase 2: every 25s with slight gain wobble.
+  // Phase 3: every 20s — too frequent.
+  // Phase 4: every 12s — clearly malfunctioning.
+
+  function ivPump() {
+    return slowcat(
+      // Phase 1: stable 30s interval
+      $ => slow(30,
+        $ => $.s("triangle")
+          .struct("[x x]")
+          .attack(0.001).release(0.04)
+          .speed(1.1)
+          .gain(0.15)
+          .delay(0.08).delaytime(0.12).delayfeedback(0.1).delaygain(0.12)
+      ),
+
+      // Phase 2: 25s interval, slight gain irregularity
+      $ => slow(25,
+        $ => $.s("triangle")
+          .struct("[x x]")
+          .attack(0.001).release(0.04)
+          .speed("<1.1 1.12>")
+          .gain("<0.15 0.13>")
+          .delay(0.08).delaytime(0.12).delayfeedback(0.1).delaygain(0.12)
+      ),
+
+      // Phase 3: 20s — too frequent
+      $ => slow(20,
+        $ => $.s("triangle")
+          .struct("[x x]")
+          .attack(0.001).release(0.04)
+          .speed("<1.1 1.14 1.08>")
+          .gain("<0.15 0.12 0.16>")
+          .delay(0.08).delaytime(0.12).delayfeedback(0.12).delaygain(0.14)
+      ),
+
+      // Phase 4: 12s — pump alarming
+      $ => slow(12,
+        $ => $.s("triangle")
+          .struct("[x [x x]]")
+          .attack(0.001).release(0.035)
+          .speed("<1.1 1.15 1.08 1.12>")
+          .gain("<0.14 0.11 0.16 0.13>")
+          .delay(0.06).delaytime(0.10).delayfeedback(0.15).delaygain(0.16)
+      )
+    );
+  }
+
+  // ─── EEG TRACE ──────────────────────────────────────
+  // Felt as harmonic content, not counted as rhythm.
+  // Alpha (8-12 Hz → higher pitches) → Theta → Delta (lower).
+  // Phase 1: calm alpha. Phase 2: theta creeping in.
+  // Phase 3: theta dominant. Phase 4: delta — slowing consciousness.
+
+  function eegTrace() {
+    return slowcat(
+      // Phase 1: Alpha — relaxed awareness
+      $ => $.s("sine")
+        .note("<c4 e4 g4>")
+        .attack(2).release(2)
+        .gain(0.06)
+        .hpf(80)
+        .slow(8),
+
+      // Phase 2: Alpha → Theta boundary
+      $ => $.s("sine")
+        .note("<a3 c4 e4>")
+        .attack(3).release(3)
+        .gain(0.055)
+        .hpf(60)
+        .slow(8)
+        .sometimes(x => x.gain(0.01)), // intermittent dropout
+
+      // Phase 3: Theta — drowsy, abnormal for awake patient
+      $ => $.s("sine")
+        .note("<f3 a3 c4>")
+        .attack(4).release(4)
+        .gain(0.05)
+        .hpf(50)
+        .slow(8)
+        .sometimes(x => x.gain(0.005)),
+
+      // Phase 4: Delta — deep unconsciousness or artifact
+      $ => $.s("sine")
+        .note("<d3 f3>")
+        .attack(5).release(5)
+        .gain(0.045)
+        .hpf(40)
+        .slow(8)
+        .sometimes(x => x.gain(0.003))
+    );
+  }
+
+  // ─── ALARM TONES ────────────────────────────────────
+  // Emerges gradually. Phase 1: absent.
+  // Phase 2: barely perceptible single tone.
+  // Phase 3: insistent square wave.
+  // Phase 4: urgent dual-tone alarm.
+
+  function alarmTones() {
+    return slowcat(
+      // Phase 1: silence
+      $ => $.s("sine").gain(0).slow(4),
+
+      // Phase 2: phantom beep — barely there
+      $ => $.s("sine")
+        .note("a5")
+        .struct("x ~ ~ ~ ~ ~ ~ ~")
+        .attack(0.01).release(0.3)
+        .gain(0.05)
+        .slow(4),
+
+      // Phase 3: insistent single alarm
+      $ => $.s("square")
+        .note("a5")
+        .struct("x ~ ~ ~")
+        .attack(0.005).release(0.15)
+        .speed("<1 1 1.04>")
+        .gain(0.08)
+        .slow(2),
+
+      // Phase 4: urgent dual-tone — equipment in crisis
+      $ => $.s("square")
+        .note("[a5 e6]*2")
+        .struct("x ~ ~ ~")
+        .attack(0.003).release(0.08)
+        .speed("<1 1.03 0.97>")
+        .gain(0.10)
+    );
+  }
+
+  </script>
+</body>
+</html>
