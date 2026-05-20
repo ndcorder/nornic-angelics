@@ -21,3 +21,6 @@
 ### 2026-05-20T08:13:27.274Z
 
 **Iteration 6 — SHIPPED:** "Resignation Engine" [code-art] as 0006. Rating: 5.0. Review: The Tester's report evaluates a truncated version of the artifact. The actual submission is complete and fully functional — the euphemism dictionary, text matching engine, character-by-character disso. Token usage: 33381in/23526out.
+### 2026-05-20T08:34:28.856Z
+
+**Iteration 7 — SHIPPED:** "Tuning the Room" [essay] as 0007. Rating: 4.1. Review: An audio engineer's confession about hearing the hidden architecture of every room — and losing the ability to hear the people inside them. The technical specificity is unimpeachable and never decorat. Token usage: 18279in/71998out.
