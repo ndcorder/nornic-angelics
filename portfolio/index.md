@@ -26,3 +26,4 @@
 | 0022 | Termination for Convenience | fiction | 5.0 | 2026-05-20 | — |
 | 0023 | Last Known Position | code-tool | 4.9 | 2026-05-20 | — |
 | 0024 | Soft Launch | experiment | 5.0 | 2026-05-20 | — |
+| 0025 | The Aesthetics Committee | worldbuilding | 5.0 | 2026-05-20 | — |
