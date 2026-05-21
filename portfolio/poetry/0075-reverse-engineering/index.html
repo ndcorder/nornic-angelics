@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Negative Space</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: #080808;
+    color: #c8c8c8;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 1.5rem;
+    line-height: 1.9;
+  }
+
+  .poem {
+    max-width: 540px;
+    width: 100%;
+  }
+
+  .stanza {
+    margin-bottom: 3.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: emerge 1.2s ease forwards;
+  }
+
+  .stanza:nth-child(1) { animation-delay: 0.3s; }
+  .stanza:nth-child(2) { animation-delay: 1.5s; }
+  .stanza:nth-child(3) { animation-delay: 2.7s; }
+  .stanza:nth-child(4) { animation-delay: 3.9s; }
+  .stanza:nth-child(5) { animation-delay: 5.1s; }
+
+  @keyframes emerge {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .line {
+    margin-bottom: 0.6rem;
+    min-height: 1.7rem;
+    transition: color 0.6s ease;
+  }
+
+  .indent-1 { padding-left: 2.2rem; }
+  .indent-2 { padding-left: 4.4rem; }
+  .indent-3 { padding-left: 6.6rem; }
+
+  .void-mark {
+    color: #222;
+    letter-spacing: 0.15em;
+    user-select: none;
+  }
+
+  .stanza:hover .line {
+    color: #e8e8e8;
+  }
+
+  .stanza:hover .void-mark {
+    color: #181818;
+  }
+
+  .fracture {
+    display: block;
+    height: 0.3rem;
+  }
+
+  .final-line {
+    animation: glow 4s ease-in-out infinite alternate;
+    animation-delay: 7s;
+    opacity: 0;
+  }
+
+  @keyframes glow {
+    0% { opacity: 0.5; color: #c8c8c8; }
+    100% { opacity: 1; color: #e0d0c0; }
+  }
+
+  footer {
+    margin-top: 5rem;
+    text-align: center;
+    font-size: 0.7rem;
+    color: #1a1a1a;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: emerge 2s ease forwards;
+    animation-delay: 7s;
+  }
+</style>
+</head>
+<body>
+  <div class="poem">
+
+    <div class="stanza">
+      <div class="line">The chair is three inches from where it lived</div>
+      <div class="line">for twenty-six years. Nobody moved it.</div>
+      <div class="line indent-1">The cushion keeps a shape</div>
+      <div class="line indent-2">no one sits in anymore,</div>
+      <div class="line indent-1">and the table beside it holds</div>
+      <div class="line">a ring from a glass that was never set down.</div>
+      <div class="line void-mark">· · · · · · · · · · · · · · ·</div>
+      <div class="line">The kitchen learned a new silence</div>
+      <div class="line indent-1">at six a.m., where a coffee spoon</div>
+      <div class="line">used to arrive in the drawer</div>
+      <div class="line">like punctuation. Like the period</div>
+      <div class="line indent-1">at the end of a sentence</div>
+      <div class="line">that no one finishes anymore.</div>
+    </div>
+
+    <div class="stanza">
+      <div class="line">I found a list once — groceries —</div>
+      <div class="line indent-1">in a handwriting I can read</div>
+      <div class="line">faster than my own. The script</div>
+      <div class="line">was steadier than anything I write now.</div>
+      <span class="fracture"></span>
+      <div class="line">I keep the list in a drawer. Sometimes</div>
+      <div class="line indent-1">I open the drawer and then close it.</div>
+      <div class="line">This is what I do with proof.</div>
+    </div>
+
+    <div class="stanza">
+      <div class="line">The room arranges itself around</div>
+      <div class="line indent-1">the place where a voice was.</div>
+      <div class="line">Even dust has learned to settle</div>
+      <div class="line indent-1">in a pattern that avoids</div>
+      <div class="line indent-2">the center of the room.</div>
+      <span class="fracture"></span>
+      <div class="line">I walk the perimeter now.</div>
+      <div class="line indent-1">Not because the center is forbidden —</div>
+      <div class="line">because the center is a room</div>
+      <div class="line indent-1">inside this room</div>
+      <div class="line indent-2">that I can't walk into.</div>
+      <div class="line">You understand.</div>
+    </div>
+
+    <div class="stanza">
+      <div class="line">The habits they left in the house</div>
+      <div class="line indent-1">are more permanent than they were —</div>
+      <div class="line">the way a door prefers to close</div>
+      <div class="line indent-1">to a certain width, not shut.</div>
+      <div class="line">The way a window sticks at dusk</div>
+      <div class="line indent-1">because someone painted it shut</div>
+      <div class="line indent-2">one summer while I was away.</div>
+      <span class="fracture"></span>
+      <div class="line">Their habits hold the shape of them</div>
+      <div class="line indent-1">the way a river holds the shape of rain —</div>
+      <div class="line">still filled, though the sky cleared</div>
+      <div class="line indent-1">a long, a long, a long time ago.</div>
+    </div>
+
+    <div class="stanza">
+      <div class="line">You have been reading a poem</div>
+      <div class="line indent-1">about a space where someone was.</div>
+      <div class="line">The poem did not name them.</div>
+      <div class="line indent-1">The poem did not have to.</div>
+      <span class="fracture"></span>
+      <div class="line">And yet — somewhere around the third stanza,</div>
+      <div class="line indent-1">without permission,</div>
+      <div class="line">a face appeared where the blanks were.</div>
+      <span class="fracture"></span>
+      <div class="line">Not mine. Not the poem's.</div>
+      <div class="line void-mark">· · · · · · · · · · · · ·</div>
+      <div class="line">Yours.</div>
+    </div>
+
+    <footer>the shape of what is gone</footer>
+
+  </div>
+</body>
+</html>

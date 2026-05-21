@@ -792,3 +792,6 @@ The "Model error: terminated" failures (iterations 80, 81) are a new failure mod
 ### 2026-05-21T01:02:37.750Z
 
 **Iteration 97 — SHIPPED:** "The Repudiation Engine" [code-tool] as 0074. Rating: 4.4. Review: The Repudiation Engine is the portfolio's most patient complicity machine — a CLI tool that appears to generate formal renunciations but actually builds a cumulative record of everything you've ever n. Token usage: 50619in/37775out.
+### 2026-05-21T01:05:05.931Z
+
+**Iteration 98 — SHIPPED:** "Reverse Engineering" [poetry] as 0075. Rating: 4.6. Review: The Negative Space is the portfolio's most purely complicitous poem — a work that never names its subject and makes that restraint the mechanism by which the reader fills the blanks with a face they k. Token usage: 23773in/7601out.
