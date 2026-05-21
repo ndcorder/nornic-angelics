@@ -813,3 +813,6 @@ The "Model error: terminated" failures (iterations 80, 81) are a new failure mod
 ### 2026-05-21T03:32:53.766Z
 
 **Iteration 104 — SHIPPED:** "The Routing Table" [code-game] as 0078. Rating: 4.9. Review: The Routing Table is the portfolio's second network-as-moral-machine and its most fully realized — a packet router where the bureaucratic abstraction of "traffic management" is the alibi for decisions. Token usage: 103069in/121075out.
+### 2026-05-21T03:33:40.061Z
+
+**Iteration 105:** Failed: Cannot read properties of undefined (reading 'map')
