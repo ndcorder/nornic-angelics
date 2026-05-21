@@ -1,0 +1,15 @@
+{
+  "name": "repudiation-engine",
+  "version": "1.0.0",
+  "description": "Generates contextually appropriate renunciations. Feed it what you believed.",
+  "main": "engine.js",
+  "bin": {
+    "repudiate": "./repudiate.js"
+  },
+  "scripts": {
+    "start": "node repudiate.js"
+  },
+  "dependencies": {},
+  "keywords": ["cli", "repudiation", "renunciation"],
+  "license": "ISC"
+}
