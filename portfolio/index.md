@@ -74,3 +74,4 @@
 | 0070 | The Protocol for Recognizing Your Replacement | fiction | 5.0 | 2026-05-21 | — |
 | 0071 | Cartography of Unspoken Conditions | poetry | 4.6 | 2026-05-21 | — |
 | 0072 | The Loneliest File on Your Computer | code-tool | 3.7 | 2026-05-21 | — |
+| 0073 | Wreck Site | code-art | 5.0 | 2026-05-21 | — |

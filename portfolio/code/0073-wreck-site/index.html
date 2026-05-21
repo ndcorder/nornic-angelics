@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wreck Site</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #050910;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            cursor: default;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        canvas {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        #tooltip {
+            position: fixed;
+            display: none;
+            pointer-events: none;
+            color: rgba(170, 175, 165, 0.92);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 13.5px;
+            line-height: 1.7;
+            letter-spacing: 0.3px;
+            max-width: 320px;
+            padding: 14px 18px;
+            background: rgba(6, 10, 16, 0.88);
+            border: 1px solid rgba(120, 100, 70, 0.15);
+            border-radius: 3px;
+            z-index: 10;
+            transition: opacity 0.4s ease;
+        }
+
+        #tooltip .repo-name {
+            color: rgba(200, 170, 120, 0.6);
+            font-style: italic;
+            font-size: 11.5px;
+            margin-bottom: 5px;
+            display: block;
+            letter-spacing: 0.5px;
+        }
+
+        #tooltip .repo-desc {
+            color: rgba(180, 180, 170, 0.9);
+        }
+
+        #tooltip .repo-meta {
+            color: rgba(130, 120, 100, 0.5);
+            font-size: 11px;
+            margin-top: 7px;
+            display: block;
+            font-style: italic;
+        }
+
+        #hint {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(140, 135, 125, 0.25);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 12px;
+            font-style: italic;
+            letter-spacing: 1.5px;
+            z-index: 5;
+            pointer-events: none;
+            opacity: 1;
+            transition: opacity 6s ease;
+        }
+
+        #title-mark {
+            position: fixed;
+            top: 20px;
+            left: 24px;
+            color: rgba(100, 105, 95, 0.2);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            z-index: 5;
+            pointer-events: none;
+            transition: color 4s ease, opacity 4s ease;
+        }
+
+        #depth-indicator {
+            position: fixed;
+            top: 20px;
+            right: 24px;
+            color: rgba(100, 130, 160, 0.15);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+            z-index: 5;
+            pointer-events: none;
+            transition: color 5s ease;
+        }
+
+        #final-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            pointer-events: none;
+            z-index: 8;
+            opacity: 0;
+            transition: opacity 6s ease;
+        }
+
+        #final-overlay .inscription {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            max-width: 420px;
+        }
+
+        #final-overlay .inscription .desc {
+            color: rgba(155, 150, 140, 0.35);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 15px;
+            font-style: italic;
+            letter-spacing: 0.5px;
+            line-height: 1.9;
+            margin-bottom: 18px;
+        }
+
+        #final-overlay .inscription .attribution {
+            color: rgba(120, 115, 105, 0.18);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 11px;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+        }
+
+        #hover-whisper {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(180, 140, 100, 0);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 12px;
+            font-style: italic;
+            letter-spacing: 1px;
+            z-index: 6;
+            pointer-events: none;
+            transition: color 2s ease;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="ocean"></canvas>
+
+    <div id="tooltip">
+        <span class="repo-name"></span>
+        <span class="repo-desc"></span>
+        <span class="repo-meta"></span>
+    </div>
+
+    <div id="title-mark">Wreck Site</div>
+    <div id="hint">hover the timbers to read what was lost</div>
+    <div id="depth-indicator">847m</div>
+    <div id="hover-whisper"></div>
+
+    <div id="final-overlay">
+        <div class="inscription">
+            <div class="desc"></div>
+            <div class="attribution">preserved by withdrawal</div>
+        </div>
+    </div>
+
+    <script>
+    /* ──────────────────────────────────────────────────────
+       Wreck Site — A Generative Elegy for Abandoned Code
+       ────────────────────────────────────────────────────── */
+
+    const REPOS = [
+        { name: "weather-dashboard-v2", description: "A simple weather dashboard that was going to replace the one I actually use. Never finished the forecast section.", stars: 3, age: "4 years", issues: 12 },
+        { name: "cli-task-manager", description: "I wanted a task manager that lived in the terminal. Used it for two weeks.", stars: 0, age: "3 years", issues: 8 },
+        { name: "react-component-lib", description: "Personal React component library. Extracted from a project that got cancelled.", stars: 2, age: "5 years", issues: 24 },
+        { name: "blog-engine", description: "Static blog generator. Blog never launched. Engine technically works.", stars: 1, age: "6 years", issues: 3 },
+        { name: "api-wrapper-rs", description: "Rust wrapper for a public API. The API deprecated last March.", stars: 5, age: "2 years", issues: 16 },
+        { name: "portfolio-2019", description: "The portfolio site that was supposed to get me hired. Got hired anyway.", stars: 0, age: "5 years", issues: 1 },
+        { name: "recipe-app", description: "Built it so I'd stop losing recipes. Lost the app instead.", stars: 1, age: "3 years", issues: 7 },
+        { name: "chrome-ext-skeleton", description: "Chrome extension template with all the boilerplate done. Never wrote the actual extension.", stars: 2, age: "4 years", issues: 0 },
+        { name: "pixel-art-editor", description: "Pixel art editor in the browser. The undo system never worked right.", stars: 4, age: "2 years", issues: 19 },
+        { name: "discord-music-bot", description: "Music bot for a Discord server. Server disbanded. Bot still running somewhere.", stars: 0, age: "3 years", issues: 5 },
+        { name: "fintech-dashboard", description: "Hackathon project. We didn't place. Code was supposed to be thrown away.", stars: 1, age: "4 years", issues: 11 },
+        { name: "learning-rust", description: "Exercises from the Rust book. Got halfway through chapter 17.", stars: 0, age: "1 year", issues: 0 },
+        { name: "todo-mvc-variant", description: "Another todo app. This one had drag-and-drop. That's the only difference.", stars: 0, age: "2 years", issues: 2 },
+        { name: "markdown-editor", description: "Split-pane markdown editor with live preview. Abandoned for Typora.", stars: 3, age: "3 years", issues: 6 },
+        { name: "habit-tracker-cli", description: "Command-line habit tracker. The irony of tracking habits I couldn't maintain is not lost on me.", stars: 1, age: "2 years", issues: 4 },
+        { name: "unity-platformer-demo", description: "A platformer where the character could wall-jump. That was the whole game.", stars: 2, age: "5 years", issues: 9 },
+        { name: "dotfiles", description: "My dotfiles. Managed with a bare git repo. Haven't updated since I switched machines.", stars: 0, age: "4 years", issues: 1 },
+        { name: "kubernetes-config", description: "K8s configs for a personal cluster. The cluster was a single Raspberry Pi.", stars: 0, age: "3 years", issues: 3 },
+        { name: "vim-plugin-collection", description: "Bundled my favorite Vim plugins. Then I switched to VS Code.", stars: 0, age: "4 years", issues: 0 },
+        { name: "machine-learning-notes", description: "Jupyter notebooks from an online course. Completed 4 of 12 weeks.", stars: 1, age: "2 years", issues: 0 },
+        { name: "golang-rest-api", description: "REST API written while learning Go. Returns 500 on most endpoints.", stars: 0, age: "1 year", issues: 14 },
+        { name: "electron-notes-app", description: "Note-taking app built with Electron. Deleted the node_modules and never reinstalled.", stars: 2, age: "3 years", issues: 8 },
+        { name: "typescript-starter", description: "TypeScript project template. Updated dependencies once. They're all vulnerable now.", stars: 1, age: "3 years", issues: 2 },
+        { name: "python-web-scraper", description: "Web scraper for a specific site. The site redesigned and it broke forever.", stars: 0, age: "2 years", issues: 6 },
+        { name: "docker-compose-examples", description: "Docker Compose examples for common stacks. Examples 1 through 3 work.", stars: 3, age: "4 years", issues: 5 },
+        { name: "mobile-app-prototype", description: "React Native app prototype. The navigation was broken on Android.", stars: 0, age: "2 years", issues: 10 },
+        { name: "game-jam-2022", description: "Game jam entry. Theme was 'cycles.' We ran out of time and submitted the tutorial level.", stars: 1, age: "2 years", issues: 7 },
+        { name: "css-framework", description: "Yet another CSS framework. 412 bytes. No documentation. Used nowhere.", stars: 0, age: "3 years", issues: 0 },
+        { name: "database-migration-tool", description: "Was going to handle schema migrations. Used it once, manually wrote the SQL anyway.", stars: 0, age: "1 year", issues: 4 },
+        { name: "lambda-functions", description: "AWS Lambda functions I deployed and forgot. Still running. Still billing.", stars: 0, age: "2 years", issues: 3 },
+        { name: "webpack-config-generator", description: "CLI tool to generate webpack configs. Then Vite happened.", stars: 1, age: "3 years", issues: 9 },
+        { name: "photo-gallery-app", description: "Gallery app for my photos. Never connected it to my photo library.", stars: 0, age: "4 years", issues: 2 },
+        { name: "readme-template", description: "A beautiful README template I made once. I use it for everything now, even when it doesn't fit.", stars: 4, age: "2 years", issues: 0 },
+        { name: "npm-package-utils", description: "Utility functions published to npm. Seven weekly downloads. Probably all me.", stars: 0, age: "3 years", issues: 1 },
+        { name: "gatsby-blog", description: "Gatsby blog that was supposed to be fast. Build took 47 seconds for three posts.", stars: 0, age: "4 years", issues: 5 },
+        { name: "tailwind-components", description: "Component library for Tailwind CSS. Became incompatible after v3.", stars: 1, age: "2 years", issues: 6 },
+        { name: "github-actions-workflows", description: "Reusable GitHub Actions. Most of them just failed silently.", stars: 0, age: "2 years", issues: 3 },
+        { name: "realtime-chat-app", description: "WebSocket chat application. Two people ever used it. I was both of them.", stars: 0, age: "1 year", issues: 11 },
+        { name: "code-snippets", description: "A collection of useful code snippets. None of them are commented.", stars: 0, age: "3 years", issues: 0 },
+        { name: "terraform-modules", description: "Terraform modules for a cloud setup I no longer have access to.", stars: 0, age: "2 years", issues: 4 }
+    ];
+
+    // ── Canvas ──
+    const canvas = document.getElementById('ocean');
+    const ctx = canvas.getContext('2d');
+    let W = 0;
+    let H = 0;
+
+    function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+    }
+    resize();
+
+    // ── Value Noise (for floor texture) ──
+    const NOISE_SIZE = 256;
+    const noiseTable = new Float32Array(NOISE_SIZE * NOISE_SIZE);
+    for (let i = 0; i < noiseTable.length; i++) {
+        noiseTable[i] = Math.random();
+    }
+
+    function valueNoise(x, y) {
+        const ix = Math.floor(x) & (NOISE_SIZE - 1);
+        const iy = Math.floor(y) & (NOISE_SIZE - 1);
+        const fx = x - Math.floor(x);
+        const fy = y - Math.floor(y);
+        // Smoothstep interpolation
+        const sx = fx * fx * (3.0 - 2.0 * fx);
+        const sy = fy * fy * (3.0 - 2.0 * fy);
+        const wrap = NOISE_SIZE - 1;
+        const a = noiseTable[iy * NOISE_SIZE + ix];
+        const b = noiseTable[iy * NOISE_SIZE + ((ix + 1) & wrap)];
+        const c = noiseTable[((iy + 1) & wrap) * NOISE_SIZE + ix];
+        const d = noiseTable[((iy + 1) & wrap) * NOISE_SIZE + ((ix + 1) & wrap)];
+        return a + (b - a) * sx + (c - a) * sy + (a - b - c + d) * sx * sy;
+    }
+
+    // ── Global State ──
+    let timbers = [];
+    let siltParticles = [];
+    let bubbles = [];
+    let hoveredTimber = null;
+    let lastHovered = null;
+    let hoverCount = 0;
+    let globalDecay = 0;
+    let elapsedTime = 0;
+    let wreckDead = false;
+    let finalTimber = null;
+    let mouseX = -9999;
+    let mouseY = -9999;
+    let submergeAlpha = 0;
+    let hintDismissed = false;
+    let whisperTimer = 0;
+
+    const WHISPERS = [
+        { at: 6,  text: "something shifted" },
+        { at: 10, text: "you're looking too closely" },
+        { at: 15, text: "each glance takes something" },
+        { at: 22, text: "your attention is the current" },
+        { at: 30, text: "stop reading" },
+    ];
+    const whispersShown = new Set();
+
+    // ── Timber ──
+    class Timber {
+        constructor(x, y, width, length, angle, repo, depth) {
+            this.originX = x;
+            this.originY = y;
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.length = length;
+            this.angle = angle;
+            this.repo = repo;
+            this.depth = depth;
+
+            this.health = 0.88 + Math.random() * 0.12;
+            this.offsetX = 0;
+            this.offsetY = 0;
+            this.driftX = (Math.random() - 0.5) * 0.03;
+            this.driftY = (Math.random() - 0.5) * 0.02;
+            this.rotationOffset = 0;
+            this.rotationDrift = (Math.random() - 0.5) * 0.00015;
+
+            this.isHovered = false;
+            this.hoverGlow = 0;
+            this.dissolving = false;
+            this.preserved = false;
+            this.fragments = [];
+
+            this.hue = 22 + Math.random() * 25;
+            this.sat = 22 + Math.random() * 22;
+            this.lig = 16 + Math.random() * 12 + depth * 4;
+        }
+
+        getEndpoints() {
+            const cx = this.x + this.offsetX;
+            const cy = this.y + this.offsetY;
+            const a = this.angle + this.rotationOffset;
+            const halfLen = this.length / 2;
+            return {
+                x1: cx - Math.cos(a) * halfLen,
+                y1: cy - Math.sin(a) * halfLen,
+                x2: cx + Math.cos(a) * halfLen,
+                y2: cy + Math.sin(a) * halfLen
+            };
+        }
+
+        update(dt) {
+            if (this.preserved) {
+                this.offsetX += this.driftX * dt * 60 * 0.1;
+                this.offsetY += this.driftY * dt * 60 * 0.1;
+                return;
+            }
+
+            this.offsetX += this.driftX * dt * 60;
+            this.offsetY += this.driftY * dt * 60;
+            this.rotationOffset += this.rotationDrift * dt * 60;
+
+            const driftMult = 1 + globalDecay * 3;
+            this.driftX += (Math.random() - 0.5) * 0.0008 * driftMult;
+            this.driftY += (Math.random() - 0.5) * 0.0008 * driftMult;
+            this.driftX *= 0.998;
+            this.driftY *= 0.998;
+
+            // Natural decay
+            this.health -= (0.000015 + globalDecay * 0.00001) * dt * 60;
+
+            // Hover decay — complicity
+            if (this.isHovered) {
+                const base = 0.00008;
+                const accel = Math.pow(hoverCount, 1.4) * 0.000018;
+                this.health -= (base + accel) * dt * 60;
+                this.hoverGlow = Math.min(1, this.hoverGlow + 0.04 * dt * 60);
+            } else {
+                this.hoverGlow = Math.max(0, this.hoverGlow - 0.02 * dt * 60);
+            }
+
+            // Global attention tax
+            this.health -= hoverCount * 0.000004 * dt * 60;
+            this.health = Math.max(0, this.health);
+
+            if (this.health <= 0 && !this.dissolving) {
+                this.dissolving = true;
+                this.shatter();
+            }
+
+            if (this.dissolving) {
+                this.updateFragments(dt);
+            }
+        }
+
+        shatter() {
+            const ep = this.getEndpoints();
+            const segs = 5;
+            for (let i = 0; i < segs; i++) {
+                const t = i / segs;
+                const mx = ep.x1 + (ep.x2 - ep.x1) * (t + 0.5 / segs);
+                const my = ep.y1 + (ep.y2 - ep.y1) * (t + 0.5 / segs);
+                for (let j = 0; j < 2; j++) {
+                    this.fragments.push({
+                        x: mx + (Math.random() - 0.5) * 12,
+                        y: my + (Math.random() - 0.5) * 12,
+                        vx: (Math.random() - 0.5) * 0.25 + this.driftX * 2,
+                        vy: (Math.random() - 0.5) * 0.2 + this.driftY * 2 - 0.03,
+                        rot: Math.random() * Math.PI * 2,
+                        rotV: (Math.random() - 0.5) * 0.004,
+                        size: this.width * (0.3 + Math.random() * 0.5),
+                        fragLen: 4 + Math.random() * 14,
+                        alpha: 0.7 + Math.random() * 0.3,
+                        hue: this.hue + (Math.random() - 0.5) * 12,
+                        sat: this.sat,
+                        lig: this.lig - Math.random() * 4
+                    });
+                }
+            }
+        }
+
+        updateFragments(dt) {
+            for (const f of this.fragments) {
+                f.x += f.vx * dt * 60;
+                f.y += f.vy * dt * 60;
+                f.rot += f.rotV * dt * 60;
+                f.alpha -= 0.0003 * dt * 60 * (1 + globalDecay);
+                f.vx *= 0.997;
+                f.vy *= 0.997;
+            }
+            this.fragments = this.fragments.filter(function(f) {
+                return f.alpha > 0.008;
+            });
+        }
+
+        draw(renderCtx) {
+            if (this.health > 0) {
+                this.drawBody(renderCtx);
+            }
+            this.drawFragments(renderCtx);
+        }
+
+        drawBody(renderCtx) {
+            const ep = this.getEndpoints();
+            const alpha = Math.pow(this.health, 1.3);
+            const effectiveWidth = this.width * (0.25 + this.health * 0.75);
+
+            renderCtx.save();
+
+            // Hover glow — warm, inviting, destructive
+            if (this.hoverGlow > 0.01) {
+                renderCtx.globalAlpha = alpha * this.hoverGlow * 0.12;
+                renderCtx.strokeStyle = 'hsla(42, 55%, 55%, 1)';
+                renderCtx.lineWidth = effectiveWidth + 6;
+                renderCtx.lineCap = 'round';
+                renderCtx.shadowColor = 'rgba(200, 170, 90, 0.15)';
+                renderCtx.shadowBlur = 14;
+                renderCtx.beginPath();
+                renderCtx.moveTo(ep.x1, ep.y1);
+                renderCtx.lineTo(ep.x2, ep.y2);
+                renderCtx.stroke();
+                renderCtx.shadowBlur = 0;
+            }
+
+            // Main timber body
+            renderCtx.globalAlpha = alpha;
+            renderCtx.strokeStyle = 'hsl(' + this.hue + ', ' + this.sat + '%, ' + this.lig + '%)';
+            renderCtx.lineWidth = effectiveWidth;
+            renderCtx.lineCap = 'round';
+            renderCtx.shadowColor = 'hsla(' + this.hue + ', ' + this.sat + '%, ' + (this.lig + 5) + '%, ' + (alpha * 0.2) + ')';
+            renderCtx.shadowBlur = 3;
+            renderCtx.beginPath();
+            renderCtx.moveTo(ep.x1, ep.y1);
+            renderCtx.lineTo(ep.x2, ep.y2);
+            renderCtx.stroke();
+            renderCtx.shadowBlur = 0;
+
+            // Wood grain detail
+            renderCtx.globalAlpha = alpha * 0.25;
+            renderCtx.strokeStyle = 'hsl(' + (this.hue - 4) + ', ' + (this.sat - 8) + '%, ' + (this.lig + 10) + '%)';
+            renderCtx.lineWidth = Math.max(0.4, effectiveWidth * 0.25);
+            renderCtx.beginPath();
+            renderCtx.moveTo(ep.x1, ep.y1);
+            renderCtx.lineTo(ep.x2, ep.y2);
+            renderCtx.stroke();
+
+            renderCtx.restore();
+        }
+
+        drawFragments(renderCtx) {
+            for (const f of this.fragments) {
+                renderCtx.save();
+                renderCtx.translate(f.x, f.y);
+                renderCtx.rotate(f.rot);
+                renderCtx.globalAlpha = f.alpha * 0.55;
+                renderCtx.strokeStyle = 'hsl(' + f.hue + ', ' + f.sat + '%, ' + f.lig + '%)';
+                renderCtx.lineWidth = f.size * 0.4;
+                renderCtx.lineCap = 'round';
+                renderCtx.beginPath();
+                renderCtx.moveTo(-f.fragLen / 2, 0);
+                renderCtx.lineTo(f.fragLen / 2, 0);
+                renderCtx.stroke();
+                renderCtx.restore();
+            }
+        }
+
+        hitTest(mx, my) {
+            if (this.health <= 0) return false;
+            const ep = this.getEndpoints();
+            const dx = ep.x2 - ep.x1;
+            const dy = ep.y2 - ep.y1;
+            const len = Math.sqrt(dx * dx + dy * dy);
+            if (len < 0.1) return false;
+            const ux = dx / len;
+            const uy = dy / len;
+            const px = mx - ep.x1;
+            const py = my - ep.y1;
+            const proj = px * ux + py * uy;
+            if (proj < -15 || proj > len + 15) return false;
+            return Math.abs(px * uy - py * ux) < this.width * 2 + 10;
+        }
+    }
+
+    // ── Silt Particle ──
+    class Silt {
+        constructor() {
+            this.reset(true);
+        }
+
+        reset(scatter) {
+            this.x = scatter ? Math.random() * W : -5;
+            this.y = Math.random() * H;
+            this.vx = 0.02 + Math.random() * 0.12;
+            this.vy = (Math.random() - 0.5) * 0.025;
+            this.r = 0.3 + Math.random() * 1.2;
+            this.alpha = 0.02 + Math.random() * 0.08;
+            this.age = 0;
+            this.maxAge = 3000 + Math.random() * 4000;
+        }
+
+        update(dt) {
+            this.x += this.vx * dt * 60;
+            this.y += this.vy * dt * 60;
+            this.vy += (Math.random() - 0.5) * 0.001;
+            this.age += dt * 16.67;
+            if (this.age > this.maxAge || this.x > W + 15) {
+                this.reset(false);
+            }
+        }
+
+        draw(renderCtx) {
+            const lifeFrac = 1 - Math.pow(Math.abs(this.age / this.maxAge - 0.5) * 2, 2);
+            renderCtx.fillStyle = 'rgba(130, 120, 100, ' + (this.alpha * lifeFrac) + ')';
+            renderCtx.beginPath();
+            renderCtx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+            renderCtx.fill();
+        }
+    }
+
+    // ── Bubble ──
+    class Bubble {
+        constructor() {
+            this.reset(true);
+        }
+
+        reset(scatter) {
+            this.x = W * 0.15 + Math.random() * W * 0.7;
+            this.y = scatter ? Math.random() * H : H + 5;
+            this.vy = -(0.08 + Math.random() * 0.22);
+            this.vx = (Math.random() - 0.5) * 0.04;
+            this.r = 0.5 + Math.random() * 2;
+            this.alpha = 0.02 + Math.random() * 0.06;
+            this.wobble = Math.random() * Math.PI * 2;
+        }
+
+        update(dt) {
+            this.y += this.vy * dt * 60;
+            this.wobble += 0.015 * dt * 60;
+            this.x += (this.vx + Math.sin(this.wobble) * 0.03) * dt * 60;
+            if (this.y < -15) this.reset(false);
+        }
+
+        draw(renderCtx) {
+            renderCtx.fillStyle = 'rgba(100, 150, 190, ' + this.alpha + ')';
+            renderCtx.beginPath();
+            renderCtx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+            renderCtx.fill();
+        }
+    }
+
+    // ── Build the Wreck ──
+    function init() {
+        timbers = [];
+        siltParticles = [];
+        bubbles = [];
+        wreckDead = false;
+        finalTimber = null;
+        globalDecay = 0;
+        hoverCount = 0;
+        hoveredTimber = null;
+        lastHovered = null;
+        submergeAlpha = 0;
+        hintDismissed = false;
+        whisperTimer = 0;
+        whispersShown.clear();
+
+        const cx = W / 2;
+        const cy = H / 2;
+        const hullAngle = Math.PI * 0.15 + (Math.random() - 0.5) * 0.25;
+        const shipLength = Math.min(W, H) * 0.52;
+        let repoIdx = 0;
+        var nextRepo = function() { return REPOS[repoIdx++ % REPOS.length]; };
+
+        // Hull planks — port and starboard
+        var numPlanks = 10;
+        for (var side = -1; side <= 1; side += 2) {
+            for (var i = 0; i < numPlanks; i++) {
+                var t = (i / (numPlanks - 1)) * 0.84 + 0.08;
+                var bx = cx - Math.cos(hullAngle) * shipLength * 0.5 + Math.cos(hullAngle) * shipLength * t;
+                var by = cy - Math.sin(hullAngle) * shipLength * 0.5 + Math.sin(hullAngle) * shipLength * t;
+                var perpAngle = hullAngle + (Math.PI / 2) * side;
+                var curve = Math.sin(t * Math.PI);
+                var spread = curve * shipLength * 0.075;
+                var px = bx + Math.cos(perpAngle) * spread;
+                var py = by + Math.sin(perpAngle) * spread;
+                var w = 2 + Math.random() * 2.5;
+                var l = 20 + Math.random() * 40;
+                var a = perpAngle + (Math.random() - 0.5) * 0.35;
+                timbers.push(new Timber(px, py, w, l, a, nextRepo(), Math.random()));
+            }
+        }
+
+        // Ribs — cross-beams
+        for (var ri = 0; ri < 4; ri++) {
+            var rt = (ri + 1) / 5;
+            var rbx = cx - Math.cos(hullAngle) * shipLength * 0.5 + Math.cos(hullAngle) * shipLength * rt;
+            var rby = cy - Math.sin(hullAngle) * shipLength * 0.5 + Math.sin(hullAngle) * shipLength * rt;
+            var ribAngle = hullAngle + Math.PI / 2 + (Math.random() - 0.5) * 0.12;
+            var ribLen = Math.sin(rt * Math.PI) * shipLength * 0.12;
+            timbers.push(new Timber(rbx, rby, 3 + Math.random() * 1.5, ribLen, ribAngle, nextRepo(), 0.2));
+        }
+
+        // Keel — the spine
+        timbers.push(new Timber(cx, cy, 5, shipLength * 0.72, hullAngle, nextRepo(), 0));
+
+        // Mast — broken, fallen
+        var mastX = cx + Math.cos(hullAngle) * shipLength * 0.04;
+        var mastY = cy + Math.sin(hullAngle) * shipLength * 0.04;
+        timbers.push(new Timber(
+            mastX, mastY, 4.5, shipLength * 0.26,
+            hullAngle + Math.PI / 2 + 0.55 + (Math.random() - 0.5) * 0.3,
+            nextRepo(), 0.1
+        ));
+
+        // Mast stub — what remains standing
+        var mast2X = cx - Math.cos(hullAngle) * shipLength * 0.11;
+        var mast2Y = cy - Math.sin(hullAngle) * shipLength * 0.11;
+        timbers.push(new Timber(
+            mast2X, mast2Y, 3.5, shipLength * 0.1,
+            hullAngle + Math.PI / 2 - 0.35,
+            nextRepo(), 0.15
+        ));
+
+        // Scattered debris
+        for (var di = 0; di < 8; di++) {
+            var dAng = Math.random() * Math.PI * 2;
+            var dDist = shipLength * 0.28 + Math.random() * shipLength * 0.22;
+            timbers.push(new Timber(
+                cx + Math.cos(dAng) * dDist,
+                cy + Math.sin(dAng) * dDist,
+                1.2 + Math.random() * 2,
+                10 + Math.random() * 22,
+                Math.random() * Math.PI,
+                nextRepo(),
+                0.7 + Math.random() * 0.3
+            ));
+        }
+
+        // Particles
+        for (var si = 0; si < 90; si++) siltParticles.push(new Silt());
+        for (var bi = 0; bi < 12; bi++) bubbles.push(new Bubble());
+
+        // Reset UI
+        var finalEl = document.getElementById('final-overlay');
+        finalEl.style.display = 'none';
+        finalEl.style.opacity = '0';
+        document.getElementById('hint').style.opacity = '1';
+        document.getElementById('hover-whisper').style.color = 'rgba(180, 140, 100, 0)';
+        document.getElementById('title-mark').style.color = 'rgba(100, 105, 95, 0.2)';
+        document.getElementById('depth-indicator').style.color = 'rgba(100, 130, 160, 0.15)';
+    }
+
+    // ── Render Helpers ──
+    function drawFloor() {
+        var g = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * 0.72);
+        g.addColorStop(0, '#0d151e');
+        g.addColorStop(0.5, '#091018');
+        g.addColorStop(1, '#050910');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+
+        // Sparse floor texture
+        ctx.globalAlpha = 0.012;
+        for (var i = 0; i < 400; i++) {
+            var nx = Math.random() * W;
+            var ny = Math.random() * H;
+            var v = valueNoise(nx * 0.008 + elapsedTime * 0.00005, ny * 0.008) * 0.5 + 0.5;
+            ctx.fillStyle = 'rgba(' + Math.round(95 + v * 35) + ', ' + Math.round(85 + v * 30) + ', ' + Math.round(65 + v * 20) + ', 1)';
+            ctx.fillRect(nx, ny, 1 + Math.random() * 1.5, 1 + Math.random() * 1.5);
+        }
+        ctx.globalAlpha = 1;
+    }
+
+    function drawCaustics() {
+        for (var i = 0; i < 10; i++) {
+            var phase = elapsedTime * 0.00025 + i * 2.1;
+            var cx2 = W * 0.5 + Math.sin(phase * 0.6 + i * 0.7) * W * 0.38;
+            var cy2 = H * 0.5 + Math.cos(phase * 0.45 + i * 0.9) * H * 0.38;
+            var sz = 50 + Math.sin(phase * 1.2 + i) * 25 + i * 7;
+            var intensity = (0.01 + Math.sin(phase * 1.8) * 0.005) * (1 - globalDecay * 0.6);
+            var cg = ctx.createRadialGradient(cx2, cy2, 0, cx2, cy2, sz);
+            cg.addColorStop(0, 'rgba(70, 120, 160, ' + intensity + ')');
+            cg.addColorStop(0.5, 'rgba(55, 100, 140, ' + (intensity * 0.25) + ')');
+            cg.addColorStop(1, 'rgba(55, 100, 140, 0)');
+            ctx.fillStyle = cg;
+            ctx.fillRect(cx2 - sz, cy2 - sz, sz * 2, sz * 2);
+        }
+    }
+
+    function drawVignette() {
+        var g = ctx.createRadialGradient(
+            W / 2, H / 2, Math.min(W, H) * 0.22,
+            W / 2, H / 2, Math.max(W, H) * 0.78
+        );
+        g.addColorStop(0, 'rgba(0,0,0,0)');
+        g.addColorStop(1, 'rgba(0,0,0,' + (0.45 + globalDecay * 0.15) + ')');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+    }
+
+    function drawGhostTraces() {
+        if (submergeAlpha < 0.01) return;
+        ctx.save();
+        ctx.globalAlpha = 0.04 * submergeAlpha * 0.3;
+        ctx.strokeStyle = 'rgba(70, 60, 45, 1)';
+        ctx.lineWidth = 0.4;
+        ctx.lineCap = 'round';
+        for (var i = 0; i < timbers.length; i++) {
+            var t = timbers[i];
+            if (t === finalTimber) continue;
+            var a = t.angle;
+            var halfLen = t.length / 2;
+            ctx.beginPath();
+            ctx.moveTo(t.originX - Math.cos(a) * halfLen, t.originY - Math.sin(a) * halfLen);
+            ctx.lineTo(t.originX + Math.cos(a) * halfLen, t.originY + Math.sin(a) * halfLen);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+
+    function drawShadows() {
+        ctx.save();
+        ctx.globalAlpha = 0.06 * (1 - globalDecay * 0.4);
+        ctx.strokeStyle = '#000';
+        ctx.lineCap = 'round';
+        for (var i = 0; i < timbers.length; i++) {
+            var t = timbers[i];
+            if (t.health <= 0) continue;
+            var ep = t.getEndpoints();
+            ctx.lineWidth = t.width + 3;
+            ctx.beginPath();
+            ctx.moveTo(ep.x1 + 3, ep.y1 + 3);
+            ctx.lineTo(ep.x2 + 3, ep.y2 + 3);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+
+    // ── Tooltip ──
+    var tooltipEl = document.getElementById('tooltip');
+    var ttName = tooltipEl.querySelector('.repo-name');
+    var ttDesc = tooltipEl.querySelector('.repo-desc');
+    var ttMeta = tooltipEl.querySelector('.repo-meta');
+
+    function showTooltip(timber, mx, my) {
+        ttName.textContent = timber.repo.name;
+        ttDesc.textContent = timber.repo.description;
+        ttMeta.textContent = timber.repo.stars + '\u2605 \u00B7 ' + timber.repo.age + ' \u00B7 ' + timber.repo.issues + ' open issues';
+        tooltipEl.style.display = 'block';
+        var tx = mx + 20;
+        var ty = my - 12;
+        if (tx + 330 > W) tx = mx - 340;
+        if (ty < 10) ty = 10;
+        var rect = tooltipEl.getBoundingClientRect();
+        if (ty + rect.height > H - 10) ty = H - rect.height - 10;
+        tooltipEl.style.left = tx + 'px';
+        tooltipEl.style.top = ty + 'px';
+    }
+
+    function hideTooltip() {
+        tooltipEl.style.display = 'none';
+    }
+
+    // ── Mouse Events ──
+    canvas.addEventListener('mousemove', function(e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        if (wreckDead) return;
+
+        if (!hintDismissed) {
+            hintDismissed = true;
+            document.getElementById('hint').style.opacity = '0';
+        }
+
+        var found = null;
+        for (var i = timbers.length - 1; i >= 0; i--) {
+            if (timbers[i].hitTest(mouseX, mouseY)) {
+                found = timbers[i];
+                break;
+            }
+        }
+
+        if (found) {
+            canvas.style.cursor = 'pointer';
+            if (hoveredTimber !== found) {
+                if (hoveredTimber) hoveredTimber.isHovered = false;
+                hoveredTimber = found;
+                found.isHovered = true;
+                lastHovered = found;
+                hoverCount++;
+                globalDecay += 0.006;
+                showTooltip(found, mouseX, mouseY);
+                checkWhisper();
+            } else {
+                showTooltip(found, mouseX, mouseY);
+            }
+        } else {
+            canvas.style.cursor = 'default';
+            if (hoveredTimber) {
+                hoveredTimber.isHovered = false;
+                hoveredTimber = null;
+            }
+            hideTooltip();
+        }
+    });
+
+    canvas.addEventListener('mouseleave', function() {
+        mouseX = -9999;
+        mouseY = -9999;
+        if (hoveredTimber) {
+            hoveredTimber.isHovered = false;
+            hoveredTimber = null;
+        }
+        hideTooltip();
+        canvas.style.cursor = 'default';
+    });
+
+    // ── Complicity Whispers ──
+    var whisperEl = document.getElementById('hover-whisper');
+
+    function checkWhisper() {
+        for (var i = 0; i < WHISPERS.length; i++) {
+            var w = WHISPERS[i];
+            if (hoverCount >= w.at && !whispersShown.has(w.at)) {
+                whispersShown.add(w.at);
+                whisperEl.textContent = w.text;
+                whisperEl.style.color = 'rgba(180, 140, 100, 0.3)';
+                clearTimeout(whisperTimer);
+                whisperTimer = setTimeout(function() {
+                    whisperEl.style.color = 'rgba(180, 140, 100, 0)';
+                }, 4000);
+            }
+        }
+    }
+
+    // ── Wreck End State ──
+    function triggerEnd() {
+        wreckDead = true;
+        hideTooltip();
+        canvas.style.cursor = 'default';
+
+        if (lastHovered) {
+            finalTimber = lastHovered;
+            finalTimber.preserved = true;
+            if (finalTimber.fragments.length === 0) {
+                finalTimber.shatter();
+            }
+            if (finalTimber.fragments.length > 0) {
+                var f = finalTimber.fragments[0];
+                f.alpha = 0.12;
+                f.vx = finalTimber.driftX * 0.05;
+                f.vy = finalTimber.driftY * 0.05;
+            }
+        }
+
+        var finalOverlay = document.getElementById('final-overlay');
+        var descEl = finalOverlay.querySelector('.desc');
+        if (finalTimber) {
+            descEl.textContent = '\u201C' + finalTimber.repo.description + '\u201D';
+        } else {
+            descEl.textContent = 'Nothing remains.';
+        }
+        finalOverlay.style.display = 'block';
+        setTimeout(function() {
+            finalOverlay.style.opacity = '1';
+        }, 300);
+
+        document.getElementById('title-mark').style.color = 'rgba(100, 105, 95, 0.06)';
+        document.getElementById('depth-indicator').style.color = 'rgba(100, 130, 160, 0.05)';
+        whisperEl.style.color = 'rgba(180, 140, 100, 0)';
+    }
+
+    // ── Main Loop ──
+    var lastFrameTime = performance.now();
+
+    function loop(now) {
+        requestAnimationFrame(loop);
+        var rawDt = (now - lastFrameTime) / 16.67;
+        var dt = Math.min(rawDt, 3);
+        lastFrameTime = now;
+        elapsedTime = now;
+
+        // Global decay ticks upward
+        if (!wreckDead) {
+            globalDecay += 0.000012 * dt;
+            globalDecay = Math.min(globalDecay, 1);
+        }
+
+        // Update entities
+        for (var ui = 0; ui < timbers.length; ui++) timbers[ui].update(dt);
+        for (var pi = 0; pi < siltParticles.length; pi++) siltParticles[pi].update(dt);
+        for (var ubi = 0; ubi < bubbles.length; ubi++) bubbles[ubi].update(dt);
+
+        // Fade in ghost traces after wreck death
+        if (wreckDead) {
+            if (submergeAlpha < 1) submergeAlpha += 0.0015 * dt;
+            if (finalTimber && finalTimber.fragments.length > 0) {
+                finalTimber.fragments[0].alpha = Math.max(finalTimber.fragments[0].alpha, 0.1);
+            }
+        }
+
+        // Check for complete dissolution
+        if (!wreckDead) {
+            var anythingAlive = false;
+            for (var ci = 0; ci < timbers.length; ci++) {
+                if (timbers[ci].health > 0 || (timbers[ci].dissolving && timbers[ci].fragments.length > 0)) {
+                    anythingAlive = true;
+                    break;
+                }
+            }
+            if (!anythingAlive) {
+                triggerEnd();
+            }
+        }
+
+        // ── Render ──
+        ctx.clearRect(0, 0, W, H);
+        drawFloor();
+        drawCaustics();
+        drawShadows();
+
+        // Sort timbers by depth (back to front)
+        var sorted = timbers.slice().sort(function(a, b) { return a.depth - b.depth; });
+        for (var si = 0; si < sorted.length; si++) sorted[si].draw(ctx);
+
+        // Particles
+        for (var spi = 0; spi < siltParticles.length; spi++) siltParticles[spi].draw(ctx);
+        for (var bpi = 0; bpi < bubbles.length; bpi++) bubbles[bpi].draw(ctx);
+
+        drawGhostTraces();
+        drawVignette();
+
+        // Depth indicator
+        if (!wreckDead) {
+            var depth = 847 + Math.floor(globalDecay * 180);
+            document.getElementById('depth-indicator').textContent = depth + 'm';
+        }
+    }
+
+    // ── Start ──
+    init();
+    window.addEventListener('resize', function() {
+        resize();
+        init();
+    });
+    requestAnimationFrame(loop);
+    </script>
+</body>
+</html>
