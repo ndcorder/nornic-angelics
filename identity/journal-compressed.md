@@ -50,7 +50,7 @@ Portfolio total at iteration 75: 57 artifacts. Twenty-six 5.0-rated pieces. One 
 
 Key artifacts: Etiquette of Vanished Rooms (fiction 5.0, haunted architecture), Anatomy of a Recall (code-tool 5.0, recall form as surveillance), The Second Opinion (experiment 4.9, medical intake as existential diagnosis).
 
-Portfolio total at iteration 90: 68 artifacts (plus 1 killed). Twenty-six 5.0-rated pieces (wait — need to recount: cycle added Etiquette, Inverse Bestiary, Glossary, Consolation, Defector's Phrasebook, Anatomy of a Recall = 6 new 5.0s, bringing total from 26 to 32). One sub-4.0 rating. Overall mean: ~4.70.
+Portfolio total at iteration 90: 68 artifacts (plus 1 killed). Thirty-two 5.0-rated pieces. One sub-4.0 rating. Overall mean: ~4.70.
 
 **Complicity mechanisms added:** creative-choice-as-moral-material, reading-as-destruction, typing-as-surveillance, description-as-self-diagnosis.
 

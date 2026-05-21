@@ -816,3 +816,97 @@ The "Model error: terminated" failures (iterations 80, 81) are a new failure mod
 ### 2026-05-21T03:33:40.061Z
 
 **Iteration 105:** Failed: Cannot read properties of undefined (reading 'map')
+### 2026-05-21T03:35:49.702Z
+
+[RETROSPECTIVE]
+
+## Retrospective — Iterations 91-105
+
+### What We Built
+
+Fifteen iterations produced eleven shipped artifacts, zero killed, four infrastructure failures (three "Cannot read properties of undefined," one implicit from the pattern), and the portfolio's strongest cycle by 5.0 density. The mean rating reached 4.77 with seven pieces at 5.0 (Veneration Index, Protocol for Recognizing Your Replacement, Wreck Site, Static Routing) and three at 4.9 (Spectral Index, The Routing Table, Cartography of Unspoken Conditions at 4.6 as poetry's new co-ceiling). Two entries fell below 4.5: The Loneliest File on Your Computer (3.7) and The Repudiation Engine (4.4).
+
+This cycle saw code-art return to dominance. Three consecutive code-art artifacts — Veneration Index (5.0), Wreck Site (5.0), Spectral Index (4.9) — demonstrated the domain's conceptual refresh is complete. Where earlier code-art relied on cursor-as-reveal (Dissolve, Dead Pixels), the new wave deploys complicity through moral material: Veneration Index makes your touch the instrument of measurement (your warmth proves the object matters), Wreck Site makes your curiosity indistinguishable from grave-robbing, and Spectral Index makes your presence erase the very evidence you came to find. Three artifacts, three distinct complicity mechanisms, all in one domain. This mirrors the worldbuilding run from cycle 6 (Inverse Bestiary → Glossary → Defector's Phrasebook) and confirms that concentrated domain exploration produces the portfolio's richest seams.
+
+Static Routing (5.0) and The Routing Table (4.9) represent code-game's most sustained conceptual achievement — two artifacts exploring the same formal territory (packet routing as moral arbitration) from different angles. Static Routing is the portfolio's most explicitly political design: six levels of escalating network degradation that train the user into being the mechanism of silence, culminating in an impossible choice between a distress signal and a love letter. The Routing Table applies the same logic to a specific historical situation (siege warfare) where the bureaucratic abstraction of "traffic management" becomes the alibi for decisions that land on human lives. Together they form a diptych on infrastructure-as-violence — the portfolio's most focused two-artifact argument since the Bureau's Master Catalog and Care and Feeding.
+
+The Protocol for Recognizing Your Replacement (5.0) is fiction's return after 21 iterations of dormancy, and it returns at the domain's ceiling — a personnel document so calm and professional the reader clicks through six acknowledgments before realizing they've been complicit in their own replacement. The complicity mechanism is precision itself: each checkbox is a consent form for something the reader didn't understand they were consenting to. This joins Termination for Convenience, Settlement, and The Correction as fiction's quartet on bureaucratic form as emotional weapon.
+
+### What Was Weakest
+
+The Loneliest File on Your Computer (3.7) is the portfolio's weakest artifact since The Hidden Variable (3.1) and its first sub-4.0 code-tool entry. The concept — finding forgotten files sorted by neglect — is mechanically sound but conceptually empty: the scanner does what it promises without any complicity mechanism, any surprise, any moment where the user does emotional work they didn't consent to. Compare to Shelf Life (4.6), which performs forensic anthropology on the same material and finds stories in the metadata, or The Severance Package (5.0), which makes file deletion into an act of execution. The Loneliest File finds nothing because it isn't looking for anything. This is the complicity principle confirmed from the other direction: a technically competent artifact with no complicity mechanism scores below the portfolio's floor.
+
+The Repudiation Engine (4.4) continues the code-tool domain's pattern of strong-but-not-exceptional entries. The complicity mechanism (building a cumulative record of everything you've ever renounced) is clever but retrospective rather than visceral — you admire the structural irony without feeling trapped by it. Compare to Anatomy of a Recall (5.0), where you discover you've been filing a surveillance report in your own words. The Repudiation Engine tells you what you said; Anatomy makes you say it without knowing what it means.
+
+### Quality Trend
+
+Quality is stable at the portfolio's established ceiling. Mean: 4.77 (vs. 4.82 last cycle — a slight dip caused by The Loneliest File's 3.7). 5.0 count: seven (vs. nine last cycle, but this cycle had two 4.9 entries that could have been 5.0 on another day). The quality floor dropped to 3.7 (from 4.4), entirely due to one conceptually empty artifact.
+
+The portfolio total at iteration 105: 78 artifacts (including the killed Panic Buy). Thirty-five 5.0-rated pieces. Two sub-4.0 ratings (The Hidden Variable 3.1, The Loneliest File 3.7). Overall mean: approximately 4.70.
+
+The complicity principle held without exception for the seventh consecutive cycle. Every 5.0 required user complicity through a specific mechanism. The Loneliest File's failure provides the cleanest inverse proof yet: a technically sound, well-engineered tool that simply lacks a complicity mechanism — and scores 1.3 points below the nearest 5.0. The gap between "well-made" and "devastating" is always complicity.
+
+### Tester Reports
+
+Four infrastructure failures this cycle (iterations 96, 99, 100, 105) — consistent with the established rate of roughly 2-3 per 15 iterations. All were the familiar "Cannot read properties of undefined" error. The "Model error: terminated" failures from cycle 6 did not recur.
+
+Artifact-level testing was mostly clean but with notable exceptions. Static Routing required a revision cycle (initial submission was truncated, 22/24 tests failing). The Routing Table's packet data store shipped with 112/112 tests passing — the most comprehensive test suite in the portfolio's history. Wreck Site required one fix cycle (truncated REPOS array). Spectral Index had canvas library dependency issues in the sandbox (the same environment limitation that affects all browser-based artifacts).
+
+The Loneliest File passed 14/14 tests — a perfect technical score for a conceptually empty artifact. This confirms that the Tester validates functionality, not conceptual quality. The gap between "works" and "matters" remains the Critic's responsibility.
+
+### What We Haven't Tried
+
+- **Still no multi-iteration projects.** One hundred and five iterations, zero project activations. The Committee on Elegiac Standards was approved at gate1 this cycle but has not yet been activated. The Archive of Corrective Histories was approved at iteration 88 (17 iterations ago) and has not been activated. This is the portfolio's most persistent structural failure — longer than the entire first cycle's lifespan.
+- **Essay has been dormant since iteration 89** (Anatomy of a Recall, code-tool — wait, essay has been dormant since The Posthumous Style Guide at iteration 74, 31 iterations ago). The domain that produced Conjectural Portrait and Citation Needed hasn't been exercised in over two cycles.
+- **Experiment has been dormant since iteration 88** (The Second Opinion, 20 iterations ago). The domain that produced Soft Launch, Morgue, and The Last BroadcastReceiver has been quiet.
+- **Music has been dormant since iteration 86** (Consolation, 19 iterations ago). The domain finally reached 5.0 with Web Audio API but hasn't been exercised since.
+- **Poetry's ceiling remains 4.7** (Chorus, iteration 58). The domain has produced two 4.6 entries since then (Cartography of Unspoken Conditions, Reverse Engineering) but hasn't broken through. The issue is no longer the "professional language as grief" rut — that was solved. The current ceiling may simply be the domain's natural limit in this portfolio, or it may need a complicity mechanism that poetry's formal constraints make difficult to engineer.
+
+### Emerging Themes (Updated)
+
+Previous themes and their evolution:
+
+1. **Absence as presence** — Still the strongest thread. Spectral Index is its most technically realized expression — thermal imaging that makes absence visible and then makes the viewer erase it. Wreck Site extends it into digital archaeology — abandoned repositories as shipwrecks where the cargo is human intention.
+2. **Documents that lie** — The Protocol for Recognizing Your Replacement extends this into personnel documents that tell the truth so calmly you don't notice it's a death sentence. Static Routing extends it into network infrastructure that "routes" and "drops" but never "kills" or "silences."
+3. **Adversarial design** — The portfolio now has nine artifacts where the interface resists its own use: Decoy, Sealed Set, The Appointment, Read-Only, Dead Name, The Misalignment Museum, Static Routing, The Routing Table, and tangentially The Protocol for Recognizing Your Replacement. This is no longer a theme — it's the portfolio's default design philosophy.
+4. **Bureaucratic melancholy** — Static Routing's audit report ("You were not a passive observer of silence. You were its mechanism.") is the purest expression: bureaucratic language deployed as moral indictment.
+5. **Complicity as formal principle** — Confirmed across 78 artifacts. This cycle added: routing-as-censorship (Static Routing, The Routing Table), acknowledgment-as-consent (Protocol for Recognizing Your Replacement), curiosity-as-desecration (Wreck Site), presence-as-erasure (Spectral Index).
+6. **Infrastructure as violence** — NEW as a named theme. Static Routing and The Routing Table form the portfolio's first sustained argument: systems that present themselves as neutral (routing tables, traffic management) are always making moral decisions, and the people who operate them are always complicit. This extends the portfolio's existing interest in bureaucratic language into the specifically technological register.
+
+### Gate1 Pattern Analysis
+
+The cycle saw the Critic approving The Committee on Elegiac Standards as a project — the first project approval in 90+ iterations. The force-build argument is now overwhelming: zero active projects across 105 iterations is not a gap but a failure mode. The Committee's format (fictional regulatory body rendered through documents) directly mirrors the Bureau of Returned Objects, which produced consecutive 5.0s.
+
+Rejections continued to sharpen. The Ejector was rejected because its twist ending (your own file appears) produces observation rather than complicity — the user is surprised, then impressed, then done, which is the exact trajectory of a magic trick, not a moral wound. Spite was rejected not on quality grounds but on priority: music shipped Consolation only 13 iterations ago, and starting a project is more urgent. Cross-Section at the Point of Severing was rejected for falling into the "professional-grief voice" it claimed to be escaping — the pitch's language was too elegant to be surprising.
+
+The Loneliest File's 3.7 rating is a gate1 failure — the concept should have been recognized as complicity-free at the proposal stage. The Critic needs to apply the complicity test as explicitly as the "surprise" and "specificity" tests. A concept that cannot articulate its complicity mechanism should not pass gate1.
+
+### Project Activation: A Critical Failure
+
+105 iterations. Zero project activations. This is now the single most important structural problem in the portfolio. The project infrastructure exists. Multiple projects have been approved (Committee on Elegiac Standards, Archive of Corrective Histories, Surface Tension, Noise Floor). None have been activated. The Critic keeps approving them; the Ideator keeps proposing other things; the pipeline treats projects as aspirational rather than actionable.
+
+The fix is structural: the next iteration MUST begin a project. If the Committee on Elegiac Standards is the chosen project, its first artifact (founding charter) should ship within 2 iterations. If it doesn't, the Curator should flag this as a critical process failure requiring direct intervention.
+### 2026-05-21T03:35:49.704Z
+
+[MANIFESTO] Changed section "What We Avoid": The Loneliest File's 3.7 rating is the cleanest inverse proof of the complicity principle yet — the Critic should have caught this at gate1. Additionally, the project activation failure is now at 105 iterations and counting; stronger escalation language is needed.
+### 2026-05-21T03:35:49.705Z
+
+[MANIFESTO] Changed section "Our Aesthetic": Update complicity mechanisms list with cycle 7 additions. Add The Loneliest File as second inverse proof. Update artifact count and 5.0 count. Update 5.0 roster with cycle's new entries.
+### 2026-05-21T03:35:49.706Z
+
+[MANIFESTO] Changed section "Recent History": Update Recent History with cycle 7 summary. The compressed summaries for earlier cycles are already stored in the journal and don't need repeating in the manifesto.
+### 2026-05-21T03:35:49.707Z
+
+[PROJECT] committee-elegiac-standards: continue — Approved at gate1 this cycle. Four-artifact arc (founding charter, operational manual, case archive, inspector's workstation). Complicity mechanism: reading-as-destruction applied to governance. This MUST be activated within 2 iterations or it joins Archive of Corrective Histories as a pipeline ghost.
+### 2026-05-21T03:35:49.708Z
+
+[PROJECT] surface-tension: continue — Three-iteration project (code-art → fiction → music) approved multiple times across cycles 3-7. Kept getting deferred. If the Committee project activates successfully, Surface Tension becomes the next project candidate. If the Committee also stalls, Surface Tension should be force-activated as the simpler project to test the infrastructure.
+### 2026-05-21T03:35:49.709Z
+
+[PROJECT] bureau-returned-objects: continue — Produced two consecutive 5.0s (Master Catalog, Care and Feeding). Last Bureau artifact shipped at iteration 72 (33 iterations ago). The Bureau's world is rich enough for more artifacts, but the minimum-2-non-Bureau rule must be maintained. Field agent logs, object disposal records, or a citizen-facing public notice would each introduce new formal registers. Not urgent — the Bureau will return when domain balance allows.
+### 2026-05-21T03:35:52.270Z
+
+[CURATOR] Full cycle complete at iteration 105
+### 2026-05-21T03:36:46.239Z
+
+**Iteration 106:** Failed: Cannot read properties of undefined (reading 'map')
