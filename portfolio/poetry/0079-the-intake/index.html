@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intake Assessment — Form 4B</title>
+  <style>
+    :root {
+      --paper: #fcfaf7;
+      --ink: #1a1a1a;
+      --border: #c8c4be;
+      --admin: #888580;
+      --alert: #b8342a;
+      --alert-light: #f5e6e4;
+      --blue: #2a5f8f;
+      --blue-light: #e8f0f8;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      font-family: 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+      background: #e8e4df;
+      color: var(--ink);
+      line-height: 1.7;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+      background: var(--paper);
+      padding: 3rem 3.5rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      position: relative;
+    }
+    .page::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--border);
+    }
+    @media (max-width: 600px) {
+      .page { padding: 2rem 1.5rem; }
+    }
+    .prehead {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--admin);
+      margin-bottom: 0.3rem;
+      text-transform: uppercase;
+    }
+    .prehead span { margin-right: 1.5rem; }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: normal;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.2rem;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 0.5rem;
+    }
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--admin);
+      margin-bottom: 1.8rem;
+      font-style: italic;
+    }
+    .disclaimer {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.7rem;
+      color: var(--admin);
+      border: 1px solid var(--border);
+      padding: 1rem 1.2rem;
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+      background: #faf8f5;
+    }
+    .disclaimer strong {
+      color: var(--ink);
+      font-weight: normal;
+      text-decoration: underline;
+    }
+    .section-num {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--admin);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: normal;
+      letter-spacing: 0.06em;
+      margin-bottom: 1.2rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.3rem;
+    }
+    .field {
+      margin-bottom: 1.5rem;
+    }
+    .field.es {
+      margin-bottom: 2rem;
+      padding-top: 0.5rem;
+      border-top: 1px dashed #e0dcd7;
+    }
+    .field label {
+      display: block;
+      font-size: 0.92rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.6;
+      cursor: default;
+    }
+    .req {
+      color: var(--alert);
+      margin-left: 0.2rem;
+      font-size: 0.8rem;
+      vertical-align: super;
+    }
+    input[type="text"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      font-family: inherit;
+      font-size: 0.9rem;
+      padding: 0.55rem 0.7rem;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--ink);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      line-height: 1.5;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 2px var(--blue-light);
+    }
+    textarea { resize: vertical; min-height: 90px; }
+    select { appearance: auto; }
+    .row { display: flex; gap: 1.5rem; }
+    .row .field { flex: 1; }
+    @media (max-width: 500px) { .row { flex-direction: column; gap: 0; } }
+    .hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+    .checks { margin-top: 0.3rem; }
+    .checks .c {
+      display: block;
+      margin-bottom: 0.45rem;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      cursor: pointer;
+    }
+    .checks .c input { margin-right: 0.5rem; vertical-align: middle; }
+    .notice {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.68rem;
+      color: var(--alert);
+      border-left: 2px solid var(--alert);
+      padding: 0.5rem 0.8rem;
+      margin: 1.5rem 0;
+      background: var(--alert-light);
+      line-height: 1.55;
+    }
+    .sig {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin: 0.8rem 0 0.4rem;
+    }
+    .sig input[type="checkbox"] {
+      width: 16px; height: 16px;
+      flex-shrink: 0;
+      cursor: pointer;
+      accent-color: var(--ink);
+    }
+    .sig label {
+      font-size: 0.88rem;
+      line-height: 1.55;
+      cursor: pointer;
+      display: inline;
+    }
+    .note {
+      font-size: 0.72rem;
+      color: var(--admin);
+      font-style: italic;
+      margin-top: 0.3rem;
+      margin-bottom: 1rem;
+    }
+    .submit-wrap {
+      text-align: center;
+      margin-top: 2.5rem;
+    }
+    .submit-btn {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      padding: 0.85rem 2.2rem;
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background 0.2s ease, opacity 0.3s;
+    }
+    .submit-btn:hover { background: #333; }
+    .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .submit-btn.saving {
+      background: var(--admin);
+      pointer-events: none;
+    }
+    .hint {
+      font-size: 0.68rem;
+      color: var(--admin);
+      margin-top: 0.6rem;
+      font-style: italic;
+    }
+    .submitted-f {
+      display: none;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .submitted-f h2 {
+      border-bottom: none;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .submitted-f p {
+      font-size: 0.88rem;
+      color: var(--admin);
+      line-height: 1.8;
+      max-width: 480px;
+      margin: 0 auto 0.5rem;
+    }
+    .submitted-f .conf {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.75rem;
+      color: var(--ink);
+      letter-spacing: 0.05em;
+      margin-top: 2rem;
+      padding: 0.6rem 1.2rem;
+      border: 1px solid var(--border);
+      display: inline-block;
+      background: #faf8f5;
+    }
+    .submitted-f .fnl {
+      font-size: 0.72rem;
+      color: var(--admin);
+      font-style: italic;
+      margin-top: 2rem;
+      line-height: 1.7;
+    }
+    .pending {
+      display: none;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .pending p {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.72rem;
+      color: var(--admin);
+      letter-spacing: 0.05em;
+      margin-top: 0.8rem;
+    }
+    .spinner {
+      display: inline-block;
+      width: 22px; height: 22px;
+      border: 2px solid var(--border);
+      border-top-color: var(--admin);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin-bottom: 1.2rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .page.hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="page" id="formPage">
+  <div class="prehead">
+    <span>Form 4B</span>
+    <span>Rev. 2019.3</span>
+    <span>Control #887-A</span>
+  </div>
+  <h1>Intake Assessment</h1>
+  <p class="subtitle">Psychological Services — General Symptom Inventory</p>
+
+  <div class="disclaimer">
+    <strong>Purpose:</strong> This form is used to assess the nature, duration, and severity of presenting conditions.
+    All fields are mandatory unless marked optional. Your responses will be recorded and may be referenced in the course of treatment.
+    By proceeding, you acknowledge that the act of reading constitutes engagement with the diagnostic process.
+  </div>
+
+  <!-- SECTION I -->
+  <div class="section-num">Section I — Presenting Condition</div>
+  <h2>Reason for Visit</h2>
+
+  <div class="field">
+    <label for="f1">Duration of current condition?<span class="req">*</span></label>
+    <select id="f1">
+      <option value="" disabled selected>Select</option>
+      <option value="a">Less than one month</option>
+      <option value="b">One to six months</option>
+      <option value="c">Six months to one year</option>
+      <option value="d">One to five years</option>
+      <option value="e">Longer than you can remember</option>
+      <option value="f">You are unsure when it began</option>
+      <option value="g">It was never not there</option>
+    </select>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label for="f2">Date of onset (approximate)<span class="req">*</span></label>
+      <input type="date" id="f2">
+    </div>
+    <div class="field">
+      <label for="f3">Date of first acknowledgment<span class="req">*</span></label>
+      <input type="date" id="f3">
+    </div>
+  </div>
+
+  <div class="field es">
+    <label for="f4">Have you experienced similar symptoms previously? If yes, please describe the circumstances.</label>
+    <textarea id="f4" rows="3" placeholder="When, where, who was there, what you thought it meant at the time"></textarea>
+  </div>
+
+  <!-- SECTION II -->
+  <div class="section-num">Section II — Medical History</div>
+  <h2>Previous Treatments</h2>
+
+  <div class="field">
+    <label>Please indicate which of the following you have used to manage your symptoms:</label>
+    <div class="checks">
+      <label class="c"><input type="checkbox"> Lists, schedules, routines</label>
+      <label class="c"><input type="checkbox"> Exercise to the point of exhaustion</label>
+      <label class="c"><input type="checkbox"> New cities, new names, new pronouns</label>
+      <label class="c"><input type="checkbox"> Convincing yourself it was for the best</label>
+      <label class="c"><input type="checkbox"> Sleeping more than necessary</label>
+      <label class="c"><input type="checkbox"> Not sleeping enough to dream</label>
+      <label class="c"><input type="checkbox"> Explaining the feeling to people who could not feel it</label>
+      <label class="c"><input type="checkbox"> Music at a volume that replaced thought</label>
+      <label class="c"><input type="checkbox"> Waiting for the feeling to pass on its own</label>
+      <label class="c"><input type="checkbox"> Other (please specify below)</label>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="f6">If you selected "Other," please describe:<span class="req">*</span></label>
+    <input type="text" id="f6" placeholder="">
+  </div>
+
+  <div class="field es">
+    <label>Rate the overall effectiveness of your treatment regimen:<span class="req">*</span></label>
+    <select>
+      <option value="" disabled selected>Select</option>
+      <option value="a">Fully resolved — no further treatment indicated</option>
+      <option value="b">Managed — symptoms present but bearable</option>
+      <option value="c">Unclear — difficult to distinguish treatment from symptoms</option>
+      <option value="d">Unsuccessful — condition persists or has evolved</option>
+      <option value="e">You are still waiting to find out</option>
+    </select>
+  </div>
+
+  <!-- SECTION III -->
+  <div class="section-num">Section III — Social History</div>
+  <h2>Interpersonal Assessment</h2>
+
+  <div class="field es">
+    <label for="f7">Describe the quality of the absence. Is it:</label>
+    <select id="f7">
+      <option value="" disabled selected>Select</option>
+      <option value="a">An empty room</option>
+      <option value="b">A room with someone standing in it, not facing you</option>
+      <option value="c">A room where someone has just left — you can still see the impression in the chair</option>
+      <option value="d">A room you keep furnishing, though no one visits</option>
+      <option value="e">A room that was never built</option>
+    </select>
+  </div>
+
+  <div class="field es">
+    <label for="f8">When did you first notice the gap between what was said and what was meant?<span class="req">*</span></label>
+    <textarea id="f8" rows="3" placeholder="If this question has already been answered, describe the moment you realized it"></textarea>
+  </div>
+
+  <div class="field es">
+    <label>Is the condition improving, stable, or have you stopped checking?<span class="req">*</span></label>
+    <select>
+      <option value="" disabled selected>Select</option>
+      <option value="a">Improving — you can go hours without thinking of it</option>
+      <option value="b">Stable — present, familiar, like weather</option>
+      <option value="c">Worsening — you found this form while looking for something else</option>
+      <option value="d">You have stopped checking</option>
+    </select>
+  </div>
+
+  <!-- SECTION IV -->
+  <div class="section-num">Section IV — Current Symptoms</div>
+  <h2>Symptom Inventory</h2>
+
+  <div class="field">
+    <label>Check all that apply:</label>
+    <div class="checks">
+      <label class="c"><input type="checkbox"> Difficulty sleeping due to unsent correspondence</label>
+      <label class="c"><input type="checkbox"> Recurring preoccupation with a specific date, time, or sound</label>
+      <label class="c"><input type="checkbox"> Persistent feeling of having been warned</label>
+      <label class="c"><input type="checkbox"> Involuntary memory of touch in contexts unrelated to the original touch</label>
+      <label class="c"><input type="checkbox"> Vertigo when confronting evidence of someone else's continued existence</label>
+      <label class="c"><input type="checkbox"> Conviction that a wound has healed when it has simply relocated</label>
+      <label class="c"><input type="checkbox"> The sensation of being spoken to by a song, a view, or a type of weather</label>
+      <label class="c"><input type="checkbox"> Stopped trusting the word "fine" after the seventh time saying it</label>
+      <label class="c"><input type="checkbox"> Other (please describe below)</label>
+    </div>
+  </div>
+
+  <div class="field es">
+    <label for="f10">Please describe the other symptoms. Be specific. Use the language you would use if no one were reading this.<span class="req">*</span></label>
+    <textarea id="f10" rows="5" placeholder=""></textarea>
+  </div>
+
+  <!-- SECTION V -->
+  <div class="section-num">Section V — Review of Systems</div>
+  <h2>Systems Check</h2>
+
+  <div class="field es">
+    <label for="f11">Locate the pain. If you are having difficulty, try moving closer.<span class="req">*</span></label>
+    <select id="f11">
+      <option value="" disabled selected>Select</option>
+      <option value="a">Chest — dull, constant, as if something were pressing against the inside of the ribs</option>
+      <option value="b">Throat — the kind of tightness that precedes speech that never comes</option>
+      <option value="c">Abdomen — nausea that accompanies the recognition of a pattern</option>
+      <option value="d">Hands — an inability to hold, or the memory of holding too tightly</option>
+      <option value="e">Crown of the head — the sensation of a hand that is no longer there</option>
+      <option value="f">Distributed evenly throughout the body, undifferentiated from being alive</option>
+      <option value="g">You cannot locate it precisely, but you know the room it is in</option>
+    </select>
+  </div>
+
+  <div class="field es">
+    <label>Does anyone else in your family have this condition?<span class="req">*</span></label>
+    <div class="checks">
+      <label class="c"><input type="radio" name="fam"> Yes — you recognize it in their silences</label>
+      <label class="c"><input type="radio" name="fam"> No — you are the only one</label>
+      <label class="c"><input type="radio" name="fam"> You do not know — your family did not have words for this</label>
+      <label class="c"><input type="radio" name="fam"> You are afraid to ask</label>
+    </div>
+  </div>
+
+  <!-- SECTION VI -->
+  <div class="section-num">Section VI — Clinical Assessment</div>
+  <h2>Provider Notes</h2>
+
+  <div class="field es">
+    <label for="f13">What would you give up to have never felt this?<span class="req">*</span></label>
+    <textarea id="f13" rows="3" placeholder=""></textarea>
+  </div>
+
+  <div class="field es">
+    <label for="f14">What would you lose if it were removed?<span class="req">*</span></label>
+    <textarea id="f14" rows="3" placeholder="The first question assumed it was a disease. This one is not so sure."></textarea>
+  </div>
+
+  <div class="field es">
+    <label for="f15">Final diagnosis — in your own words.<span class="req">*</span></label>
+    <textarea id="f15" rows="4" placeholder="If you could name it, what would you call it?"></textarea>
+  </div>
+
+  <hr class="hr">
+
+  <!-- ATTESTATION -->
+  <div class="section-num">Attestation</div>
+  <h2>Acknowledgment &amp; Consent</h2>
+
+  <p style="font-size:0.85rem; margin-bottom:1rem; line-height:1.7;">By signing below, you confirm that all information provided is, to the best of your knowledge, a true account of your present condition. You understand that submission constitutes acceptance of the terms outlined in the disclaimer above, and that your responses may be held against you in the court of 3 a.m.</p>
+
+  <div class="sig">
+    <input type="checkbox" id="sigCheck">
+    <label for="sigCheck">I understand this will become part of my permanent record.<span class="req">*</span></label>
+  </div>
+  <p class="note">Your permanent record is, of course, the one you keep.</p>
+
+  <div class="field">
+    <label for="sigLine">Signature (type full name)<span class="req">*</span></label>
+    <input type="text" id="sigLine" placeholder="" style="font-style:italic;">
+  </div>
+
+  <div class="field">
+    <label for="sigDate">Date<span class="req">*</span></label>
+    <input type="date" id="sigDate">
+  </div>
+
+  <div class="notice">This form captures no data. No server receives it. Nothing is recorded. But you hesitated before reading this, and that hesitation has been noted — by you.</div>
+
+  <div class="submit-wrap">
+    <button class="submit-btn" id="submitBtn">I understand this will become part of my permanent record</button>
+    <p class="hint">All fields are subject to review. No appeals process exists.</p>
+  </div>
+</div>
+
+<div class="pending" id="pendingPage">
+  <div class="spinner"></div>
+  <p>Processing submission…</p>
+  <p>Verifying responses…</p>
+</div>
+
+<div class="submitted-f" id="submittedPage">
+  <h2>Submission Received</h2>
+  <p>Thank you for completing the Intake Assessment.</p>
+  <p>No further action is required on your part.</p>
+  <p>A copy of your responses has been filed in your permanent record, which is to say: in the part of you that recognized itself in the questions.</p>
+  <div class="conf" id="confNum"></div>
+  <p class="fnl">Please close this browser tab. Or don't. The form is already inside you.</p>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const formPage = document.getElementById('formPage');
+    const pendingPage = document.getElementById('pendingPage');
+    const submittedPage = document.getElementById('submittedPage');
+    const submitBtn = document.getElementById('submitBtn');
+
+    /* Adversarial interaction: field that loses its question on focus */
+    const f6 = document.getElementById('f6');
+    let f6Placeholder = '';
+    f6.addEventListener('focus', function() {
+      f6Placeholder = this.placeholder;
+      this.placeholder = '';
+    });
+    f6.addEventListener('blur', function() {
+      if (!this.value) {
+        this.placeholder = f6Placeholder || 'Describe your method here';
+      }
+    });
+
+    /* Adversarial: label changes after typing into "gap" field */
+    const f8 = document.getElementById('f8');
+    const f8Label = f8.previousElementSibling.tagName === 'LABEL'
+      ? f8.previousElementSibling
+      : f8.closest('.field').querySelector('label');
+    let f8Changed = false;
+    f8.addEventListener('input', function() {
+      if (!f8Changed && this.value.length > 3) {
+        f8Changed = true;
+        f8Label.innerHTML = 'When did you first notice the gap between what was said and what was meant?<br><span style="font-size:0.78rem;color:var(--admin);font-style:italic;">You have begun to answer. Continue.</span><span class="req">*</span>';
+      }
+    });
+
+    submitBtn.addEventListener('click', function() {
+      submitBtn.classList.add('saving');
+      submitBtn.textContent = 'Submitting…';
+      submitBtn.disabled = true;
+
+      setTimeout(function() {
+        formPage.classList.add('hidden');
+        pendingPage.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        setTimeout(function() {
+          pendingPage.style.display = 'none';
+          submittedPage.style.display = 'block';
+
+          /* Generate a reference number that feels archived */
+          const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+          let conf = 'REF-';
+          for (let i = 0; i < 4; i++) conf += chars[Math.floor(Math.random() * chars.length)];
+          conf += '-';
+          for (let i = 0; i < 4; i++) conf += chars[Math.floor(Math.random() * chars.length)];
+          conf += '-';
+          const d = new Date();
+          conf += d.getFullYear();
+          conf += String(d.getMonth() + 1).padStart(2, '0');
+          conf += String(d.getDate()).padStart(2, '0');
+
+          document.getElementById('confNum').textContent = conf;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 3200);
+      }, 1200);
+    });
+  });
+</script>
+</body>
+</html>
