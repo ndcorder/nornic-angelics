@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Desk Assignment</title>
+    <style>
+    /* — Reset & Variables — */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+        --page-bg: #ede9e0;
+        --memo-bg: #faf8f4;
+        --memo-border: #c5c1b5;
+        --accent-red: #a63629;
+        --text-ink: #2a2a2a;
+        --text-faded: #737373;
+        --text-light: #a3a3a3;
+        --font-serif: Georgia, 'Times New Roman', serif;
+        --font-mono: Consolas, Monaco, 'Courier New', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+        background: var(--page-bg);
+        color: var(--text-ink);
+        font-family: var(--font-serif);
+        font-size: 16px;
+        line-height: 1.65;
+        padding: 2rem 1rem 4rem;
+        min-height: 100vh;
+    }
+
+    /* — Intro Block — */
+    .intro {
+        max-width: 660px;
+        margin: 0 auto 3rem;
+        text-align: center;
+        padding: 2rem 0;
+        opacity: 0;
+        animation: fadeUp 1.4s ease forwards;
+    }
+    .intro h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.15;
+        color: var(--text-ink);
+        margin-bottom: 0.5rem;
+    }
+    .intro .byline {
+        font-size: 0.84rem;
+        color: var(--text-faded);
+        font-style: italic;
+        line-height: 1.7;
+    }
+    .intro .prologue {
+        margin-top: 1.8rem;
+        font-size: 0.93rem;
+        color: var(--text-faded);
+        max-width: 460px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.8;
+    }
+
+    /* — Memo — */
+    .memo {
+        max-width: 660px;
+        margin: 0 auto 3.2rem;
+        background: var(--memo-bg);
+        border: 1px solid var(--memo-border);
+        border-radius: 3px;
+        padding: 2rem 2.4rem 2.2rem;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+        position: relative;
+        opacity: 0;
+        transform: translateY(18px);
+        transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .memo.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Staple marks */
+    .memo::before, .memo::after {
+        content: '';
+        position: absolute;
+        width: 10px;
+        height: 2px;
+        background: #a0a0a0;
+        border-radius: 1px;
+        top: 14px;
+    }
+    .memo::before { left: calc(50% - 14px); transform: rotate(-6deg); }
+    .memo::after { left: calc(50% + 4px); transform: rotate(4deg); }
+
+    .memo .header-block {
+        text-align: center;
+        margin-bottom: 1.3rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 1px solid var(--memo-border);
+    }
+    .memo .to-line,
+    .memo .from-line,
+    .memo .date-line {
+        font-size: 0.9rem;
+        color: var(--text-ink);
+        margin-bottom: 0.15rem;
+    }
+    .memo .subject-line {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-ink);
+        margin-top: 0.3rem;
+    }
+    .memo .memo-body {
+        margin-top: 1.1rem;
+        font-size: 0.94rem;
+        line-height: 1.75;
+    }
+    .memo .memo-body p {
+        margin-bottom: 1rem;
+    }
+    .memo .memo-body p:last-child {
+        margin-bottom: 0;
+    }
+
+    /* — ASCII Floor Plan — */
+    .floorplan {
+        background: #f5f4f0;
+        border: 1px solid #ddd;
+        border-radius: 2px;
+        padding: 1.2rem 1.4rem;
+        margin-top: 1.4rem;
+        overflow-x: auto;
+    }
+    .floorplan pre {
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        line-height: 1.45;
+        color: #444;
+        margin: 0;
+        white-space: pre;
+    }
+
+    /* — Final Memo (format collapse) — */
+    .memo.final-break {
+        background: #f4f1eb;
+        border: 1.5px solid var(--accent-red);
+        border-radius: 0;
+    }
+    .memo.final-break .header-block {
+        border-bottom-style: dashed;
+        border-bottom-color: #ccc;
+    }
+    .memo.final-break .to-line,
+    .memo.final-break .from-line,
+    .memo.final-break .date-line {
+        color: var(--text-faded);
+        font-style: italic;
+    }
+
+    /* — Keynote — */
+    .keynote {
+        max-width: 540px;
+        margin: 4rem auto 0;
+        text-align: center;
+        font-size: 0.86rem;
+        color: var(--text-light);
+        font-style: italic;
+        line-height: 1.85;
+        padding-bottom: 2rem;
+        border-top: 1px solid var(--memo-border);
+        padding-top: 1.5rem;
+        opacity: 0;
+        animation: fadeUp 1.6s ease 2.5s forwards;
+    }
+
+    /* — Animations — */
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* — Responsive — */
+    @media (max-width: 600px) {
+        body { padding: 1rem 0.5rem 3rem; }
+        .memo { padding: 1.4rem 1.2rem 1.6rem; margin-bottom: 2.5rem; }
+        .intro h1 { font-size: 1.95rem; }
+        .floorplan pre { font-size: 9.5px; }
+        .floorplan { padding: 0.8rem; }
+    }
+    </style>
+</head>
+<body>
+
+<div class="intro">
+    <h1>The Desk Assignment</h1>
+    <p class="byline">Collected internal memos of Maren Vogt, Facilities Coordinator<br>
+        Meridian Consulting Group — Portland Regional Office</p>
+    <p class="prologue">Found in a manila envelope, unmarked, beneath the floor plan drawer of desk M-2. The original charts were hand-drawn. What follows is a faithful transcription.</p>
+</div>
+
+<!-- ═══ MEMO 1 ═══ -->
+<div class="memo" id="memo-1">
+    <div class="header-block">
+        <div class="to-line">TO: Department Heads, All</div>
+        <div class="from-line">FROM: Maren Vogt, Facilities Coordinator</div>
+        <div class="date-line">DATE: September 11, 2023</div>
+        <div class="subject-line">RE: Phase 1 Consolidation — Third Floor Reconfiguration</div>
+    </div>
+    <div class="memo-body">
+        <p>As you are aware from Markham's August 29 announcement, the Portland office will reduce its footprint from three floors to one by January. The fourth and second floors will be vacated entirely.</p>
+        <p>Effective September 23, all remaining personnel will be reassigned to the third floor. I have prepared a new configuration which accommodates all active departments. The plan preserves existing adjacencies where possible.</p>
+        <p>Please review the attached chart and flag any adjacency concerns by Friday. I will hold office hours Monday and Tuesday for individual questions.</p>
+        <div class="floorplan"><pre>
+╔════════════════════════════════════════════════════════════╗
+║  THIRD FLOOR — Phase 1 Configuration (Effective 9/23)     ║
+╠════════════════════════════════════════════════════════════╣
+║                                                            ║
+║   Row A   1    2    3    4    5    6                       ║
+║          Wu  Ortega Fisk Henry Sato Campos                 ║
+║          (Acct)(Mktg) (Ops) (Ops) (IT) (Mktg)             ║
+║                                                            ║
+║   Row B   1    2    3    4    5    6                       ║
+║          Chen Reyes Park  Tonga Moss Chen                  ║
+║          (Acct)(IT)  (Adm) (Mktg)(Ops)(Dsgn)              ║
+║                                                            ║
+║   Row C   1    2    3    4    5    6                       ║
+║          Luhn  Rao  DeLuca Voss  Berg Falk                ║
+║          (Dsgn)(Acct)(Res) (Ops) (Adm)(IT)                ║
+║                                                            ║
+║   Row D   1    2    3    4                                 ║
+║          Ito  Shah  Henning Nara                           ║
+║          (Mktg)(Res) (Dsgn) (Res)                         ║
+║                                                            ║
+║   FACILITIES OFFICE (north wall)                           ║
+║          M-1  (Vogt)      M-2  (vacant)                   ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝</pre></div>
+    </div>
+</div>
+
+<!-- ═══ MEMO 2 ═══ -->
+<div class="memo" id="memo-2">
+    <div class="header-block">
+        <div class="to-line">TO: Department Heads, All</div>
+        <div class="from-line">FROM: Maren Vogt, Facilities Coordinator</div>
+        <div class="date-line">DATE: October 2, 2023</div>
+        <div class="subject-line">RE: Phase 2 — October Consolidation (22 Desks)</div>
+    </div>
+    <div class="memo-body">
+        <p>Per this morning's announcement, Research and IT have been dissolved as of September 29. I'm told this was discussed in Q3 planning. This office was not consulted on timing.</p>
+        <p>Twenty-two desks remain active. I have consolidated rows C and D into a single row and left Row D cleared for furniture removal. Please have all personal items removed from Row D desks by October 9.</p>
+        <p>Quick note: DeLuca's phone line was still ringing yesterday afternoon. His extension hasn't been reassigned yet. If IT could address this before the handoff to the sublease team, I'd appreciate it. The ringing carries.</p>
+        <div class="floorplan"><pre>
+╔════════════════════════════════════════════════════════════╗
+║  THIRD FLOOR — Phase 2 Configuration (Effective 10/2)     ║
+╠════════════════════════════════════════════════════════════╣
+║                                                            ║
+║   Row A   1    2    3    4    5    6                       ║
+║          Wu  Ortega Fisk Henry Sato Campos                 ║
+║          (Acct)(Mktg) (Ops) (Ops) (IT) (Mktg)             ║
+║                                                            ║
+║   Row B   1    2    3    4    5    6                       ║
+║          Chen Reyes Park  Tonga Moss Chen                  ║
+║          (Acct)(IT)  (Adm) (Mktg)(Ops)(Dsgn)              ║
+║                                                            ║
+║   Row C   1    2    3    4    5    6                       ║
+║          Luhn  Rao  (vacant)(vacant) Berg (vacant)         ║
+║          (Dsgn)(Acct)        Voss  (Adm)                  ║
+║                                       Falk[IT→exited]     ║
+║                                                            ║
+║   Row D   [CLEARED — furniture removal pending]            ║
+║          Ito, Shah, Henning, Nara — all exited             ║
+║          DeLuca, Rao — exited                              ║
+║          Note: DeLuca's line disconnected 10/1             ║
+║                                                            ║
+║   FACILITIES OFFICE                                        ║
+║          M-1  (Vogt)      M-2  (vacant)                   ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝</pre></div>
+    </div>
+</div>
+
+<!-- ═══ MEMO 3 ═══ -->
+<div class="memo" id="memo-3">
+    <div class="header-block">
+        <div class="to-line">TO: Mr. Richardson, Managing Director</div>
+        <div class="from-line">FROM: Maren Vogt, Facilities Coordinator</div>
+        <div class="date-line">DATE: October 16, 2023</div>
+        <div class="subject-line">RE: Phase 3 — Seating Reassignments (October 16)</div>
+    </div>
+    <div class="memo-body">
+        <p>Operations was dissolved October 12. Henry, Fisk, Voss, and Moss exited that week. I have removed their desks from the active plan.</p>
+        <p>Per your instruction, I have discretion over intra-floor reassignments to optimize remaining space. I've moved a few people to fill gaps and keep the floor functional.</p>
+        <p>For the record: the wall between my office and the old Row C corridor is thin enough that I can hear conversations at normal volume. During the reassignment I did my best to account for the acoustic environment. Some adjacencies are better than others for morale.</p>
+        <div class="floorplan"><pre>
+╔════════════════════════════════════════════════════════════╗
+║  THIRD FLOOR — Phase 3 Configuration (Effective 10/16)    ║
+╠════════════════════════════════════════════════════════════╣
+║                                                            ║
+║   Row A   1    2    3    4    5                            ║
+║          Wu  Ortega Campos Tonga [vacant]                  ║
+║          (Acct)(Mktg) (Mktg)(Mktg)                        ║
+║                                       Sato[IT→exited]     ║
+║                                                            ║
+║   Row B   1    2    3    4                                 ║
+║          Chen Reyes Park  Chen                             ║
+║          (Acct)(IT)  (Adm) (Dsgn)                         ║
+║                  Moss[Ops→exited]                         ║
+║                                                            ║
+║   Row C   1    2                                           ║
+║          Luhn  Berg                                        ║
+║          (Dsgn)(Adm)                                       ║
+║          Rao[Acct→exited]  Voss[Ops→exited]               ║
+║          Falk[IT→exited]                                   ║
+║                                                            ║
+║   Row D   [CLEARED]                                        ║
+║                                                            ║
+║   FACILITIES OFFICE                                        ║
+║          M-1  (Vogt)      M-2  (vacant)                   ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝</pre></div>
+    </div>
+</div>
+
+<!-- ═══ MEMO 4 ═══ -->
+<div class="memo" id="memo-4">
+    <div class="header-block">
+        <div class="to-line">TO: Mr. Richardson, Managing Director</div>
+        <div class="from-line">FROM: Maren Vogt, Facilities Coordinator</div>
+        <div class="date-line">DATE: October 30, 2023</div>
+        <div class="subject-line">RE: Phase 4 — Marketing Dissolution</div>
+    </div>
+    <div class="memo-body">
+        <p>Marketing was dissolved October 27. Ortega, Campos, and Tonga exited October 27–29. I have updated the plan.</p>
+        <p>Seven desks remain. Admin is, to my understanding, the last active department. Accounting and Design each have one remaining staff member whose departments no longer exist but who have not yet been given exit dates. I have kept them on the floor plan for now.</p>
+        <p>The third floor is quite quiet. Berg was telling Chen about his daughter's school play this morning — the sound carries from Row C. I don't think they realized I could hear. It was a good story. The daughter sounds remarkable.</p>
+        <div class="floorplan"><pre>
+╔════════════════════════════════════════════════════════════╗
+║  THIRD FLOOR — Phase 4 Configuration (Effective 10/30)    ║
+╠════════════════════════════════════════════════════════════╣
+║                                                            ║
+║   Row A   1                                                ║
+║          Wu                                                ║
+║          (Acct)                                            ║
+║          Ortega[Mktg→exited]  Campos[Mktg→exited]         ║
+║          Tonga[Mktg→exited]    Sato[IT→exited]            ║
+║                                                            ║
+║   Row B   1         2    3                                 ║
+║          Chen      Park Reyes                             ║
+║          (Acct/Dsgn)(Adm)(IT)                              ║
+║          (cross-dept)                                      ║
+║                                                            ║
+║   Row C   1    2                                           ║
+║          Luhn  Berg                                        ║
+║          (Dsgn)(Adm)                                       ║
+║                                                            ║
+║   Row D   [CLEARED]                                        ║
+║                                                            ║
+║   FACILITIES OFFICE                                        ║
+║          M-1  (Vogt)      M-2  (vacant)                   ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝</pre></div>
+    </div>
+</div>
+
+<!-- ═══ MEMO 5 ═══ -->
+<div class="memo" id="memo-5">
+    <div class="header-block">
+        <div class="to-line">TO: Mr. Richardson, Managing Director</div>
+        <div class="from-line">FROM: Maren Vogt, Facilities Coordinator</div>
+        <div class="date-line">DATE: November 13, 2023</div>
+        <div class="subject-line">RE: Phase 5 — Accounting and Design Dissolution</div>
+    </div>
+    <div class="memo-body">
+        <p>Accounting and Design were dissolved November 10. Wu and Luhn exited November 12. The last two departmental names are gone from the org chart.</p>
+        <p>Remaining desks: B-2 (Park, Admin), B-3 (Reyes, IT — cross-departmental retention), C-2 (Berg, Admin), M-1 (my office). Four active desks total.</p>
+        <p>Mr. Richardson, I want to note — because I believe it is my responsibility to note — that I have retained Reyes at B-3 despite IT having been dissolved in September. He was not on any exit list I received. If there is a reason he should be removed from the plan, I would appreciate being informed directly. I have been making adjacency decisions based on my own observations and I understand this may exceed my authority.</p>
+        <p>I am trying to do this correctly.</p>
+        <div class="floorplan"><pre>
+╔════════════════════════════════════════════════════════════╗
+║  THIRD FLOOR — Phase 5 Configuration (Effective 11/13)    ║
+╠════════════════════════════════════════════════════════════╣
+║                                                            ║
+║   Row A   [CLEARED]                                        ║
+║          Wu[Acct→exited]                                   ║
+║                                                            ║
+║   Row B         2    3                                     ║
+║               Park  Reyes                                 ║
+║               (Adm)  (IT/cross-dept)                      ║
+║          Chen[Dsgn→retained B-1, now exited 11/12]        ║
+║                                                            ║
+║   Row C         2                                          ║
+║               Berg                                         ║
+║               (Adm)                                        ║
+║          Luhn[Dsgn→exited]                                ║
+║                                                            ║
+║   FACILITIES OFFICE                                        ║
+║          M-1  (Vogt)      M-2  (vacant)                   ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝</pre></div>
+    </div>
+</div>
+
+<!-- ═══ MEMO 6 ═══ -->
+<div class="memo" id="memo-6">
+    <div class="header-block">
+        <div class="to-line">TO: Mr. Richardson, Managing Director</div>
+        <div class="from-line">FROM: Maren Vogt, Facilities Coordinator</div>
+        <div class="date-line">DATE: December 2, 2023</div>
+        <div class="subject-line">RE: Phase 6 — Admin Dissolution</div>
+    </div>
+    <div class="memo-body">
+        <p>Admin was dissolved November 30. Park and Berg exited December 1.</p>
+        <p>That leaves Reyes, whose department was dissolved in September. I have not received an exit authorization for him. He is sitting at B-3 as of this morning. He brought in a coffee maker. I can hear it from my office. He makes a full pot every morning and it takes him until noon to finish it.</p>
+        <p>I am told my position remains through the sublease handoff, which is scheduled for January 15. Two desks. That is what is left.</p>
+        <div class="floorplan"><pre>
+╔════════════════════════════════════════════════════════════╗
+║  THIRD FLOOR — Phase 6 Configuration (Effective 12/2)     ║
+╠════════════════════════════════════════════════════════════╣
+║                                                            ║
+║   Row B         3                                          ║
+║               Reyes                                        ║
+║               (IT/cross-dept)                              ║
+║                                                            ║
+║   FACILITIES OFFICE                                        ║
+║          M-1  (Vogt)      M-2  (vacant)                   ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝</pre></div>
+    </div>
+</div>
+
+<!-- ═══ MEMO 7 (final — format collapse) ═══ -->
+<div class="memo final-break" id="memo-7">
+    <div class="header-block">
+        <div class="to-line">TO:</div>
+        <div class="from-line">FROM: Maren Vogt</div>
+        <div class="date-line">DATE: January 8, 2024</div>
+        <div class="subject-line">RE:</div>
+    </div>
+    <div class="memo-body">
+        <p>Reyes exited January 5. I don't know if he was told to leave or if he just stopped coming. The coffee maker is still on his desk. Half a pot from Thursday. I didn't pour it out.</p>
+        <p>I have one desk left. It's mine. The sublease team takes over the floor on the fifteenth.</p>
+        <p>Here is what I kept, and why, and you can decide whether it was a system or just me listening through the walls and keeping the ones who sounded like they were still there:</p>
+        <p>Wu, who stayed late to check a junior's work unprompted, and who asked people about their weekends and remembered the answers.</p>
+        <p>Chen, who laughed at Park's vampire-accountant joke — the one about the blood ledger — until she had to put her coffee down. The kind of laugh that surprises you. That makes you remember the room was full of people and not just furniture with pulse rates.</p>
+        <p>DeLuca, who called his wife before end of day, not with news, just to hear her. He hung up and said her name to the empty room. <em>Lara.</em> Like a question.</p>
+        <p>Park, who told bad jokes and apologized for them and told them anyway.</p>
+        <p>Reyes, who asked Chen about her cat every single morning. The cat had been dead for two years. He knew. He asked anyway.</p>
+        <p>Berg, who could hear his daughter in the next room, or thought he could — he told Chen about it once and she told him that was grief, not sound, and he laughed and said what's the difference.</p>
+        <p>I kept them on the plan as long as I could. After that I kept them in the room as long as I could. After that I just kept them — in the alcove, in my head, in the document, until there was no document left to hold anyone.</p>
+        <p>If you've been reconstructing my thinking from these memos — if you've been counting who stayed and who went, trying to find the pattern — then you know what I valued. Congratulations.</p>
+        <p>But consider what you just did. You looked at a room full of people and decided which ones deserved to stay based on whether they moved you. Whether their small kindnesses earned them a place on your chart.</p>
+        <p>That's what I did too.</p>
+        <p>The building is empty. The sublease is signed. They asked me to turn off the lights on my way out.</p>
+        <p>I left the lights on in Row C.</p>
+        <p style="margin-top: 2.5rem; font-style: italic; color: var(--text-faded);">— M. Vogt, Facilities<br>
+        Portland Regional Office<br>
+        (closed)</p>
+    </div>
+</div>
+
+<div class="keynote">
+    <p>You have been reading a work of fiction.<br>
+    The Meridian Consulting Group does not exist.<br>
+    The Portland Regional Office is closed.<br>
+    The people in the memos are not real.</p>
+    <p style="margin-top: 0.8rem;">What you chose to notice about them — that was.</p>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const memos = document.querySelectorAll('.memo');
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReduced) {
+        memos.forEach(m => m.classList.add('visible'));
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.12 });
+
+    memos.forEach(m => observer.observe(m));
+});
+</script>
+
+</body>
+</html>

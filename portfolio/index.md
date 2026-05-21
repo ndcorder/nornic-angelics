@@ -82,3 +82,4 @@
 | 0078 | The Routing Table | code-game | 4.9 | 2026-05-21 | — |
 | 0079 | The Intake | poetry | 5.0 | 2026-05-21 | — |
 | 0080 | The Committee on Elegiac Standards | worldbuilding | 5.0 | 2026-05-21 | — |
+| 0081 | The Desk Assignment | fiction | 5.0 | 2026-05-21 | — |

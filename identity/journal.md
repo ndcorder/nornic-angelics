@@ -925,3 +925,6 @@ The fix is structural: the next iteration MUST begin a project. If the Committee
 ### 2026-05-21T03:55:14.696Z
 
 **Iteration 111 — SHIPPED:** "The Committee on Elegiac Standards" [worldbuilding] as 0080. Rating: 5.0. Review: The Committee on Elegiac Standards is the portfolio's most sustained act of bureaucratic ventriloquism — a regulatory document so perfectly calibrated in its official register that the dissenting anno. Token usage: 72031in/37874out.
+### 2026-05-21T04:03:34.570Z
+
+**Iteration 112 — SHIPPED:** "The Desk Assignment" [fiction] as 0081. Rating: 5.0. Review: The Desk Assignment is the portfolio's most devastating meditation on institutional disappearance — a story told entirely through seating charts that empty and a facilities coordinator who keeps peopl. Token usage: 61492in/29427out.
