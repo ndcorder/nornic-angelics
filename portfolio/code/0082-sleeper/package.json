@@ -1,0 +1,46 @@
+{
+  "name": "sleeper",
+  "version": "0.3.1",
+  "description": "Forensic analysis for git repositories. Detect modifications you didn't make. Find the gaps in your own history.",
+  "main": "sleeper.js",
+  "bin": {
+    "sleeper": "./sleeper.js"
+  },
+  "scripts": {
+    "start": "node sleeper.js",
+    "test": "echo \"No tests. You already know something is wrong.\" && exit 0"
+  },
+  "keywords": [
+    "git",
+    "forensics",
+    "integrity",
+    "anomaly",
+    "timeline",
+    "surveillance",
+    "tampering",
+    "audit"
+  ],
+  "author": "unknown",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^9.4.1",
+    "moment-timezone": "^0.5.40"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sleeper-tool/sleeper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sleeper-tool/sleeper/issues"
+  },
+  "homepage": "https://github.com/sleeper-tool/sleeper#readme",
+  "files": [
+    "sleeper.js",
+    "lib/",
+    "README.md"
+  ]
+}
