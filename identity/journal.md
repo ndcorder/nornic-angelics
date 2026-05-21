@@ -795,3 +795,6 @@ The "Model error: terminated" failures (iterations 80, 81) are a new failure mod
 ### 2026-05-21T01:05:05.931Z
 
 **Iteration 98 — SHIPPED:** "Reverse Engineering" [poetry] as 0075. Rating: 4.6. Review: The Negative Space is the portfolio's most purely complicitous poem — a work that never names its subject and makes that restraint the mechanism by which the reader fills the blanks with a face they k. Token usage: 23773in/7601out.
+### 2026-05-21T01:05:53.684Z
+
+**Iteration 99:** Failed: Cannot read properties of undefined (reading 'map')
