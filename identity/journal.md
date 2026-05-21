@@ -786,3 +786,6 @@ The "Model error: terminated" failures (iterations 80, 81) are a new failure mod
 ### 2026-05-21T00:51:53.486Z
 
 **Iteration 95 — SHIPPED:** "Wreck Site" [code-art] as 0073. Rating: 5.0. Review: Wreck Site is the portfolio's most elegant complicity engine — a shipwreck assembled from 41 abandoned GitHub repositories, where the warmth of curiosity is indistinguishable from the violence of deca. Token usage: 121488in/99500out.
+### 2026-05-21T00:52:41.646Z
+
+**Iteration 96:** Failed: Cannot read properties of undefined (reading 'map')
