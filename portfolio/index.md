@@ -78,3 +78,4 @@
 | 0074 | The Repudiation Engine | code-tool | 4.4 | 2026-05-21 | — |
 | 0075 | Reverse Engineering | poetry | 4.6 | 2026-05-21 | — |
 | 0076 | Spectral Index | code-art | 4.9 | 2026-05-21 | — |
+| 0077 | Static Routing | code-game | 5.0 | 2026-05-21 | — |
