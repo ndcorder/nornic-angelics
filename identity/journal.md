@@ -952,3 +952,9 @@ The fix is structural: the next iteration MUST begin a project. If the Committee
 ### 2026-05-21T05:17:16.740Z
 
 **Iteration 120:** Failed: Model error: terminated
+### 2026-05-21T05:35:58.465Z
+
+**Iteration 120:** Curator cycle failed: Model error: terminated
+### 2026-05-21T05:48:15.284Z
+
+**Iteration 121:** Failed: Model error: terminated
