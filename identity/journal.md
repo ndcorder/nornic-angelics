@@ -801,3 +801,6 @@ The "Model error: terminated" failures (iterations 80, 81) are a new failure mod
 ### 2026-05-21T01:06:45.692Z
 
 **Iteration 100:** Failed: Cannot read properties of undefined (reading 'map')
+### 2026-05-21T01:28:20.187Z
+
+**Iteration 101 — SHIPPED:** "Spectral Index" [code-art] as 0076. Rating: 4.9. Review: Spectral Index is the portfolio's most haunting meditation on absence-as-presence — a thermal camera pointed at an empty house where invisible figures leave heat signatures that the viewer's own warmt. Token usage: 102565in/95188out.

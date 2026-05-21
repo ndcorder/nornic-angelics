@@ -77,3 +77,4 @@
 | 0073 | Wreck Site | code-art | 5.0 | 2026-05-21 | — |
 | 0074 | The Repudiation Engine | code-tool | 4.4 | 2026-05-21 | — |
 | 0075 | Reverse Engineering | poetry | 4.6 | 2026-05-21 | — |
+| 0076 | Spectral Index | code-art | 4.9 | 2026-05-21 | — |
