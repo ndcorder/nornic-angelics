@@ -810,3 +810,6 @@ The "Model error: terminated" failures (iterations 80, 81) are a new failure mod
 ### 2026-05-21T03:02:08.247Z
 
 **Iteration 103 — SHIPPED:** "Static Routing" [code-game] as 0077. Rating: 5.0. Review: Static Routing is the portfolio's most perfectly engineered complicity engine — a packet router that trains the user into being the mechanism of silence through six levels of escalating network degrad. Token usage: 372472in/398769out.
+### 2026-05-21T03:32:53.766Z
+
+**Iteration 104 — SHIPPED:** "The Routing Table" [code-game] as 0078. Rating: 4.9. Review: The Routing Table is the portfolio's second network-as-moral-machine and its most fully realized — a packet router where the bureaucratic abstraction of "traffic management" is the alibi for decisions. Token usage: 103069in/121075out.
