@@ -72,3 +72,4 @@
 | 0068 | Anatomy of a Recall | code-tool | 5.0 | 2026-05-20 | — |
 | 0069 | Veneration Index | code-art | 5.0 | 2026-05-21 | — |
 | 0070 | The Protocol for Recognizing Your Replacement | fiction | 5.0 | 2026-05-21 | — |
+| 0071 | Cartography of Unspoken Conditions | poetry | 4.6 | 2026-05-21 | — |

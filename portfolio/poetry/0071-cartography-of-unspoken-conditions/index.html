@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartography of Unspoken Conditions</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f0edea;
+      color: #2a2a2a;
+      font-family: 'Courier Prime', monospace;
+      line-height: 1.8;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      max-width: 620px;
+      margin: 4rem auto 5rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 1.05rem;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+      color: #4a4a4a;
+    }
+
+    header .patient-info {
+      font-size: 0.75rem;
+      color: #999;
+      line-height: 2.2;
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+      padding: 1.2rem 0;
+      display: inline-block;
+    }
+
+    main {
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    .scan {
+      margin-bottom: 4.5rem;
+      padding-bottom: 4rem;
+      border-bottom: 1px solid #d5d0cb;
+    }
+
+    .scan:last-child {
+      border-bottom: none;
+    }
+
+    .scan-label {
+      font-size: 0.68rem;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: 2rem;
+    }
+
+    .stanza {
+      font-size: 0.95rem;
+      color: #3a3a3a;
+    }
+
+    .stanza p {
+      margin-bottom: 1.4rem;
+    }
+
+    .stanza p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Progressive fading — the image degrades */
+    .scan:nth-child(6) .stanza {
+      color: #555;
+    }
+
+    .scan:nth-child(7) .stanza {
+      color: #666;
+    }
+
+    .scan:nth-child(8) .stanza {
+      color: #777;
+      line-height: 2.1;
+    }
+
+    /* The blank scan */
+    .scan.blank-scan {
+      min-height: 42vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-bottom: none;
+      margin-top: 5rem;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .radiologist-note {
+      font-size: 0.78rem;
+      color: #aaa;
+      font-style: italic;
+      letter-spacing: 0.04em;
+    }
+
+    footer {
+      max-width: 620px;
+      margin: 5rem auto 4rem;
+      text-align: center;
+    }
+
+    footer p {
+      font-size: 0.6rem;
+      color: #ccc;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 1.5rem 1.25rem;
+      }
+      header {
+        margin: 2rem auto 3.5rem;
+      }
+      .scan {
+        margin-bottom: 3rem;
+        padding-bottom: 2.5rem;
+      }
+      .scan.blank-scan {
+        min-height: 30vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Cartography of Unspoken Conditions</h1>
+    <div class="patient-info">
+      Series: AX T1 pre/post contrast &middot; Slice thickness: 4.0mm<br>
+      Study date: withheld &middot; Referring physician: self
+    </div>
+  </header>
+
+  <main>
+
+    <!-- SCAN 1 — Localizer: stable language, clinical calm -->
+    <section class="scan">
+      <div class="scan-label">Scan 1 &mdash; Series 2001 &middot; Localizer</div>
+      <div class="stanza">
+        <p>
+          Initial survey demonstrates symmetric enhancement
+          <br>of bilateral temporal lobes. The amygdalae return
+          <br>homogeneous signal—no focal lesion, no mass effect.
+        </p>
+        <p>
+          A small calcification is noted in the left
+          <br>ventricle. Probably benign. Recommend clinical
+          <br>correlation. The technician asks if there is
+          <br>anything we should know about.
+        </p>
+      </div>
+    </section>
+
+    <!-- SCAN 2 — Contrast introduced, intimacy enters -->
+    <section class="scan">
+      <div class="scan-label">Scan 2 &mdash; Series 2003 &middot; Axial FLAIR</div>
+      <div class="stanza">
+        <p>
+          Contrast agent administered without complication.
+          <br>You said the room was warm. I was not in the room
+          <br>but the report notes thermal artifacts along the
+          <br>anterior wall—motion, possibly. Or the heat of your
+          <br>hand on mine between sequences.
+        </p>
+        <p>
+          Enhancement pattern is normal. Nothing retains
+          <br>the Gadolinium. Nothing lights up yet.
+        </p>
+      </div>
+    </section>
+
+    <!-- SCAN 3 — The first tremor -->
+    <section class="scan">
+      <div class="scan-label">Scan 3 &mdash; Series 2005 &middot; T2 Axial</div>
+      <div class="stanza">
+        <p>
+          Free fluid in the dependent portions.
+          <br>Physiologic, the radiologist notes. Meaning
+          <br>within the range of what bodies do
+          <br>when they have been crying.
+        </p>
+        <p>
+          The corpus callosum is intact.
+          <br>Left hemisphere communicates with right.
+          <br>There is still a pathway.
+          <br>There is still a pathway the signal follows.
+        </p>
+      </div>
+    </section>
+
+    <!-- SCAN 4 — The word "territory" -->
+    <section class="scan">
+      <div class="scan-label">Scan 4 &mdash; Series 2007 &middot; DWI/ADC</div>
+      <div class="stanza">
+        <p>
+          Diffusion-weighted imaging reveals restricted
+          <br>signal in the watershed zones—the territories
+          <br>between where one supply ends and another
+          <br>begins. These are the areas that go first.
+        </p>
+        <p>
+          Not dead tissue. Not yet. Just
+          <br>the tissue that receives less—
+          <br>than it needs to function.
+        </p>
+      </div>
+    </section>
+
+    <!-- SCAN 5 — The body knows before the report -->
+    <section class="scan">
+      <div class="scan-label">Scan 5 &mdash; Series 2009 &middot; T1 Post-Contrast</div>
+      <div class="stanza">
+        <p>
+          The borders enhance. Where the lesion meets
+          <br>healthy tissue there is inflammation, the body
+          <br>sending blood to what it recognizes as wound.
+          <br>The body knows before the report is dictated.
+        </p>
+        <p>
+          The lesion is not well-circumscribed.
+          <br>It does not have a margin you could draw
+          <br>around and say: here is the edge of it.
+        </p>
+      </div>
+    </section>
+
+    <!-- SCAN 6 — Language begins to destabilize -->
+    <section class="scan">
+      <div class="scan-label">Scan 6 &mdash; Series 2011 &middot; Susceptibility</div>
+      <div class="stanza">
+        <p>
+          There is blooming where the calcification was.
+          <br>In radiology blooming is the artifact that makes
+          <br>a thing appear larger than it is. The shadow
+          <br>bigger than the stone.
+        </p>
+        <p>
+          This is called susceptibility artifact.
+          <br>Meaning the image is vulnerable to distortion.
+          <br>Meaning something small has become something
+          <br>that cannot be looked past.
+        </p>
+      </div>
+    </section>
+
+    <!-- SCAN 7 — Clinical language falters -->
+    <section class="scan">
+      <div class="scan-label">Scan 7 &middot; Series 2013 &middot; Ax T2 FLAIR &middot; Sequence incomplete</div>
+      <div class="stanza">
+        <p>
+          Abnormal signal where there was none
+          <br>previously. Progression. The word
+          <br>progression in a radiology report. A word
+          <br>the body uses when something is advancing
+          <br>along the path it was always going to take.
+        </p>
+        <p>
+          The margins are indistinct.
+          <br>Enhancement is heterogeneous.
+          <br>The light does not pass through evenly
+          <br>anymore.
+        </p>
+      </div>
+    </section>
+
+    <!-- SCAN 8 — Language nearly opaque -->
+    <section class="scan">
+      <div class="scan-label">Scan 8 &middot; Contrast &middot; &mdash; &middot; Artifact</div>
+      <div class="stanza">
+        <p>
+          The ventricles are prominent. The sulci
+          <br>are prominent. There is volume loss
+          <br>in the—everything is prominent
+          <br>and everything is prominent
+          <br>and the report is being dictated
+          <br>more slowly now
+        </p>
+        <p>
+          and the contrast does not
+          <br>enhance what it was meant to
+          <br>enhance and there are regions
+          <br>that do not appear on any
+          <br>sequence that is called
+          <br>something that cannot be named
+        </p>
+      </div>
+    </section>
+
+    <!-- SCAN 9 — THE BLANK SCAN -->
+    <section class="scan blank-scan">
+      <div class="scan-label">Scan 9 &middot; Not performed</div>
+      <p class="radiologist-note">Patient withdrew consent for further imaging.</p>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>End of report</p>
+  </footer>
+
+</body>
+</html>

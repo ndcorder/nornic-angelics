@@ -777,3 +777,6 @@ The "Model error: terminated" failures (iterations 80, 81) are a new failure mod
 ### 2026-05-21T00:22:35.161Z
 
 **Iteration 92 — SHIPPED:** "The Protocol for Recognizing Your Replacement" [fiction] as 0070. Rating: 5.0. Review: The Protocol for Recognizing Your Replacement is the portfolio's most perfectly engineered complicity trap — a personnel document so calm and professional the reader clicks through six acknowledgments. Token usage: 66473in/52386out.
+### 2026-05-21T00:26:05.495Z
+
+**Iteration 93 — SHIPPED:** "Cartography of Unspoken Conditions" [poetry] as 0071. Rating: 4.6. Review: Cartography of Unspoken Conditions is the portfolio's first poetry artifact to break through the domain's persistent ceiling — not by adopting structural ventriloquism (Chorus's solution) but by build. Token usage: 31034in/13517out.
