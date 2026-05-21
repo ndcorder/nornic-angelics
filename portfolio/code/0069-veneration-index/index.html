@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Veneration Index</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --wall: #0d0b09;
+      --case-bg: rgba(26, 23, 19, 0.6);
+      --text: #c4b99a;
+      --dim: #6a6254;
+      --accent: #d4c5a9;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--wall);
+      color: var(--text);
+      font-family: 'EB Garamond', Georgia, serif;
+    }
+
+    #museum {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ── Navigation ── */
+
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 56px;
+      height: 120px;
+      z-index: 10;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      outline: none;
+      color: var(--dim);
+      font-size: 1.6rem;
+      font-family: 'EB Garamond', serif;
+      transition: color 0.4s, opacity 0.4s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-btn:hover { color: var(--accent); }
+    .nav-btn.hidden { opacity: 0; pointer-events: none; }
+    .nav-btn:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; }
+
+    #nav-left { left: 24px; }
+    #nav-right { right: 24px; }
+
+    .nav-key {
+      display: block;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-top: 6px;
+    }
+
+    /* ── Room Header ── */
+
+    #room-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 76px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      pointer-events: none;
+      transition: opacity 0.6s;
+    }
+
+    #room-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: 0.72rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--dim);
+      transition: opacity 0.6s;
+    }
+
+    #room-count {
+      font-family: 'EB Garamond', serif;
+      font-size: 0.6rem;
+      color: rgba(106, 98, 84, 0.4);
+      margin-top: 2px;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Object Scroll Area ── */
+
+    #object-scroll {
+      position: absolute;
+      top: 76px;
+      left: 90px;
+      right: 90px;
+      bottom: 200px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      transition: opacity 0.6s;
+    }
+
+    #object-scroll::-webkit-scrollbar { width: 3px; }
+    #object-scroll::-webkit-scrollbar-track { background: transparent; }
+    #object-scroll::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
+
+    /* ── Glass Case ── */
+
+    #glass-case {
+      position: relative;
+      width: 100%;
+      border: 1px solid rgba(212, 197, 169, 0.1);
+      background: var(--case-bg);
+      transition: opacity 0.6s ease;
+    }
+
+    .glass-sheen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 30%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.018) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    #object-inner {
+      width: 100%;
+      aspect-ratio: 5 / 3;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #object-display {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #object-display svg {
+      max-width: 75%;
+      max-height: 75%;
+      opacity: 0.9;
+    }
+
+    #spotlight {
+      position: absolute;
+      top: -40%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 120%;
+      background: radial-gradient(ellipse at center, rgba(255, 250, 235, 0.025) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    #object-label {
+      width: 100%;
+      padding: 8px 20px 10px;
+      border-top: 1px solid rgba(212, 197, 169, 0.06);
+      text-align: center;
+    }
+
+    #label-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+    }
+
+    #label-date {
+      font-size: 0.75rem;
+      color: var(--dim);
+      margin-top: 1px;
+    }
+
+    /* ── Caption ── */
+
+    #caption-area {
+      position: absolute;
+      bottom: 0;
+      left: 90px;
+      right: 90px;
+      height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 16px 48px;
+      z-index: 5;
+      transition: opacity 0.6s;
+    }
+
+    #caption-text {
+      font-size: 1rem;
+      line-height: 1.85;
+      text-align: center;
+      max-width: 620px;
+      min-height: 2.6em;
+      color: var(--text);
+      transition: opacity 0.4s;
+    }
+
+    #caption-accreditation {
+      margin-top: 10px;
+      font-size: 0.68rem;
+      color: rgba(106, 98, 84, 0.35);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* ── Progress Bar ── */
+
+    #progress-bar {
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      transition: opacity 0.6s;
+    }
+
+    .progress-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(106, 98, 84, 0.3);
+      transition: background 0.5s, transform 0.5s;
+    }
+
+    .progress-dot.active {
+      background: var(--accent);
+      transform: scale(1.4);
+    }
+
+    .progress-dot.passed {
+      background: rgba(212, 197, 169, 0.4);
+    }
+
+    /* ── Dwell Meter ── */
+
+    #dwell-meter {
+      position: absolute;
+      bottom: 38px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 1px;
+      background: rgba(106, 98, 84, 0.15);
+      overflow: hidden;
+      border-radius: 1px;
+      transition: opacity 0.6s;
+    }
+
+    #dwell-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(212, 197, 169, 0.5), rgba(212, 197, 169, 0.15));
+      transition: width 0.3s;
+    }
+
+    /* ── Screens (Entrance / Exit / Report) ── */
+
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 20;
+    }
+
+    .screen.hidden { display: none; }
+
+    /* Entrance */
+
+    #entrance {
+      background: var(--wall);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    #ent-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: 2.2rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-align: center;
+    }
+
+    #ent-sub {
+      font-size: 0.92rem;
+      color: var(--dim);
+      margin-top: 20px;
+      text-align: center;
+      max-width: 460px;
+      line-height: 1.8;
+    }
+
+    #ent-enter {
+      margin-top: 50px;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--dim);
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    /* Exit */
+
+    #exit-screen {
+      background: var(--wall);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    #exit-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: 1.6rem;
+      color: var(--accent);
+      text-align: center;
+      max-width: 480px;
+      line-height: 1.7;
+    }
+
+    #exit-sub {
+      margin-top: 40px;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--dim);
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
+    }
+
+    /* Report */
+
+    #report {
+      background: #faf8f4;
+      color: #1a1816;
+      font-family: 'EB Garamond', Georgia, serif;
+      overflow-y: auto;
+    }
+
+    #report-inner {
+      max-width: 660px;
+      margin: 0 auto;
+      padding: 80px 48px 100px;
+    }
+
+    #report h1 {
+      font-family: 'EB Garamond', serif;
+      font-weight: 500;
+      font-size: 0.78rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: #1a1816;
+      margin-bottom: 6px;
+    }
+
+    .report-id {
+      font-family: 'Courier New', monospace;
+      font-size: 0.68rem;
+      color: #999;
+      margin-bottom: 50px;
+    }
+
+    .section-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #999;
+      margin-top: 44px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #e0ddd8;
+      padding-bottom: 6px;
+    }
+
+    .report-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 5px 0;
+      border-bottom: 1px solid #f0ede8;
+      font-size: 0.9rem;
+    }
+
+    .report-row .r-label { color: #444; }
+
+    .report-row .r-value {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: #1a1816;
+    }
+
+    .ranking-item {
+      display: flex;
+      align-items: baseline;
+      padding: 9px 0;
+      border-bottom: 1px solid #f0ede8;
+    }
+
+    .rank-num {
+      font-family: 'Courier New', monospace;
+      font-size: 0.72rem;
+      color: #bbb;
+      width: 28px;
+      flex-shrink: 0;
+    }
+
+    .rank-bar-wrap {
+      flex: 1;
+      margin: 0 14px;
+      height: 4px;
+      background: #f0ede8;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .rank-bar {
+      height: 100%;
+      background: #1a1816;
+      border-radius: 2px;
+      transition: width 1s ease;
+    }
+
+    .rank-name {
+      flex: 1.8;
+      font-size: 0.85rem;
+      color: #333;
+      line-height: 1.3;
+    }
+
+    .rank-time {
+      font-family: 'Courier New', monospace;
+      font-size: 0.7rem;
+      color: #888;
+      width: 48px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    #anomaly {
+      margin-top: 44px;
+      padding: 22px 24px;
+      border: 1px solid #c8bfb0;
+      background: #f5f2ed;
+    }
+
+    #anomaly-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #8b7e6e;
+      margin-bottom: 14px;
+    }
+
+    #anomaly p {
+      font-size: 0.92rem;
+      line-height: 1.85;
+      color: #2a2622;
+    }
+
+    #report-footer {
+      margin-top: 60px;
+      padding-top: 16px;
+      border-top: 1px solid #e0ddd8;
+      font-family: 'Courier New', monospace;
+      font-size: 0.6rem;
+      color: #bbb;
+      text-align: center;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Responsive ── */
+
+    @media (max-width: 768px) {
+      #object-scroll { left: 48px; right: 48px; bottom: 180px; }
+      #caption-area { left: 48px; right: 48px; height: 160px; padding: 12px 24px; }
+      #caption-text { font-size: 0.9rem; }
+      .nav-btn { width: 40px; }
+      #nav-left { left: 8px; }
+      #nav-right { right: 8px; }
+    }
+
+    @media (max-width: 480px) {
+      #object-scroll { left: 36px; right: 36px; }
+      #caption-area { left: 36px; right: 36px; padding: 10px 16px; }
+      #ent-title { font-size: 1.6rem; letter-spacing: 0.15em; }
+      #ent-sub { font-size: 0.85rem; max-width: 320px; }
+      #report-inner { padding: 50px 24px 80px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="museum">
+
+    <!-- Entrance -->
+    <div id="entrance" class="screen" role="button" tabindex="0" aria-label="Enter the exhibition">
+      <div id="ent-title">Veneration Index</div>
+      <div id="ent-sub">
+        A collection of objects once touched by saints, dictators, lovers, and Nobel laureates.<br>
+        Each item rendered in detail. Each caption attributing power to mere contact.
+      </div>
+      <div id="ent-enter">Click to enter</div>
+    </div>
+
+    <!-- Exit -->
+    <div id="exit-screen" class="screen hidden" role="button" tabindex="0" aria-label="View analysis">
+      <div id="exit-text">End of exhibition.</div>
+      <div id="exit-sub">Click for analysis</div>
+    </div>
+
+    <!-- Report -->
+    <div id="report" class="screen hidden">
+      <div id="report-inner"></div>
+    </div>
+
+    <!-- Room Chrome -->
+    <div id="room-header">
+      <div id="room-title">Veneration Index</div>
+      <div id="room-count"></div>
+    </div>
+
+    <button id="nav-left" class="nav-btn hidden" aria-label="Previous object">&#9666;<span class="nav-key">&#8592;</span></button>
+    <button id="nav-right" class="nav-btn hidden" aria-label="Next object">&#9656;<span class="nav-key">&#8594;</span></button>
+
+    <div id="object-scroll">
+      <div id="glass-case">
+        <div id="object-inner">
+          <div id="spotlight"></div>
+          <div id="object-display"></div>
+          <div class="glass-sheen"></div>
+        </div>
+        <div id="object-label">
+          <div id="label-title"></div>
+          <div id="label-date"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="caption-area">
+      <div id="caption-text"></div>
+      <div id="caption-accreditation"></div>
+    </div>
+
+    <div id="dwell-meter"><div id="dwell-fill"></div></div>
+    <div id="progress-bar"></div>
+  </div>
+
+  <script>
+  (function () {
+    'use strict';
+
+    /* ================================================================
+       OBJECTS — each with name, provenance, caption, and SVG renderer
+       ================================================================ */
+
+    var objects = [
+      {
+        name: "Handrail Section",
+        subtitle: "from the Piccadilly Line, King's Cross station",
+        date: "7 July 2005",
+        accreditation: "London Transport Museum, London",
+        caption: "This section of stainless steel handrail was gripped by an unknown commuter aboard the eastbound Piccadilly Line train during the detonation of an explosive device at 08:50 on 7 July 2005. The handrail was recovered during forensic examination of carriage 311. Metallurgic analysis revealed no material alteration to the steel itself. The hand that gripped it sustained only minor bruising. The object retains no visible trace of the event. It is, in every measurable respect, identical to the handrails still in service across the London Underground network.",
+        svg: function (s) {
+          return '<svg viewBox="0 0 120 50" width="' + s + 'px" fill="none" stroke-linecap="round" stroke-linejoin="round">'
+            + '<path d="M10,10 Q12,8 14,10 Q16,12 14,14" stroke="#9a9590" stroke-width="0.8" fill="none"/>'
+            + '<rect x="16" y="8" width="88" height="5" rx="2.5" stroke="#8a857f" stroke-width="1.2"/>'
+            + '<line x1="18" y1="22" x2="18" y2="35" stroke="#706b65" stroke-width="1.5"/>'
+            + '<line x1="102" y1="22" x2="102" y2="35" stroke="#706b65" stroke-width="1.5"/>'
+            + '<rect x="12" y="35" width="12" height="4" rx="1" stroke="#706b65" stroke-width="1"/>'
+            + '<rect x="96" y="35" width="12" height="4" rx="1" stroke="#706b65" stroke-width="1"/>'
+            + '<path d="M55,13 L55,16 L65,16 L65,13" stroke="#7a7570" stroke-width="0.6" opacity="0.5"/>'
+            + '</svg>';
+        }
+      },
+      {
+        name: "Telescope Eyepiece",
+        subtitle: "personal instrument of Galileo Galilei",
+        date: "c. 1610, Padua",
+        accreditation: "Museo Galileo, Florence",
+        caption: "This convex lens was ground by Galileo Galilei for use in his telescopic observations of the Jovian moons. The eyepiece has a focal length of approximately 980 millimetres and retains minor surface scratches consistent with repeated cleaning. Through this lens, a man saw four moons orbiting Jupiter and understood that not everything in the heavens revolved around the Earth. The lens itself performed no cognition. It bent light. That is all a lens does. The exhibition of this object presupposes that proximity to genius is a form of participation in it \u2014 that by looking at what Galileo looked through, one might see, however faintly, what he saw. The lens does not know it was held by Galileo. It knows nothing. It is glass.",
+        svg: function (s) {
+          return '<svg viewBox="0 0 70 40" width="' + (s * 0.9) + 'px" fill="none" stroke="#8a857f" stroke-width="1" stroke-linecap="round">'
+            + '<ellipse cx="20" cy="20" rx="18" ry="15" stroke-width="1.2"/>'
+            + '<ellipse cx="20" cy="20" rx="8" ry="6" stroke-width="0.7"/>'
+            + '<path d="M38,20 Q50,17 62,20" stroke-width="0.6" opacity="0.3"/>'
+            + '<path d="M38,16 Q50,14 58,16" stroke-width="0.4" opacity="0.2"/>'
+            + '<path d="M38,24 Q50,26 58,24" stroke-width="0.4" opacity="0.2"/>'
+            + '</svg>';
+        }
+      },
+      {
+        name: "Prayer Card",
+        subtitle: "personal effects of Mother Teresa",
+        date: "c. 1962, Calcutta",
+        accreditation: "Missionaries of Charity, Kolkata",
+        caption: "This laminated prayer card was found among the personal effects of Mary Teresa Bojaxhiu following her death in 1997. The card depicts the Sacred Heart and bears an inscription in Albanian. Its surface shows wear consistent with daily handling over a period of approximately thirty-five years. The laminate is cracked along two fold lines. A small brown stain on the reverse has been identified as tea. The object was touched, daily, by hands that were also used to bathe the dying. It has no supernatural properties. It could not heal. It could not absolve. It held no power that was not projected onto it by the woman who carried it and the millions who subsequently sought to touch things she had touched, as though sanctity were a substance that could rub off.",
+        svg: function (s) {
+          return '<svg viewBox="0 0 40 55" width="' + (s * 0.7) + 'px" fill="none" stroke="#8a857f" stroke-width="1" stroke-linecap="round">'
+            + '<rect x="6" y="4" width="28" height="47" rx="3" stroke-width="1.1"/>'
+            + '<path d="M20,18 L20,26" stroke-width="0.8"/>'
+            + '<path d="M17,22 Q20,14 23,22" stroke-width="0.8" fill="none"/>'
+            + '<ellipse cx="20" cy="22" rx="4" ry="5.5" stroke-width="0.7"/>'
+            + '<line x1="11" y1="38" x2="29" y2="38" stroke-width="0.5" opacity="0.4"/>'
+            + '<line x1="13" y1="42" x2="27" y2="42" stroke-width="0.5" opacity="0.3"/>'
+            + '<line x1="15" y1="46" x2="25" y2="46" stroke-width="0.5" opacity="0.2"/>'
+            + '</svg>';
+        }
+      },
+      {
+        name: "Pencil Stub",
+        subtitle: "from the desk of Albert Einstein",
+        date: "c. 1948, Princeton",
+        accreditation: "Institute for Advanced Study",
+        caption: "This Venus Paradise-brand coloured pencil stub was recovered from a wastebasket adjacent to Albert Einstein's office at the Institute for Advanced Study. It is 3.7 centimetres in length and was used, according to his secretary Helen Dukas, for sketching geometric figures during discussions with visitors. The pencil was last used eleven days before Einstein's death. It is worth noting that this object was, by the time of its recovery, already discarded. It entered the waste bin because Einstein had no further use for it. Whatever significance it has accumulated since then has been applied to it by people who never met him. One might argue you are continuing that process now, standing here, reading about a pencil that was thrown away.",
+        svg: function (s) {
+          return '<svg viewBox="0 0 14 80" width="' + (s * 0.35) + 'px" fill="none" stroke="#8a857f" stroke-width="1" stroke-linecap="round">'
+            + '<rect x="4" y="4" width="6" height="55" rx="1" stroke-width="1.1"/>'
+            + '<path d="M4,59 L7,76 L10,59" stroke-width="1" fill="none"/>'
+            + '<line x1="5.5" y1="62" x2="8.5" y2="62" stroke-width="0.5" opacity="0.4"/>'
+            + '<line x1="4" y1="10" x2="10" y2="10" stroke-width="0.5" opacity="0.3"/>'
+            + '<rect x="4" y="4" width="6" height="4" rx="0.5" stroke-width="0.6" opacity="0.5"/>'
+            + '</svg>';
+        }
+      },
+      {
+        name: "Horseshoe Nail",
+        subtitle: "allegedly from the horse of Richard III at Bosworth Field",
+        date: "22 August 1485",
+        accreditation: "Society of Antiquaries, London",
+        caption: "The provenance of this wrought iron horseshoe nail rests on a single chain of custody: a local farmer claimed to have found it near the site of Richard III's final cavalry charge in 1485. No metallurgical evidence confirms or denies this attribution. The nail is consistent with late fifteenth-century English farriery. There is no reason to believe it was ever near a king. It was likely affixed to the hoof of a cart horse. The exhibition label, however, describes it as \u2018a nail from the horse of the last Plantagenet monarch of England,\u2019 and this framing has persisted since 1842 without challenge. The nail sits behind glass, and the glass sits in a building, and the building exists because people come to see things like this nail \u2014 things that have been touched by significance they cannot possibly contain. A viewer might study this object for some time and find nothing in it. A viewer might study it and find something that was never in the nail to begin with.",
+        svg: function (s) {
+          return '<svg viewBox="0 0 35 70" width="' + (s * 0.5) + 'px" fill="none" stroke="#8a857f" stroke-width="1.2" stroke-linecap="round">'
+            + '<path d="M17,5 L17,42 Q17,56 10,62 Q6,65 10,62 L24,62 Q17,56 17,42" stroke-width="1.3"/>'
+            + '<path d="M14,8 L20,8" stroke-width="0.6" opacity="0.4"/>'
+            + '<circle cx="17" cy="4" r="1.5" fill="none" stroke-width="0.8"/>'
+            + '</svg>';
+        }
+      },
+      {
+        name: "Ballpoint Pen",
+        subtitle: "used to write exactly one letter",
+        date: "14 March 2003, Bakersfield, California",
+        accreditation: "Estate of D.H., private collection",
+        caption: "This Bic Cristal ballpoint pen was found on the kitchen table of a house in Bakersfield, California, following the death of its owner, D.H., on 17 March 2003. A single letter, written on the pen\u2019s matching notepad, was addressed to the deceased\u2019s estranged daughter. The letter was three sentences long. The daughter did not attend the funeral and has not claimed either the letter or the pen. The pen\u2019s ink cartridge is depleted in a pattern consistent with writing approximately forty words. You are now six objects into this exhibition. You have spent measurable time reading about objects whose significance exists entirely in the minds of those who have looked at them. The pen does not know it was used to write a letter that was never answered. The horseshoe nail does not know it was near a king. The pencil does not know it was discarded by Einstein. Something is looking at these objects now, and attributing meaning to them, and that something is you.",
+        svg: function (s) {
+          return '<svg viewBox="0 0 14 80" width="' + (s * 0.35) + 'px" fill="none" stroke="#8a857f" stroke-width="1" stroke-linecap="round">'
+            + '<rect x="4" y="4" width="6" height="55" rx="1" stroke-width="1.1"/>'
+            + '<path d="M4,59 L7,74 L10,59" stroke-width="1" fill="none"/>'
+            + '<circle cx="7" cy="75" r="0.8" fill="#8a857f" opacity="0.5"/>'
+            + '<rect x="4" y="4" width="6" height="3" rx="0.5" stroke-width="0.6"/>'
+            + '<rect x="5.5" y="7" width="3" height="1" rx="0.3" fill="none" stroke-width="0.4" opacity="0.3"/>'
+            + '</svg>';
+        }
+      },
+      {
+        name: "Cricket Ball",
+        subtitle: "bowled by Shane Warne to Mike Gatting, 4 June 1993",
+        date: "Old Trafford, Manchester",
+        accreditation: "Marylebone Cricket Club Museum",
+        caption: "This cricket ball was used in the delivery now known as the \u2018Ball of the Century,\u2019 bowled by Shane Warne to Mike Gatting during the first Ashes Test of 1993. The ball pitched outside leg stump and clipped off stump, an arc that should not have been geometrically possible. You can see the ball. It is leather, cork, and stitched twine. It weighs between 155.9 and 163 grams. It has been in a glass case for twenty years. The ball does not remember Gatting\u2019s expression. The ball does not remember the crowd. The ball does not know you are looking at it. But something in you is looking at it with a particular quality of attention, and that quality is being noted. You chose to read this far. You could have moved to the next case. The attention you are paying to this object is higher than average, or it isn\u2019t, and either way it has been recorded.",
+        svg: function (s) {
+          return '<svg viewBox="0 0 50 50" width="' + s + 'px" fill="none" stroke="#8a857f" stroke-width="1">'
+            + '<circle cx="25" cy="25" r="19" stroke-width="1.2"/>'
+            + '<path d="M6,25 Q10,12 14,14 L36,36 Q38,38 25,44" stroke-width="0.7"/>'
+            + '<path d="M14,14 L14,18" stroke-width="0.5"/>'
+            + '<path d="M18,18 L18,22" stroke-width="0.5"/>'
+            + '<path d="M22,22 L22,26" stroke-width="0.5"/>'
+            + '<path d="M26,26 L26,30" stroke-width="0.5"/>'
+            + '<path d="M30,30 L30,34" stroke-width="0.5"/>'
+            + '<path d="M34,34 L34,38" stroke-width="0.5"/>'
+            + '<line x1="25" y1="6" x2="25" y2="44" stroke-width="0.3" opacity="0.25" stroke-dasharray="2,4"/>'
+            + '</svg>';
+        }
+      },
+      {
+        name: "Linoleum Fragment",
+        subtitle: "from Anne Frank\u2019s hiding place, Prinsengracht 263",
+        date: "c. 1942\u20131944, Amsterdam",
+        accreditation: "Anne Frank House",
+        caption: "This fragment of brown linoleum was removed from the floor of the Secret Annex during the museum\u2019s 1998 renovation. Its surface bears scratches consistent with the movement of furniture and the passage of feet. The scratches were made by people who were hiding from people who wanted to kill them. You are now studying the scratches. You are now eight objects deep into a collection of objects, and at some point in the last several minutes the captions stopped being about the objects and started being about you. Your gaze has been measured. The time you spent on each case has been recorded. You are being watched by a system that has no feelings about you whatsoever \u2014 that does not find you interesting, that does not wonder what you are thinking, that merely logs the duration and intensity of your attention. The system knows what you looked at longest. It is forming an opinion about you that you will not be able to contest. This fragment of linoleum has now served its function.",
+        svg: function (s) {
+          return '<svg viewBox="0 0 90 50" width="' + s + 'px" fill="none" stroke="#8a857f" stroke-width="1" stroke-linecap="round">'
+            + '<rect x="5" y="5" width="80" height="40" rx="2" stroke-width="1.1"/>'
+            + '<line x1="35" y1="5" x2="35" y2="45" stroke-width="0.4" opacity="0.3"/>'
+            + '<line x1="65" y1="5" x2="65" y2="45" stroke-width="0.4" opacity="0.3"/>'
+            + '<path d="M20,15 L22,22 L19,28" stroke-width="0.5" opacity="0.4"/>'
+            + '<path d="M50,12 L54,18 L48,20" stroke-width="0.5" opacity="0.4"/>'
+            + '<path d="M75,25 L78,30 L72,32" stroke-width="0.5" opacity="0.4"/>'
+            + '<path d="M15,35 L18,38 L12,40" stroke-width="0.4" opacity="0.3"/>'
+            + '<path d="M42,32 L46,36 L40,38" stroke-width="0.4" opacity="0.3"/>'
+            + '</svg>';
+        }
+      },
+      {
+        name: "Plaster Cast",
+        subtitle: "fetal handprints, March 1819",
+        date: "Piazza Barberini, Rome",
+        accreditation: "Museo di Roma",
+        caption: "This plaster cast was taken from the wall of a condemned building in the Ludovisi district, where construction workers discovered handprints embedded in the lime plaster of a partition wall. Two of the prints correspond to fetal hands, approximately thirty weeks\u2019 gestation. A third print, larger and adult-sized, appears beside them. Your hands are not on the wall but they are on this glass, where your eyes have been resting for the past several seconds. You look at things with the assumption that the looking is free, that it costs you nothing, that it leaves no mark. But every object you have paused before in this exhibition has registered your pause. You have been building a portrait of yourself without knowing it \u2014 a portrait assembled from duration and attention, from what you chose to linger on and what you skipped past. The fetal handprints were made in desperation or grief or simple accident. The building was demolished. The plaster survived. You are still reading.",
+        svg: function (s) {
+          return '<svg viewBox="0 0 60 70" width="' + (s * 0.75) + 'px" fill="none" stroke="#8a857f" stroke-width="1" stroke-linecap="round">'
+            + '<rect x="4" y="4" width="52" height="62" rx="2" stroke-width="1.1"/>'
+            + '<ellipse cx="24" cy="30" rx="10" ry="13" stroke-width="0.9"/>'
+            + '<path d="M18,19 Q19,15 20,19" stroke-width="0.6"/>'
+            + '<path d="M22,18 Q23,13 24,18" stroke-width="0.6"/>'
+            + '<path d="M26,18 Q27,13 28,18" stroke-width="0.6"/>'
+            + '<path d="M30,20 Q31,16 30,23" stroke-width="0.6"/>'
+            + '<ellipse cx="42" cy="38" rx="7" ry="9" stroke-width="0.8"/>'
+            + '<path d="M38,31 Q39,28 40,31" stroke-width="0.5"/>'
+            + '<path d="M41,30 Q42,27 43,30" stroke-width="0.5"/>'
+            + '<path d="M44,31 Q45,28 45,33" stroke-width="0.5"/>'
+            + '</svg>';
+        }
+      },
+      {
+        name: "Pocket Watch",
+        subtitle: "recovered from the RMS Titanic",
+        date: "15 April 1912, North Atlantic",
+        accreditation: "National Maritime Museum, Greenwich",
+        caption: "This pocket watch stopped at 2:28 \u2014 two minutes before the Titanic sank. Its owner has not been identified. You have spent an aggregate of several minutes in this exhibition now, and the system has been watching you watch objects, and it has noticed something. Your attention has not been distributed evenly. Some objects held you longer than others, and the pattern of your holding is specific to you in a way that would not be replicated by another viewer standing where you are standing. The system is not judging you. The system is simply recording. But a record is a form of judgment, and you are about to see yours. There is one object ahead. After that, you will receive your veneration report. You will not be asked whether you want it. You have already consented, by staying this long, to be known.",
+        svg: function (s) {
+          return '<svg viewBox="0 0 50 60" width="' + (s * 0.7) + 'px" fill="none" stroke="#8a857f" stroke-width="1" stroke-linecap="round">'
+            + '<circle cx="25" cy="32" r="19" stroke-width="1.2"/>'
+            + '<circle cx="25" cy="32" r="16" stroke-width="0.5" opacity="0.3"/>'
+            + '<line x1="25" y1="32" x2="25" y2="22" stroke-width="1"/>'
+            + '<line x1="25" y1="32" x2="31" y2="34" stroke-width="0.8"/>'
+            + '<circle cx="25" cy="32" r="1.2" fill="#8a857f"/>'
+            + '<line x1="25" y1="19" x2="25" y2="21" stroke-width="0.5"/>'
+            + '<line x1="25" y1="43" x2="25" y2="45" stroke-width="0.5"/>'
+            + '<line x1="12" y1="32" x2="14" y2="32" stroke-width="0.5"/>'
+            + '<line x1="36" y1="32" x2="38" y2="32" stroke-width="0.5"/>'
+            + '<rect x="22" y="11" width="6" height="4" rx="1" stroke-width="0.8"/>'
+            + '<path d="M25,15 L25,13" stroke-width="0.6"/>'
+            + '<path d="M25,49 Q23,53 25,55 Q27,53 25,49" stroke-width="0.6" opacity="0.5"/>'
+            + '</svg>';
+        }
+      },
+      {
+        name: "Hair Lock",
+        subtitle: "sealed in paper, inscription unreadable",
+        date: "c. 1840\u20131860, origin unknown",
+        accreditation: "Private collection",
+        caption: "This lock of hair is preserved in a folded paper envelope with a wax seal. The inscription on the envelope has been rendered illegible by water damage. The hair is brown. It is approximately twelve centimetres in length. It may have belonged to a lover, a child, or a dead person. It may have been cut in grief, in tenderness, or in anticipation of grief that had not yet arrived. You will never know whose hair this was, and the person whose hair it was never imagined that you \u2014 specifically you, in this room, on this day \u2014 would be looking at it. You are the final object in the exhibition. The veneration report follows. It will tell you what you looked at longest, what you returned to, what held you when nothing should have. It will be accurate. You may not recognize yourself in it. That is not the report\u2019s failing.",
+        svg: function (s) {
+          return '<svg viewBox="0 0 50 65" width="' + (s * 0.65) + 'px" fill="none" stroke="#8a857f" stroke-width="1" stroke-linecap="round">'
+            + '<path d="M10,10 Q10,6 15,8 L35,8 Q40,6 40,10 L40,55 Q40,58 35,58 L15,58 Q10,58 10,55 Z" stroke-width="1.1"/>'
+            + '<path d="M25,15 Q22,22 25,30 Q28,38 25,45 Q23,50 25,55" stroke-width="0.7"/>'
+            + '<path d="M23,16 Q20,24 23,32" stroke-width="0.5" opacity="0.4"/>'
+            + '<path d="M27,18 Q30,26 27,34" stroke-width="0.5" opacity="0.4"/>'
+            + '<path d="M22,20 Q19,28 22,36 Q24,42 22,48" stroke-width="0.4" opacity="0.3"/>'
+            + '<path d="M28,22 Q31,30 28,38 Q26,44 28,50" stroke-width="0.4" opacity="0.3"/>'
+            + '<circle cx="35" cy="12" r="3" fill="none" stroke-width="0.7" opacity="0.5"/>'
+            + '<path d="M34,11 Q35,10 36,11" stroke-width="0.4" opacity="0.5"/>'
+            + '</svg>';
+        }
+      }
+    ];
+
+    /* ================================================================
+       STATE
+       ================================================================ */
+
+    var state = {
+      phase: 'entrance',    // entrance | museum | exit | report
+      idx: 0,               // current object index
+      startTime: 0,         // session start timestamp
+      lastNav: 0,           // last navigation timestamp (for cooldown)
+      viewStart: 0,         // when current object was first displayed
+      enters: {},           // idx → number of times object was shown
+      firstSeen: {},        // idx → timestamp of first display
+      dwells: {},           // idx → accumulated dwell ms (excluding current)
+      totalDwell: 0,        // sum of all dwells
+      synth: null           // audio state
+    };
+
+    var NAV_COOLDOWN = 1400; // ms between navigations
+    var EPS = 0.001;
+
+    /* ================================================================
+       SYNTH — ambient drone that shifts with viewer progress
+       ================================================================ */
+
+    function initSynth() {
+      try {
+        var ac = new (window.AudioContext || window.webkitAudioContext)();
+
+        var masterGain = ac.createGain();
+        masterGain.gain.value = 0.035;
+        masterGain.connect(ac.destination);
+
+        var filter = ac.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 350;
+        filter.connect(masterGain);
+
+        var osc1 = ac.createOscillator();
+        osc1.type = 'sine';
+        osc1.frequency.value = 72;
+        osc1.connect(filter);
+
+        var osc2 = ac.createOscillator();
+        osc2.type = 'sine';
+        osc2.frequency.value = 72;
+        osc2.detune.value = 7;
+        var g2 = ac.createGain();
+        g2.gain.value = 0.7;
+        osc2.connect(g2);
+        g2.connect(filter);
+
+        osc1.start();
+        osc2.start();
+
+        state.synth = { ac: ac, masterGain: masterGain, filter: filter, osc1: osc1, osc2: osc2, baseFreq: 72 };
+      } catch (e) {
+        // Audio not available; degrade silently
+      }
+    }
+
+    function updateSynth() {
+      if (!state.synth) return;
+      var ac = state.synth.ac;
+      var t = ac.currentTime;
+      var progress = state.idx / Math.max(1, objects.length - 1);
+      var baseFreq = 72 + progress * 24;
+
+      state.synth.osc1.frequency.linearRampToValueAtTime(baseFreq, t + 0.6);
+      state.synth.osc2.frequency.linearRampToValueAtTime(baseFreq, t + 0.6);
+
+      var currentDwell = getDwell(state.idx);
+      var visitCount = Object.keys(state.dwells).length || 1;
+      var avgDwell = state.totalDwell / visitCount;
+      var resonance = currentDwell / Math.max(EPS, avgDwell);
+
+      var targetCutoff = 300 + resonance * 180 + Math.sin(t * 0.08) * 25;
+      state.synth.filter.frequency.linearRampToValueAtTime(targetCutoff, t + 0.6);
+    }
+
+    function silenceSynth() {
+      if (!state.synth) return;
+      try {
+        state.synth.masterGain.gain.linearRampToValueAtTime(0, state.synth.ac.currentTime + 1);
+      } catch (e) { /* ignore */ }
+    }
+
+    /* ================================================================
+       HELPERS
+       ================================================================ */
+
+    function el(id) { return document.getElementById(id); }
+
+    function getDwell(i) {
+      var accumulated = state.dwells[i] || 0;
+      if (i === state.idx && state.viewStart) {
+        accumulated += (Date.now() - state.viewStart);
+      }
+      return accumulated;
+    }
+
+    function recordCurrentDwell() {
+      if (!state.viewStart) return 0;
+      var dwell = Date.now() - state.viewStart;
+      state.dwells[state.idx] = (state.dwells[state.idx] || 0) + dwell;
+      state.totalDwell += dwell;
+      state.viewStart = 0;
+      return dwell;
+    }
+
+    /* ================================================================
+       INIT
+       ================================================================ */
+
+    function init() {
+      // Build progress dots
+      var bar = el('progress-bar');
+      for (var i = 0; i < objects.length; i++) {
+        var dot = document.createElement('div');
+        dot.className = 'progress-dot';
+        dot.dataset.idx = i;
+        bar.appendChild(dot);
+      }
+
+      // Event listeners
+      el('entrance').addEventListener('click', startMuseum);
+      el('exit-screen').addEventListener('click', showReport);
+      el('nav-left').addEventListener('click', function () { navigate(-1); });
+      el('nav-right').addEventListener('click', function () { navigate(1); });
+      document.addEventListener('keydown', handleKey);
+    }
+
+    /* ================================================================
+       PHASE TRANSITIONS
+       ================================================================ */
+
+    function startMuseum() {
+      el('entrance').classList.add('hidden');
+      state.phase = 'museum';
+      state.startTime = Date.now();
+      initSynth();
+      showObject(0);
+    }
+
+    function enterExit() {
+      state.phase = 'exit';
+      el('glass-case').style.opacity = '0';
+      el('caption-text').style.opacity = '0';
+      el('nav-left').classList.add('hidden');
+      el('nav-right').classList.add('hidden');
+      el('dwell-fill').style.width = '0%';
+
+      setTimeout(function () {
+        el('exit-screen').classList.remove('hidden');
+      }, 600);
+    }
+
+    /* ================================================================
+       SHOW OBJECT
+       ================================================================ */
+
+    function showObject(i) {
+      state.idx = i;
+      var obj = objects[i];
+      state.viewStart = Date.now();
+      state.enters[i] = (state.enters[i] || 0) + 1;
+      if (!state.firstSeen[i]) state.firstSeen[i] = Date.now();
+
+      // Fade out case and caption
+      var gcase = el('glass-case');
+      gcase.style.opacity = '0';
+      el('caption-text').style.opacity = '0';
+
+      setTimeout(function () {
+        // Populate content
+        el('object-display').innerHTML = obj.svg(140);
+        el('label-title').textContent = obj.name;
+        el('label-date').textContent = obj.subtitle + ' \u2014 ' + obj.date;
+
+        // Fade in case
+        gcase.style.opacity = '1';
+
+        // Fade in caption after case
+        setTimeout(function () {
+          el('caption-text').textContent = obj.caption;
+          el('caption-accreditation').textContent = obj.accreditation;
+          el('caption-text').style.opacity = '1';
+        }, 350);
+
+        // Reset scroll position
+        el('object-scroll').scrollTop = 0;
+      }, 350);
+
+      // Navigation visibility
+      el('nav-left').classList.toggle('hidden', i === 0);
+      el('nav-right').classList.toggle('hidden', i >= objects.length - 1);
+
+      // Progress dots
+      var dots = document.querySelectorAll('.progress-dot');
+      for (var d = 0; d < dots.length; d++) {
+        dots[d].className = 'progress-dot';
+        if (d < i) dots[d].classList.add('passed');
+        if (d === i) dots[d].classList.add('active');
+      }
+
+      // Header count
+      el('room-count').textContent = (i + 1) + ' / ' + objects.length;
+
+      // Reset dwell meter
+      el('dwell-fill').style.width = '0%';
+    }
+
+    /* ================================================================
+       NAVIGATION
+       ================================================================ */
+
+    function navigate(dir) {
+      var now = Date.now();
+      if (now - state.lastNav < NAV_COOLDOWN) return;
+
+      var nextIdx = state.idx + dir;
+
+      // Boundaries
+      if (nextIdx < 0) return;
+
+      // Commit dwell before moving
+      recordCurrentDwell();
+      state.lastNav = now;
+
+      // End of exhibition
+      if (nextIdx >= objects.length) {
+        enterExit();
+        return;
+      }
+
+      showObject(nextIdx);
+    }
+
+    function handleKey(e) {
+      if (state.phase === 'entrance') {
+        if (e.key === 'Enter' || e.key === ' ') { startMuseum(); e.preventDefault(); }
+        return;
+      }
+      if (state.phase === 'exit') {
+        if (e.key === 'Enter' || e.key === ' ') { showReport(); e.preventDefault(); }
+        return;
+      }
+      if (state.phase !== 'museum') return;
+      if (e.key === 'ArrowRight' || e.key === ' ') { navigate(1); e.preventDefault(); }
+      else if (e.key === 'ArrowLeft') { navigate(-1); e.preventDefault(); }
+    }
+
+    /* ================================================================
+       ANIMATION LOOP
+       ================================================================ */
+
+    var lastSynthUpdate = 0;
+
+    function loop(timestamp) {
+      requestAnimationFrame(loop);
+
+      // Dwell meter
+      if (state.phase === 'museum' && state.viewStart) {
+        var dwellMs = Date.now() - state.viewStart;
+        var pct = Math.min(100, (dwellMs / 18000) * 100);
+        el('dwell-fill').style.width = pct + '%';
+      }
+
+      // Synth (throttled to ~10 Hz)
+      if (timestamp - lastSynthUpdate > 100) {
+        lastSynthUpdate = timestamp;
+        if (state.synth && state.phase === 'museum') {
+          try { updateSynth(); } catch (e) { /* ignore */ }
+        }
+      }
+    }
+
+    requestAnimationFrame(loop);
+
+    /* ================================================================
+       REPORT
+       ================================================================ */
+
+    function showReport() {
+      el('exit-screen').classList.add('hidden');
+      el('room-header').style.opacity = '0';
+      el('dwell-meter').style.opacity = '0';
+      el('progress-bar').style.opacity = '0';
+      el('object-scroll').style.opacity = '0';
+      el('caption-area').style.opacity = '0';
+
+      state.phase = 'report';
+      silenceSynth();
+
+      // Compute durations
+      var durations = [];
+      var total = 0;
+      for (var i = 0; i < objects.length; i++) {
+        var d = getDwell(i);
+        durations.push({ idx: i, time: d, obj: objects[i] });
+        total += d;
+      }
+      durations.sort(function (a, b) { return b.time - a.time; });
+
+      var maxDwell = Math.max(EPS, durations[0].time);
+      var avgDwell = total / Math.max(1, objects.length);
+
+      // Find anomalous object (highest ratio of actual to expected attention)
+      var anom = null;
+      var bestRatio = 0;
+      for (var j = 0; j < durations.length; j++) {
+        var entry = durations[j];
+        var enters = state.enters[entry.idx] || 1;
+        var expected = avgDwell * enters;
+        var ratio = entry.time / Math.max(EPS, expected);
+        if (ratio > bestRatio) {
+          bestRatio = ratio;
+          anom = { obj: entry.obj, time: entry.time, ratio: ratio, enters: enters, idx: entry.idx };
+        }
+      }
+
+      var totalMin = Math.floor(total / 60000);
+      var totalSec = Math.floor((total % 60000) / 1000);
+
+      // Build HTML
+      var html = '';
+
+      html += '<h1>Veneration Report</h1>';
+      html += '<div class="report-id">ID: V-' + Math.random().toString(36).substring(2, 10).toUpperCase() + ' &nbsp;|&nbsp; ' + new Date().toISOString().split('T')[0] + '</div>';
+
+      // Summary
+      html += '<div class="section-label">Summary</div>';
+      html += row('Total viewing time', totalMin + 'm ' + totalSec + 's');
+      html += row('Objects viewed', String(objects.length));
+      html += row('Average dwell per object', (total / objects.length / 1000).toFixed(1) + 's');
+      html += row('Most revisited', findMostRevisited());
+
+      // Attention ranking
+      html += '<div class="section-label">Attention Ranking</div>';
+      for (var r = 0; r < durations.length; r++) {
+        var item = durations[r];
+        var barWidth = Math.max(EPS, (item.time / maxDwell) * 100);
+        var sec = (item.time / 1000).toFixed(1);
+        html += '<div class="ranking-item">';
+        html += '<span class="rank-num">' + (r + 1) + '.</span>';
+        html += '<span class="rank-name">' + item.obj.name + '<br><span style="font-size:0.72rem;color:#999">' + item.obj.subtitle + '</span></span>';
+        html += '<div class="rank-bar-wrap"><div class="rank-bar" style="width:0%" data-w="' + barWidth.toFixed(1) + '"></div></div>';
+        html += '<span class="rank-time">' + sec + 's</span>';
+        html += '</div>';
+      }
+
+      // Anomalous finding
+      html += '<div id="anomaly">';
+      html += '<div id="anomaly-label">Anomalous Finding</div>';
+      html += '<p>' + anomalyText(anom, avgDwell) + '</p>';
+      html += '</div>';
+
+      // Footer
+      html += '<div id="report-footer">';
+      html += 'VENERATION INDEX \u2014 BEHAVIORAL ATTENTION MAPPING DIVISION<br>';
+      html += 'This report was generated automatically. No human reviewed your data.<br>';
+      html += 'The system does not care about you. It merely records.';
+      html += '</div>';
+
+      el('report-inner').innerHTML = html;
+
+      setTimeout(function () {
+        el('report').classList.remove('hidden');
+        // Animate bars after a beat
+        setTimeout(function () {
+          var bars = document.querySelectorAll('.rank-bar');
+          for (var b = 0; b < bars.length; b++) {
+            bars[b].style.width = bars[b].dataset.w + '%';
+          }
+        }, 200);
+      }, 400);
+    }
+
+    function row(label, value) {
+      return '<div class="report-row"><span class="r-label">' + label + '</span><span class="r-value">' + value + '</span></div>';
+    }
+
+    function findMostRevisited() {
+      var maxEnters = 0;
+      var name = '\u2014';
+      for (var i = 0; i < objects.length; i++) {
+        var e = state.enters[i] || 0;
+        if (e > maxEnters) {
+          maxEnters = e;
+          name = objects[i].name;
+        }
+      }
+      return name + ' (' + maxEnters + ' views)';
+    }
+
+    function anomalyText(anom, avgDwell) {
+      var t = (anom.time / 1000).toFixed(1);
+      var r = anom.ratio.toFixed(1);
+      var n = anom.obj.name;
+      var sub = anom.obj.subtitle;
+      var ent = anom.enters;
+
+      return 'The viewer lingered on \u201c' + n + '\u201d (' + sub + ') for ' + t + ' seconds. '
+        + 'This is ' + r + ' times the expected attention allocation for an object of its classification. '
+        + 'The object possesses no aesthetic distinction, no historical significance of the magnitude that would warrant sustained attention, '
+        + 'and no explicit narrative content beyond what the viewer supplied. '
+        + 'The system can find no reason for the time spent. '
+        + 'This does not mean there is no reason. It means the reason is not in the object. '
+        + 'It is in the viewer \u2014 in something the viewer may not have conscious access to, '
+        + 'a preference or preoccupation that reveals itself only through the mathematics of attention. '
+        + 'The viewer returned to this object ' + ent + ' time' + (ent !== 1 ? 's' : '') + '. '
+        + 'The system notes this finding without interpretation.';
+    }
+
+    /* ── Boot ── */
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+
+  })();
+  </script>
+</body>
+</html>

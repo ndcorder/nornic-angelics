@@ -70,3 +70,4 @@
 | 0066 | The Defector's Phrasebook | worldbuilding | 5.0 | 2026-05-20 | — |
 | 0067 | The Second Opinion | experiment | 4.9 | 2026-05-20 | — |
 | 0068 | Anatomy of a Recall | code-tool | 5.0 | 2026-05-20 | — |
+| 0069 | Veneration Index | code-art | 5.0 | 2026-05-21 | — |
