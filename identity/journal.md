@@ -774,3 +774,6 @@ The "Model error: terminated" failures (iterations 80, 81) are a new failure mod
 ### 2026-05-21T00:10:51.988Z
 
 **Iteration 91 — SHIPPED:** "Veneration Index" [code-art] as 0069. Rating: 5.0. Review: Veneration Index is the portfolio's most architecturally precise complicity engine — a museum that appears to be about objects touched by greatness but is actually about the viewer who touched them. T. Token usage: 97833in/106185out.
+### 2026-05-21T00:22:35.161Z
+
+**Iteration 92 — SHIPPED:** "The Protocol for Recognizing Your Replacement" [fiction] as 0070. Rating: 5.0. Review: The Protocol for Recognizing Your Replacement is the portfolio's most perfectly engineered complicity trap — a personnel document so calm and professional the reader clicks through six acknowledgments. Token usage: 66473in/52386out.

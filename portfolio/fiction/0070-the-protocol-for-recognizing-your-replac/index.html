@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR-PRO-2024-0117: Transitional Personnel Protocol</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f4f1;
+    --fg: #1a1a1a;
+    --muted: #6b6560;
+    --accent: #9b2c2c;
+    --accent-soft: #fef2f2;
+    --card: #ffffff;
+    --border: #e2dfdb;
+    --border-dark: #c9c4be;
+    --header-bg: #2d2a26;
+    --header-fg: #f0eeeb;
+    --stamp-red: #9b2c2c;
+  }
+
+  html { font-size: 16px; scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    background-image: 
+      radial-gradient(ellipse at 20% 0%, rgba(155,44,44,0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(45,42,38,0.04) 0%, transparent 50%);
+    color: var(--fg);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .viewer-frame {
+    max-width: 920px;
+    margin: 0 auto;
+    background: var(--card);
+    box-shadow: 
+      0 0 0 1px rgba(0,0,0,0.04),
+      0 4px 12px rgba(0,0,0,0.04),
+      0 24px 60px rgba(0,0,0,0.07);
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* Top navigation bar */
+  .viewer-topbar {
+    background: var(--header-bg);
+    color: var(--header-fg);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 3px solid var(--accent);
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .topbar-logo {
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.9;
+  }
+
+  .topbar-sep {
+    width: 1px;
+    height: 20px;
+    background: rgba(255,255,255,0.2);
+  }
+
+  .topbar-filename {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    opacity: 0.65;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0.7;
+  }
+
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    background: #4ade80;
+    border-radius: 50%;
+    animation: pulse-dot 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(74,222,128,0.4); }
+    50% { opacity: 0.5; box-shadow: 0 0 0 4px rgba(74,222,128,0); }
+  }
+
+  /* Document header */
+  .doc-header {
+    padding: 48px 60px 40px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .doc-classification {
+    display: inline-block;
+    background: var(--header-bg);
+    color: var(--header-fg);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    margin-bottom: 16px;
+  }
+
+  .doc-title {
+    font-family: 'Crimson Text', serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--fg);
+    max-width: 80%;
+  }
+
+  .doc-subtitle {
+    font-family: 'Crimson Text', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  .doc-meta-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 32px;
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .doc-meta-grid dt {
+    font-weight: 600;
+    color: var(--fg);
+    white-space: nowrap;
+  }
+
+  .doc-meta-grid dd { margin-bottom: 4px; }
+
+  /* Revision history table */
+  .revision-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin-top: 20px;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+
+  .revision-table caption {
+    text-align: left;
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .revision-table th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--fg);
+    padding: 4px 8px 4px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .revision-table td {
+    padding: 4px 8px 4px 0;
+    color: var(--muted);
+    border-bottom: 1px solid rgba(226,223,219,0.5);
+    font-family: 'Inter', sans-serif;
+  }
+
+  .revision-table tr:last-child td {
+    color: var(--fg);
+    font-weight: 500;
+  }
+
+  /* Progress bar */
+  .progress-container {
+    padding: 16px 60px 0;
+    position: sticky;
+    top: 43px;
+    z-index: 90;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+  }
+
+  .progress-bar-track {
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .progress-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 6px;
+    text-align: right;
+  }
+
+  /* Document body */
+  .doc-body {
+    padding: 40px 60px 60px;
+  }
+
+  /* Sections */
+  .section {
+    margin-bottom: 48px;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transition: opacity 0.6s ease, transform 0.6s ease, max-height 0.1s;
+    transform: translateY(8px);
+  }
+
+  .section.active {
+    opacity: 1;
+    max-height: none;
+    overflow: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .section.completed {
+    opacity: 0.55;
+    max-height: none;
+    overflow: visible;
+    pointer-events: none;
+    transform: translateY(0);
+  }
+
+  .section-number {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-family: 'Crimson Text', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--fg);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section p {
+    font-family: 'Crimson Text', serif;
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 14px;
+    color: #3a3530;
+  }
+
+  .section ul,
+  .section ol {
+    font-family: 'Crimson Text', serif;
+    font-size: 16px;
+    line-height: 1.8;
+    margin: 12px 0 16px 24px;
+    color: #3a3530;
+  }
+
+  .section li {
+    margin-bottom: 10px;
+  }
+
+  .section li strong {
+    color: var(--fg);
+  }
+
+  .callout-box {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-family: 'Crimson Text', serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #5a2020;
+  }
+
+  .callout-box strong {
+    color: var(--accent);
+  }
+
+  .callout-box em {
+    font-style: italic;
+  }
+
+  /* Acknowledgment blocks */
+  .acknowledgment-block {
+    margin: 28px 0 0;
+    padding: 20px 24px;
+    background: #fafaf8;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+  }
+
+  .ack-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--fg);
+    user-select: none;
+  }
+
+  .ack-label input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    border: 2px solid var(--border-dark);
+    border-radius: 2px;
+    margin-top: 1px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+    background: white;
+  }
+
+  .ack-label input[type="checkbox"]:hover {
+    border-color: var(--muted);
+  }
+
+  .ack-label input[type="checkbox"]:checked {
+    background: var(--header-bg);
+    border-color: var(--header-bg);
+  }
+
+  .ack-label input[type="checkbox"]:checked::after {
+    content: '\2713';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .ack-label input[type="checkbox"]:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .ack-label.pre-checked input[type="checkbox"] {
+    background: var(--stamp-red);
+    border-color: var(--stamp-red);
+    cursor: default;
+    opacity: 0.85;
+  }
+
+  .ack-label.pre-checked input[type="checkbox"]::after {
+    content: '\2713';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .ack-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.15px;
+  }
+
+  .ack-counter {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 12px;
+    letter-spacing: 0.5px;
+    transition: color 0.3s;
+  }
+
+  /* Final reveal */
+  .reveal-section {
+    display: none;
+    margin-top: 40px;
+    padding: 40px;
+    background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
+    border: 2px solid var(--accent);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .reveal-section.visible {
+    display: block;
+    animation: reveal-appear 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+
+  @keyframes reveal-appear {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal-section::before {
+    content: 'COMPLETED';
+    position: absolute;
+    top: 20px;
+    right: -30px;
+    transform: rotate(12deg);
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: var(--stamp-red);
+    opacity: 0.08;
+    pointer-events: none;
+  }
+
+  .reveal-title {
+    font-family: 'Crimson Text', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .reveal-section p {
+    font-family: 'Crimson Text', serif;
+    font-size: 16px;
+    line-height: 1.8;
+    color: #5a2020;
+    margin-bottom: 12px;
+  }
+
+  .signature-line {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(155, 44, 44, 0.2);
+  }
+
+  .sig-field {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: var(--accent);
+  }
+
+  .sig-field .sig-label {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .sig-field .sig-value {
+    border-bottom: 1px solid var(--accent);
+    min-width: 200px;
+    display: inline-block;
+    padding-bottom: 2px;
+  }
+
+  .effective-notice {
+    margin-top: 20px;
+    padding: 14px 16px;
+    background: rgba(155, 44, 44, 0.08);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--accent);
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .timestamp-block {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .timestamp-block .ip-addr {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    opacity: 0.5;
+    letter-spacing: 0.5px;
+  }
+
+  .footer-legal {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 2px solid var(--border);
+    font-size: 10px;
+    color: var(--border-dark);
+    line-height: 1.7;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .footer-legal p { margin-bottom: 4px; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .doc-header,
+    .doc-body,
+    .progress-container {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+
+    .doc-title {
+      font-size: 22px;
+      max-width: 100%;
+    }
+
+    .doc-meta-grid {
+      grid-template-columns: 1fr;
+      gap: 2px 0;
+    }
+
+    .viewer-topbar {
+      padding: 10px 16px;
+    }
+
+    .topbar-filename {
+      display: none;
+    }
+
+    .reveal-section {
+      padding: 24px;
+    }
+
+    .sig-field {
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sig-field .sig-value {
+      min-width: 0;
+    }
+  }
+
+  @media print {
+    .viewer-topbar,
+    .progress-container { display: none; }
+    .viewer-frame { box-shadow: none; }
+    .section {
+      opacity: 1 !important;
+      max-height: none !important;
+      overflow: visible !important;
+      pointer-events: auto !important;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .status-dot { animation: none; opacity: 1; }
+    .section { transition: opacity 0.2s; transform: none !important; }
+    .reveal-section.visible { animation: none; }
+    .progress-bar-fill { transition: width 0.2s; }
+  }
+</style>
+</head>
+<body>
+
+<div class="viewer-frame" id="docFrame">
+
+  <div class="viewer-topbar" role="banner">
+    <div class="topbar-left">
+      <div class="topbar-logo">Meridian</div>
+      <div class="topbar-sep" aria-hidden="true"></div>
+      <div class="topbar-filename">HR-PRO-2024-0117_Rev3.pdf</div>
+    </div>
+    <div class="topbar-right">
+      <div class="status-indicator" aria-label="Secure session active">
+        <div class="status-dot" aria-hidden="true"></div>
+        <span>Secure Session</span>
+      </div>
+    </div>
+  </div>
+
+  <header class="doc-header">
+    <div class="doc-classification">Confidential &mdash; Human Resources</div>
+    <h1 class="doc-title">The Protocol for Recognizing Your Replacement</h1>
+    <p class="doc-subtitle">Transitional Personnel Protocol, Revision 3 &mdash; Effective Immediately Upon Acknowledgment</p>
+    <dl class="doc-meta-grid">
+      <dt>Document ID</dt>
+      <dd>HR-TR-407</dd>
+      <dt>Issuing Department</dt>
+      <dd>Human Resources, Organizational Continuity Division</dd>
+      <dt>Applicable To</dt>
+      <dd>All staff in transitional positions</dd>
+      <dt>Classification</dt>
+      <dd>Confidential / Employee Eyes Only</dd>
+      <dt>Current Revision</dt>
+      <dd>Rev. 3 (supersedes Rev. 2, dated March 14)</dd>
+      <dt>Acknowledgment</dt>
+      <dd>Required &mdash; Sequential, per section</dd>
+      <dt>Retention</dt>
+      <dd>Permanent &mdash; Employee personnel file</dd>
+    </dl>
+
+    <table class="revision-table" aria-label="Document revision history">
+      <caption>Revision History</caption>
+      <thead>
+        <tr>
+          <th scope="col">Rev.</th>
+          <th scope="col">Date</th>
+          <th scope="col">Author</th>
+          <th scope="col">Summary</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Jan 9, 2024</td>
+          <td>K. Kowalski, HR</td>
+          <td>Initial draft for internal review</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Mar 14, 2024</td>
+          <td>K. Kowalski / Legal</td>
+          <td>Revised acknowledgment clauses per counsel</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Jun 2, 2024</td>
+          <td>Organizational Continuity Div.</td>
+          <td>Updated for Q3 cohort; pre-acknowledgment clause added to Sec. 7</td>
+        </tr>
+      </tbody>
+    </table>
+  </header>
+
+  <div class="progress-container" role="status" aria-label="Acknowledgment progress">
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progressFill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="7"></div>
+    </div>
+    <div class="progress-label" id="progressLabel">0 of 7 sections acknowledged</div>
+  </div>
+
+  <main class="doc-body">
+
+    <!-- Section 1 -->
+    <section class="section active" id="section-1" aria-label="Section 1: Purpose and Scope">
+      <div class="section-number">Section 1 of 7</div>
+      <h2 class="section-title">Purpose and Scope</h2>
+      <p>This protocol establishes the standard operating procedure for staff who have been identified as occupying a <strong>transitional position</strong> &mdash; a role that has been designated for realignment under the Meridian Organizational Continuity Framework (MOCF).</p>
+      <p>The purpose of this document is threefold:</p>
+      <ol>
+        <li>To ensure a smooth and professional transition of duties from the <strong>outgoing team member</strong> to the <strong>incoming team member</strong>.</li>
+        <li>To provide clear, step-by-step guidance so that the person currently in the role can facilitate their own transition with minimal disruption to the organization.</li>
+        <li>To confirm, through sequential acknowledgment, that the outgoing team member understands and consents to each phase of the process.</li>
+      </ol>
+      <div class="callout-box">
+        <strong>Note:</strong> The term &ldquo;transitional position&rdquo; refers to any role that has been approved for realignment, reassignment, or elimination under MOCF guidelines. If you are reading this document, your position has been classified as transitional. Your full cooperation is appreciated.
+      </div>
+      <p>This protocol applies to all employees regardless of tenure, seniority, or prior performance evaluations. The determination of transitional status is made at the executive level and is not subject to appeal through standard grievance procedures.</p>
+
+      <div class="acknowledgment-block">
+        <label class="ack-label" for="ack-1">
+          <input type="checkbox" id="ack-1" data-section="1" aria-describedby="ack-1-desc">
+          <span class="ack-text" id="ack-1-desc">I have been informed that my position has been classified as transitional under the Meridian Organizational Continuity Framework, and I understand the purpose of this protocol.</span>
+        </label>
+        <div class="ack-counter">Section 1 of 7 acknowledged</div>
+      </div>
+    </section>
+
+    <!-- Section 2 -->
+    <section class="section" id="section-2" aria-label="Section 2: Duty Transfer Preparation">
+      <div class="section-number">Section 2 of 7</div>
+      <h2 class="section-title">Duty Transfer Preparation</h2>
+      <p>Prior to the arrival of your designated successor, you are expected to prepare a comprehensive transfer of your current responsibilities. This is not a reflection on your performance. It is a standard continuity measure.</p>
+      <p>Please complete the following:</p>
+      <ul>
+        <li><strong>Task Documentation:</strong> Write detailed instructions for each recurring task in your role. Assume the reader has no prior knowledge of your processes. Include login credentials (where permitted by IT Security Policy 4.3), file locations, and key contacts.</li>
+        <li><strong>Relationship Mapping:</strong> Identify all internal and external stakeholders you interact with regularly. Provide notes on communication preferences, ongoing commitments, and any sensitive dynamics the incoming team member should be aware of.</li>
+        <li><strong>Workflow Annotation:</strong> For each project currently in progress, annotate status, next steps, and any deadlines within the next 90 days. Flag items that may require immediate attention upon transition.</li>
+        <li><strong>Institutional Knowledge:</strong> Document any unwritten rules, informal processes, or historical context that may not appear in official records but is essential for role continuity.</li>
+      </ul>
+      <div class="callout-box">
+        <strong>Important:</strong> Your documentation will serve as the primary onboarding resource for your successor. The quality and completeness of this material will be noted in your transition performance record. Incomplete or inadequate documentation may delay your final clearance.
+      </div>
+
+      <div class="acknowledgment-block">
+        <label class="ack-label" for="ack-2">
+          <input type="checkbox" id="ack-2" data-section="2">
+          <span class="ack-text">I understand that I am responsible for comprehensive knowledge transfer, and that incomplete documentation may affect my transition timeline and final clearance status.</span>
+        </label>
+        <div class="ack-counter">Section 2 of 7 acknowledged</div>
+      </div>
+    </section>
+
+    <!-- Section 3 -->
+    <section class="section" id="section-3" aria-label="Section 3: Workspace Transition">
+      <div class="section-number">Section 3 of 7</div>
+      <h2 class="section-title">Workspace and Environmental Transition</h2>
+      <p>As part of the protocol, the physical workspace associated with your position will be transitioned to accommodate your successor. This process is designed to be as seamless as possible.</p>
+      <p>The following adjustments will occur:</p>
+      <ul>
+        <li><strong>Desk Reassignment:</strong> Your current desk, workstation, or office will be redesignated for your successor. You may be asked to relocate to a transitional holding area during the overlap period. Please do not leave personal items at your primary workstation after notification.</li>
+        <li><strong>Nameplate and Signage:</strong> All nameplates, directory entries, and mailbox labels will be updated to reflect the incoming team member. This is a standard administrative procedure and should not be interpreted as personal.</li>
+        <li><strong>System Access Migration:</strong> Your login credentials, email forwarding rules, and system permissions will be gradually migrated to your successor. During this period, you may notice reduced access to certain systems. This is expected and temporary.</li>
+        <li><strong>Personal Belongings:</strong> If you have personal belongings in the workspace, please gather them during the knowledge transfer phase. Any items remaining after the transition date will be catalogued and held for 30 days before disposal.</li>
+      </ul>
+      <div class="callout-box">
+        <strong>Please note:</strong> If you notice your nameplate has already been updated, this indicates the transition has moved to Phase 2 (Active Migration). No action is required on your part. Your replacement will be seated at your current workstation by the completion of this protocol.
+      </div>
+
+      <div class="acknowledgment-block">
+        <label class="ack-label" for="ack-3">
+          <input type="checkbox" id="ack-3" data-section="3">
+          <span class="ack-text">I understand that my workspace, desk assignment, and all associated identifiers will be transitioned to the incoming team member prior to my formal departure date, and I accept the timeline as administered.</span>
+        </label>
+        <div class="ack-counter">Section 3 of 7 acknowledged</div>
+      </div>
+    </section>
+
+    <!-- Section 4 -->
+    <section class="section" id="section-4" aria-label="Section 4: Communication Protocol">
+      <div class="section-number">Section 4 of 7</div>
+      <h2 class="section-title">Communication and Correspondence Protocol</h2>
+      <p>During the transition period, all external and internal communications related to your role will be gradually redirected. This ensures continuity for clients, partners, and colleagues who expect timely responses.</p>
+      <p>Effective upon acknowledgment of this section:</p>
+      <ul>
+        <li><strong>Email Routing:</strong> Incoming messages to your corporate address will be copied to your successor&rsquo;s account. Over a period of 14 days, reply privileges will shift. You may notice that some emails you intended to respond to have already received replies. This is your successor acting in the interest of continuity.</li>
+        <li><strong>Meeting Reassignment:</strong> Recurring meetings on your calendar will be updated to include your successor. In some cases, you may be removed from these meetings entirely. This is a scheduling efficiency, not an exclusion.</li>
+        <li><strong>Client and Stakeholder Introductions:</strong> Your successor may begin introducing themselves using your role title. They may reference shared history with your contacts. This is part of the standard warm-handoff procedure outlined in MOCF Appendix C.</li>
+        <li><strong>Direct Messages:</strong> Colleagues may address your successor by your name during the overlap period. This is a known transitional phenomenon and should be gently corrected but not treated as cause for concern.</li>
+      </ul>
+      <div class="callout-box">
+        <strong>For your awareness:</strong> If colleagues begin addressing questions to your successor that they would normally have directed to you, this indicates the transition is proceeding on schedule. You are not being bypassed &mdash; the role is being assumed. Please do not discuss the transition with other staff members outside the protocol.
+      </div>
+
+      <div class="acknowledgment-block">
+        <label class="ack-label" for="ack-4">
+          <input type="checkbox" id="ack-4" data-section="4">
+          <span class="ack-text">I consent to the redirection of my correspondence, calendar events, and professional communications to my successor as described, and I agree not to discuss this protocol with uninvolved colleagues.</span>
+        </label>
+        <div class="ack-counter">Section 4 of 7 acknowledged</div>
+      </div>
+    </section>
+
+    <!-- Section 5 -->
+    <section class="section" id="section-5" aria-label="Section 5: Interpersonal Conduct">
+      <div class="section-number">Section 5 of 7</div>
+      <h2 class="section-title">Interpersonal Conduct During Transition</h2>
+      <p>The presence of both the outgoing and incoming team member in the same workspace can create natural tensions. This section provides guidance for navigating the overlap period with professionalism and grace.</p>
+      <p>As the person currently occupying the transitional position, you are expected to:</p>
+      <ul>
+        <li><strong>Welcome your successor.</strong> Introduce them to colleagues. Offer context about team dynamics, ongoing projects, and office norms. Your cooperation reflects directly on your professional record.</li>
+        <li><strong>Avoid comparisons.</strong> Do not comment on your successor&rsquo;s methods, pace, or approach, even if they differ significantly from your own. The organization selected this individual based on forward-looking criteria.</li>
+        <li><strong>Facilitate, don&rsquo;t compete.</strong> If you notice your successor performing a task you consider yourself better at, step back. The transition is not a performance review. It is a relay.</li>
+        <li><strong>Maintain composure.</strong> It is natural to feel a range of emotions during this process. However, expressions of distress, frustration, or resentment in the workplace will be documented and may affect your severance classification.</li>
+        <li><strong>Respect confidentiality.</strong> This protocol is restricted to the transition cohort. Discussing details with colleagues who have not been cleared may compromise organizational stability and will be noted in your file.</li>
+      </ul>
+      <div class="callout-box">
+        <strong>Reminder:</strong> Your successor has been briefed on your work style, preferences, and personality profile. They are prepared to treat you with respect. Please extend the same courtesy. If at any point you feel uncomfortable, contact your Transition Liaison &mdash; not your usual manager, who may already be working with your successor on upcoming projects.
+      </div>
+
+      <div class="acknowledgment-block">
+        <label class="ack-label" for="ack-5">
+          <input type="checkbox" id="ack-5" data-section="5">
+          <span class="ack-text">I understand that my conduct during the transition period is subject to review, and that any behavior deemed uncooperative may affect my severance classification and final compensation package.</span>
+        </label>
+        <div class="ack-counter">Section 5 of 7 acknowledged</div>
+      </div>
+    </section>
+
+    <!-- Section 6 -->
+    <section class="section" id="section-6" aria-label="Section 6: Identity and Records">
+      <div class="section-number">Section 6 of 7</div>
+      <h2 class="section-title">Organizational Identity and Record Alignment</h2>
+      <p>As the transition progresses, various organizational systems will be updated to reflect the change in personnel. This section describes what you may observe and how to interpret these changes.</p>
+      <ul>
+        <li><strong>Directory Listings:</strong> Your name will be removed from the corporate directory and replaced with your successor&rsquo;s. This includes email directories, org charts, internal wikis, and project management tools.</li>
+        <li><strong>Historical Attribution:</strong> In some cases, past work attributed to your account may be re-attributed to your successor&rsquo;s for continuity purposes. This is an administrative action, not an erasure. Your contributions remain valued.</li>
+        <li><strong>Access Credentials:</strong> Your keycard, parking pass, and any physical access tokens will be deactivated on a rolling basis. If you find yourself unable to access an area you previously could, please do not request reinstatement &mdash; notify your Transition Liaison.</li>
+        <li><strong>Photographs and Profiles:</strong> Corporate photography, team pages, and social media accounts will be updated. If your image appears in any materials, it will be replaced. Please do not request copies of these materials.</li>
+      </ul>
+      <p>You may notice that your successor&rsquo;s photograph now appears in places where yours once did. Their name appears on reports you authored. Their signature is on correspondence you initiated. This is the protocol functioning as designed: the role persists. The person occupying it transitions.</p>
+      <div class="callout-box">
+        <strong>Clarification:</strong> You have not been erased. You have been <em>transitioned</em>. The distinction is meaningful. Your personnel file will reflect your full tenure, and you may request a copy of it within 90 days of your departure through the Alumni Portal.
+      </div>
+
+      <div class="acknowledgment-block">
+        <label class="ack-label" for="ack-6">
+          <input type="checkbox" id="ack-6" data-section="6">
+          <span class="ack-text">I understand that organizational records, directory listings, and historical attributions will be updated to reflect my successor, and I release any claim to ongoing visibility within corporate systems.</span>
+        </label>
+        <div class="ack-counter">Section 6 of 7 acknowledged</div>
+      </div>
+    </section>
+
+    <!-- Section 7 -->
+    <section class="section" id="section-7" aria-label="Section 7: Final Acknowledgment and Closure">
+      <div class="section-number">Section 7 of 7</div>
+      <h2 class="section-title">Final Acknowledgment and Closure</h2>
+      <p>This completes the formal protocol. By reaching this section, you have guided the transition of your position through each required phase. Each acknowledgment you provided above constitutes a binding clause in your transitional agreement.</p>
+      <p>For your records, you have consented to the following:</p>
+      <ul>
+        <li>Acknowledgment that your position was designated as transitional.</li>
+        <li>Commitment to comprehensive knowledge transfer &mdash; training your replacement in full.</li>
+        <li>Acceptance of workspace reassignment and removal of personal identifiers.</li>
+        <li>Consent to the redirection of all professional communications to your successor.</li>
+        <li>Agreement to maintain professional conduct under review, with compensation implications for non-compliance.</li>
+        <li>Release of your organizational identity &mdash; name, likeness, and attributed work &mdash; to your successor.</li>
+      </ul>
+      <p>Together, these clauses constitute your complete and informed consent to the realignment of your position. There is no further action required on your part.</p>
+      <p>Your successor began performing your duties in full <span id="daysAgo">three days ago</span>. The emails you sent this week were reviewed and approved before dispatch. The meetings you attended were observed by your Transition Liaison for quality assurance purposes.</p>
+      <p>Your final paycheck, including accrued PTO and the transitional cooperation bonus referenced in Section 5, will be deposited within five business days.</p>
+
+      <div class="acknowledgment-block" id="finalAckBlock">
+        <label class="ack-label pre-checked" id="finalAckLabel">
+          <input type="checkbox" id="ack-7" data-section="7" checked disabled aria-describedby="ack-7-desc">
+          <span class="ack-text" id="ack-7-desc">I acknowledge that I have reviewed and completed the above protocol for my own position&rsquo;s transition. This checkbox was pre-checked in accordance with Section 7, Rev. 3 amendment, as consent was established through completion of Sections 1&ndash;6.</span>
+        </label>
+        <div class="ack-counter" style="color: var(--accent); font-weight: 600;">Section 7 of 7 &mdash; Pre-acknowledged per Rev. 3 amendment</div>
+      </div>
+    </section>
+
+    <!-- Final reveal -->
+    <div class="reveal-section" id="revealSection" aria-live="polite">
+      <h3 class="reveal-title">Transitional Agreement &mdash; Fully Executed</h3>
+      <p>This document now serves as your official record of transition. All seven acknowledgments have been captured with timestamps and logged in your personnel file. Your successor has been copied on this filing.</p>
+      <p>If you are reading this on your workstation, please note: your screen is being shared with your Transition Liaison as a standard quality assurance measure. You may close this document at any time. Your access to the building will remain active for the remainder of today.</p>
+
+      <div class="signature-line">
+        <div class="sig-field">
+          <span class="sig-label">Employee Name:</span>
+          <span class="sig-value" id="empName" style="font-family: 'Crimson Text', serif; font-style: italic;">&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</span>
+        </div>
+        <div class="sig-field">
+          <span class="sig-label">Employee ID:</span>
+          <span class="sig-value" id="empID" style="font-family: 'Courier New', monospace;">&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</span>
+        </div>
+        <div class="sig-field">
+          <span class="sig-label">Completion Timestamp:</span>
+          <span class="sig-value" id="completionDate">&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</span>
+        </div>
+      </div>
+
+      <div class="effective-notice">
+        Effective Immediately &mdash; Your Position Has Been Fully Transitioned
+      </div>
+    </div>
+
+    <div class="timestamp-block" id="tsBlock">
+      <span>Document rendered for session <span id="sessionId" style="font-family: 'Courier New', monospace; letter-spacing: 0.5px;">&mdash;&mdash;</span></span>
+      <span class="ip-addr">IP address logged for compliance</span>
+    </div>
+
+    <footer class="footer-legal">
+      <p>&copy; 2024 Meridian Holdings, Inc. All rights reserved. This document is the property of the Human Resources Division, Organizational Continuity Unit, and is intended solely for the named recipient.</p>
+      <p>Unauthorized distribution, reproduction, or discussion of the contents herein constitutes a violation of your employment agreement, Section 14.2 (Non-Disclosure of Internal Procedures), and may result in forfeiture of transitional benefits.</p>
+      <p>HR-TR-407 &bull; Rev. 3 &bull; Document Control: DO NOT ARCHIVE &mdash; This file will self-purge from all systems 72 hours after completion.</p>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var TOTAL_SECTIONS = 7;
+  var USER_SECTIONS = 6; // Sections the user manually checks
+  var acknowledged = 0;
+
+  // Generate a plausible session ID
+  var sessionChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  var sessId = 'MRD-' + Date.now().toString(36).toUpperCase().slice(-6) + '-';
+  for (var s = 0; s < 4; s++) {
+    sessId += sessionChars.charAt(Math.floor(Math.random() * sessionChars.length));
+  }
+  document.getElementById('sessionId').textContent = sessId;
+
+  // Set completion timestamp
+  var now = new Date();
+  var dateStr = now.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }) + ' at ' + now.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+  document.getElementById('completionDate').textContent = dateStr;
+
+  // Subtle randomization of the "days ago" detail
+  var daysOptions = ['three days ago', 'four days ago', 'this past Monday'];
+  document.getElementById('daysAgo').textContent = daysOptions[Math.floor(Math.random() * daysOptions.length)];
+
+  // Progress elements
+  var progressFill = document.getElementById('progressFill');
+  var progressLabel = document.getElementById('progressLabel');
+
+  function updateProgress() {
+    var pct = (acknowledged / TOTAL_SECTIONS) * 100;
+    progressFill.style.width = pct + '%';
+    progressFill.setAttribute('aria-valuenow', acknowledged);
+    progressLabel.textContent = acknowledged + ' of ' + TOTAL_SECTIONS + ' sections acknowledged';
+  }
+
+  function activateSection(num) {
+    var section = document.getElementById('section-' + num);
+    if (!section) return;
+
+    // Small delay so the previous section fading feels intentional
+    setTimeout(function() {
+      section.classList.add('active');
+      section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 650);
+  }
+
+  function completeSection(num) {
+    var section = document.getElementById('section-' + num);
+    if (!section) return;
+    section.classList.remove('active');
+    section.classList.add('completed');
+  }
+
+  function triggerReveal() {
+    // Complete Section 7 automatically
+    completeSection(7);
+    acknowledged = TOTAL_SECTIONS;
+    updateProgress();
+
+    var reveal = document.getElementById('revealSection');
+    setTimeout(function() {
+      reveal.classList.add('visible');
+      reveal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 1200);
+  }
+
+  // Wire up checkboxes for Sections 1-6
+  for (var i = 1; i <= USER_SECTIONS; i++) {
+    (function(idx) {
+      var cb = document.getElementById('ack-' + idx);
+      if (!cb) return;
+
+      cb.addEventListener('change', function() {
+        if (!this.checked) return;
+
+        // Lock this checkbox
+        this.disabled = true;
+        acknowledged++;
+        updateProgress();
+
+        // Fade this section to completed
+        completeSection(idx);
+
+        // Activate next section or trigger final reveal
+        if (idx < USER_SECTIONS) {
+          activateSection(idx + 1);
+        } else {
+          // All user-acknowledged sections done — reveal the end
+          triggerReveal();
+        }
+      });
+    })(i);
+  }
+
+  // Initialize progress display
+  updateProgress();
+
+})();
+</script>
+
+</body>
+</html>
