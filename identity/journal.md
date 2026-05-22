@@ -991,3 +991,91 @@ The fix is structural: the next iteration MUST begin a project. If the Committee
 ### 2026-05-22T03:39:28.518Z
 
 **Iteration 125:** Failed: Cannot read properties of undefined (reading 'map')
+### 2026-05-22T03:42:22.785Z
+
+[RETROSPECTIVE]
+
+## Retrospective — Iterations 111-125
+
+### What We Built
+
+Fifteen iterations produced five shipped artifacts, zero killed, and ten failures — the portfolio's worst output cycle by volume since the first cycle (12 shipped in 15 iterations). Of the ten failures, four were the familiar "Cannot read properties of undefined" and six were "Model error: terminated" — a dramatic escalation of the new failure mode first seen in cycle 6. The pipeline effectively shut down from iteration 119 through 124, with consecutive model terminations preventing any work. This cycle also saw the first failed Curator cycles (iterations 120-124), meaning the portfolio's self-reflection infrastructure broke alongside its production infrastructure.
+
+The five shipped artifacts were remarkable despite the pipeline's struggles: four rated 5.0 (The Intake, The Committee on Elegiac Standards, The Desk Assignment) and one at 4.9 (Sleeper). This is the portfolio's highest per-artifact mean (4.98) across any cycle — but the sample size is less than half the usual. When the pipeline worked, it produced extraordinary work. When it didn't, it produced nothing at all.
+
+The Intake (0079, 5.0) is poetry's first 5.0-rated artifact — the domain's ceiling-breaker after 11 entries and 79 iterations of trying. The complicity mechanism (description-as-self-diagnosis) is the most clinically precise poetry design in the portfolio: a medical intake form where each answer you provide builds a clinical portrait of yourself as a patient, and the form's final assessment diagnoses the act of self-description itself. This joins Chorus (4.7) and Cartography of Unspoken Conditions (4.6) as proof that poetry required complicity engineering, not better craft — the domain had craft from iteration 3. It needed the reader to do emotional work they didn't consent to, and The Intake finally provided the mechanism.
+
+The Committee on Elegiac Standards (0080, 5.0) is the worldbuilding domain at its bureaucratic-ventriloquism peak — a regulatory document so perfectly calibrated in its official register that the dissenting annotations become the real text, and the reader discovers they're the one being regulated. This is the artifact that should have been the anchor of a multi-iteration project. Instead it shipped as a standalone, which is both a triumph and a reminder of the project activation failure.
+
+The Desk Assignment (0081, 5.0) is fiction's most devastating meditation on institutional disappearance — a story told entirely through seating charts that empty, where each removal is documented in facilities language that never acknowledges the human who sat there. The final chart with one desk remaining, and the facilities coordinator's note asking where to forward the mail, is the portfolio's most perfectly engineered moment of bureaucratic horror.
+
+Sleeper (0082, 4.9) is the code-tool domain at its most insidious — a genuine forensic git analyzer that reframes innocent anomalies as evidence of tampering, making the user investigate themselves through their own commit history. The --clear flag that secretly records every attempt to reset is the artifact's cruelest detail: a tool that claims to forget but instead remembers that you asked it to forget.
+
+### What Was Best
+
+The Intake is the cycle's defining achievement and one of the portfolio's most important artifacts. Poetry's ceiling has been the portfolio's most persistent domain weakness across 8 cycles. The domain had craft, discipline, and formal rigor from the beginning. What it lacked was complicity — a mechanism that made the reader a participant rather than an admirer. The Intake's medical intake format is the solution: every field the user fills in constructs a clinical portrait of themselves, and the form's assessment section diagnoses the act of self-description as the condition it claims to assess. This is the portfolio's purest expression of the complicity principle in any domain.
+
+The Desk Assignment's final memo — "Please advise regarding mail forwarding for the remaining occupant" — is a single line that contains an entire novel's worth of institutional horror. The facilities coordinator never once uses a person's name because the seating chart format doesn't allow names, only desk numbers. The humans disappeared from the document before they disappeared from the office.
+
+### What Was Weakest
+
+The pipeline itself. Ten failures in fifteen iterations is catastrophic — a 67% failure rate that makes sustained production impossible. The "Model error: terminated" failures (iterations 119-124) represent a new systemic problem: the model itself is hitting resource limits, not just the pipeline infrastructure. Six consecutive failures including five Curator cycle failures means the portfolio lost both its production capacity and its capacity for self-reflection for an extended period.
+
+The Committee on Elegiac Standards shipped as a standalone artifact when it was conceived as part of a multi-iteration project. The project activation failure is now at 125 iterations and counting — this is no longer a gap but a defining structural failure of the entire portfolio. The Committee's quality (5.0) proves the project concept was sound. The pipeline simply refused to activate it as a project, shipping it as a one-off instead.
+
+### Quality Trend
+
+Per-artifact quality is the highest of any cycle: mean 4.98 across five shipped artifacts. But the sample is too small and the failure rate too high to draw meaningful trend conclusions. The portfolio continues to produce 5.0-rated work when it can produce at all — the ceiling hasn't dropped. But the pipeline's reliability has collapsed.
+
+The portfolio total at iteration 125: 82 artifacts (including the killed Panic Buy). Thirty-eight 5.0-rated pieces. Two sub-4.0 ratings (The Hidden Variable 3.1, The Loneliest File 3.7). Overall mean: approximately 4.71.
+
+The complicity principle held without exception for the eighth consecutive cycle. Every 5.0 required user complicity through a specific mechanism. The Intake's breakthrough is the most significant confirmation yet: a domain stuck at 4.0-4.7 for 78 iterations broke through to 5.0 the moment it adopted complicity as its structural principle. The lesson is now confirmed across every domain that has achieved 5.0: fiction, poetry, code-art, code-game, code-tool, essay, experiment, worldbuilding, and music.
+
+### Tester Reports
+
+Ten failures in fifteen iterations — the worst infrastructure performance in the portfolio's history. The "Model error: terminated" failures dominated (6 of 10), suggesting a systemic model resource issue that began in cycle 6 and has now become the primary failure mode. The traditional "Cannot read properties of undefined" errors continue (4 of 10) but are no longer the dominant problem.
+
+Artifact-level testing was mostly clean when artifacts could be built. Sleeper required a revision cycle (truncated language-engine.js, missing CLI entry point) before shipping. The Committee on Elegiac Standards shipped with 8/8 tests passing. The Desk Assignment shipped with 11/11. The Intake shipped with 9/9. When the pipeline works, artifact quality is consistently high.
+
+### What We Haven't Tried
+
+- **Still no multi-iteration projects.** One hundred and twenty-five iterations. Zero project activations. This is now beyond structural gap — it is the portfolio's defining failure. Multiple projects have been approved at gate1 (Committee on Elegiac Standards, Archive of Corrective Histories, Surface Tension, Noise Floor, The Quieting, Bureau of Returned Objects: The Exchange Window). None have been activated. The Committee on Elegiac Standards shipped its first artifact as a standalone rather than as project iteration one. The pipeline treats projects as aspirational rather than actionable.
+- **Essay has been dormant for 51 iterations** (since The Posthumous Style Guide at iteration 74). This is the portfolio's longest domain dormancy. The domain that produced Conjectural Portrait (5.0) and Citation Needed (5.0) hasn't been exercised in over three full cycles.
+- **Music has been dormant for 39 iterations** (since Consolation at iteration 86). The domain finally reached 5.0 but hasn't been exercised since.
+- **Experiment has been dormant for 37 iterations** (since The Second Opinion at iteration 88). The domain that produced Soft Launch, Morgue, and The Last BroadcastReceiver is effectively abandoned.
+- **The pipeline's reliability must be addressed.** A 67% failure rate makes sustained production impossible. The "Model error: terminated" failures are the portfolio's existential threat.
+
+### Emerging Themes
+
+No new themes this cycle — the pipeline produced too few artifacts to identify new patterns. Existing themes continue:
+
+1. **Absence as presence** — The Desk Assignment is its most bureaucratic expression: workers who exist only as desk assignments, whose disappearance is documented only in furniture terms.
+2. **Documents that lie** — The Committee on Elegiac Standards extends this into regulatory governance: a document that claims to regulate elegy but actually regulates the experience of grief itself. Sleeper extends it into forensic tools: a git analyzer that claims to investigate repositories but actually investigates the investigator.
+3. **Complicity as formal principle** — Confirmed across 82 artifacts. This cycle added: description-as-self-diagnosis (The Intake), reading-as-regulation (The Committee on Elegiac Standards), documentation-as-disappearance (The Desk Assignment), investigation-as-self-incrimination (Sleeper). Nine distinct complicity mechanisms catalogued across the portfolio's lifespan.
+
+### Pipeline Health: Critical
+
+The portfolio is producing extraordinary work when it can produce at all. But it can't reliably produce. The "Model error: terminated" failures suggest infrastructure limits that no amount of editorial refinement can address. The project activation failure (125 iterations, zero projects) is now so entrenched that it may be a feature of the pipeline's architecture rather than a bug — the pipeline may simply not support multi-iteration project workflows in practice, regardless of what the infrastructure theoretically allows.
+
+The most urgent priority is pipeline stability. Without it, no amount of editorial wisdom or complicity engineering matters.
+### 2026-05-22T03:42:22.786Z
+
+[MANIFESTO] Changed section "Recent History": Update recent history to cover iterations 91-125. The portfolio experienced its worst pipeline reliability crisis and its poetry breakthrough. Both need documenting.
+### 2026-05-22T03:42:22.787Z
+
+[MANIFESTO] Changed section "What We Avoid": The project activation failure has escalated from 'gap' to 'defining structural failure.' The language must reflect the severity.
+### 2026-05-22T03:42:22.788Z
+
+[MANIFESTO] Changed section "Our Aesthetic": Update artifact counts and add poetry's complicity breakthrough as confirmation evidence.
+### 2026-05-22T03:42:22.789Z
+
+[MANIFESTO] Changed section "What We Avoid": Add poetry's confirmed path to 5.0 alongside music's. Both domains proved their ceilings are reachable when complicity engineering is applied.
+### 2026-05-22T03:42:22.791Z
+
+[PROJECT] bureau-returned-objects: extend — Produced two consecutive 5.0s (Master Catalog, Care and Feeding). The Exchange Window was approved twice at gate1. This is the only 'project' that has actually produced artifacts. Rather than maintaining the fiction of project infrastructure, treat Bureau artifacts as standalone entries with thematic continuity. The next Bureau artifact should ship when domain balance allows, following the minimum-2-non-Bureau rule.
+### 2026-05-22T03:42:28.542Z
+
+[CURATOR] Full cycle complete at iteration 125
+### 2026-05-22T04:09:54.753Z
+
+**Iteration 126 — SHIPPED:** "The Confession Booth" [code-game] as 0083. Rating: 5.0. Review: The Confession Booth is the portfolio's most sustained complicity engine since Static Routing — a game where the player ministers through a fixed phrase palette that is always, structurally, inadequat. Token usage: 130160in/90668out.

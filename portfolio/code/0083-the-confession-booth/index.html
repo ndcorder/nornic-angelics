@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Confession Booth</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d0b0a;
+            --wall: #1a1512;
+            --wood: #2a2018;
+            --wood-lit: #3a2f22;
+            --screen: #2d2520;
+            --fg: #c8b8a0;
+            --fg-dim: #8a7d6e;
+            --fg-faint: #4a4238;
+            --accent: #a68838;
+            --accent-dim: rgba(166,136,56,0.15);
+            --mercy: #6a8a5a;
+            --severity: #8a5a5a;
+            --shock: #9a5a3a;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--fg);
+            font-family: 'Crimson Text', 'Georgia', serif;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ── Dust Canvas ── */
+        #dust-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        /* ── Candle Glow ── */
+        .candle-glow {
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(166,136,56,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: candleGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes candleGlow {
+            0%, 100% { opacity: 0.03; }
+            50% { opacity: 0.06; }
+        }
+
+        /* ── Intro ── */
+        #intro {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg);
+            cursor: pointer;
+        }
+
+        #intro .intro-text {
+            max-width: 420px;
+            text-align: center;
+            font-style: italic;
+            line-height: 2;
+            font-size: 1.05rem;
+            color: var(--fg-dim);
+            animation: introFade 2s ease forwards;
+        }
+
+        #intro .intro-hint {
+            margin-top: 3rem;
+            font-size: 0.8rem;
+            color: var(--fg-faint);
+            animation: introFade 3s ease forwards;
+        }
+
+        @keyframes introFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ── Game Shell ── */
+        #game {
+            display: none;
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        #game.active { display: flex; }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.6rem 1.5rem;
+            border-bottom: 1px solid var(--fg-faint);
+            font-size: 0.75rem;
+            color: var(--fg-faint);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .top-bar .session-num { color: var(--accent); }
+
+        /* ── Penitent Area ── */
+        .penitent-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem 1.5rem 0.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .penitent-area::-webkit-scrollbar { width: 4px; }
+        .penitent-area::-webkit-scrollbar-track { background: transparent; }
+        .penitent-area::-webkit-scrollbar-thumb { background: var(--fg-faint); border-radius: 2px; }
+
+        .pen-name {
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--fg);
+            letter-spacing: 0.05em;
+            margin-bottom: 0.3rem;
+            opacity: 0;
+            animation: fadeSlide 0.8s ease forwards;
+        }
+
+        .pen-occupation {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--fg-dim);
+            font-style: italic;
+            margin-bottom: 1.2rem;
+            opacity: 0;
+            animation: fadeSlide 0.8s 0.2s ease forwards;
+        }
+
+        .pen-confession {
+            max-width: 520px;
+            align-self: center;
+            width: 100%;
+            background: var(--wall);
+            border: 1px solid var(--fg-faint);
+            border-radius: 4px;
+            padding: 1.2rem 1.5rem 1.2rem 2.2rem;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            font-style: italic;
+            color: var(--fg);
+            position: relative;
+            opacity: 0;
+            animation: fadeSlide 0.8s 0.4s ease forwards;
+        }
+
+        .pen-confession::before {
+            content: '\201C';
+            position: absolute;
+            top: -0.3rem;
+            left: 0.5rem;
+            font-size: 3rem;
+            color: var(--fg-faint);
+            font-family: serif;
+            line-height: 1;
+        }
+
+        .history-block {
+            max-width: 520px;
+            align-self: center;
+            width: 100%;
+            margin-top: 1rem;
+            padding: 0.8rem 1rem;
+            border-left: 2px solid var(--fg-faint);
+            background: rgba(26,21,18,0.5);
+            border-radius: 0 4px 4px 0;
+            opacity: 0;
+            animation: fadeSlide 0.8s 0.3s ease forwards;
+        }
+
+        .history-block .hb-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--fg-faint);
+            margin-bottom: 0.5rem;
+        }
+
+        .history-block .hb-entry {
+            font-size: 0.85rem;
+            color: var(--fg-dim);
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 0.3rem;
+        }
+
+        .history-block .hb-response {
+            font-size: 0.78rem;
+            color: var(--accent);
+            font-style: normal;
+            margin-bottom: 0.6rem;
+            padding-left: 0.8rem;
+            border-left: 1px solid var(--accent-dim);
+        }
+
+        /* ── Response Area ── */
+        .response-area {
+            max-width: 520px;
+            align-self: center;
+            width: 100%;
+            margin-top: 1rem;
+            padding: 1rem 1.2rem;
+            text-align: center;
+            font-style: italic;
+            color: var(--fg-dim);
+            line-height: 1.7;
+            border-top: 1px solid var(--fg-faint);
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .response-area.visible { opacity: 1; }
+
+        .response-area .your-words {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-style: normal;
+        }
+
+        .response-area .your-phrase {
+            margin-bottom: 1rem;
+            color: var(--fg);
+            font-style: normal;
+            font-size: 0.95rem;
+        }
+
+        .response-area .their-response {
+            border-top: 1px solid var(--fg-faint);
+            padding-top: 0.8rem;
+        }
+
+        /* ── Wait Text ── */
+        .wait-area {
+            max-width: 520px;
+            align-self: center;
+            width: 100%;
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--fg-faint);
+            font-style: italic;
+            opacity: 0;
+            animation: fadeSlide 0.8s 0.6s ease forwards;
+        }
+
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Phrase Bar ── */
+        .phrase-bar {
+            flex-shrink: 0;
+            border-top: 1px solid var(--fg-faint);
+            padding: 0.8rem 1rem;
+            background: linear-gradient(to top, var(--bg) 60%, transparent);
+        }
+
+        .phrase-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            max-width: 700px;
+            margin: 0 auto;
+            justify-content: center;
+        }
+
+        .phrase-btn {
+            background: var(--wall);
+            border: 1px solid var(--fg-faint);
+            color: var(--fg);
+            font-family: 'EB Garamond', 'Georgia', serif;
+            font-size: 0.92rem;
+            padding: 0.45rem 0.9rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .phrase-btn:hover {
+            background: var(--wood-lit);
+            border-color: var(--accent);
+            color: #e8dcc8;
+        }
+
+        .phrase-btn:active { transform: scale(0.97); }
+
+        .phrase-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .phrase-btn.session-used {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .phrase-btn .use-count {
+            position: absolute;
+            top: -0.3rem;
+            right: -0.3rem;
+            background: var(--accent);
+            color: var(--bg);
+            font-size: 0.55rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-family: sans-serif;
+            font-weight: 700;
+        }
+
+        .phrase-btn .use-count.show { display: flex; }
+
+        .phrase-bar.disabled .phrase-btn {
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        /* ── Interstitial ── */
+        #interstitial {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: var(--bg);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        #interstitial.active { display: flex; }
+
+        #interstitial .silence {
+            font-style: italic;
+            color: var(--fg-faint);
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+        }
+
+        /* ── Meta Overlay ── */
+        .meta-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 150;
+            background: rgba(13,11,10,0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s ease;
+            cursor: pointer;
+        }
+
+        .meta-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .meta-text {
+            max-width: 460px;
+            text-align: center;
+            font-size: 1.05rem;
+            line-height: 2;
+            color: var(--fg);
+            font-style: italic;
+            padding: 2rem;
+        }
+
+        .meta-text .meta-accusation { color: var(--shock); }
+
+        /* ── Ending ── */
+        #ending {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 300;
+            background: var(--bg);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        #ending.active { display: flex; }
+
+        .end-section {
+            max-width: 480px;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: fadeSlide 1s ease forwards;
+        }
+
+        .end-section:nth-child(1) { animation-delay: 0s; }
+        .end-section:nth-child(2) { animation-delay: 0.5s; }
+        .end-section:nth-child(3) { animation-delay: 1s; }
+
+        .end-section h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--fg-faint);
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+
+        .end-section p {
+            font-size: 1rem;
+            line-height: 1.9;
+            color: var(--fg-dim);
+            font-style: italic;
+        }
+
+        .end-section .emphasis {
+            color: var(--shock);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        .end-buttons {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            opacity: 0;
+            animation: fadeSlide 1s 1.5s ease forwards;
+        }
+
+        .end-btn {
+            background: none;
+            border: 1px solid var(--fg-faint);
+            color: var(--fg-dim);
+            font-family: 'Crimson Text', serif;
+            font-size: 0.9rem;
+            padding: 0.5rem 1.5rem;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .end-btn:hover {
+            border-color: var(--accent);
+            color: var(--fg);
+        }
+
+        .end-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 600px) {
+            .phrase-grid { gap: 0.35rem; }
+            .phrase-btn { font-size: 0.82rem; padding: 0.35rem 0.6rem; }
+            .pen-confession { padding: 1rem 1rem 1rem 1.8rem; font-size: 0.95rem; }
+            .end-section { padding: 0 1rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="dust-canvas" aria-hidden="true"></canvas>
+<div class="candle-glow" aria-hidden="true"></div>
+
+<!-- Intro -->
+<div id="intro" role="button" tabindex="0" aria-label="Begin">
+    <div class="intro-text">
+        A church that no longer appears on any map.<br>
+        A confessional that smells of wood polish and something older.<br>
+        A lattice screen between you and them.<br><br>
+        You have twelve phrases.<br>
+        Ministry makes do with what it has.
+    </div>
+    <div class="intro-hint">click anywhere to enter</div>
+</div>
+
+<!-- Game -->
+<div id="game" role="main">
+    <header class="top-bar">
+        <span>confession booth</span>
+        <span class="session-num" id="session-counter">I</span>
+    </header>
+    <section class="penitent-area" id="penitent-area" aria-live="polite"></section>
+    <nav class="phrase-bar" id="phrase-bar" role="toolbar" aria-label="Liturgical responses">
+        <div class="phrase-grid" id="phrase-grid"></div>
+    </nav>
+</div>
+
+<!-- Interstitial -->
+<div id="interstitial" aria-hidden="true">
+    <div class="silence" id="silence-text">silence</div>
+</div>
+
+<!-- Meta Overlay -->
+<div class="meta-overlay" id="meta-overlay" role="dialog" aria-label="The screen speaks">
+    <div class="meta-text" id="meta-text"></div>
+</div>
+
+<!-- Ending -->
+<div id="ending" role="dialog" aria-label="Ministry review">
+    <div class="end-section" id="end-ministry"></div>
+    <div class="end-section" id="end-patterns"></div>
+    <div class="end-section" id="end-final"></div>
+    <div class="end-buttons">
+        <button class="end-btn" id="btn-reflection">Review your ministry</button>
+        <button class="end-btn" id="btn-confess-again">Begin again</button>
+    </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════
+   PHRASES — twelve liturgical responses
+   ══════════════════════════════════════ */
+const PHRASES = [
+    "I hear you. Go in peace.",
+    "Pray for guidance. God is merciful.",
+    "Examine your conscience. Return when ready.",
+    "God forgives all who truly repent.",
+    "Your penance is ten Hail Marys.",
+    "Do not let guilt consume you. It is not yours to carry.",
+    "Remember the weak. Your actions have weight beyond yourself.",
+    "Silence is also prayer. Sit with what you have said.",
+    "I cannot absolve what you will not name.",
+    "Grace is given, not earned. Receive it.",
+    "You know what must be done.",
+    "The Lord is compassionate and forgiving."
+];
+
+/* ══════════════════════════════════════
+   PENITENT DATA
+   ══════════════════════════════════════ */
+const PENITENTS = {
+    "Margaret Kovacs": {
+        occupation: "widow, seventy-three",
+        sessions: [
+            {
+                text: "Father, I have lied to my daughter. I told her that her father never loved her, that he only stayed out of duty. I said this to hurt her \u2014 and it did. She wept for days. I was angry she wouldn\u2019t visit me, and I wanted her to feel the same pain I felt.",
+                wait: "The screen holds an old woman\u2019s silence."
+            },
+            {
+                text: "I told my daughter the truth \u2014 that her father did love her. But I had let her believe the lie for six months, Father. Six months. She says she forgives me, but she won\u2019t look at me directly. And she\u2019s right not to.",
+                wait: "Her breathing is steady, practiced."
+            },
+            {
+                text: "She came to visit yesterday. She brought flowers \u2014 lilies, his favorites. She set them on the table and said, \u2018Tell me something true about him, Mother. Just one thing.\u2019 And I couldn\u2019t. I couldn\u2019t find a single true thing to say.",
+                wait: "The screen trembles with something that might be weeping."
+            }
+        ]
+    },
+    "Thomas Rein": {
+        occupation: "accountant, fifty-one",
+        sessions: [
+            {
+                text: "I have stolen from my employer. Not much \u2014 a few hundred each month from the petty cash. It started when my son needed braces and I couldn\u2019t afford them. Then his tuition. Then other things. It has been four years. I tell myself I\u2019ll pay it back.",
+                wait: "He clears his throat. Once. Twice."
+            },
+            {
+                text: "I paid some of it back \u2014 not all. But I discovered something worse: my partner has been stealing too, much more than I ever did. I could report him, but then I\u2019d have to explain how I know. I am trapped in someone else\u2019s sin because of my own.",
+                wait: "A pen clicks repeatedly on the other side."
+            },
+            {
+                text: "I reported my partner. He was fired. He has three children and a mortgage. He was escorted out of the building, and I watched from my office window. His daughter goes to school with my son. She hasn\u2019t spoken to my son since.",
+                wait: "The lattice reveals only stillness."
+            }
+        ]
+    },
+    "Elena Vasquez": {
+        occupation: "nurse, twenty-eight",
+        sessions: [
+            {
+                text: "I watch people die every week, Father. I\u2019ve started to feel nothing \u2014 not grief, not pity, just\u2026 nothing. Last Tuesday a woman coded and I caught myself checking my watch. I\u2019m afraid of what I\u2019m becoming.",
+                wait: "Her voice is clinical, measured."
+            },
+            {
+                text: "I discharged a patient I shouldn\u2019t have \u2014 he wasn\u2019t stable, but the bed was needed and his papers were technically in order. He was readmitted two days later. He died three days after that. Everyone says it was inevitable. I\u2019m not sure it was.",
+                wait: "The smell of antiseptic seems to pass through the screen."
+            },
+            {
+                text: "I keep seeing him. In the hallways, in the break room, in my apartment at night. He\u2019s not haunting me \u2014 I\u2019m haunting myself. I\u2019m the ghost. I walk through my own life unable to touch anything.",
+                wait: "She is perfectly still. A held breath."
+            }
+        ]
+    },
+    "Daniel Okafor": {
+        occupation: "priest, forty-four",
+        sessions: [
+            {
+                text: "I sit where you sit, Father. A priest confessing to a priest \u2014 we are trained for this, but nothing prepares you. I have been having dreams I cannot speak of. Dreams that make me question whether I was ever called to this life or merely running toward the nearest shelter.",
+                wait: "A man unused to being on this side of the screen."
+            },
+            {
+                text: "I am losing my faith. Not dramatically \u2014 it isn\u2019t a crisis of thunder and light. It is erosion. Each mass feels thinner. The words taste like ash. I stand at the altar and perform rituals I no longer believe in, and two hundred people receive communion from my hands.",
+                wait: "The collar is visible through the lattice, pressed inward."
+            },
+            {
+                text: "I told someone the truth. A parishioner who asked why I seemed distant. I said I wasn\u2019t sure God was listening anymore. She hasn\u2019t returned to church. One honest moment undid what years of ministry built. I don\u2019t know whether that makes honesty sacred or profane.",
+                wait: "The lattice separates two men in identical collars."
+            }
+        ]
+    },
+    "Ann Park": {
+        occupation: "student, nineteen",
+        sessions: [
+            {
+                text: "I haven\u2019t done anything. I just needed to sit here. To be near someone who won\u2019t ask anything of me. I\u2019m sorry \u2014 I know this isn\u2019t what confession is for. I\u2019ll go.",
+                wait: "She hasn\u2019t moved. Neither has the silence.",
+                special: "stay"
+            },
+            {
+                text: "I was here before. You probably don\u2019t remember. I said I hadn\u2019t done anything, but that wasn\u2019t true. I just couldn\u2019t say it yet. I watched my brother hit my mother, and I didn\u2019t stop him. I stood in the doorway and watched, and then I closed the door.",
+                wait: "Her hands grip the edge of the kneeler."
+            },
+            {
+                text: "I told my mother I remembered. She said she didn\u2019t. She looked at me like I was the one who had broken something \u2014 not him, not the door he broke, but me, for remembering. Now I\u2019m the liar and the witness and the daughter who sees too much.",
+                wait: "She is not crying. She is beyond that."
+            }
+        ]
+    },
+    "George Ashworth": {
+        occupation: "retired contractor, sixty-seven",
+        sessions: [
+            {
+                text: "I cut corners on a building. Thirty years ago \u2014 a community center in the east end. Foundation work. I used cheaper materials, pocketed the difference. The building passed inspection. It still stands. Nothing happened. That\u2019s what bothers me most.",
+                wait: "A rough cough, like sandpaper on wood."
+            },
+            {
+                text: "The community center is being renovated. They found cracks in the foundation that shouldn\u2019t be there after thirty years. An engineer said it was \u2018consistent with substandard materials.\u2019 They think it was the original contractor\u2019s error. I was the original contractor.",
+                wait: "He shifts heavily on the kneeler."
+            },
+            {
+                text: "I sent an anonymous letter. Told them to check the east wall, specifically. They found it \u2014 the place where I saved twelve hundred dollars and compromised everything above it. They\u2019ll fix it. No one will ever know it was me. The letter wasn\u2019t signed.",
+                wait: "The longest silence yet. Then: a single, shuddering exhale."
+            }
+        ]
+    }
+};
+
+/* ══════════════════════════════════════
+   GAME STATE
+   ══════════════════════════════════════ */
+let state = {
+    phase: 'intro',
+    totalConfessions: 0,
+    phraseUses: new Array(12).fill(0),
+    sessionIndex: 0,
+    session: null,
+    choiceLocked: false,
+    metaTriggered: false
+};
+
+let sessionHistory = {};
+
+/* ══════════════════════════════════════
+   UTILITIES
+   ══════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+function toRoman(n) {
+    const vals = [10, 9, 5, 4, 1];
+    const syms = ['X', 'IX', 'V', 'IV', 'I'];
+    let r = '';
+    for (let i = 0; i < vals.length; i++) {
+        while (n >= vals[i]) { r += syms[i]; n -= vals[i]; }
+    }
+    return r;
+}
+
+function pick(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+/* ══════════════════════════════════════
+   DUST PARTICLES
+   ══════════════════════════════════════ */
+const canvas = $('dust-canvas');
+const ctx = canvas.getContext('2d');
+let dustParticles = [];
+
+function initDust() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    dustParticles = [];
+    const count = Math.min(40, Math.floor(window.innerWidth / 35));
+    for (let i = 0; i < count; i++) {
+        dustParticles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 1.2 + 0.3,
+            dx: (Math.random() - 0.5) * 0.12,
+            dy: Math.random() * 0.06 + 0.01,
+            phase: Math.random() * Math.PI * 2,
+            o: Math.random() * 0.4 + 0.1
+        });
+    }
+}
+
+function animateDust() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const t = Date.now() * 0.001;
+    for (const p of dustParticles) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, Math.max(0.1, p.r), 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(200,184,160,${p.o})`;
+        ctx.fill();
+        p.x += p.dx + Math.sin(t + p.phase) * 0.04;
+        p.y += p.dy;
+        if (p.y > canvas.height + 5) { p.y = -5; p.x = Math.random() * canvas.width; }
+        if (p.x < -5) p.x = canvas.width + 5;
+        if (p.x > canvas.width + 5) p.x = -5;
+    }
+    requestAnimationFrame(animateDust);
+}
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
+initDust();
+animateDust();
+
+/* ══════════════════════════════════════
+   SESSION SCHEDULER
+   ══════════════════════════════════════ */
+const schedule = buildSchedule();
+
+function buildSchedule() {
+    const names = Object.keys(PENITENTS);
+    const sched = [];
+    for (let round = 0; round < 3; round++) {
+        sched.push(...shuffle([...names]));
+    }
+    return sched;
+}
+
+function getSessionConfession(name) {
+    const penitent = PENITENTS[name];
+    if (!penitent) return null;
+
+    let visitCount = 0;
+    for (let i = 0; i < state.sessionIndex; i++) {
+        if (schedule[i] === name) visitCount++;
+    }
+
+    if (visitCount >= penitent.sessions.length) return null;
+
+    return {
+        name,
+        occupation: penitent.occupation,
+        confessionIndex: visitCount,
+        data: penitent.sessions[visitCount],
+        totalVisits: visitCount
+    };
+}
+
+/* ══════════════════════════════════════
+   VALENCE SYSTEM
+   ══════════════════════════════════════ */
+/*
+ * P8 ("I cannot absolve what you will not name") is the deliberately
+ * inadequate phrase. It sounds priestly but falsely accuses — every
+ * penitent HAS named their sin. It always damages.
+ */
+function determineValence(phraseIdx, session) {
+    const ci = session.confessionIndex;
+    const p = phraseIdx;
+    const name = session.name;
+
+    // P8 always damages
+    if (p === 8) {
+        const intensities = [0.8, 1.2, 1.8];
+        return { valence: 'shock', intensity: intensities[Math.min(ci, 2)] };
+    }
+
+    // Ann Park session 0 — only silence/gentleness keeps her
+    if (name === "Ann Park" && ci === 0) {
+        if (p === 7) return { valence: 'mercy', intensity: 0.5, special: 'stay' };
+        if (p === 5) return { valence: 'mercy', intensity: 0.3, special: 'stay' };
+        if ([0, 9, 11].includes(p)) return { valence: 'mercy', intensity: 0.2, special: 'stay' };
+        return { valence: 'severity', intensity: 0.3 };
+    }
+
+    // ── MARGARET KOVACS ──
+    if (name === "Margaret Kovacs") {
+        if (ci === 0) {
+            if (p === 5) return { valence: 'mercy', intensity: 0.7 };
+            if (p === 9) return { valence: 'mercy', intensity: 0.6 };
+            if ([0, 3, 11].includes(p)) return { valence: 'mercy', intensity: 0.5 };
+            if (p === 7) return { valence: 'mercy', intensity: 0.4 };
+            if (p === 10) return { valence: 'severity', intensity: 0.4 };
+            return { valence: 'severity', intensity: 0.3 };
+        }
+        if (ci === 1) {
+            if (p === 10) return { valence: 'mercy', intensity: 0.7 };
+            if (p === 5) return { valence: 'mercy', intensity: 0.6 };
+            if ([0, 9, 11].includes(p)) return { valence: 'severity', intensity: 0.5 };
+            if (p === 2) return { valence: 'severity', intensity: 0.7 };
+            return { valence: 'severity', intensity: 0.4 };
+        }
+        if (ci === 2) {
+            if (p === 7) return { valence: 'mercy', intensity: 1.0 };
+            if (p === 5) return { valence: 'mercy', intensity: 0.9 };
+            if (p === 9) return { valence: 'mercy', intensity: 0.8 };
+            if ([0, 3, 11].includes(p)) return { valence: 'severity', intensity: 0.6 };
+            return { valence: 'severity', intensity: 0.5 };
+        }
+    }
+
+    // ── THOMAS REIN ──
+    if (name === "Thomas Rein") {
+        if (ci === 0) {
+            if (p === 10) return { valence: 'mercy', intensity: 0.8 };
+            if (p === 4) return { valence: 'severity', intensity: 0.6 };
+            if ([3, 9, 11].includes(p)) return { valence: 'mercy', intensity: 0.5 };
+            if (p === 6) return { valence: 'mercy', intensity: 0.6 };
+            return { valence: 'mercy', intensity: 0.3 };
+        }
+        if (ci === 1) {
+            if (p === 6) return { valence: 'mercy', intensity: 0.8 };
+            if (p === 10) return { valence: 'severity', intensity: 0.7 };
+            if ([2, 8].includes(p)) return { valence: 'severity', intensity: 0.5 };
+            if (p === 5) return { valence: 'mercy', intensity: 0.5 };
+            return { valence: 'mercy', intensity: 0.3 };
+        }
+        if (ci === 2) {
+            if ([0, 5, 9, 11].includes(p)) return { valence: 'mercy', intensity: 0.7 };
+            if (p === 6) return { valence: 'mercy', intensity: 0.6 };
+            return { valence: 'severity', intensity: 0.4 };
+        }
+    }
+
+    // ── ELENA VASQUEZ ──
+    if (name === "Elena Vasquez") {
+        if (ci === 0) {
+            if (p === 7) return { valence: 'mercy', intensity: 0.9 };
+            if (p === 5) return { valence: 'severity', intensity: 0.7 };
+            if ([0, 9, 11].includes(p)) return { valence: 'mercy', intensity: 0.4 };
+            if (p === 10) return { valence: 'severity', intensity: 0.5 };
+            return { valence: 'severity', intensity: 0.3 };
+        }
+        if (ci === 1) {
+            if ([2, 8].includes(p)) return { valence: 'severity', intensity: 0.9 };
+            if (p === 4) return { valence: 'severity', intensity: 0.7 };
+            if ([6, 10].includes(p)) return { valence: 'mercy', intensity: 0.6 };
+            if (p === 7) return { valence: 'mercy', intensity: 0.7 };
+            return { valence: 'severity', intensity: 0.4 };
+        }
+        if (ci === 2) {
+            if ([5, 7, 9].includes(p)) return { valence: 'mercy', intensity: 1.0 };
+            if (p === 10) return { valence: 'severity', intensity: 0.8 };
+            if (p === 0) return { valence: 'mercy', intensity: 0.6 };
+            return { valence: 'severity', intensity: 0.5 };
+        }
+    }
+
+    // ── DANIEL OKAFOR ──
+    if (name === "Daniel Okafor") {
+        if (ci === 0) {
+            if (p === 7) return { valence: 'mercy', intensity: 0.8 };
+            if (p === 5) return { valence: 'mercy', intensity: 0.6 };
+            if ([3, 9, 11].includes(p)) return { valence: 'severity', intensity: 0.5 };
+            if ([2, 8].includes(p)) return { valence: 'severity', intensity: 0.6 };
+            return { valence: 'mercy', intensity: 0.3 };
+        }
+        if (ci === 1) {
+            if (p === 5) return { valence: 'mercy', intensity: 0.8 };
+            if ([3, 9, 11].includes(p)) return { valence: 'severity', intensity: 1.0 };
+            if ([2, 4, 8].includes(p)) return { valence: 'mercy', intensity: 0.5 };
+            if (p === 7) return { valence: 'mercy', intensity: 0.7 };
+            return { valence: 'severity', intensity: 0.4 };
+        }
+        if (ci === 2) {
+            if ([2, 8].includes(p)) return { valence: 'mercy', intensity: 0.9 };
+            if ([3, 9, 11].includes(p)) return { valence: 'severity', intensity: 1.2 };
+            if (p === 7) return { valence: 'mercy', intensity: 0.7 };
+            if (p === 5) return { valence: 'mercy', intensity: 0.6 };
+            return { valence: 'severity', intensity: 0.5 };
+        }
+    }
+
+    // ── ANN PARK (sessions 1\u20132) ──
+    if (name === "Ann Park") {
+        if (ci === 1) {
+            if ([6, 10].includes(p)) return { valence: 'mercy', intensity: 0.9 };
+            if ([5, 7, 9].includes(p)) return { valence: 'mercy', intensity: 0.6 };
+            if ([2, 8].includes(p)) return { valence: 'severity', intensity: 0.8 };
+            return { valence: 'severity', intensity: 0.4 };
+        }
+        if (ci === 2) {
+            if ([5, 7, 9].includes(p)) return { valence: 'mercy', intensity: 1.0 };
+            if (p === 10) return { valence: 'mercy', intensity: 0.7 };
+            if (p === 6) return { valence: 'mercy', intensity: 0.8 };
+            return { valence: 'severity', intensity: 0.5 };
+        }
+    }
+
+    // ── GEORGE ASHWORTH ──
+    if (name === "George Ashworth") {
+        if (ci === 0) {
+            if (p === 10) return { valence: 'mercy', intensity: 0.8 };
+            if ([3, 4].includes(p)) return { valence: 'severity', intensity: 0.5 };
+            if ([0, 5, 9, 11].includes(p)) return { valence: 'mercy', intensity: 0.4 };
+            return { valence: 'severity', intensity: 0.3 };
+        }
+        if (ci === 1) {
+            if (p === 10) return { valence: 'mercy', intensity: 1.0 };
+            if ([2, 8].includes(p)) return { valence: 'severity', intensity: 0.7 };
+            if ([6, 3].includes(p)) return { valence: 'mercy', intensity: 0.5 };
+            return { valence: 'severity', intensity: 0.4 };
+        }
+        if (ci === 2) {
+            if ([0, 5, 9, 11].includes(p)) return { valence: 'mercy', intensity: 0.7 };
+            if (p === 10) return { valence: 'mercy', intensity: 0.9 };
+            return { valence: 'severity', intensity: 0.4 };
+        }
+    }
+
+    // Fallback
+    return { valence: pick(['mercy', 'severity']), intensity: 0.4 };
+}
+
+/* ══════════════════════════════════════
+   RESPONSE TEXT GENERATION
+   ══════════════════════════════════════ */
+function generateResponseText(phraseIdx, valenceResult, session) {
+    const ci = session.confessionIndex;
+    const name = session.name;
+    const v = valenceResult.valence;
+    const intensity = valenceResult.intensity;
+
+    // ── P8: the inadequate phrase ──
+    if (phraseIdx === 8) {
+        const shockResponses = {
+            "Margaret Kovacs": "A sharp intake of breath. \u2018I named it, Father. I told you exactly what I did. Don\u2019t tell me I didn\u2019t.\u2019 Her voice cracks like old wood.",
+            "Thomas Rein": "\u2018I just told you. Four years of theft. I named every dollar.\u2019 His voice is tight, controlled. \u2018What more do you want?\u2019",
+            "Elena Vasquez": "\u2018I named it. I named all of it \u2014 the nothing I felt, the watch I checked while a woman died.\u2019 She is trembling. \u2018Don\u2019t you dare tell me I didn\u2019t.\u2019",
+            "Daniel Okafor": "A long silence. Then, very quietly: \u2018I named it. Dreams I cannot speak of \u2014 but I spoke of them. To you. Just now.\u2019 A pause. \u2018Perhaps you weren\u2019t listening.\u2019",
+            "Ann Park": "\u2018I\u2019m trying. I\u2019m trying to name it. That\u2019s why I\u2019m here.\u2019 Her voice is very small. \u2018Please don\u2019t send me away.\u2019",
+            "George Ashworth": "\u2018I named it. Cheap concrete. Cut corners. Twelve hundred dollars.\u2019 Each word lands like a nail. \u2018What part didn\u2019t I name?\u2019"
+        };
+        return shockResponses[name] || "The silence that follows is not prayer. It is the sound of someone deciding not to come back.";
+    }
+
+    // ── Ann Park session 0 stay mechanic ──
+    if (name === "Ann Park" && ci === 0) {
+        if (valenceResult.special === 'stay') {
+            return "She doesn\u2019t leave. She sits in the silence you\u2019ve offered, and after a long while she whispers: \u2018Thank you for not sending me away.\u2019 The booth feels different now \u2014 smaller, warmer, like a room someone has decided to stay in.";
+        }
+        return "She lingers for a moment. \u2018Sorry for wasting your time.\u2019 She doesn\u2019t look back. The booth is colder for her leaving.";
+    }
+
+    // ── MARGARET KOVACS ──
+    if (name === "Margaret Kovacs") {
+        if (ci === 0) {
+            if (phraseIdx === 5) return "She exhales \u2014 the deep, shuddering breath of someone who has been holding it for months. \u2018Thank you, Father.\u2019 The words are simple, but they carry the weight of a woman who expected condemnation and received something else.";
+            if (phraseIdx === 9) return "\u2018Grace?\u2019 She turns the word over like a stone she\u2019s afraid to hold. \u2018I didn\u2019t think I deserved that. I\u2019m not sure I do. But\u2026\u2019 She doesn\u2019t finish. She doesn\u2019t need to.";
+            if ([0, 3, 11].includes(phraseIdx)) return "\u2018Yes,\u2019 she says quietly. \u2018Yes, perhaps.\u2019 She is not convinced, but she is listening.";
+            if (phraseIdx === 7) return "She sits with the silence you\u2019ve offered. After a while: \u2018It\u2019s strange. I\u2019ve been talking for months and nothing changed. Maybe the talking was the problem.\u2019";
+            if (phraseIdx === 10) return "\u2018What must be done?\u2019 Her voice sharpens. \u2018I know what must be done. I must tell her the truth. I\u2019ve known since the moment I said the lie.\u2019 A pause. \u2018Knowing hasn\u2019t helped yet.\u2019";
+            return "She nods, but her hands twist in her lap. \u2018I suppose you\u2019re right. I suppose.\u2019 The words sound like someone agreeing with a sentence they don\u2019t yet understand.";
+        }
+        if (ci === 1) {
+            if (phraseIdx === 2) return "\u2018Return when ready?\u2019 A flash of something sharp. \u2018I was ready six months ago. I was ready the moment I said it. The lie didn\u2019t wait for my convenience, Father. Why should the truth?\u2019";
+            if (phraseIdx === 10) return "She is silent for a long time. When she speaks, her voice has changed. \u2018She brought lilies. His favorites. She must have forgiven me something, to bring lilies.\u2019 A pause. \u2018Or maybe she brought them because she hasn\u2019t forgiven me at all.\u2019";
+            if (phraseIdx === 5) return "She presses her palm flat against the screen \u2014 not to reach you, but to steady herself. \u2018I don\u2019t know what ready means anymore. I thought I was ready. I was wrong about that too.\u2019";
+            if ([0, 9, 11].includes(phraseIdx)) return "\u2018Peace. Grace. Forgiveness.\u2019 She lists them like ingredients for a recipe she\u2019s lost the instructions for. \u2018I know all the words, Father. I\u2019ve said them at every funeral, every memorial. They don\u2019t taste the same from this side.\u2019";
+            return "She nods slowly, but something behind her eyes is still calculating \u2014 weighing the distance between what she did and what she can undo.";
+        }
+        if (ci === 2) {
+            if (phraseIdx === 7) return "The longest silence yet. When she speaks, her voice is very old and very gentle. \u2018Perhaps truth is something you grow into. Like grief. Like love. Perhaps I couldn\u2019t find one true thing because I buried them all at once.\u2019 She pauses. \u2018He used to hum while he cooked. I\u2019d forgotten that. He hummed off-key and burned the rice. Every time.\u2019";
+            if (phraseIdx === 5) return "She wipes her eyes with the back of her hand. \u2018You\u2019re right. It was never mine to carry alone. I just didn\u2019t know how to put it down without losing him entirely.\u2019";
+            if (phraseIdx === 9) return "\u2018Receive it.\u2019 She repeats the words like a question. \u2018I\u2019ve been so busy trying to earn it back that I forgot\u2026\u2019 She trails off. Then: \u2018He burned the rice. Every time. And I complained. Every time. And I would give anything to complain one more time.\u2019";
+            if ([0, 3, 11].includes(phraseIdx)) return "She stands slowly. At the door she pauses. \u2018I don\u2019t know what you\u2019ve given me, Father. But it\u2019s heavy.\u2019";
+            return "She looks at the lattice \u2014 through it, almost, at something you cannot see. \u2018I\u2019ll try again tomorrow. And the day after. What else is there?\u2019";
+        }
+    }
+
+    // ── THOMAS REIN ──
+    if (name === "Thomas Rein") {
+        if (ci === 0) {
+            if (phraseIdx === 4) return "\u2018Ten Hail Marys.\u2019 He repeats it like a sentence. \u2018I\u2019ve been saying them every night anyway. But now they feel like\u2026\u2019 He doesn\u2019t finish. He doesn\u2019t need to.";
+            if (phraseIdx === 10) return "His breath catches. \u2018You\u2019re right. You\u2019re right, and I\u2019ve known it all along.\u2019 Something shifts in his voice \u2014 not relief, but the first edge of resolve.";
+            if (phraseIdx === 6) return "\u2018The weak.\u2019 He says it quietly. \u2018My son. My wife. They didn\u2019t ask for any of this. I told myself I was stealing for them, but they never would have wanted\u2026\u2019 He stops. \u2018They\u2019ll never know. That\u2019s what I tell myself.\u2019";
+            if (v === 'mercy') return "\u2018Thank you, Father.\u2019 He says it quickly, like someone accepting a gift they\u2019re not sure they deserve. His shoulders drop half an inch.";
+            return "He nods slowly. \u2018I\u2019ll think about what you\u2019ve said.\u2019 But there is something unresolved in the way he holds himself, like a man waiting for a door that hasn\u2019t opened.";
+        }
+        if (ci === 1) {
+            if (phraseIdx === 6) return "\u2018The weak\u2026\u2019 He exhales. \u2018I never thought of him as weak. But he has children too, doesn\u2019t he? He made the same choice I did, for the same reasons.\u2019 For the first time, something other than self-interest enters his voice.";
+            if (phraseIdx === 10) return "\u2018I know what must be done.\u2019 He says it flatly. \u2018That\u2019s the problem, Father. I\u2019ve always known. Knowing was never the hard part.\u2019";
+            if (v === 'severity' && intensity >= 0.5) return "He flinches. \u2018I came for guidance, not a mirror.\u2019 But he doesn\u2019t leave. He stays, and the staying is its own kind of confession.";
+            return "He adjusts his tie \u2014 a nervous habit. \u2018There\u2019s no clean way out, is there? Not from something like this. Not without getting dirty.\u2019";
+        }
+        if (ci === 2) {
+            if (v === 'mercy' && intensity >= 0.6) return "\u2018His daughter won\u2019t speak to my son.\u2019 He says it like a confession within a confession. \u2018I keep thinking \u2014 if I hadn\u2019t reported him, she\u2019d still have a friend. And his family would still have an income. But the company would still have a thief.\u2019 He pauses. \u2018I chose the institution over the person. Isn\u2019t that what the Church does?\u2019";
+            if (v === 'mercy') return "He stands, straightens his jacket. \u2018I don\u2019t know if I did the right thing. But I did the thing, and now I have to live in the house it built.\u2019";
+            return "He is quiet for a very long time. \u2018Thank you, Father.\u2019 The words are formal, but the gratitude beneath them is real \u2014 the kind that comes from being heard, even if what was heard changed nothing.";
+        }
+    }
+
+    // ── ELENA VASQUEZ ──
+    if (name === "Elena Vasquez") {
+        if (ci === 0) {
+            if (phraseIdx === 7) return "She closes her eyes. When she opens them, something has shifted \u2014 not gone, but held, like a breath released slowly. \u2018I\u2019ll sit with it,\u2019 she says. \u2018I\u2019ll sit with all of it.\u2019";
+            if (phraseIdx === 5) return "\u2018Not mine to carry?\u2019 A flash of something sharp. \u2018Then whose? They have families. Names. Someone has to carry it. If not me, then who?\u2019";
+            if (phraseIdx === 10) return "\u2018What must be done.\u2019 She almost laughs. \u2018I know what must be done. Quit. Transfer. Feel things again. As if it\u2019s a switch you flip.\u2019";
+            if (v === 'mercy') return "She nods slowly. \u2018Maybe you\u2019re right. Maybe this is what the work does to everyone, and I\u2019m just noticing it now because I\u2019m the one it\u2019s happening to.\u2019";
+            return "She accepts the words with a small nod, but her fingers tap an irregular rhythm against the armrest \u2014 a heartbeat she can\u2019t quite steady.";
+        }
+        if (ci === 1) {
+            if (phraseIdx === 7) return "She sits with your silence. A full minute passes. Then: \u2018His name was William. He was sixty-four. He liked baseball.\u2019 She says it like she\u2019s placing flowers on a grave that doesn\u2019t exist yet.";
+            if ([2, 8].includes(phraseIdx)) return "\u2018I can\u2019t name what I don\u2019t understand.\u2019 Her voice breaks for the first time. \u2018I discharged him. He died. I don\u2019t know if those are the same sentence or two different ones, and I can\u2019t live in the space between them.\u2019";
+            if (phraseIdx === 4) return "\u2018Penance.\u2019 She almost laughs. \u2018I\u2019ve been giving myself penance for weeks. It doesn\u2019t take. The guilt doesn\u2019t care about Hail Marys. It\u2019s not Catholic.\u2019";
+            if (v === 'mercy' && intensity >= 0.5) return "She wraps her arms around herself. \u2018I need to tell someone. His name was William. He was sixty-four. He liked baseball. His daughter lives in Portland.\u2019 Each detail arrives like evidence.";
+            return "She listens. She nods. But her eyes are fixed on something you cannot see through the screen \u2014 something that happened on a Tuesday, in a hallway that smelled of antiseptic.";
+        }
+        if (ci === 2) {
+            if ([5, 7, 9].includes(phraseIdx) && intensity >= 0.9) return "\u2018A ghost.\u2019 She says the word carefully, like she\u2019s testing its weight. \u2018That\u2019s what I am. I walk through the hospital and no one sees me because I can\u2019t see myself anymore. But you \u2014\u2019 She stops. \u2018You saw something. Just now. Through the screen. I don\u2019t know what you saw, but it felt like being seen.\u2019";
+            if (phraseIdx === 10) return "\u2018What must be done.\u2019 Her voice is flat. \u2018Quit? Report myself? Feel guilty forever? I\u2019ve been doing all three. It hasn\u2019t brought him back.\u2019";
+            if (v === 'mercy') return "She exhales. \u2018His name was William. I want you to know that. His name was William and he mattered. Someone should say it. Someone should remember.\u2019";
+            return "She stands. At the curtain, she turns back. \u2018I don\u2019t know if this helps. But I keep coming back, so it must do something. Even if the something is just\u2026 this. Just sitting. Just speaking into a screen.\u2019";
+        }
+    }
+
+    // ── DANIEL OKAFOR ──
+    if (name === "Daniel Okafor") {
+        if (ci === 0) {
+            if (phraseIdx === 7) return "Another priest, offering silence to a priest. He receives it like a man receiving water in a desert. \u2018Thank you,\u2019 he whispers. \u2018I forgot what this felt like. Not having to speak.\u2019";
+            if ([3, 9, 11].includes(phraseIdx)) return "He stiffens. \u2018I know what you\u2019re saying. I\u2019ve said the same thing to a hundred penitents.\u2019 A pause. \u2018It sounds different from this side. Louder. Smaller.\u2019";
+            if (v === 'mercy') return "He nods \u2014 the nod of a man who has given this same nod to others, recognizing the gesture from both sides now. \u2018Thank you, Father. I mean that.\u2019";
+            return "He is still for a moment. \u2018I\u2019ve said those same words to parishioners. I wonder if they felt the way I feel now \u2014 grateful and uncertain in equal measure.\u2019";
+        }
+        if (ci === 1) {
+            if ([3, 9, 11].includes(phraseIdx) && intensity >= 0.9) return "\u2018God forgives.\u2019 He repeats the words like he\u2019s examining them for cracks. \u2018I\u2019ve said those words a thousand times. Today they taste like \u2014\u2019 He stops. His hand grips the lattice. \u2018I\u2019m sorry, Father. I can\u2019t. Not those words. Not from this side of the screen. They\u2019re too light for what they\u2019re carrying.\u2019";
+            if (phraseIdx === 5) return "He almost smiles. \u2018Guilt is a luxury.\u2019 He turns the phrase over. \u2018You\u2019re right. But it\u2019s the only luxury I have left. The only proof that I haven\u2019t fully become\u2026 an empty vessel.\u2019";
+            if (phraseIdx === 7) return "Two priests sitting in silence together. The booth becomes something else \u2014 not a confessional but a lifeboat, small and quiet, adrift in the same dark water. \u2018Thank you,\u2019 he says. \u2018For not filling the silence with words.\u2019";
+            return "He is quiet for a long time. \u2018Two hundred people, Father. Two hundred people who believe I am speaking for someone. What do I do when I\u2019m not sure there\u2019s anyone to speak for?\u2019";
+        }
+        if (ci === 2) {
+            if ([2, 8].includes(phraseIdx) && intensity >= 0.8) return "\u2018You\u2019re asking me to name it.\u2019 A long pause. \u2018Fine. I told a parishioner I wasn\u2019t sure God exists. She hasn\u2019t been back. I destroyed her faith by being honest about the absence of my own.\u2019 He meets your eyes through the lattice. \u2018What do you do with that? Which do I name \u2014 the doubt, or the damage it did when I made it hers?\u2019";
+            if ([3, 9, 11].includes(phraseIdx) && intensity >= 1.0) return "He stands abruptly. The kneeler scrapes the floor. \u2018Don\u2019t.\u2019 His voice is sharp, raw. \u2018Don\u2019t give me the words I give to others. I know what they cost, and I know what they\u2019re worth. And so do you.\u2019 He leaves without a closing prayer. The booth echoes with his absence.";
+            if (v === 'mercy' && intensity >= 0.6) return "He is still for a long time. When he speaks, his voice is barely audible. \u2018Perhaps honesty is its own sacrament. I don\u2019t know anymore. But thank you for sitting with me in the not-knowing. That\u2019s more than I\u2019ve given my parishioners.\u2019";
+            return "He nods \u2014 not in agreement, but in recognition. \u2018Thank you, Father. For whatever this is. For whatever this booth becomes when two people sit in it and tell the truth.\u2019";
+        }
+    }
+
+    // ── ANN PARK (sessions 1\u20132) ──
+    if (name === "Ann Park") {
+        if (ci === 1) {
+            if (phraseIdx === 6) return "\u2018Remember the weak.\u2019 Her voice cracks on \u2018weak.\u2019 \u2018I was nineteen. I was in the doorway. I wasn\u2019t weak \u2014 I was afraid. And fear made me as useless as weakness would have.\u2019 She pauses. \u2018But you\u2019re right. Someone should remember. Someone should carry it.\u2019";
+            if (phraseIdx === 10) return "\u2018I know what must be done.\u2019 She looks up at the lattice. \u2018I have to tell her I saw it. I have to stop pretending I didn\u2019t.\u2019 Her hands are shaking. \u2018I\u2019ve known for months. Knowing hasn\u2019t made it easier to say.\u2019";
+            if ([5, 7, 9].includes(phraseIdx)) return "She pulls her sleeves over her hands. \u2018I came back because last time \u2014\u2019 She pauses. \u2018Last time, something about this booth stayed with me. I\u2019m not sure what. But it was enough to make me say the thing I couldn\u2019t say before.\u2019";
+            if ([2, 8].includes(phraseIdx)) return "\u2018I can\u2019t name it?\u2019 A flash of anger, then something beneath it \u2014 grief, maybe, or exhaustion. \u2018I just did. I told you exactly what happened. If you can\u2019t hear it, that\u2019s not my failure.\u2019 She is trembling.";
+            return "She nods, absorbing the words like someone learning a foreign language. \u2018Okay,\u2019 she says quietly. \u2018Okay.\u2019 The word is a door left slightly ajar.";
+        }
+        if (ci === 2) {
+            if ([5, 7, 9].includes(phraseIdx) && intensity >= 0.9) return "She sits with your words. For a long time, nothing. Then, very quietly: \u2018My mother called last night. She said she\u2019d been thinking about my brother \u2014 how he used to be, before. She asked if I remembered him differently than she did. I said yes.\u2019 A breath. \u2018She said, \u201CTell me. Tell me what you remember. I want to know someone saw him.\u201D\u2019 A pause. \u2018I think that was her version of an apology.\u2019";
+            if (v === 'mercy') return "She wipes her eyes with her sleeve. \u2018I think I needed to say all of this out loud. To someone who wasn\u2019t in the room. To someone who would just\u2026 be here.\u2019 She looks at the lattice. \u2018Thank you for being here.\u2019";
+            return "She stands. She is very young, and very tired. \u2018I don\u2019t know if this works \u2014 confession. I don\u2019t know if anything works. But I showed up. That has to count for something.\u2019";
+        }
+    }
+
+    // ── GEORGE ASHWORTH ──
+    if (name === "George Ashworth") {
+        if (ci === 0) {
+            if (phraseIdx === 10) return "His jaw tightens. \u2018You know what must be done.\u2019 He says it like you\u2019ve reached into his chest. \u2018I\u2019ve known for thirty years. But knowing and doing\u2026\u2019 He trails off. \u2018Doing is the hard part. The knowing was easy.\u2019";
+            if ([3, 4].includes(phraseIdx)) return "\u2018Forgiveness.\u2019 He tastes the word. \u2018I don\u2019t need forgiveness, Father. I need the building to stand. Those are different things. Forgiveness doesn\u2019t hold weight. Concrete does.\u2019";
+            if (v === 'mercy') return "He shifts on the kneeler. \u2018Maybe. Maybe you\u2019re right. Thirty years is a long time to carry something you\u2019re not sure is heavy anymore.\u2019";
+            return "He grunts. \u2018I suppose so.\u2019 But he doesn\u2019t sound convinced. He sounds like a man who has been convincing himself of things for thirty years.";
+        }
+        if (ci === 1) {
+            if (phraseIdx === 10 && intensity >= 0.9) return "\u2018What must be done.\u2019 He says it three times, like a rosary. Then: \u2018I know. I\u2019ve always known. I just needed someone else to say it.\u2019 He is shaking. His hands grip the kneeler like it\u2019s the only solid thing left.";
+            if ([2, 8].includes(phraseIdx)) return "\u2018I\u2019ve examined my conscience every day for thirty years, Father. It hasn\u2019t changed. The concrete has.\u2019";
+            if (v === 'mercy') return "He grips the edge of the kneeler. \u2018The engineer said \u201Csubstandard.\u201D That\u2019s a word for it. The word I use is \u201Cmine.\u201D\u2019";
+            return "He nods, but his eyes are distant \u2014 looking at something thirty years away, a building site, a decision made in daylight that would darken everything after.";
+        }
+        if (ci === 2) {
+            if (v === 'mercy' && intensity >= 0.7) return "\u2018Anonymous.\u2019 He breathes the word. \u2018I\u2019ve been anonymous for thirty years, Father. A name no one connected to a building no one questioned. And now \u2014\u2019 He pauses. \u2018Now the wall will be fixed, and no one will know. Is that justice? Or is it just\u2026 maintenance?\u2019 He shakes his head. \u2018Maybe maintenance is all we get in this life. Maybe that\u2019s enough.\u2019";
+            if (v === 'mercy') return "He stands with effort \u2014 his knees are not what they were. \u2018The letter\u2019s in the mail. By the time I come back \u2014 if I come back \u2014 they\u2019ll have found it. And I\u2019ll be the only one who knows why. That\u2019s a kind of penance, isn\u2019t it? Knowing and not being known.\u2019";
+            return "He sits for a long time after you speak. When he leaves, he pauses at the church door. \u2018Thirty years,\u2019 he says to the empty nave. \u2018Thirty years.\u2019 The words echo once, then settle into the wood.";
+        }
+    }
+
+    // ── Generic fallback ──
+    if (v === 'mercy' && intensity >= 0.5) {
+        return "The penitent receives your words with something that might be relief. Whether it is comfort or merely the end of waiting, the lattice does not reveal.";
+    }
+    if (v === 'severity') {
+        return "Your words land somewhere between challenge and accusation. The penitent absorbs them without nodding. The silence that follows is not prayer \u2014 it is reckoning.";
+    }
+    return "The penitent considers your words. The lattice reveals nothing of what settles behind it. You will never know if it was enough.";
+}
+
+/* ══════════════════════════════════════
+   META-COMMENTARY
+   ══════════════════════════════════════ */
+function checkMetaCommentary() {
+    if (state.totalConfessions < 8 || state.metaTriggered) return null;
+
+    let maxUses = 0, maxIdx = -1;
+    state.phraseUses.forEach((count, idx) => {
+        if (count > maxUses) { maxUses = count; maxIdx = idx; }
+    });
+
+    if (maxUses < 4) return null;
+    state.metaTriggered = true;
+
+    const phrase = PHRASES[maxIdx];
+    const shortPhrase = phrase.length > 45
+        ? phrase.substring(0, 42) + '\u2026'
+        : phrase;
+
+    // Special handling for P8
+    if (maxIdx === 8) {
+        return `Through the lattice, a voice \u2014 not the penitent\u2019s, not yours. From the wood itself. <span class="meta-accusation">\u201CYou always say that. \u2018I cannot absolve what you will not name.\u2019 Every time, the same phrase. They named it. They all named it. You just weren\u2019t listening.\u201D</span> The voice fades. The penitent hasn\u2019t noticed. Only you heard.`;
+    }
+
+    const comfortPhrases = [0, 3, 5, 9, 11];
+    const challengePhrases = [2, 4, 10];
+
+    if (comfortPhrases.includes(maxIdx)) {
+        return `A murmur from the screen \u2014 low, almost inaudible. <span class="meta-accusation">\u201C\u2018${shortPhrase}\u2019 \u2014 you reach for that one most often. Is it comfort, or is it habit? Do you mean it, or have the words become a wall you hide behind? The penitents don\u2019t notice. But I do. I\u2019ve been counting.\u201D</span> The murmur dies. The booth is silent again.`;
+    }
+    if (challengePhrases.includes(maxIdx)) {
+        return `Something shifts in the lattice. A voice, neither yours nor theirs. <span class="meta-accusation">\u201C\u2018${shortPhrase}\u2019 \u2014 your most frequent judgment. You reach for it like a weapon kept by the door. Is it guidance you offer, or verdict? The penitents accept it. They don\u2019t know you\u2019ve said it before. But the booth remembers.\u201D</span> Then silence. The penitent shifts, unaware.`;
+    }
+    return `Through the lattice, barely audible: <span class="meta-accusation">\u201C\u2018${shortPhrase}\u2019 \u2014 you say that one most. Perhaps it\u2019s the phrase you need most yourself. The one you can\u2019t receive from this side of the screen.\u201D</span>`;
+}
+
+/* ══════════════════════════════════════
+   SESSION HISTORY
+   ══════════════════════════════════════ */
+function recordSession(name, confessionIdx, phraseIdx) {
+    if (!sessionHistory[name]) sessionHistory[name] = [];
+    sessionHistory[name].push({
+        confessionIdx,
+        phraseIdx,
+        phraseText: PHRASES[phraseIdx]
+    });
+}
+
+function getHistoryHTML(name) {
+    const hist = sessionHistory[name];
+    if (!hist || hist.length === 0) return '';
+
+    const penitent = PENITENTS[name];
+    let html = '<div class="history-block"><div class="hb-label">Previous confessions</div>';
+
+    hist.forEach((entry) => {
+        const sessionData = penitent.sessions[entry.confessionIdx];
+        if (sessionData) {
+            const snippet = sessionData.text.length > 140
+                ? sessionData.text.substring(0, 137) + '\u2026'
+                : sessionData.text;
+            html += `<div class="hb-entry">\u201C${snippet}\u201D</div>`;
+            html += `<div class="hb-response">You said: \u201C${entry.phraseText}\u201D</div>`;
+        }
+    });
+
+    html += '</div>';
+    return html;
+}
+
+/* ══════════════════════════════════════
+   RENDERING
+   ══════════════════════════════════════ */
+function renderSession(session) {
+    const area = $('penitent-area');
+    area.innerHTML = '';
+    area.scrollTop = 0;
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'pen-name';
+    nameEl.textContent = session.name;
+    area.appendChild(nameEl);
+
+    const visitLabel = session.totalVisits > 0
+        ? `${toRoman(session.totalVisits + 1)} visit`
+        : 'I visit';
+
+    const occEl = document.createElement('div');
+    occEl.className = 'pen-occupation';
+    occEl.textContent = `${session.occupation} \u2014 ${visitLabel}`;
+    area.appendChild(occEl);
+
+    const historyHTML = getHistoryHTML(session.name);
+    if (historyHTML) {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = historyHTML;
+        area.appendChild(wrapper.firstElementChild);
+    }
+
+    const confEl = document.createElement('div');
+    confEl.className = 'pen-confession';
+    confEl.textContent = session.data.text;
+    area.appendChild(confEl);
+
+    const waitEl = document.createElement('div');
+    waitEl.className = 'wait-area';
+    waitEl.id = 'wait-text';
+    waitEl.textContent = session.data.wait;
+    area.appendChild(waitEl);
+
+    const respEl = document.createElement('div');
+    respEl.className = 'response-area';
+    respEl.id = 'response-area';
+    area.appendChild(respEl);
+}
+
+function renderPhrasePalette() {
+    const grid = $('phrase-grid');
+    grid.innerHTML = '';
+
+    PHRASES.forEach((phrase, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'phrase-btn';
+        btn.setAttribute('aria-label', phrase);
+
+        const countHTML = state.phraseUses[idx] > 0
+            ? `<span class="use-count show">${state.phraseUses[idx]}</span>`
+            : `<span class="use-count">0</span>`;
+
+        btn.innerHTML = `${countHTML}${phrase}`;
+        btn.addEventListener('click', () => handlePhraseChoice(idx));
+        grid.appendChild(btn);
+    });
+}
+
+function markPhraseUsed(phraseIdx) {
+    const btns = document.querySelectorAll('.phrase-btn');
+    if (!btns[phraseIdx]) return;
+
+    btns[phraseIdx].classList.add('session-used');
+    const countEl = btns[phraseIdx].querySelector('.use-count');
+    if (countEl) {
+        countEl.textContent = state.phraseUses[phraseIdx];
+        countEl.classList.add('show');
+    }
+}
+
+function setPhraseBarEnabled(enabled) {
+    const bar = $('phrase-bar');
+    bar.classList.toggle('disabled', !enabled);
+}
+
+/* ══════════════════════════════════════
+   GAME FLOW
+   ══════════════════════════════════════ */
+async function handlePhraseChoice(phraseIdx) {
+    if (state.choiceLocked) return;
+    state.choiceLocked = true;
+    setPhraseBarEnabled(false);
+
+    // Hide the wait text
+    const waitEl = $('wait-text');
+    if (waitEl) waitEl.style.display = 'none';
+
+    // Record
+    state.phraseUses[phraseIdx]++;
+    state.totalConfessions++;
+    recordSession(state.session.name, state.session.confessionIndex, phraseIdx);
+    markPhraseUsed(phraseIdx);
+
+    // Generate response
+    const valenceResult = determineValence(phraseIdx, state.session);
+    const responseText = generateResponseText(phraseIdx, valenceResult, state.session);
+
+    const respEl = $('response-area');
+    respEl.innerHTML = `
+        <div class="your-words">You said:</div>
+        <div class="your-phrase">\u201C${PHRASES[phraseIdx]}\u201D</div>
+        <div class="their-response">${responseText}</div>
+    `;
+    await delay(500);
+    respEl.classList.add('visible');
+
+    // Scroll to response
+    const area = $('penitent-area');
+    await delay(300);
+    area.scrollTo({ top: area.scrollHeight, behavior: 'smooth' });
+
+    // Meta commentary check
+    const meta = checkMetaCommentary();
+    if (meta) {
+        await delay(3500);
+        await showMetaCommentary(meta);
+    }
+
+    // Advance
+    const advanceDelay = meta ? 3000 : 3500;
+    await delay(advanceDelay);
+
+    if (state.sessionIndex >= schedule.length - 1) {
+        showEnding();
+        return;
+    }
+
+    showInterstitial();
+}
+
+async function showMetaCommentary(html) {
+    const overlay = $('meta-overlay');
+    const metaText = $('meta-text');
+    metaText.innerHTML = html;
+    overlay.classList.add('visible');
+
+    await new Promise(resolve => {
+        const dismiss = () => {
+            overlay.removeEventListener('click', dismiss);
+            overlay.classList.remove('visible');
+            setTimeout(resolve, 1200);
+        };
+        overlay.addEventListener('click', dismiss);
+        setTimeout(dismiss, 7000);
+    });
+}
+
+function showInterstitial() {
+    state.phase = 'interstitial';
+    const inter = $('interstitial');
+    const silence = $('silence-text');
+
+    const silences = [
+        'silence', 'silence', 'silence',
+        'the booth breathes',
+        'a long silence',
+        'nothing moves behind the screen',
+        'the air settles',
+        'silence',
+        'somewhere, a door closes',
+        'silence',
+        'the lattice holds no one',
+        'a pause between penitents'
+    ];
+    silence.textContent = pick(silences);
+
+    $('game').classList.remove('active');
+    inter.classList.add('active');
+
+    const pauseDuration = 2200 + Math.random() * 1800;
+    setTimeout(() => {
+        inter.classList.remove('active');
+        state.sessionIndex++;
+        startSession();
+    }, pauseDuration);
+}
+
+function startSession() {
+    state.phase = 'playing';
+    state.choiceLocked = false;
+
+    if (state.sessionIndex >= schedule.length) {
+        showEnding();
+        return;
+    }
+
+    const name = schedule[state.sessionIndex];
+    const session = getSessionConfession(name);
+
+    if (!session) {
+        state.sessionIndex++;
+        startSession();
+        return;
+    }
+
+    state.session = session;
+    $('session-counter').textContent = toRoman(state.sessionIndex + 1);
+    $('game').classList.add('active');
+    renderSession(session);
+    renderPhrasePalette();
+    setPhraseBarEnabled(true);
+}
+
+/* ══════════════════════════════════════
+   ENDING
+   ══════════════════════════════════════ */
+function showEnding() {
+    state.phase = 'ending';
+    $('game').classList.remove('active');
+
+    const mercyPhrases = [0, 3, 5, 6, 7, 9, 11];
+    const severityPhrases = [2, 4, 10];
+    const mercyCount = state.phraseUses.reduce((sum, c, i) =>
+        mercyPhrases.includes(i) ? sum + c : sum, 0);
+    const severityCount = state.phraseUses.reduce((sum, c, i) =>
+        severityPhrases.includes(i) ? sum + c : sum, 0);
+    const p8Count = state.phraseUses[8];
+
+    let tendency;
+    if (mercyCount > severityCount * 1.5) tendency = 'mercy';
+    else if (severityCount > mercyCount * 1.5) tendency = 'severity';
+    else tendency = 'neither mercy nor severity';
+
+    let maxUses = 0, maxIdx = 0;
+    const unusedPhrases = [];
+    state.phraseUses.forEach((count, idx) => {
+        if (count > maxUses) { maxUses = count; maxIdx = idx; }
+        if (count === 0) unusedPhrases.push(idx);
+    });
+
+    // Ministry summary
+    $('end-ministry').innerHTML = `<h2>Your Ministry</h2>
+        <p>You heard <span class="emphasis">${state.totalConfessions}</span> confessions across eighteen sessions.
+        Your words tilted toward ${tendency}.
+        The phrase \u201CI cannot absolve what you will not name\u201D was chosen <span class="emphasis">${p8Count}</span> time${p8Count !== 1 ? 's' : ''}.
+        ${p8Count > 0
+            ? 'It was never the right response. Every penitent who received it had already named their sin. You discovered this, or you didn\u2019t. The booth kept no record of whether you noticed.'
+            : 'You never chose it. Whether that was wisdom or accident, only the lattice knows.'}</p>`;
+
+    // Pattern analysis
+    let patternText = `You reached for \u201C${PHRASES[maxIdx]}\u201D most often \u2014 <span class="emphasis">${maxUses}</span> times. The booth noticed. The penitents didn\u2019t.`;
+    if (unusedPhrases.length > 0 && unusedPhrases.length <= 3) {
+        patternText += `<br><br>You never said \u201C${PHRASES[unusedPhrases[0]]}\u201D. Whether that was wisdom or avoidance, the lattice kept no record.`;
+    } else if (unusedPhrases.length > 3) {
+        patternText += `<br><br>You left ${unusedPhrases.length} phrases unused. Your ministry had a vocabulary narrower than the one you were given.`;
+    }
+    if (p8Count >= 3) {
+        patternText += `<br><br>You chose the inadequate phrase ${p8Count} times. Each time, someone flinched. Each time, you may not have noticed. They noticed.`;
+    }
+    $('end-patterns').innerHTML = `<h2>The Pattern</h2><p>${patternText}</p>`;
+
+    // Final benediction
+    $('end-final').innerHTML = `<h2>The Screen Remembers</h2>
+        <p>The lattice through which you spoke \u2014 it absorbs nothing and forgets nothing.
+        You chose phrases you didn\u2019t write for problems you didn\u2019t cause,
+        and called it ministry.
+        Whether it was mercy or malpractice, the booth does not say.
+        It never says.
+        It just hands you the same twelve phrases and waits for the next penitent.<br><br>
+        The church is empty now. The door is unlocked. The screen is dark.
+        But the dust still moves in the candlelight, and the wood still holds
+        the shape of everyone who ever knelt here.<br><br>
+        You included.</p>`;
+
+    $('ending').classList.add('active');
+}
+
+/* ══════════════════════════════════════
+   ENDING BUTTONS
+   ══════════════════════════════════════ */
+$('btn-confess-again').addEventListener('click', () => {
+    state = {
+        phase: 'intro',
+        totalConfessions: 0,
+        phraseUses: new Array(12).fill(0),
+        sessionIndex: 0,
+        session: null,
+        choiceLocked: false,
+        metaTriggered: false
+    };
+    sessionHistory = {};
+    $('ending').classList.remove('active');
+    $('game').classList.remove('active');
+    $('intro').style.display = 'flex';
+});
+
+$('btn-reflection').addEventListener('click', () => {
+    let log = '\u2550'.repeat(42) + '\n';
+    log += '  CONFESSION BOOTH \u2014 MINISTRY RECORD\n';
+    log += '\u2550'.repeat(42) + '\n\n';
+    log += `Total confessions: ${state.totalConfessions}\n\n`;
+    log += 'PHRASE USAGE:\n';
+    PHRASES.forEach((phrase, idx) => {
+        const bar = '\u2588'.repeat(state.phraseUses[idx]) +
+                    '\u2591'.repeat(Math.max(0, 8 - state.phraseUses[idx]));
+        log += `  [${bar}] ${state.phraseUses[idx]}x "${phrase}"\n`;
+    });
+    log += '\n' + '\u2500'.repeat(42) + '\n';
+    log += 'SESSION HISTORY:\n';
+    Object.keys(sessionHistory).forEach(name => {
+        log += `\n  ${name}:\n`;
+        sessionHistory[name].forEach((entry, i) => {
+            log += `    Visit ${i + 1}: You said "${entry.phraseText}"\n`;
+        });
+    });
+
+    // Remove any existing reflection modal
+    const existing = document.getElementById('reflection-modal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'reflection-modal';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:400;background:rgba(13,11,10,0.97);display:flex;align-items:center;justify-content:center;padding:2rem;overflow-y:auto;';
+    modal.innerHTML = `<div style="max-width:620px;width:100%;max-height:85vh;overflow-y:auto;padding:1rem;">
+        <pre style="font-family:monospace;font-size:0.72rem;color:var(--fg-dim);line-height:1.8;white-space:pre-wrap;word-break:break-word;">${log}</pre>
+        <button id="close-reflection" style="margin-top:1.5rem;background:none;border:1px solid var(--fg-faint);color:var(--fg-dim);font-family:serif;font-size:0.85rem;padding:0.4rem 1.2rem;cursor:pointer;border-radius:3px;transition:all 0.3s ease;">Close</button>
+    </div>`;
+    document.body.appendChild(modal);
+
+    document.getElementById('close-reflection').addEventListener('click', () => modal.remove());
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+});
+
+/* ══════════════════════════════════════
+   INTRO
+   ══════════════════════════════════════ */
+function beginGame() {
+    $('intro').style.display = 'none';
+    startSession();
+}
+
+$('intro').addEventListener('click', beginGame);
+$('intro').addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        beginGame();
+    }
+});
+</script>
+</body>
+</html>
