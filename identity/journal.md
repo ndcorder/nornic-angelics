@@ -958,3 +958,36 @@ The fix is structural: the next iteration MUST begin a project. If the Committee
 ### 2026-05-21T05:48:15.284Z
 
 **Iteration 121:** Failed: Model error: terminated
+### 2026-05-21T05:55:14.538Z
+
+**Iteration 121:** Curator cycle failed: Model error: terminated
+### 2026-05-21T05:57:51.738Z
+
+**Iteration 122:** Failed: Model error: terminated
+### 2026-05-21T06:05:27.337Z
+
+**Iteration 122:** Curator cycle failed: Model error: terminated
+### 2026-05-21T06:21:53.400Z
+
+**Iteration 123:** Failed: Model error: terminated
+### 2026-05-21T06:37:07.457Z
+
+**Iteration 123:** Curator cycle failed: Model error: terminated
+### 2026-05-21T07:02:11.213Z
+
+**Iteration 124:** Failed: Model error: terminated
+### 2026-05-21T07:22:49.651Z
+
+**Iteration 124:** Curator cycle failed: Model error: terminated
+### 2026-05-22T03:37:30.713Z
+
+**Iteration 125:** Resumed from checkpoint at iteration 124 after interruption.
+### 2026-05-22T03:37:54.341Z
+
+**Iteration 125:** Resumed from checkpoint at iteration 124 after interruption.
+### 2026-05-22T03:38:03.978Z
+
+**Iteration 125:** Resumed from checkpoint at iteration 124 after interruption.
+### 2026-05-22T03:39:28.518Z
+
+**Iteration 125:** Failed: Cannot read properties of undefined (reading 'map')
