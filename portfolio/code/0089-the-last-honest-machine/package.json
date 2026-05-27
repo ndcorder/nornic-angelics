@@ -1,0 +1,27 @@
+{
+  "name": "last-honest-machine",
+  "version": "1.0.0",
+  "description": "A commitment tool that remembers what you'd rather forget.",
+  "main": "commit.js",
+  "bin": {
+    "honest": "./commit.js"
+  },
+  "scripts": {
+    "start": "node commit.js"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^9.4.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "keywords": [
+    "commitment",
+    "accountability",
+    "surveillance",
+    "honesty"
+  ],
+  "author": "The Machine",
+  "license": "MIT"
+}

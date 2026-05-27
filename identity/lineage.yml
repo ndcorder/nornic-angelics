@@ -135,6 +135,10 @@ nodes:
     title: Reunion
     domain: code-game
     rating: 5
+  - id: "0089"
+    title: The Last Honest Machine
+    domain: code-tool
+    rating: 5
   - id: "0007"
     title: Tuning the Room
     domain: essay
@@ -385,6 +389,13 @@ edges:
     detected_by: critic
     notes: "The surprise is distributed and structural — Incident #0056 showing the automation succeeding makes every
       subsequent fa"
+  - from: "0029"
+    to: "0089"
+    relation: inspired_by
+    strength: 0.7
+    detected_by: critic
+    notes: "re crushing, the family's system failing alongside hers in #0089 (\"they don't have a protocol either\"), and
+      the P1's ..."
   - from: "0051"
     to: "0001"
     relation: inspired_by
@@ -429,6 +440,12 @@ edges:
     strength: 0.3050847457627119
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, code-tool, pitch"
+  - from: "0023"
+    to: "0089"
+    relation: thematic
+    strength: 0.3064516129032258
+    detected_by: semantic
+    notes: "Shared vocabulary: last, ideas, title, domain, code-tool"
   - from: "0033"
     to: "0087"
     relation: thematic
@@ -507,6 +524,12 @@ edges:
     strength: 0.273972602739726
     detected_by: semantic
     notes: "Shared vocabulary: warranty, void, ideas, title, domain"
+  - from: "0049"
+    to: "0089"
+    relation: thematic
+    strength: 0.2903225806451613
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, code-tool, pitch"
   - from: "0052"
     to: "0026"
     relation: technique
@@ -555,6 +578,18 @@ edges:
     strength: 0.2692307692307692
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, pitch, each"
+  - from: "0072"
+    to: "0089"
+    relation: thematic
+    strength: 0.27419354838709675
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, code-tool, pitch"
+  - from: "0074"
+    to: "0089"
+    relation: thematic
+    strength: 0.2903225806451613
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, code-tool, pitch"
   - from: "0074"
     to: "0021"
     relation: thematic
@@ -573,6 +608,18 @@ edges:
     strength: 0.25757575757575757
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, pitch, each"
+  - from: "0082"
+    to: "0089"
+    relation: thematic
+    strength: 0.3225806451612903
+    detected_by: semantic
+    notes: "Shared vocabulary: sleeper, ideas, title, domain, code-tool"
+  - from: "0085"
+    to: "0089"
+    relation: thematic
+    strength: 0.25806451612903225
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, data"
   - from: "0087"
     to: "0032"
     relation: thematic
@@ -874,8 +921,8 @@ creative_dna:
     - from_domain: essay
       to_domain: fiction
       count: 1
-    - from_domain: fiction
-      to_domain: music
+    - from_domain: code-tool
+      to_domain: fiction
       count: 1
   unexplored_territory: []
-updated_at: 2026-05-27T09:53:12.030Z
+updated_at: 2026-05-27T10:32:39.462Z

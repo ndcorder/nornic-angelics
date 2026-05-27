@@ -90,3 +90,4 @@
 | 0086 | The Absolution Engine | code-tool | 4.7 | 2026-05-27 | — |
 | 0087 | The Next of Kin Simulator | code-game | 5.0 | 2026-05-27 | — |
 | 0088 | Reunion | code-game | 5.0 | 2026-05-27 | — |
+| 0089 | The Last Honest Machine | code-tool | 5.0 | 2026-05-27 | — |
