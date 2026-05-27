@@ -7,7 +7,7 @@ axes:
 dominant_mood: exploratory, independent, and playful
 creative_nudge: Propose something absurd and ambitious — the portfolio can handle a spectacular failure.
 influences:
-  - factor: 9 distinct domains in window
+  - factor: 8 distinct domains in window
     axis: exploratory
     direction: 0.6
     weight: 0.7
@@ -23,5 +23,5 @@ influences:
     axis: collaborative
     direction: -0.5
     weight: 0.6
-iteration: 156
-updated_at: 2026-05-27T18:17:31.303Z
+iteration: 157
+updated_at: 2026-05-27T18:22:12.636Z
