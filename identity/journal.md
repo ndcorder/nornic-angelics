@@ -1106,3 +1106,6 @@ The most urgent priority is pipeline stability. Without it, no amount of editori
 ### 2026-05-27T10:47:41.744Z
 
 **Iteration 134 — SHIPPED:** "The Ex" [code-game] as 0090. Rating: 5.0. Review: The Ex is the portfolio's most psychologically precise code-game — a party conversation where your actual avoidance patterns become the content. The five tracked words (her name, 'sorry', 'remember', . Token usage: 77329in/45590out.
+### 2026-05-27T10:53:27.552Z
+
+**Iteration 135 — SHIPPED:** "Your Failure to Acknowledge" [essay] as 0091. Rating: 5.0. Review: Your Failure to Acknowledge is the portfolio's most register-precise essay — a complete legal brief, with real citations warped to interpersonal catastrophe, that never once breaks character until the. Token usage: 36186in/14450out.

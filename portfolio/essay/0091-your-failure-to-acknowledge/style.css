@@ -1,0 +1,552 @@
+/* ================================================
+   YOUR FAILURE TO ACKNOWLEDGE — Legal Brief Styling
+   ================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap');
+
+:root {
+  --paper: #faf9f6;
+  --ink: #1a1a1a;
+  --ink-secondary: #3d3d3d;
+  --ink-muted: #777;
+  --rule: #c0bdb8;
+  --rule-light: #dddbd7;
+  --citation: #525252;
+  --margin-width: 72px;
+  --gutter: 48px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --margin-width: 24px;
+    --gutter: 24px;
+  }
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 15px;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: 'Crimson Pro', 'Georgia', serif;
+  font-weight: 400;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --------------------------------
+   Document Container
+   -------------------------------- */
+
+.document {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 var(--margin-width);
+}
+
+@media (min-width: 900px) {
+  .document {
+    padding: 0 96px;
+  }
+}
+
+/* --------------------------------
+   Header / Caption Block
+   -------------------------------- */
+
+.caption-block {
+  padding: 64px 0 0;
+  text-align: center;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 36px;
+  margin-bottom: 36px;
+}
+
+.court-line {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.85rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-muted);
+  margin-bottom: 12px;
+}
+
+.case-title {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  margin-bottom: 4px;
+}
+
+.case-title em {
+  font-style: italic;
+  font-weight: 600;
+}
+
+.docket-number {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.8rem;
+  color: var(--citation);
+  margin-top: 16px;
+  letter-spacing: 0.02em;
+}
+
+/* --------------------------------
+   Party Block
+   -------------------------------- */
+
+.parties {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--rule-light);
+  margin-bottom: 36px;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.78rem;
+  line-height: 1.8;
+  color: var(--ink-secondary);
+}
+
+.parties span {
+  display: block;
+}
+
+.parties .role {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* --------------------------------
+   Document Title / Heading
+   -------------------------------- */
+
+.document-title {
+  text-align: center;
+  padding: 28px 0 32px;
+  margin-bottom: 40px;
+}
+
+.document-title h1 {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 8px;
+}
+
+.document-title .subtitle {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* --------------------------------
+   Preliminary Statement
+   -------------------------------- */
+
+.preliminary {
+  font-size: 1.05rem;
+  font-weight: 300;
+  line-height: 1.75;
+  margin-bottom: 48px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid var(--rule-light);
+  text-indent: 0;
+}
+
+.preliminary .intro-phrase {
+  font-style: italic;
+}
+
+/* --------------------------------
+   Section Headings
+   -------------------------------- */
+
+.section {
+  margin-bottom: 52px;
+}
+
+.section-heading {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.section-heading .number {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--ink-muted);
+  letter-spacing: 0.05em;
+}
+
+/* --------------------------------
+   Body Text
+   -------------------------------- */
+
+.section p {
+  font-size: 1.02rem;
+  line-height: 1.72;
+  margin-bottom: 18px;
+  text-align: justify;
+  text-indent: 36px;
+}
+
+.section p:first-child {
+  text-indent: 0;
+}
+
+.section p + p {
+  text-indent: 36px;
+}
+
+/* --------------------------------
+   Legal Citations
+   -------------------------------- */
+
+.citation {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.82rem;
+  color: var(--citation);
+  font-style: normal;
+  letter-spacing: -0.01em;
+}
+
+.case-name {
+  font-style: italic;
+  font-family: 'Crimson Pro', serif;
+  font-size: 1rem;
+}
+
+sup.cite {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.68rem;
+  vertical-align: super;
+  line-height: 0;
+  color: var(--citation);
+  letter-spacing: -0.02em;
+  margin: 0 2px;
+}
+
+/* --------------------------------
+   Block Quotes (Pull Quotes / Held)
+   -------------------------------- */
+
+blockquote {
+  margin: 28px 0 28px var(--gutter);
+  padding: 16px 0 16px 20px;
+  border-left: 2px solid var(--rule);
+  font-style: italic;
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--ink-secondary);
+}
+
+blockquote .attribution {
+  display: block;
+  margin-top: 8px;
+  font-style: normal;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.78rem;
+  color: var(--citation);
+}
+
+blockquote em {
+  font-style: italic;
+}
+
+blockquote .held {
+  font-style: normal;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: var(--ink-muted);
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* --------------------------------
+   Subsection Numbering
+   -------------------------------- */
+
+.subsection {
+  margin: 24px 0;
+  padding-left: var(--gutter);
+  position: relative;
+}
+
+.subsection::before {
+  content: attr(data-num);
+  position: absolute;
+  left: 0;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+}
+
+/* --------------------------------
+   Footnotes
+   -------------------------------- */
+
+.footnote-section {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid var(--ink);
+}
+
+.footnote-section h2 {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.78rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--ink-muted);
+  margin-bottom: 20px;
+}
+
+.footnote {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  margin-bottom: 12px;
+  padding-left: 28px;
+  text-indent: -28px;
+  color: var(--ink-secondary);
+}
+
+.footnote .fn-num {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+  vertical-align: super;
+  margin-right: 4px;
+}
+
+/* --------------------------------
+   Signature Block
+   -------------------------------- */
+
+.signature-block {
+  margin-top: 64px;
+  padding-top: 36px;
+  text-align: right;
+}
+
+.sig-line {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.82rem;
+  line-height: 1.9;
+  color: var(--ink-secondary);
+}
+
+.sig-name {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-top: 32px;
+  margin-bottom: 4px;
+}
+
+.sig-title {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+}
+
+/* --------------------------------
+   FINAL SECTION — Register Break
+   The legal dissolves. The truth.
+   -------------------------------- */
+
+.final-section {
+  margin-top: 88px;
+  padding-top: 56px;
+  border-top: none;
+  position: relative;
+}
+
+.final-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--rule) 20%,
+    var(--rule) 80%,
+    transparent
+  );
+}
+
+.final-section p {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.22rem;
+  font-weight: 300;
+  line-height: 1.85;
+  text-align: left;
+  text-indent: 0;
+  color: var(--ink);
+  max-width: 540px;
+  margin-left: auto;
+  margin-right: auto;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+.final-section .honest-sentence {
+  display: block;
+  margin-top: 40px;
+  padding-top: 32px;
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.22rem;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.85;
+  text-align: left;
+  text-indent: 0;
+  color: var(--ink);
+  max-width: 540px;
+  border-top: none;
+  position: relative;
+}
+
+.final-section .honest-sentence::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 1px;
+  background-color: var(--ink-muted);
+}
+
+/* --------------------------------
+   Utility / Misc
+   -------------------------------- */
+
+.em-dash {
+  font-style: normal;
+}
+
+.sc {
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+}
+
+.no-indent {
+  text-indent: 0 !important;
+}
+
+strong {
+  font-weight: 600;
+}
+
+.emphasis-italic {
+  font-style: italic;
+}
+
+hr.section-rule {
+  border: none;
+  border-top: 1px solid var(--rule-light);
+  margin: 48px 0;
+}
+
+/* --------------------------------
+   Responsive
+   -------------------------------- */
+
+@media (max-width: 600px) {
+  html {
+    font-size: 14px;
+  }
+
+  .caption-block {
+    padding: 48px 0 0;
+    padding-bottom: 28px;
+    margin-bottom: 28px;
+  }
+
+  .case-title {
+    font-size: 1.15rem;
+  }
+
+  .document {
+    padding: 0 20px;
+  }
+
+  blockquote {
+    margin-left: 16px;
+    padding-left: 14px;
+  }
+
+  .subsection {
+    padding-left: 32px;
+  }
+
+  .final-section p,
+  .final-section .honest-sentence {
+    font-size: 1.1rem;
+  }
+
+  .final-section {
+    margin-top: 72px;
+    padding-top: 40px;
+  }
+
+  .signature-block {
+    text-align: left;
+  }
+}
+
+/* --------------------------------
+   Print Styles
+   -------------------------------- */
+
+@media print {
+  body {
+    background: white;
+  }
+
+  .document {
+    max-width: 100%;
+    padding: 0 72px;
+  }
+
+  .section {
+    break-inside: avoid;
+  }
+
+  .final-section {
+    break-before: page;
+  }
+}

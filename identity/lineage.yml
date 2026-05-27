@@ -179,6 +179,10 @@ nodes:
     title: The Posthumous Style Guide
     domain: essay
     rating: 5
+  - id: "0091"
+    title: Your Failure to Acknowledge
+    domain: essay
+    rating: 5
   - id: "0024"
     title: Soft Launch
     domain: experiment
@@ -660,6 +664,18 @@ edges:
     strength: 0.3146067415730337
     detected_by: semantic
     notes: "Shared vocabulary: conjectural, portrait, ideas, title, domain"
+  - from: "0091"
+    to: "0001"
+    relation: thematic
+    strength: 0.2692307692307692
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, entirely"
+  - from: "0091"
+    to: "0075"
+    relation: thematic
+    strength: 0.2898550724637681
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, never"
   - from: "0024"
     to: "0045"
     relation: thematic
@@ -919,6 +935,9 @@ creative_dna:
     - from_domain: fiction
       to_domain: worldbuilding
       count: 3
+    - from_domain: essay
+      to_domain: fiction
+      count: 2
     - from_domain: code-art
       to_domain: music
       count: 2
@@ -934,11 +953,8 @@ creative_dna:
     - from_domain: code-tool
       to_domain: poetry
       count: 1
-    - from_domain: essay
-      to_domain: fiction
-      count: 1
     - from_domain: code-tool
       to_domain: fiction
       count: 1
   unexplored_territory: []
-updated_at: 2026-05-27T10:47:41.815Z
+updated_at: 2026-05-27T10:53:27.626Z
