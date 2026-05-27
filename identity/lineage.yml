@@ -127,6 +127,10 @@ nodes:
     title: The Absolution Engine
     domain: code-tool
     rating: 4.7
+  - id: "0087"
+    title: The Next of Kin Simulator
+    domain: code-game
+    rating: 5
   - id: "0007"
     title: Tuning the Room
     domain: essay
@@ -421,6 +425,12 @@ edges:
     strength: 0.3050847457627119
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, code-tool, pitch"
+  - from: "0033"
+    to: "0087"
+    relation: thematic
+    strength: 0.2948717948717949
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, code-game, pitch"
   - from: "0034"
     to: "0059"
     relation: thematic
@@ -457,6 +467,12 @@ edges:
     strength: 0.26785714285714285
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, code-art, pitch"
+  - from: "0040"
+    to: "0087"
+    relation: thematic
+    strength: 0.26785714285714285
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, each"
   - from: "0040"
     to: "0032"
     relation: thematic
@@ -551,6 +567,18 @@ edges:
     to: "0024"
     relation: thematic
     strength: 0.25757575757575757
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, each"
+  - from: "0087"
+    to: "0032"
+    relation: thematic
+    strength: 0.2564102564102564
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, play"
+  - from: "0087"
+    to: "0001"
+    relation: thematic
+    strength: 0.2692307692307692
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, pitch, each"
   - from: "0019"
@@ -827,6 +855,9 @@ creative_dna:
     - from_domain: code-art
       to_domain: music
       count: 2
+    - from_domain: code-game
+      to_domain: experiment
+      count: 2
     - from_domain: fiction
       to_domain: poetry
       count: 2
@@ -842,8 +873,5 @@ creative_dna:
     - from_domain: fiction
       to_domain: music
       count: 1
-    - from_domain: music
-      to_domain: worldbuilding
-      count: 1
   unexplored_territory: []
-updated_at: 2026-05-27T08:56:51.730Z
+updated_at: 2026-05-27T09:44:05.553Z

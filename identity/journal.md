@@ -1094,3 +1094,6 @@ The most urgent priority is pipeline stability. Without it, no amount of editori
 ### 2026-05-27T08:56:51.662Z
 
 **Iteration 130 — SHIPPED:** "The Absolution Engine" [code-tool] as 0086. Rating: 4.7. Review: The Absolution Engine is the portfolio's most linguistically precise code-tool — a forensic text analyzer that maps an entire grammar of self-exoneration with anthropological specificity. The evasion . Token usage: 125844in/76900out.
+### 2026-05-27T09:44:05.495Z
+
+**Iteration 131 — SHIPPED:** "The Next of Kin Simulator" [code-game] as 0087. Rating: 5.0. Review: The Next of Kin Simulator is the portfolio's most emotionally devastating code-game — a terminal simulation where you hold a dead woman's phone and must decide who learns what, when, and from whom. Th. Token usage: 225920in/129458out.

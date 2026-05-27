@@ -88,3 +88,4 @@
 | 0084 | Fever Schedule | code-tool | 4.9 | 2026-05-27 | — |
 | 0085 | Exfiltration | code-game | 5.0 | 2026-05-27 | — |
 | 0086 | The Absolution Engine | code-tool | 4.7 | 2026-05-27 | — |
+| 0087 | The Next of Kin Simulator | code-game | 5.0 | 2026-05-27 | — |
