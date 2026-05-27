@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City of Slidell Police Department — Incident Report</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
+
+        :root {
+            --bg: #f2f0ea;
+            --text: #1a1a1a;
+            --muted: #6b6b6b;
+            --accent: #b22222;
+            --border: #c8c4ba;
+            --field-bg: #f7f6f1;
+        }
+
+        @media print {
+            body { margin: 0.5in; }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+            background: #e8e5dc;
+            color: var(--text);
+            line-height: 1.6;
+            font-size: 13px;
+            padding: 2rem 1rem;
+        }
+
+        .page {
+            max-width: 720px;
+            margin: 0 auto;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 2.5rem 3rem;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+        }
+
+        .dept-header {
+            text-align: center;
+            border-bottom: 3px double #222;
+            padding-bottom: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .dept-header .city-name {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .dept-header .dept-name {
+            font-size: 12px;
+            font-weight: 400;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .classification {
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding: 0.3rem 0 0.5rem 0;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .incident-title {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 1rem 0 0.25rem 0;
+        }
+
+        .incident-number {
+            text-align: center;
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 1.25rem;
+        }
+
+        .fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.1rem 2rem;
+            margin-bottom: 1.25rem;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 0.5rem 0;
+        }
+
+        .field {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.15rem 0;
+        }
+
+        .field-label {
+            color: var(--muted);
+            white-space: nowrap;
+            min-width: 120px;
+            font-size: 12px;
+        }
+
+        .field-value {
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .field.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .section-header {
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px solid #222;
+            padding-bottom: 0.2rem;
+            margin-top: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .narrative {
+            margin-bottom: 1.5rem;
+        }
+
+        .narrative p {
+            margin-bottom: 0.75rem;
+            text-indent: 2rem;
+            text-align: justify;
+            hyphens: auto;
+        }
+
+        .narrative p:first-child {
+            text-indent: 0;
+        }
+
+        .timestamp {
+            font-weight: 700;
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+
+        .disposition-box {
+            border: 1px solid var(--border);
+            background: var(--field-bg);
+            padding: 0.75rem 1rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .disposition-box .disp-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .disposition-box .disp-value {
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .signatures {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+        }
+
+        .sig-block {
+            text-align: center;
+        }
+
+        .sig-line {
+            border-top: 1px solid #222;
+            padding-top: 0.25rem;
+            margin-bottom: 0.25rem;
+            min-height: 2rem;
+        }
+
+        .sig-label {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .page-footer {
+            margin-top: 2rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        .page-footer .disclaimer {
+            margin-top: 0.5rem;
+            font-style: italic;
+            font-size: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .page {
+                padding: 1.5rem 1.25rem;
+            }
+            .fields {
+                grid-template-columns: 1fr;
+                gap: 0.1rem;
+            }
+            .signatures {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+
+        <div class="dept-header">
+            <div class="city-name">City of Slidell, Louisiana</div>
+            <div class="dept-name">Police Department &mdash; Public Incident Report</div>
+        </div>
+
+        <div class="classification">Distribution Code: B(1) &mdash; Public Record &mdash; LRS 44:3</div>
+
+        <div class="incident-title">Incident / After-Action Report</div>
+        <div class="incident-number">Report No. 2024-HAS-07194</div>
+
+        <div class="fields">
+            <div class="field">
+                <span class="field-label">Date of Incident:</span>
+                <span class="field-value">17 October 2024</span>
+            </div>
+            <div class="field">
+                <span class="field-label">Time Dispatched:</span>
+                <span class="field-value">0642 hrs</span>
+            </div>
+            <div class="field">
+                <span class="field-label">Reporting Officer(s):</span>
+                <span class="field-value">Ofc. R. Landry (Badge 2471)<br>Ofc. J. Broussard (Badge 1903)</span>
+            </div>
+            <div class="field">
+                <span class="field-label">Supervisor:</span>
+                <span class="field-value">Sgt. D. Hebert (Badge 0815)</span>
+            </div>
+            <div class="field">
+                <span class="field-label">Location:</span>
+                <span class="field-value">Hilton Garden Inn (Decom. FOB Gentry)<br>134 Holiday Blvd, Slidell, LA 70458</span>
+            </div>
+            <div class="field">
+                <span class="field-label">Classification:</span>
+                <span class="field-value">Animal Control / General Incident</span>
+            </div>
+            <div class="field full-width">
+                <span class="field-label">Narrative Classification:</span>
+                <span class="field-value">Unclassified // HAS-EVAL Certification Required for Supplementary Material</span>
+            </div>
+        </div>
+
+        <div class="narrative">
+            <div class="section-header">I. Narrative</div>
+
+            <span class="timestamp">0642 hrs &mdash; Dispatch received call from front desk, Hilton Garden Inn, 134 Holiday Blvd.</span>
+            <p>Caller reported a piglet running loose in the parking lot, "squealing and knocking into the breakfast buffets." Caller stated the animal had been observed entering through the east perimeter near the former checkpoint and appeared disoriented. Caller further noted the piglet was wearing what appeared to be a "tiny vest" and "possibly a medal." Call taker classified as Animal Control, Priority 2. Units dispatched.</p>
+
+            <span class="timestamp">0644 hrs &mdash; Ofc. Landry (2471) and Ofc. Broussard (1903) arrived on scene.</span>
+            <p>Officers confirmed the presence of a single piglet, approximately twelve pounds, in the parking lot adjacent to the east entrance of the hotel. The piglet was stationary near a light pole and appeared to be taking defensive cover. Officers exited the vehicle and initiated standard animal containment protocol. The piglet did not engage. Ofc. Landry noted the animal seemed to be "waiting."</p>
+
+            <span class="timestamp">0646 hrs &mdash; Contact made with hotel staff.</span>
+            <p>Hotel manager Amy Chen stated two guests had already filed complaints regarding the animal. Ms. Chen stated the piglet had approached the continental breakfast area at approximately 0630 hrs and "pushed a fruit platter off the table with its nose." The platter was valued at approximately fourteen dollars. Ms. Chen further noted that the piglet had moved with unusual tactical precision, evading two attempts by kitchen staff to corral it before retreating to the parking lot. Ms. Chen asked if the hotel was being "held liable for the engagement."</p>
+
+            <span class="timestamp">0651 hrs &mdash; Containment attempt.</span>
+            <p>Ofc. Broussard attempted to approach the piglet from the west using a standard animal control loop. The piglet executed an evasive maneuver to the north, taking position behind a parked Dodge Ram. Ofc. Landry attempted to flank from the east. The piglet reassessed its position and relocated to a planter bed adjacent to the hotel entrance, utilizing low hedges for concealment. Ofc. Landry noted in his field log: "Subject is using the terrain." Ofc. Broussard concurred. Both officers engaged in a short-lived game of hide-and-seek across the parking lot and ground-floor corridor. The piglet was winning.</p>
+
+            <span class="timestamp">0655 hrs &mdash; Ofc. Landry made visual contact with the subject's equipment.</span>
+            <p>Upon obtaining a clear line of sight, Ofc. Landry observed that the piglet was wearing a small nylon vest, olive drab, bearing the marking "H&S-42" in faded white stencil. Affixed to the vest was a laminated tag, approximately two inches square. Ofc. Landry photographed the tag and transmitted images to dispatch for identification. The tag read:</p>
+            <p style="text-indent:0; margin-left:3rem; font-style:italic; text-align:left;">UNIT DESIGNATION: TACTICAL SWINE, 42ND HIDE-AND-SEEK BATTALION<br>
+            SERVICE NUMBER: TS-1147<br>
+            CALL SIGN: "ROSETTA"<br>
+            ENGAGEMENT STATUS: ACTIVE<br>
+            DECORATIONS: CM-H (Campaign Medal, Hide-and-Seek), DSC-HS (Distinguished Service Cross, Hide-and-Seek Sector), 3× bronze oak leaf clusters</p>
+
+            <span class="timestamp">0658 hrs &mdash; Dispatch response.</span>
+            <p>Dispatch Sgt. Hebert (0815) contacted Ofc. Landry by radio and advised that the piglet's identification had been flagged in the database. Sgt. Hebert instructed both officers to cease containment protocols, assume a non-threatening posture, and stand by for further guidance. Sgt. Hebert then stated: "Do not engage the piglet. Do not touch the vest. That animal is a veteran of the Hide-and-Seek War. You are to treat it as a veteran of a foreign conflict under LRS 29:731. Am I understood?" Both officers confirmed.</p>
+
+            <span class="timestamp">0701 hrs &mdash; Ofc. Broussard inquiry.</span>
+            <p>Ofc. Broussard asked over radio: "Sarge, what's the Hide-and-Seek War?" Sgt. Hebert did not respond for eleven seconds. When he responded, his voice was noted by dispatch as "uncharacteristically quiet." Sgt. Hebert said: "Look it up when you get back to the station. For now, assume position and maintain distance."</p>
+
+            <span class="timestamp">0704 hrs &mdash; Casualty assessment.</span>
+            <p>Ofc. Landry observed that the piglet had settled into a stable position near the planter bed. Upon closer inspection from a respectful distance of approximately ten feet, Landry noted that the piglet's left hind leg appeared to be favored, consistent with prior engagement trauma. A small scar, approximately one inch in length, was visible above the right eye. The piglet's breathing was labored. Its eyes were open and tracking both officers' movements in alternating rotation, every three to four seconds, a pattern Ofc. Landry recognized from his own infantry training in the Louisiana National Guard as a sector scan.</p>
+
+            <span class="timestamp">0707 hrs &mdash; Veterans Affairs contacted.</span>
+            <p>Sgt. Hebert contacted the St. Tammany Parish Veterans Affairs office and spoke with VA Coordinator Linda Gaspard. Ms. Gaspard confirmed that TS-1147 ("Rosetta") was registered with the VA as a decorated veteran of the Hide-and-Seek War, 42nd Battalion, and was entitled to benefits and protections under both federal and state statute. Ms. Gaspard stated that a number of Hide-and-Seek War veterans had been "having a hard time adjusting" since decommission. Ms. Gaspard noted that TS-1147's last documented check-in was March 2024, and that her file contained a note from her caseworker: "Rosetta continues to exhibit signs of engagement fatigue. Recommend reassignment to non-combat environment. Not yet cleared for civilian integration."</p>
+
+            <span class="timestamp">0712 hrs &mdash; Rosetta relocated.</span>
+            <p>At 0710 hrs, the piglet stood, performed one final sector scan of the parking lot, and walked to the rear of the hotel toward a drainage culvert adjacent to the property line. Officers maintained visual contact but did not pursue. The piglet entered the culvert and was lost from view. Ofc. Landry noted that the culvert opened onto a wooded area of approximately twelve acres that had been largely undeveloped since the hotel's construction. The area was overgrown and offered numerous concealment positions.</p>
+
+            <span class="timestamp">0714 hrs &mdash; Final disposition.</span>
+            <p>Ofc. Landry and Ofc. Broussard returned to the hotel lobby to inform Ms. Chen that the situation had been resolved and that the hotel would not be held liable for the engagement. Ms. Chen asked if the piglet would return. Ofc. Landry stated that he did not know. Ms. Chen then asked if "this whole thing was some kind of joke." Ofc. Landry did not answer. Ofc. Broussard asked Ms. Chen for the location of the nearest convenience store so that he could purchase baby carrots. Ms. Chen directed him to the Racetrac on Front Street.</p>
+
+            <p>Both officers returned to their vehicle. Ofc. Broussard placed a small pile of baby carrots near the entrance to the drainage culvert. Neither officer spoke during the return to the station.</p>
+        </div>
+
+        <div class="section-header">II. Supplementary Notes</div>
+
+        <div class="narrative">
+            <p>Ofc. Landry submitted the following addendum at 0930 hrs on 17 October 2024:</p>
+            <p>Following the incident, I conducted a search of available records regarding the Hide-and-Seek War. I was able to locate a single entry in the Slidell Municipal Archives (Ref: SMA-2004-117) describing the decommissioning of FOB Gentry, the forward operating base previously located at what is now the site of the Hilton Garden Inn at 134 Holiday Blvd. The document describes FOB Gentry as a "tactical deployment center for the 42nd Hide-and-Seek Battalion, active 1998–2004." The document is three pages long. Two of the pages are redacted in their entirety. The unredacted portions contain only the base's address and the following sentence: "All units decommissioned with honors. Engagement protocols terminated. See you later."</p>
+
+            <p>I also found, in the same file, a photograph. The photograph shows a piglet wearing an olive drab vest. The piglet is standing in a field of clover. Behind the piglet, partially visible, is a low concrete building bearing a sign that reads "FOB GENTRY — HIDE WELL." The piglet is looking at the camera. I cannot determine if the piglet is the same piglet we encountered this morning. But I believe it is.</p>
+
+            <p>I am requesting that this report be classified as "General Incident / Animal Control" for public filing purposes.</p>
+        </div>
+
+        <div class="section-header">III. Disposition</div>
+
+        <div class="disposition-box">
+            <div class="disp-label">Primary Disposition Code:</div>
+            <div class="disp-value">DISP-AC-0042 &mdash; Animal relocated, no contact injuries, no property damage claim filed</div>
+        </div>
+
+        <div class="disposition-box">
+            <div class="disp-label">Supplementary Classification (Internal Only):</div>
+            <div class="disp-value">HAS-ENG-REM &mdash; Hide-and-Seek engagement remnant, decommissioned sector, no active threat<br>
+            <span style="font-weight:400; font-size:11px; color:var(--muted);">Note: File flagged for HAS-EVAL review. Officer counseling recommended re: engagement proximity and sector awareness.</span></div>
+        </div>
+
+        <div class="narrative" style="margin-top: 1rem;">
+            <p><strong>Casualty Report:</strong> None sustained by officers. Property damage limited to one (1) fruit platter, valued at $14.00. TS-1147 assessed as stable. Prior engagement injuries noted; no new injuries observed.</p>
+            <p><strong>Follow-up Required:</strong> VA Coordinator Linda Gaspard to initiate welfare check on TS-1147 at culvert location. Ofc. Broussard to check culvert site during routine patrol, Pattern B (night shift), for a period of two weeks.</p>
+            <p><strong>Evidence Collected:</strong> Seven (7) photographs (digital), one (1) partially consumed baby carrot.</p>
+            <p><strong>Memo Appended:</strong> Ofc. Broussard submitted a handwritten note with this report. The note reads, in full: <em>"She knew we were there before we saw her. She was never hiding from us. She was just hiding."</em> The note has been placed in the supplementary file.</p>
+        </div>
+
+        <div class="section-header">IV. Signatures</div>
+
+        <div class="signatures">
+            <div class="sig-block">
+                <div class="sig-line"></div>
+                <div class="sig-label">Ofc. R. Landry, Badge 2471<br>Slidell Police Department</div>
+            </div>
+            <div class="sig-block">
+                <div class="sig-line"></div>
+                <div class="sig-label">Ofc. J. Broussard, Badge 1903<br>Slidell Police Department</div>
+            </div>
+            <div class="sig-block">
+                <div class="sig-line"></div>
+                <div class="sig-label">Sgt. D. Hebert, Badge 0815<br>Supervising Officer</div>
+            </div>
+            <div class="sig-block">
+                <div class="sig-line"></div>
+                <div class="sig-label">Linda Gaspard<br>VA Coordinator, St. Tammany Parish</div>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            City of Slidell Police Department &mdash; Records Division<br>
+            2052 Second Street, Slidell, LA 70458 &mdash; (985) 646-4300<br>
+            <div class="disclaimer">
+                This document is a public record per LRS 44:1 et seq. Certain supplementary materials may be restricted under HAS-EVAL protocol.
+                Inquiries regarding the Hide-and-Seek War should be directed to the Department of Defense, Historical Operations Division, Washington, D.C.
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

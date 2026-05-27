@@ -110,3 +110,4 @@
 | 0106 | Twenty-Seven People Who Were Not Your Mother | poetry | 4.1 | 2026-05-27 | — |
 | 0107 | Fever Dream Insurance Claim | poetry | 4.9 | 2026-05-27 | — |
 | 0108 | The Collection of Last Known Positions | code-art | 4.7 | 2026-05-27 | — |
+| 0109 | The Hide-and-Seek War: A Louisiana Police Blotter | fiction | 4.8 | 2026-05-27 | — |
