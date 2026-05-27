@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Concentration Clock</title>
+<style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{
+        width:100%;height:100%;
+        background:#050504;
+        overflow:hidden;
+        font-family:'Courier New',Courier,monospace;
+    }
+    body{
+        display:flex;flex-direction:column;
+        align-items:center;justify-content:center;
+        position:relative;
+    }
+    #container{text-align:center;position:relative;z-index:2}
+    #clock-wrapper{
+        position:relative;
+        width:min(88vw,560px);
+        aspect-ratio:16/9;
+        margin:0 auto 32px;
+        display:flex;align-items:center;justify-content:center;
+        transition:filter .25s ease;
+    }
+    #clock-canvas{display:block;border-radius:2px}
+    #phase-text{
+        font-size:12px;
+        letter-spacing:.32em;
+        text-transform:uppercase;
+        line-height:1.9;
+        min-height:56px;
+        max-width:min(88vw,460px);
+        text-align:center;
+        color:rgba(190,170,150,.07);
+        transition:color 4s ease;
+        padding:0 16px;
+    }
+    #debug{
+        position:fixed;top:14px;left:14px;
+        font-size:10px;color:rgba(90,90,90,.18);
+        z-index:5;pointer-events:none;
+    }
+    #status{
+        position:fixed;top:14px;right:14px;
+        display:flex;align-items:center;gap:7px;
+        font-size:10px;color:rgba(90,90,90,.18);
+        z-index:5;transition:color .6s;
+    }
+    #status .dot{
+        width:6px;height:6px;border-radius:50%;
+        background:#1f1f1f;
+        transition:background .4s,box-shadow .4s;
+    }
+    #status .dot.on{
+        background:#4a8f4a;
+        box-shadow:0 0 5px rgba(74,143,74,.45);
+    }
+    #cam-canvas{
+        position:fixed;bottom:14px;right:14px;
+        width:100px;height:75px;
+        border-radius:4px;
+        border:1px solid rgba(255,255,255,.03);
+        z-index:3;opacity:0;
+        transition:opacity .6s;
+    }
+    #cam-canvas.show{opacity:.22}
+    video{display:none}
+    #vignette{
+        position:fixed;inset:0;
+        pointer-events:none;z-index:1;
+        background:radial-gradient(ellipse at center,transparent 35%,rgba(0,0,0,.82) 100%);
+    }
+    .scanlines{
+        position:fixed;inset:0;pointer-events:none;z-index:1;
+        background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.035) 2px,rgba(0,0,0,.035) 4px);
+    }
+    @media(prefers-reduced-motion:reduce){
+        *{animation:none!important;transition:none!important}
+    }
+</style>
+</head>
+<body>
+<div id="vignette"></div>
+<div class="scanlines"></div>
+<video id="webcam" autoplay playsinline muted></video>
+<canvas id="cam-canvas" width="160" height="120"></canvas>
+
+<div id="container">
+    <div id="clock-wrapper">
+        <canvas id="clock-canvas" width="560" height="315"></canvas>
+    </div>
+    <div id="phase-text"></div>
+</div>
+
+<div id="status">
+    <div class="dot" id="status-dot"></div>
+    <span id="status-label">initializing</span>
+</div>
+<div id="debug"></div>
+
+<script>
+(function(){
+    'use strict';
+
+    var video    = document.getElementById('webcam');
+    var camCvs   = document.getElementById('cam-canvas');
+    var camCtx   = camCvs.getContext('2d');
+    var clockCvs = document.getElementById('clock-canvas');
+    var ctx      = clockCvs.getContext('2d');
+    var phaseEl  = document.getElementById('phase-text');
+    var wrapEl   = document.getElementById('clock-wrapper');
+    var statusDot= document.getElementById('status-dot');
+    var statusLbl= document.getElementById('status-label');
+    var debugEl  = document.getElementById('debug');
+
+    var CW = 560, CH = 315;
+
+    /* ── State ─────────────────────────────────────────── */
+    var smoothObs    = 0;
+    var camReady     = false;
+    var detecting    = false;
+    var totalObsTime = 0;
+    var prevSeen     = false;
+    var lookCount    = 0;
+    var lookStartT   = 0;
+    var phase        = -1;
+    var phaseShown   = -1;
+
+    var accDriftH = 0, accDriftM = 0, accDriftS = 0;
+    var wobble    = 0;
+    var smoothCamOx = 0, smoothCamOy = 0;
+    var prevT    = performance.now();
+    var lastFrame = 0;
+
+    /* ── Ambient specks ────────────────────────────────── */
+    var specks = [];
+    for (var i = 0; i < 30; i++) {
+        specks.push({
+            x: Math.random() * CW,
+            y: Math.random() * CH,
+            vx: (Math.random() - .5) * .12,
+            vy: (Math.random() - .5) * .08,
+            r: Math.random() * 1.1 + .3,
+            a: Math.random() * .07 + .015
+        });
+    }
+
+    /* ── Phase texts ───────────────────────────────────── */
+    var PHASES = [
+        'look at the clock',
+        'time only moves when you are not watching',
+        'you are watching. the clock is not telling you the time.',
+        'every glance warps another second beyond recognition. do you know what time it is?',
+        'you will never know what time it is. that is the point. that has always been the point.'
+    ];
+
+    var PHASE_ALPHA = [.07, .13, .24, .4, .55];
+
+    /* ── Camera ────────────────────────────────────────── */
+    async function initCam() {
+        try {
+            var stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'user', width: { ideal: 320 }, height: { ideal: 240 } },
+                audio: false
+            });
+            video.srcObject = stream;
+            await video.play();
+            camReady = true;
+            statusDot.classList.add('on');
+            statusLbl.textContent = 'watching';
+            camCvs.classList.add('show');
+            setInterval(detect, 320);
+        } catch (e) {
+            camReady = false;
+            statusLbl.textContent = 'no camera';
+            enterPhase(4);
+        }
+    }
+
+    /* ── Face detection via skin-tone heuristic ────────── */
+    function detect() {
+        if (detecting || !camReady || video.readyState < 2) return;
+        detecting = true;
+
+        var sw = 80;
+        var sh = Math.round(sw * video.videoHeight / video.videoWidth);
+        if (sh < 10) { detecting = false; return; }
+
+        var tc  = document.createElement('canvas');
+        tc.width = sw; tc.height = sh;
+        var tctx = tc.getContext('2d');
+        tctx.drawImage(video, 0, 0, sw, sh);
+
+        var fd = tctx.getImageData(0, 0, sw, sh).data;
+        var skin = 0, total = sw * sh;
+
+        for (var i = 0; i < fd.length; i += 4) {
+            var r = fd[i], g = fd[i+1], b = fd[i+2];
+            if (r > 75 && g > 40 && b > 20 &&
+                r > g && r > b &&
+                (r - g) > 12 && (r - b) > 12) skin++;
+        }
+
+        var ratio   = skin / total;
+        var hasFace = ratio > .13 && ratio < .88;
+
+        if (hasFace && !prevSeen) {
+            lookCount++;
+            lookStartT = performance.now();
+        }
+        prevSeen = hasFace;
+
+        var target = hasFace ? 1 : 0;
+        smoothObs += (target - smoothObs) * (hasFace ? .14 : .04);
+        smoothObs = Math.max(0, Math.min(1, smoothObs));
+
+        detecting = false;
+    }
+
+    /* ── Phase transitions ─────────────────────────────── */
+    function enterPhase(p) {
+        if (p === phase && phase === phaseShown) return;
+        phase = p;
+        if (p < 0 || p >= PHASES.length) return;
+        if (p > phaseShown) {
+            phaseShown = p;
+            phaseEl.style.color = 'rgba(190,170,150,' + PHASE_ALPHA[p] + ')';
+            phaseEl.textContent = PHASES[p];
+        }
+    }
+
+    /* ── Seven-segment digit map ───────────────────────── */
+    var SEG = {
+        '0': [1,1,1,1,1,1,0], '1': [0,1,1,0,0,0,0],
+        '2': [1,1,0,1,1,0,1], '3': [1,1,1,1,0,0,1],
+        '4': [0,1,1,0,0,1,1], '5': [1,0,1,1,0,1,1],
+        '6': [1,0,1,1,1,1,1], '7': [1,1,1,0,0,0,0],
+        '8': [1,1,1,1,1,1,1], '9': [1,1,1,1,0,1,1]
+    };
+
+    function drawDigit(ch, ox, oy, sc) {
+        var seg = SEG[ch];
+        if (!seg) return;
+
+        var t = 14 * sc, g = 3 * sc;
+        var polys = [
+            [[g,0],[t,0],[t-g,g],[2*g,g]],
+            [[t,g],[t,t],[t-g,t],[t-g,g+g]],
+            [[t,t+g],[t,2*t],[t-g,2*t-g],[t-g,t+g+g]],
+            [[g,2*t],[t-g,2*t],[t-2*g,2*t-g],[2*g,2*t-g]],
+            [[0,t+g],[0,2*t],[g,2*t-g],[g,t+g+g]],
+            [[0,g],[0,t],[g,t-g],[g,g+g]],
+            [[g,t-g+g/2],[t-g,t-g+g/2],[t-g,t+g/2],[g,t+g/2]]
+        ];
+
+        for (var i = 0; i < 7; i++) {
+            if (!seg[i]) continue;
+            ctx.beginPath();
+            for (var j = 0; j < polys[i].length; j++) {
+                var px = polys[i][j][0] + ox;
+                var py = polys[i][j][1] + oy;
+                j === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fill();
+        }
+    }
+
+    /* ── Drifted time calculation ──────────────────────── */
+    function getDriftedTime(now) {
+        var ts = now / 1000;
+        var ds = now / 100;
+        var obs = smoothObs;
+
+        var n1 = Math.sin(ts * .4) * .45 + Math.sin(ts * 1.15) * .28 + Math.sin(ts * 2.7) * .14;
+        var n2 = Math.cos(ts * .32) * .42 + Math.cos(ts * .88) * .26 + Math.cos(ts * 2.1) * .17;
+        var n3 = Math.sin(ts * .22) * .5  + Math.sin(ts * .65) * .28;
+
+        var dH    = Math.floor(n1 * 6 * obs * 3.5);
+        var dM    = Math.floor(n2 * 28 * obs);
+        var dS    = Math.floor(n3 * 18 * obs);
+        var dSub  = obs * .52 * Math.sin(ts * .7) * 7;
+
+        var accTotal = accDriftH * 3600 + accDriftM * 60 + accDriftS;
+        if (accTotal < 600) {
+            accDriftH += obs * .00004 * ds;
+            accDriftM += obs * .00013 * ds;
+            accDriftS += obs * .00028 * ds;
+        }
+
+        var tot = (Math.floor(ds) + accTotal + dH * 3600 + dM * 60 + dS + dSub) % 86400;
+        if (tot < 0) tot += 86400;
+        tot = Math.floor(tot);
+
+        return {
+            h:  Math.floor(tot / 3600) % 24,
+            m:  Math.floor((tot % 3600) / 60),
+            s:  tot % 60,
+            ns: Math.abs((ds + dSub * 10) % 100)
+        };
+    }
+
+    /* ── Draw tapered clock hand ───────────────────────── */
+    function drawHand(angle, len, wid, alpha, taper) {
+        var ex = Math.cos(angle) * len;
+        var ey = Math.sin(angle) * len;
+        var nx = Math.sin(angle);
+        var ny = -Math.cos(angle);
+
+        ctx.beginPath();
+        ctx.moveTo(-nx * wid * .5, -ny * wid * .5);
+        ctx.lineTo(ex - nx * (wid - taper) * .5, ey - ny * (wid - taper) * .5);
+        ctx.lineTo(ex, ey);
+        ctx.lineTo(ex + nx * (wid - taper) * .5, ey + ny * (wid - taper) * .5);
+        ctx.lineTo(nx * wid * .5, ny * wid * .5);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(170,155,135,' + alpha + ')';
+        ctx.fill();
+    }
+
+    function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+    /* ── Main render ───────────────────────────────────── */
+    function drawClock(now) {
+        var obs = smoothObs;
+        var un  = 1 - obs;
+        var time = getDriftedTime(now);
+
+        ctx.clearRect(0, 0, CW, CH);
+
+        /* Warm background glow when unobserved */
+        if (un > .08) {
+            var bg = ctx.createRadialGradient(CW/2, CH/2, 0, CW/2, CH/2, 290);
+            bg.addColorStop(0, 'rgba(32,28,22,' + (un * .07) + ')');
+            bg.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, CW, CH);
+        }
+
+        /* Floating specks — visible when unobserved */
+        for (var si = 0; si < specks.length; si++) {
+            var sp = specks[si];
+            sp.x += sp.vx; sp.y += sp.vy;
+            if (sp.x < -8) sp.x = CW + 8;
+            if (sp.x > CW + 8) sp.x = -8;
+            if (sp.y < -8) sp.y = CH + 8;
+            if (sp.y > CH + 8) sp.y = -8;
+            ctx.beginPath();
+            ctx.arc(sp.x, sp.y, sp.r, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(175,160,140,' + (sp.a * un * .7) + ')';
+            ctx.fill();
+        }
+
+        /* Central warmth glow */
+        if (un > .08) {
+            var gl = ctx.createRadialGradient(CW/2, CH/2, 0, CW/2, CH/2, 260);
+            gl.addColorStop(0,   'rgba(255,240,200,' + (un * .028) + ')');
+            gl.addColorStop(.55, 'rgba(255,240,200,' + (un * .013) + ')');
+            gl.addColorStop(1,   'rgba(0,0,0,0)');
+            ctx.fillStyle = gl;
+            ctx.fillRect(0, 0, CW, CH);
+        }
+
+        /* Darkening veil when observed */
+        if (obs > .06) {
+            ctx.fillStyle = 'rgba(0,0,0,' + (obs * .07) + ')';
+            ctx.fillRect(0, 0, CW, CH);
+        }
+
+        /* Camera-reactive wobble */
+        if (camReady && video.readyState >= 2 && obs > .12) {
+            camCtx.drawImage(video, 0, 0, camCvs.width, camCvs.height);
+            var cd  = camCtx.getImageData(0, 0, camCvs.width, camCvs.height);
+            var ci  = Math.floor(camCvs.width / 2 + camCvs.height / 2 * camCvs.width) * 4;
+            var brt = (cd.data[ci] + cd.data[ci+1] + cd.data[ci+2]) / 3 / 255;
+            wobble = Math.sin(now / 1000 * 3.2) * (obs * brt * .55 + .08);
+            smoothCamOx += (wobble * 1.2 - smoothCamOx) * .08;
+            smoothCamOy += (wobble * .65 - smoothCamOy) * .08;
+        } else {
+            wobble *= .94;
+            smoothCamOx *= .93;
+            smoothCamOy *= .93;
+        }
+
+        /* ── Analog face ───────────────────────────────── */
+        var cx = CW / 2 + smoothCamOx;
+        var cy = CH / 2 + smoothCamOy;
+        var r  = Math.min(CW, CH) * .37;
+
+        ctx.save();
+        ctx.translate(cx, cy);
+
+        /* Face fill */
+        var fg = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
+        fg.addColorStop(0, 'rgba(195,178,158,.035)');
+        fg.addColorStop(1, 'rgba(100,90,78,.015)');
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.fillStyle = fg;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(175,160,140,' + (un * .17 + obs * .04) + ')';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        /* Tick marks */
+        for (var ti = 0; ti < 60; ti++) {
+            var tAng = (ti / 60) * Math.PI * 2 - Math.PI / 2;
+            var major = ti % 5 === 0;
+            var inn = r - (major ? 20 : 12);
+            var out = r - 5;
+            ctx.beginPath();
+            ctx.moveTo(Math.cos(tAng) * inn, Math.sin(tAng) * inn);
+            ctx.lineTo(Math.cos(tAng) * out, Math.sin(tAng) * out);
+            ctx.strokeStyle = 'rgba(175,160,140,' + (major ? un * .28 + obs * .05 : un * .09 + obs * .02) + ')';
+            ctx.lineWidth = major ? 1.6 : .6;
+            ctx.stroke();
+        }
+
+        /* Hour numerals */
+        var nums = ['XII','I','II','III','IV','V','VI','VII','VIII','IX','X','XI'];
+        ctx.font = 'bold 13px Georgia,serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        for (var ni = 0; ni < 12; ni++) {
+            var nAng = (ni / 12) * Math.PI * 2 - Math.PI / 2;
+            ctx.fillStyle = 'rgba(175,160,140,' + (un * .2 + obs * .025) + ')';
+            ctx.fillText(nums[ni], Math.cos(nAng) * (r - 35), Math.sin(nAng) * (r - 35));
+        }
+
+        /* Hands with organic wobble */
+        var hFrac = (time.h % 12 + time.m / 60 + time.s / 3600) / 12;
+        var mFrac = (time.m + time.s / 60) / 60;
+        var sFrac = time.s / 60 + time.ns / 6000;
+
+        var hAng = hFrac * Math.PI * 2 - Math.PI / 2 + Math.sin(now / 1000 * .6)  * .028 * obs;
+        var mAng = mFrac * Math.PI * 2 - Math.PI / 2 + Math.sin(now / 1000 * 1.4)  * .04  * obs;
+        var sAng = sFrac * Math.PI * 2 - Math.PI / 2 + Math.sin(now / 1000 * 4.5)  * .06  * obs;
+
+        drawHand(hAng, r * .45, 2.6, un * .4 + obs * .07, 3.5);
+        drawHand(mAng, r * .66, 1.7, un * .35 + obs * .05, 2);
+
+        /* Second hand — thinner, redder */
+        var secA = un * .3 + obs * .04;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(sAng + Math.PI) * r * .13, Math.sin(sAng + Math.PI) * r * .13);
+        ctx.lineTo(Math.cos(sAng) * r * .74, Math.sin(sAng) * r * .74);
+        ctx.strokeStyle = 'rgba(155,55,55,' + secA + ')';
+        ctx.lineWidth = .8;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(Math.cos(sAng + Math.PI) * r * .08, Math.sin(sAng + Math.PI) * r * .08, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(155,55,55,' + secA + ')';
+        ctx.fill();
+
+        /* Center cap */
+        ctx.beginPath();
+        ctx.arc(0, 0, 2.8, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(170,155,135,' + (un * .38 + obs * .07) + ')';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(0, 0, 1.2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(140,50,50,' + (un * .4 + obs * .06) + ')';
+        ctx.fill();
+
+        ctx.restore();
+
+        /* ── Digital time display ──────────────────────── */
+        var dy     = CH - 46;
+        var dsc    = .78;
+        var dw     = 17 * dsc;
+        var leftX  = CW / 2 - 95;
+        var driftMag = obs * Math.abs(Math.sin(now / 1000 * .32));
+        var maxDx  = driftMag * 5;
+        var maxDy  = driftMag * 3;
+
+        ctx.save();
+
+        var tStr = pad2(time.h) + ':' + pad2(time.m) + ':' + pad2(time.s);
+        var xPos = leftX;
+
+        for (var di = 0; di < tStr.length; di++) {
+            var ch   = tStr[di];
+            var seed = di * 137.5 + now / 1000 * .18;
+            var dx   = Math.sin(seed * .7) * maxDx;
+            var dy2  = Math.cos(seed * 1.1) * maxDy;
+
+            ctx.save();
+            ctx.translate(dx, dy2);
+
+            if (ch === ':') {
+                var cAlpha = un * .28 + obs * .05;
+                var pulse  = 1 - Math.abs(Math.sin(now / 1000)) * un * .25;
+                ctx.fillStyle = 'rgba(175,160,140,' + (cAlpha * pulse) + ')';
+                ctx.beginPath(); ctx.arc(xPos + 4, dy - 4, 2.2, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(xPos + 4, dy + 6, 2.2, 0, Math.PI * 2); ctx.fill();
+                xPos += 14 * dsc;
+            } else {
+                ctx.fillStyle = 'rgba(185,170,150,' + (un * .42 + obs * .07) + ')';
+                if (obs > .12) ctx.filter = 'blur(' + (Math.round(obs * 1.4 * 10) / 10) + 'px)';
+                drawDigit(ch, xPos, dy - 15 * dsc, dsc);
+                ctx.filter = 'none';
+                xPos += dw + 4;
+            }
+
+            ctx.restore();
+        }
+        ctx.restore();
+
+        /* Date — barely visible */
+        var d = new Date();
+        var dateStr = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        ctx.font = '10px "Courier New",monospace';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = 'rgba(150,140,130,' + (un * .08 + obs * .015) + ')';
+        ctx.fillText(dateStr, CW / 2, 28);
+    }
+
+    /* ── Main loop ─────────────────────────────────────── */
+    function tick(t) {
+        var dt = Math.min((t - prevT) / 1000, .1);
+        prevT = t;
+
+        if (t - lastFrame < 15) { requestAnimationFrame(tick); return; }
+        lastFrame = t;
+
+        totalObsTime += smoothObs * dt;
+
+        /* Phase progression requires sustained observation */
+        if (camReady && smoothObs > .25) {
+            var sec = totalObsTime;
+            if      (sec < 1.5) enterPhase(0);
+            else if (sec < 5)   enterPhase(1);
+            else if (sec < 14)  enterPhase(2);
+            else if (sec < 28)  enterPhase(3);
+            else                enterPhase(4);
+        }
+
+        wrapEl.style.filter = smoothObs > .12
+            ? 'blur(' + (Math.round(smoothObs * .55 * 10) / 10) + 'px)'
+            : 'none';
+
+        drawClock(t);
+
+        debugEl.textContent =
+            'face: ' + (smoothObs > .22 ? 'yes' : 'no') +
+            ' | smooth: ' + smoothObs.toFixed(2) +
+            ' | looks: ' + lookCount +
+            ' | total: ' + Math.floor(totalObsTime) + 's';
+
+        requestAnimationFrame(tick);
+    }
+
+    /* ── Boot ──────────────────────────────────────────── */
+    phaseEl.textContent = 'look at the clock';
+    phaseEl.style.color = 'rgba(190,170,150,.07)';
+    phaseShown = 0;
+    phase = 0;
+    initCam();
+    requestAnimationFrame(tick);
+
+})();
+</script>
+</body>
+</html>
