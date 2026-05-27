@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clara & James — Wedding Gift Registry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #fdfcf9;
+    --surface: #ffffff;
+    --surface-soft: #f7f5f0;
+    --text: #2d2926;
+    --text-mid: #4a4541;
+    --text-light: #8c8680;
+    --text-muted: #b5b0aa;
+    --accent: #b8a9a0;
+    --accent-warm: #a68b7e;
+    --confession: #6b5c54;
+    --border: #e8e4df;
+    --border-strong: #d5d0ca;
+    --clementine: #9a5c3e;
+    --danger: #8b3a3a;
+    --danger-bg: #f9f0f0;
+    --clara-accent: #7a6b8a;
+    --clara-bg: #f5f2f8;
+    --james-accent: #5a7068;
+    --james-bg: #f0f4f2;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* === HEADER === */
+  .site-header {
+    text-align: center;
+    padding: 3.5rem 2rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: relative;
+    z-index: 10;
+  }
+
+  .header-ornament {
+    font-size: 1.5rem;
+    color: var(--accent);
+    letter-spacing: 0.8em;
+    margin-bottom: 0.8rem;
+    font-weight: 300;
+  }
+
+  .header-names {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .header-date {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .header-location {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* === PROGRESS BAR === */
+  .registry-progress {
+    background: var(--surface);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: background 0.5s ease, border-color 0.5s ease;
+  }
+
+  .registry-progress.warning {
+    background: var(--danger-bg);
+    border-color: #d5b0b0;
+  }
+
+  .registry-progress.final-phase {
+    background: #f5f0ef;
+    border-color: var(--clementine);
+  }
+
+  .progress-label {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+
+  .progress-track {
+    width: 200px;
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent-warm);
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    right: -3px;
+    top: -2px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-warm);
+    transition: background 0.5s ease;
+  }
+
+  .progress-fill.danger-fill {
+    background: var(--danger);
+  }
+
+  .progress-fill.danger-fill::after {
+    background: var(--danger);
+  }
+
+  .progress-count {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.8rem;
+    color: var(--text-light);
+  }
+
+  /* === MAIN LAYOUT === */
+  .registry-body {
+    display: flex;
+    min-height: calc(100vh - 140px);
+  }
+
+  /* === GIFTS GRID === */
+  .gifts-area {
+    flex: 1;
+    padding: 2.5rem 2rem;
+    max-width: 900px;
+  }
+
+  .section-intro {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .section-intro p {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1.8;
+    font-style: italic;
+  }
+
+  .gifts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  /* === GIFT CARD === */
+  .gift-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+    position: relative;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: cardAppear 0.6s forwards;
+  }
+
+  @keyframes cardAppear {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .gift-card:nth-child(1) { animation-delay: 0.1s; }
+  .gift-card:nth-child(2) { animation-delay: 0.18s; }
+  .gift-card:nth-child(3) { animation-delay: 0.26s; }
+  .gift-card:nth-child(4) { animation-delay: 0.34s; }
+  .gift-card:nth-child(5) { animation-delay: 0.42s; }
+  .gift-card:nth-child(6) { animation-delay: 0.5s; }
+  .gift-card:nth-child(7) { animation-delay: 0.58s; }
+  .gift-card:nth-child(8) { animation-delay: 0.66s; }
+  .gift-card:nth-child(9) { animation-delay: 0.74s; }
+  .gift-card:nth-child(10) { animation-delay: 0.82s; }
+
+  .gift-card:not(.acknowledged):not(.locked-item):hover {
+    border-color: var(--border-strong);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+
+  .gift-card:not(.acknowledged):not(.locked-item):hover .gift-image {
+    filter: none;
+  }
+
+  .gift-card:not(.acknowledged):not(.locked-item):hover .hover-hint {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .gift-card:not(.acknowledged):not(.locked-item):hover .confession-preview {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .gift-card.acknowledged {
+    border-color: var(--border);
+    opacity: 0.55;
+    transition: opacity 0.6s ease, border-color 0.6s ease;
+  }
+
+  .gift-card.acknowledged .gift-image {
+    filter: grayscale(100%) opacity(0.4);
+  }
+
+  .gift-card.acknowledged .acknowledged-badge {
+    display: flex;
+  }
+
+  .gift-card.acknowledged .acknowledge-btn {
+    display: none !important;
+  }
+
+  .gift-card.locked-item {
+    border-color: var(--border);
+    opacity: 0.35;
+    pointer-events: none;
+    filter: blur(1px);
+  }
+
+  .gift-card.locked-item.unlocked {
+    opacity: 1;
+    filter: none;
+    pointer-events: auto;
+    border-color: var(--clementine);
+    animation: unlockPulse 1.5s ease;
+  }
+
+  @keyframes unlockPulse {
+    0% { opacity: 0.35; filter: blur(1px); }
+    50% { opacity: 1; box-shadow: 0 0 40px rgba(154, 92, 62, 0.15); }
+    100% { opacity: 1; filter: none; box-shadow: 0 0 20px rgba(154, 92, 62, 0.08); }
+  }
+
+  .gift-card.final-reveal {
+    border-color: var(--danger);
+    box-shadow: 0 0 30px rgba(139, 58, 58, 0.1);
+  }
+
+  .gift-image {
+    width: 100%;
+    height: 180px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: grayscale(30%) opacity(0.85);
+    transition: filter 0.4s ease;
+    position: relative;
+    background-color: var(--surface-soft);
+  }
+
+  .gift-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(253,252,249,0.4));
+  }
+
+  .gift-content {
+    padding: 1.2rem 1.3rem 1rem;
+    position: relative;
+  }
+
+  .gift-name {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+
+  .gift-price {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 0.7rem;
+  }
+
+  .hover-hint {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.75rem;
+    color: var(--accent-warm);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    margin-bottom: 0.3rem;
+    font-style: italic;
+  }
+
+  .confession-preview {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.85rem;
+    color: var(--confession);
+    line-height: 1.7;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.4s ease 0.05s, transform 0.4s ease 0.05s;
+    min-height: 2.5em;
+  }
+
+  .gift-actions {
+    padding: 0 1.3rem 1.3rem;
+  }
+
+  .acknowledge-btn {
+    display: none;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--text-mid);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    text-transform: uppercase;
+  }
+
+  .gift-card:not(.acknowledged):not(.locked-item):hover .acknowledge-btn {
+    display: block;
+  }
+
+  .gift-card.unlocked .acknowledge-btn {
+    display: block;
+  }
+
+  .acknowledge-btn:hover {
+    background: var(--text);
+    color: var(--surface);
+    border-color: var(--text);
+  }
+
+  .acknowledge-btn:focus-visible {
+    outline: 2px solid var(--accent-warm);
+    outline-offset: 2px;
+  }
+
+  .acknowledge-btn.final-btn {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+
+  .acknowledge-btn.final-btn:hover {
+    background: var(--danger);
+    color: var(--surface);
+  }
+
+  .acknowledged-badge {
+    display: none;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding-top: 0.5rem;
+  }
+
+  .lock-notice {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: 0.8rem;
+  }
+
+  /* === LETTERS SIDEBAR === */
+  .letters-sidebar {
+    width: 320px;
+    border-left: 1px solid var(--border);
+    background: var(--surface);
+    padding: 2rem 1.5rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 140px);
+    position: sticky;
+    top: 60px;
+  }
+
+  .sidebar-title {
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .sidebar-title::after {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 1px;
+    background: var(--border-strong);
+    margin: 0.8rem auto 0;
+  }
+
+  .letter-entry {
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+  }
+
+  .letter-entry.visible {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  .letter-label {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .letter-label .author {
+    font-weight: 500;
+  }
+
+  .letter-label .author.clara { color: var(--clara-accent); }
+  .letter-label .author.james { color: var(--james-accent); }
+
+  .letter-card {
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+    cursor: pointer;
+  }
+
+  .letter-card:hover {
+    border-color: var(--border-strong);
+  }
+
+  .letter-card:focus-visible {
+    outline: 2px solid var(--accent-warm);
+    outline-offset: 2px;
+  }
+
+  .letter-card.clara-card { border-left: 2px solid var(--clara-accent); }
+  .letter-card.james-card { border-left: 2px solid var(--james-accent); }
+
+  .letter-collapsed,
+  .letter-expanded {
+    padding: 0.8rem 1rem;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.82rem;
+    line-height: 1.8;
+    color: var(--text-mid);
+    font-style: italic;
+  }
+
+  .letter-collapsed {
+    max-height: 4.5em;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .letter-collapsed::after {
+    content: '...';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: var(--surface);
+    padding-left: 1rem;
+    color: var(--text-light);
+  }
+
+  .letter-expanded {
+    display: none;
+    font-style: normal;
+  }
+
+  .letter-card.expanded .letter-collapsed { display: none; }
+  .letter-card.expanded .letter-expanded { display: block; }
+
+  .letter-note {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+    font-style: italic;
+  }
+
+  /* === MODAL === */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(45, 41, 38, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  .modal-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    max-width: 520px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 2.5rem;
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .modal-overlay.active .modal-box {
+    transform: translateY(0);
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.2rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    line-height: 1;
+    transition: color 0.2s ease;
+  }
+
+  .modal-close:hover { color: var(--text); }
+
+  .modal-close:focus-visible {
+    outline: 2px solid var(--accent-warm);
+    outline-offset: 2px;
+  }
+
+  .modal-item-name {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+
+  .modal-item-price {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.5rem 0;
+  }
+
+  .modal-section-label {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .modal-confession {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1rem;
+    line-height: 1.9;
+    color: var(--confession);
+    font-style: italic;
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-letter-preview {
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 2rem;
+  }
+
+  .modal-letter-author {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .modal-letter-author.clara { color: var(--clara-accent); }
+  .modal-letter-author.james { color: var(--james-accent); }
+
+  .modal-letter-text {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    color: var(--text-mid);
+    font-style: italic;
+  }
+
+  .modal-letter-note {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 0.6rem;
+    font-style: italic;
+  }
+
+  .confirm-btn {
+    width: 100%;
+    padding: 0.85rem 1.5rem;
+    background: var(--text);
+    color: var(--surface);
+    border: none;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    border-radius: 2px;
+  }
+
+  .confirm-btn:hover {
+    background: var(--accent-warm);
+  }
+
+  .confirm-btn:focus-visible {
+    outline: 2px solid var(--accent-warm);
+    outline-offset: 2px;
+  }
+
+  .confirm-btn.danger-btn {
+    background: var(--danger);
+  }
+
+  .confirm-btn.danger-btn:hover {
+    background: #722e2e;
+  }
+
+  /* === FINAL ITEM OVERRIDES === */
+  .modal-box.final-modal {
+    border-color: var(--danger);
+    box-shadow: 0 0 60px rgba(139, 58, 58, 0.15);
+  }
+
+  .modal-confession.final-confession {
+    color: var(--danger);
+    font-size: 1.05rem;
+  }
+
+  .final-reveal-text {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.92rem;
+    line-height: 2;
+    color: var(--text-mid);
+    text-align: left;
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .final-reveal-text p {
+    margin-bottom: 1em;
+  }
+
+  .final-reveal-text p:last-child {
+    margin-bottom: 0;
+  }
+
+  .final-reveal-text em {
+    color: var(--danger);
+    font-style: italic;
+  }
+
+  /* === ENDING OVERLAY === */
+  .ending-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(45, 41, 38, 0.97);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+  }
+
+  .ending-overlay.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  .ending-content {
+    text-align: center;
+    max-width: 520px;
+    transform: translateY(30px);
+    transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .ending-overlay.active .ending-content {
+    transform: translateY(0);
+  }
+
+  .ending-content h2 {
+    font-size: 1.6rem;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 2.5rem;
+  }
+
+  .ending-content .ending-letters {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    text-align: left;
+  }
+
+  .ending-content .ending-letter-block {
+    padding: 1.2rem 1.5rem;
+    border-radius: 2px;
+  }
+
+  .ending-content .ending-letter-block.clara-block {
+    border-left: 2px solid var(--clara-accent);
+    background: rgba(122, 107, 138, 0.06);
+  }
+
+  .ending-content .ending-letter-block.james-block {
+    border-left: 2px solid var(--james-accent);
+    background: rgba(90, 112, 104, 0.06);
+  }
+
+  .ending-content .ending-letter-label {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .ending-content .ending-letter-block.clara-block .ending-letter-label { color: var(--clara-accent); }
+  .ending-content .ending-letter-block.james-block .ending-letter-label { color: var(--james-accent); }
+
+  .ending-content .ending-letter-text {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.9rem;
+    line-height: 1.9;
+    color: #a09890;
+    font-style: italic;
+  }
+
+  .ending-content .ending-final {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.88rem;
+    line-height: 2;
+    color: #8a827a;
+    margin-bottom: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .ending-content .ending-coda {
+    font-size: 0.78rem;
+    color: rgba(181, 176, 170, 0.5);
+    font-style: italic;
+    letter-spacing: 0.05em;
+  }
+
+  /* === AMBIENT STYLES === */
+  @keyframes subtleFlicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.97; }
+  }
+
+  .gift-card.final-reveal .gift-image {
+    animation: subtleFlicker 3s infinite;
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 900px) {
+    .registry-body { flex-direction: column; }
+    .letters-sidebar {
+      width: 100%;
+      max-height: none;
+      position: static;
+      border-left: none;
+      border-top: 1px solid var(--border);
+    }
+    .gifts-area { max-width: 100%; }
+  }
+
+  @media (max-width: 600px) {
+    .gifts-grid { grid-template-columns: 1fr; }
+    .site-header { padding: 2.5rem 1.5rem 2rem; }
+    .gifts-area { padding: 1.5rem 1rem; }
+    .letters-sidebar { padding: 1.5rem 1rem; }
+    .modal-box { padding: 1.5rem; }
+  }
+
+  /* === ACCESSIBILITY === */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="header-ornament" aria-hidden="true">&mdash; &mdash; &mdash;</div>
+  <h1 class="header-names">Clara &amp; James</h1>
+  <p class="header-date">June 14, 2025</p>
+  <p class="header-location">The Greystone Estate, Hudson Valley</p>
+</header>
+
+<!-- Progress -->
+<nav class="registry-progress" id="progressBar" aria-label="Registry progress">
+  <span class="progress-label">Acknowledged</span>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+  </div>
+  <span class="progress-count" id="progressCount">0 / 10</span>
+</nav>
+
+<!-- Main Body -->
+<div class="registry-body">
+  <main class="gifts-area">
+    <div class="section-intro">
+      <p>Thank you for being part of our day. Each gift carries something personal — something we'd like you to know before you give.</p>
+    </div>
+    <div class="gifts-grid" id="giftsGrid"></div>
+  </main>
+
+  <aside class="letters-sidebar" id="lettersSidebar">
+    <h2 class="sidebar-title">Unlocked Letters</h2>
+    <div id="lettersContainer">
+      <p id="lettersPlaceholder" style="font-family: 'Lora', Georgia, serif; font-size: 0.8rem; color: var(--text-muted); font-style: italic; text-align: center; line-height: 1.8;">
+        Letters from the couple will appear here as gifts are acknowledged.
+      </p>
+    </div>
+  </aside>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-box" id="modalBox">
+    <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- Ending Overlay -->
+<div class="ending-overlay" id="endingOverlay">
+  <div class="ending-content">
+    <h2>The Registry Is Complete</h2>
+    <div class="ending-letters">
+      <div class="ending-letter-block clara-block">
+        <div class="ending-letter-label">Clara wrote</div>
+        <div class="ending-letter-text">"I think love is the thing you can't stop believing in, even when you should. Even when believing is the thing that's keeping you from leaving."</div>
+      </div>
+      <div class="ending-letter-block james-block">
+        <div class="ending-letter-label">James wrote</div>
+        <div class="ending-letter-text">"I think love is the thing you can't stop running from, even when you want to stay. Even when staying is the only thing you were ever any good at."</div>
+      </div>
+    </div>
+    <div class="ending-final">
+      They each bought the same cutting board, three weeks apart, from the same store. Neither mentioned it. Clara's is still in the trunk of her car. James's is in his office, in the bag. They registered for a third one — together — because it was easier than asking why they each needed their own.<br><br>
+      They've been preparing for the same ending. They've been doing it alone. They will probably continue.
+    </div>
+    <div class="ending-coda">Some gifts choose themselves.</div>
+  </div>
+</div>
+
+<script>
+// =========================================
+// DATA
+// =========================================
+var GIFTS = [
+  {
+    id: 1,
+    name: "2-Slice Toaster",
+    price: "$49.99",
+    image: "https://picsum.photos/seed/wgtoaster2025/400/300",
+    confession: "He was texting someone at 11:47 PM last March 16th. When I walked in, the phone went face-down. I never asked. I've never stopped wondering.",
+    letterAuthor: "clara",
+    letterLabel: "From Clara \u2014 To James",
+    letterShort: "You came home late that Tuesday in March and I knew something had changed. Not in the way you think...",
+    letterFull: "You came home late that Tuesday in March and I knew something had changed. Not in the way you think I know things \u2014 not because I'm suspicious or looking for signs \u2014 but because the air around you was different. Like you were holding two versions of yourself, one for me and one for wherever you'd been, and neither could fully deflate when you walked through our door. I made you tea. You drank it. We watched something on television. I said \"I love you\" and you said it back and I wanted to believe that words spoken in the right order could hold things together. I still want to believe that. I think I always will. That's the part of me that scares me most \u2014 not that I might lose you, but that I'd rearrange myself endlessly to keep from finding out."
+  },
+  {
+    id: 2,
+    name: "Votive Candle Set",
+    price: "$34.99",
+    image: "https://picsum.photos/seed/wgcandle2025/400/300",
+    confession: "She was happier before. She had this way of filling a room that I watched leave, and I don't know if it was me. I've never said that to anyone.",
+    letterAuthor: "james",
+    letterLabel: "From James \u2014 To Clara",
+    letterShort: "You used to laugh without covering your mouth. I noticed it stopped around August...",
+    letterFull: "You used to laugh without covering your mouth. I noticed it stopped around August, the way you'd catch yourself mid-laugh and pull it back, like the sound embarrassed you. Or like you didn't want to fill as much space. I keep thinking about this photo from the summer \u2014 your parents' porch, wine on the railing, you're laughing at something your sister said. Your whole body was in it. I saved the photo. I look at it sometimes and think: I should have paid closer attention when that version of you was still here. I should have asked what changed. I still could. I don't know why I don't."
+  },
+  {
+    id: 3,
+    name: "Linen Table Runner",
+    price: "$62.00",
+    image: "https://picsum.photos/seed/wglinen2025/400/300",
+    confession: "I picked it because my mother will recognize the pattern. She bought the same one in 1994 and it was on the table the night she told us she was leaving. I want to see her face when she watches me carry it into a house that's supposed to be permanent.",
+    letterAuthor: "clara",
+    letterLabel: "From Clara \u2014 To James",
+    letterShort: "Sometimes I plan my exits without knowing I'm doing it. I arrange the apartment so nothing truly belongs to both of us...",
+    letterFull: "Sometimes I plan my exits without knowing I'm doing it. I'll arrange the apartment so nothing truly belongs to both of us \u2014 my books, your records, the plants I bought and pretend are communal. It's not that I don't want permanence. I don't know how to want something without also preparing for its absence. I think I learned that from watching my mother. She was so composed when she left. I remember thinking: she's been practicing this exit for months. And then I thought: maybe composure is just the final form of planning. I don't want to be composed when I leave things. I want to be ruined by them. I want staying to cost me enough that leaving is unthinkable."
+  },
+  {
+    id: 4,
+    name: "Espresso Machine",
+    price: "$289.00",
+    image: "https://picsum.photos/seed/wgespresso2025/400/300",
+    confession: "He doesn't drink coffee. He ordered an espresso machine for the registry because Rachel does, and he wanted something in the kitchen that was hers without having to say it was hers.",
+    letterAuthor: "james",
+    letterLabel: "From James \u2014 To Clara",
+    letterShort: "I bought you a book in October \u2014 the Colson Whitehead one you'd mentioned. I wrapped it. I put it in the closet...",
+    letterFull: "I bought you a book in October \u2014 the Colson Whitehead one you'd mentioned. I wrapped it. I put it in the closet behind my coats. And then I didn't give it to you. I told myself it was because the timing wasn't right, but the truth is I was afraid you'd look at me with confusion instead of delight. I was afraid you'd say \"thank you\" the way you say it when the barista gets your order right \u2014 warm, genuine, and without cost. I wanted the book to mean something. I wanted it to be proof that I listen, that I carry you with me. It's still in the closet. I can't throw it away and I can't give it to you. That might be the most honest thing I've ever said about us."
+  },
+  {
+    id: 5,
+    name: "Stoneware Dinner Set",
+    price: "$179.99",
+    image: "https://picsum.photos/seed/wgstone2025/400/300",
+    confession: "She says she wants things to be 'ours.' She fills the apartment with things that belong to both of us so the ending costs more. I know this because I watched my father do it for sixteen years before he finally left and took nothing.",
+    letterAuthor: "clara",
+    letterLabel: "From Clara \u2014 To James",
+    letterShort: "I counted the things in the apartment that are truly shared, not yours or mine but ours. There are eleven...",
+    letterFull: "I counted the things in the apartment that are truly shared, not yours or mine but ours. There are eleven. The couch, the shower curtain, two mugs from the farmer's market we both chose, the rug you carried up three flights of stairs. Eleven things in two years. Everything else we kept separate, like we were roommates who happened to share a bed. I brought it up once and you said \"What do you want me to do, label things?\" and I said no, and I meant it, but also \u2014 yes. I wanted proof that you'd chosen this. That you weren't just passing through, collecting items you could leave behind."
+  },
+  {
+    id: 6,
+    name: "Wool Throw Blanket",
+    price: "$95.00",
+    image: "https://picsum.photos/seed/wgthrow2025/400/300",
+    confession: "He bought me this blanket last Christmas. I returned it. He doesn't know. I returned it because it was the same one his ex had \u2014 I'd seen it in a photo he forgot to delete. I told him it was the wrong color.",
+    letterAuthor: "james",
+    letterLabel: "From James \u2014 To Clara",
+    letterShort: "I think about Sarah sometimes. Not because I want her back, but because I'm trying to understand what I was allowed to feel...",
+    letterFull: "I think about Sarah sometimes. Not because I want her back, but because I'm trying to understand what I was allowed to feel with her that I can't seem to feel with you. With Sarah, everything was easy \u2014 too easy, maybe. I knew she'd leave and she did, and the leaving didn't surprise me because I'd been ready for it since the beginning. With you I'm never ready. Every morning I wake up and you're still here and instead of relief I feel this vertigo, like I've been standing on the edge of something and someone just pushed me one inch closer. I don't know what I'm afraid of. Maybe that you'll stay and I'll have to become someone worth staying for."
+  },
+  {
+    id: 7,
+    name: "Brass Table Lamp",
+    price: "$128.00",
+    image: "https://picsum.photos/seed/wglamp2025/400/300",
+    confession: "I sometimes keep the light on in the other room after you fall asleep. Not because I'm afraid of the dark, but because the dark makes the apartment feel like somewhere I could leave without waking you, and I like knowing that about myself. And I hate it.",
+    letterAuthor: "clara",
+    letterLabel: "From Clara \u2014 To James",
+    letterShort: "When you sleep, you turn toward the door. You probably don't know that...",
+    letterFull: "When you sleep, you turn toward the door. You probably don't know that. You fall asleep facing me and sometime around 2 AM you turn away, toward the exit. I don't think it means anything \u2014 bodies do what bodies do \u2014 but I lie awake and watch and think about the word \"orientation\" and how it means both the direction you face and the process of finding your way. I wonder if you're orienting. If somewhere in your sleep you're rehearsing a departure. I'd never ask. I don't want to know. I just want to keep lying here, cataloging the ways you might leave me, so that when it happens I can say I was ready. That's the lie I tell myself. That being prepared for loss makes it hurt less."
+  },
+  {
+    id: 8,
+    name: "Ceramic Vase",
+    price: "$54.00",
+    image: "https://picsum.photos/seed/wgvase2025/400/300",
+    confession: "I buy flowers every week and put them in this vase on the mantle. I've never once been tempted to buy the ones you like. I think that might be the cruelest thing I've admitted.",
+    letterAuthor: "james",
+    letterLabel: "From James \u2014 To Clara",
+    letterShort: "I almost proposed in a parking lot. We'd gone to get ice cream and you had this smudge of green...",
+    letterFull: "I almost proposed in a parking lot. We'd gone to get ice cream in December because you said you had a craving and I said \"in this weather?\" and you looked at me like I'd said something unforgivable. We went. You got mint chocolate chip and there was a smudge of green at the corner of your mouth and the streetlight was orange and the car was running and I thought: I could ask you right now and you'd say yes and that would be the rest of my life. And then I thought: or I could wait for the right moment, a better moment, a moment worthy of the question. I've been waiting ever since. The ring is in my sock drawer and every time I open it I think about that parking lot and how the best moments are the ones you almost had."
+  },
+  {
+    id: 9,
+    name: "Set of Bath Towels",
+    price: "$42.99",
+    image: "https://picsum.photos/seed/wgtowels2025/400/300",
+    confession: "We chose the towels together and it felt like the most married thing we'd ever done. I cried in the store and told you it was the lighting. You said you knew. You didn't ask what I meant by that. I didn't ask what you meant either.",
+    letterAuthor: "clara",
+    letterLabel: "From Clara \u2014 To James",
+    letterShort: "I think love is a thing you practice. Not something you fall into. A thing you sit down at, every day, and choose to do badly...",
+    letterFull: "I think love is a thing you practice. Not something you fall into. Not an accident or a rush or a hand that catches you. A thing you sit down at, every day, and choose to do badly until maybe, if you're patient, you do it a little better. I practice loving you the way I practice French \u2014 inelegant, mostly wrong, but committed to the embarrassment of trying. I will probably never be fluent in you. There will always be these moments where I reach for the right word and find only silence. But I will keep reaching. I want you to know that. I will keep reaching until my arm gives out."
+  },
+  {
+    id: 10,
+    name: "Maple Cutting Board",
+    price: "$38.00",
+    image: "https://picsum.photos/seed/wgboard2025/400/300",
+    confession: "We both bought this same cutting board \u2014 independently, three weeks apart \u2014 from the same store. Neither of us mentioned it. Clara's is still in the trunk of her car. James's is in his office, still in the bag. We registered for a third, together, because it was easier than asking why we each needed our own.",
+    isFinal: true,
+    letterAuthor: null,
+    letterLabel: null,
+    letterShort: null,
+    letterFull: null,
+    finalReveal: "They each bought the same cutting board alone. They each hid it. They each registered for a third one \u2014 together \u2014 so neither would have to explain the first.\n\nThis is not a gift. This is what it looks like when two people prepare for the same ending without telling each other. The cutting board is for a kitchen that will belong to whoever stays. They both assume it won't be them.\n\nSome confessions don't need witnesses. They need the acknowledgment that the truth was always there, waiting to be seen. You were the one who saw it."
+  }
+];
+
+// =========================================
+// STATE
+// =========================================
+var acknowledgedCount = 0;
+var acknowledgedIds = {};
+var finalTriggered = false;
+
+// =========================================
+// RENDER GIFTS
+// =========================================
+function renderGifts() {
+  var grid = document.getElementById('giftsGrid');
+  var html = '';
+
+  for (var i = 0; i < GIFTS.length; i++) {
+    var gift = GIFTS[i];
+    var cardClasses = 'gift-card';
+    if (gift.isFinal) cardClasses += ' locked-item';
+
+    var innerHtml = '';
+
+    // Image
+    innerHtml += '<div class="gift-image" style="background-image:url(\'' + gift.image + '\')" role="img" aria-label="' + gift.name + '"></div>';
+
+    // Content
+    innerHtml += '<div class="gift-content">';
+    innerHtml += '<div class="gift-name">' + gift.name + '</div>';
+    innerHtml += '<div class="gift-price">' + gift.price + '</div>';
+
+    if (gift.isFinal) {
+      innerHtml += '<div class="lock-notice" id="finalLockNotice">This item will become available once all other gifts have been acknowledged.</div>';
+    } else {
+      var preview = gift.confession.length > 70 ? gift.confession.substring(0, 70) + '\u2026' : gift.confession;
+      innerHtml += '<div class="hover-hint">This gift carries a confession</div>';
+      innerHtml += '<div class="confession-preview">' + preview + '</div>';
+    }
+
+    innerHtml += '</div>';
+
+    // Actions
+    if (!gift.isFinal) {
+      innerHtml += '<div class="gift-actions">';
+      innerHtml += '<button class="acknowledge-btn" data-gift-id="' + gift.id + '" aria-label="Acknowledge confession for ' + gift.name + '">Acknowledge &amp; Gift</button>';
+      innerHtml += '<div class="acknowledged-badge"><span>\u2713</span> Acknowledged</div>';
+      innerHtml += '</div>';
+    }
+
+    html += '<div class="' + cardClasses + '" id="gift-' + gift.id + '" style="animation-delay:' + (0.1 + i * 0.08) + 's">' + innerHtml + '</div>';
+  }
+
+  grid.innerHTML = html;
+
+  // Attach event listeners via delegation
+  grid.addEventListener('click', function(e) {
+    var btn = e.target.closest('.acknowledge-btn');
+    if (!btn) return;
+    var giftId = parseInt(btn.getAttribute('data-gift-id'), 10);
+    if (giftId) openModal(giftId);
+  });
+}
+
+// =========================================
+// MODAL
+// =========================================
+function openModal(giftId) {
+  var gift = null;
+  for (var i = 0; i < GIFTS.length; i++) {
+    if (GIFTS[i].id === giftId) { gift = GIFTS[i]; break; }
+  }
+  if (!gift) return;
+
+  var overlay = document.getElementById('modalOverlay');
+  var box = document.getElementById('modalBox');
+  var content = document.getElementById('modalContent');
+
+  box.className = 'modal-box' + (gift.isFinal ? ' final-modal' : '');
+
+  var html = '';
+
+  html += '<div class="modal-item-name" id="modalTitle">' + gift.name + '</div>';
+  html += '<div class="modal-item-price">' + gift.price + '</div>';
+  html += '<div class="modal-divider"></div>';
+
+  if (gift.isFinal) {
+    html += '<div class="modal-section-label" style="color:var(--danger)">Final Confession</div>';
+  } else {
+    html += '<div class="modal-section-label">Attached Confession</div>';
+  }
+
+  html += '<div class="modal-confession' + (gift.isFinal ? ' final-confession' : '') + '">' + gift.confession + '</div>';
+
+  // Letter preview
+  if (gift.letterAuthor) {
+    var letterTrunc = gift.letterFull.length > 180 ? gift.letterFull.substring(0, 180) + '\u2026' : gift.letterFull;
+    html += '<div class="modal-letter-preview">';
+    html += '<div class="modal-letter-author ' + gift.letterAuthor + '">' + gift.letterLabel + '</div>';
+    html += '<div class="modal-letter-text">' + letterTrunc + '</div>';
+    html += '<div class="modal-letter-note">Full letter unlocked in sidebar</div>';
+    html += '</div>';
+  }
+
+  // Final reveal text
+  if (gift.isFinal && gift.finalReveal) {
+    var paragraphs = gift.finalReveal.split('\n\n');
+    html += '<div class="final-reveal-text">';
+    for (var p = 0; p < paragraphs.length; p++) {
+      html += '<p>' + paragraphs[p] + '</p>';
+    }
+    html += '</div>';
+  }
+
+  // Confirm button
+  var btnClass = gift.isFinal ? 'confirm-btn danger-btn' : 'confirm-btn';
+  var btnText = gift.isFinal ? 'I Acknowledge This' : 'Acknowledge and Gift';
+  html += '<button class="' + btnClass + '" id="modalConfirmBtn" data-gift-id="' + gift.id + '">' + btnText + '</button>';
+
+  content.innerHTML = html;
+
+  // Bind confirm
+  document.getElementById('modalConfirmBtn').addEventListener('click', function() {
+    var id = parseInt(this.getAttribute('data-gift-id'), 10);
+    confirmGift(id);
+  });
+
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  setTimeout(function() {
+    document.getElementById('modalClose').focus();
+  }, 100);
+}
+
+function closeModal() {
+  var overlay = document.getElementById('modalOverlay');
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModal();
+});
+
+// =========================================
+// CONFIRM GIFT
+// =========================================
+function confirmGift(giftId) {
+  if (acknowledgedIds[giftId]) return;
+
+  var gift = null;
+  for (var i = 0; i < GIFTS.length; i++) {
+    if (GIFTS[i].id === giftId) { gift = GIFTS[i]; break; }
+  }
+  if (!gift) return;
+
+  closeModal();
+
+  acknowledgedIds[giftId] = true;
+  acknowledgedCount++;
+
+  // Mark card
+  var card = document.getElementById('gift-' + giftId);
+  card.classList.add('acknowledged');
+
+  var hint = card.querySelector('.hover-hint');
+  var preview = card.querySelector('.confession-preview');
+  if (hint) hint.style.display = 'none';
+  if (preview) preview.style.display = 'none';
+
+  updateProgress();
+
+  // Add letter
+  if (gift.letterAuthor) {
+    addLetter(gift);
+  }
+
+  // Check final unlock (9 regular gifts acknowledged)
+  if (acknowledgedCount === 9 && !finalTriggered) {
+    setTimeout(unlockFinalItem, 800);
+  }
+
+  // Handle final item completion
+  if (gift.isFinal) {
+    setTimeout(triggerEnding, 2000);
+  }
+}
+
+// =========================================
+// PROGRESS
+// =========================================
+function updateProgress() {
+  var fill = document.getElementById('progressFill');
+  var count = document.getElementById('progressCount');
+  var bar = document.getElementById('progressBar');
+
+  var pct = (acknowledgedCount / 10) * 100;
+  fill.style.width = pct + '%';
+  count.textContent = acknowledgedCount + ' / 10';
+
+  if (acknowledgedCount >= 7) {
+    bar.classList.add('warning');
+    fill.classList.add('danger-fill');
+  }
+
+  if (acknowledgedCount >= 9) {
+    bar.classList.add('final-phase');
+  }
+}
+
+// =========================================
+// LETTERS SIDEBAR
+// =========================================
+function addLetter(gift) {
+  var container = document.getElementById('lettersContainer');
+
+  // Remove placeholder
+  var placeholder = document.getElementById('lettersPlaceholder');
+  if (placeholder) placeholder.remove();
+
+  var entry = document.createElement('div');
+  entry.className = 'letter-entry';
+
+  entry.innerHTML =
+    '<div class="letter-label">Unlocked with <strong>' + gift.name + '</strong></div>' +
+    '<div class="letter-label"><span class="author ' + gift.letterAuthor + '">' + gift.letterLabel + '</span></div>' +
+    '<div class="letter-card ' + gift.letterAuthor + '-card" tabindex="0" role="button" aria-label="Expand letter">' +
+      '<div class="letter-collapsed">' + gift.letterShort + '</div>' +
+      '<div class="letter-expanded">' + gift.letterFull + '</div>' +
+    '</div>' +
+    '<div class="letter-note">Click to read full letter</div>';
+
+  container.appendChild(entry);
+
+  // Toggle expand on click
+  var letterCard = entry.querySelector('.letter-card');
+  letterCard.addEventListener('click', function() {
+    this.classList.toggle('expanded');
+  });
+  letterCard.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      this.classList.toggle('expanded');
+    }
+  });
+
+  // Animate in
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      entry.classList.add('visible');
+    });
+  });
+
+  // Scroll sidebar to bottom
+  var sidebar = document.getElementById('lettersSidebar');
+  setTimeout(function() {
+    sidebar.scrollTop = sidebar.scrollHeight;
+  }, 600);
+}
+
+// =========================================
+// UNLOCK FINAL ITEM
+// =========================================
+function unlockFinalItem() {
+  finalTriggered = true;
+
+  var card = document.getElementById('gift-10');
+  card.classList.add('unlocked');
+  card.classList.remove('locked-item');
+
+  // Replace lock notice with content
+  var lockNotice = document.getElementById('finalLockNotice');
+  if (lockNotice) {
+    var newHtml =
+      '<div class="hover-hint" style="opacity:1;text-align:center;color:var(--clementine);font-weight:500;font-style:normal;">This item is now available</div>' +
+      '<div class="confession-preview" style="opacity:1;text-align:center;color:var(--danger);">' +
+        GIFTS[9].confession.substring(0, 70) + '\u2026' +
+      '</div>';
+    lockNotice.outerHTML = newHtml;
+  }
+
+  // Add action button
+  var actionsHtml =
+    '<div class="gift-actions">' +
+      '<button class="acknowledge-btn final-btn" style="display:block" id="finalAckBtn" aria-label="Acknowledge the final confession">Acknowledge &amp; Gift</button>' +
+      '<div class="acknowledged-badge"><span>\u2713</span> Acknowledged</div>' +
+    '</div>';
+
+  card.insertAdjacentHTML('beforeend', actionsHtml);
+
+  // Bind final button
+  document.getElementById('finalAckBtn').addEventListener('click', function() {
+    openModal(10);
+  });
+
+  // Scroll into view
+  setTimeout(function() {
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 400);
+}
+
+// =========================================
+// ENDING
+// =========================================
+function triggerEnding() {
+  var overlay = document.getElementById('endingOverlay');
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+// =========================================
+// INIT
+// =========================================
+renderGifts();
+</script>
+</body>
+</html>

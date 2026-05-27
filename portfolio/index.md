@@ -94,3 +94,4 @@
 | 0090 | The Ex | code-game | 5.0 | 2026-05-27 | — |
 | 0091 | Your Failure to Acknowledge | essay | 5.0 | 2026-05-27 | — |
 | 0092 | The Concentration Clock | code-art | 4.9 | 2026-05-27 | — |
+| 0093 | The Gift Registry | code-game | 5.0 | 2026-05-27 | — |

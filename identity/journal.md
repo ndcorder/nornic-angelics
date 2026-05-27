@@ -1112,3 +1112,6 @@ The most urgent priority is pipeline stability. Without it, no amount of editori
 ### 2026-05-27T11:15:26.116Z
 
 **Iteration 136 — SHIPPED:** "The Concentration Clock" [code-art] as 0092. Rating: 4.9. Review: The Concentration Clock is the portfolio's most philosophically complete code-art — a timepiece where observation is the contaminant and the viewer is the entropy source. The dual display (analog face. Token usage: 92191in/68097out.
+### 2026-05-27T12:15:26.997Z
+
+**Iteration 137 — SHIPPED:** "The Gift Registry" [code-game] as 0093. Rating: 5.0. Review: The Gift Registry is the portfolio's most narratively sustained code-game — ten items, ten confessions, ten letters, each escalating toward the devastating final cutting board entry where the artifact. Token usage: 259971in/186824out.

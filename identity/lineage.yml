@@ -147,6 +147,10 @@ nodes:
     title: The Concentration Clock
     domain: code-art
     rating: 4.9
+  - id: "0093"
+    title: The Gift Registry
+    domain: code-game
+    rating: 5
   - id: "0007"
     title: Tuning the Room
     domain: essay
@@ -961,4 +965,4 @@ creative_dna:
       to_domain: fiction
       count: 1
   unexplored_territory: []
-updated_at: 2026-05-27T11:15:26.189Z
+updated_at: 2026-05-27T12:15:27.073Z
