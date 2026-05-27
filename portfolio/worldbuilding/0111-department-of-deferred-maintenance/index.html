@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>City of Millbrook | Department of Deferred Maintenance</title>
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Source Sans 3', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      background: #fff;
+      line-height: 1.5;
+      font-size: 16px;
+    }
+
+    a {
+      color: #1a5276;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      color: #2980b9;
+    }
+
+    /* Top utility bar */
+    .utility-bar {
+      background: #1a2a3a;
+      color: #a0b4c8;
+      font-size: 12px;
+      padding: 4px 0;
+    }
+
+    .utility-bar .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .utility-bar a {
+      color: #a0b4c8;
+      font-size: 12px;
+    }
+
+    .utility-bar a:hover {
+      color: #fff;
+    }
+
+    .utility-links {
+      display: flex;
+      gap: 16px;
+    }
+
+    /* Header */
+    .site-header {
+      background: linear-gradient(to right, #1a3c5e, #1f4a6e);
+      color: #fff;
+      padding: 0;
+    }
+
+    .header-main {
+      display: flex;
+      align-items: center;
+      padding: 14px 0;
+      gap: 16px;
+    }
+
+    .seal {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .seal-inner {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 2px solid #1a3c5e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: #1a3c5e;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .site-title-group {
+      flex: 1;
+    }
+
+    .city-name {
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+
+    .dept-name {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .header-search {
+      display: flex;
+      align-items: center;
+    }
+
+    .header-search input {
+      padding: 6px 12px;
+      border: 1px solid #4a7a9e;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      border-radius: 3px 0 0 3px;
+      font-size: 13px;
+      width: 180px;
+      outline: none;
+    }
+
+    .header-search input::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+
+    .header-search button {
+      padding: 6px 12px;
+      background: #2980b9;
+      border: 1px solid #2980b9;
+      color: #fff;
+      font-size: 13px;
+      cursor: pointer;
+      border-radius: 0 3px 3px 0;
+    }
+
+    .header-search button:hover {
+      background: #3498db;
+    }
+
+    /* Navigation */
+    .main-nav {
+      background: #dfe6e9;
+      border-bottom: 2px solid #b2bec3;
+    }
+
+    .nav-list {
+      display: flex;
+      list-style: none;
+      gap: 0;
+    }
+
+    .nav-list li a {
+      display: block;
+      padding: 10px 18px;
+      color: #2d3436;
+      font-size: 14px;
+      font-weight: 600;
+      border-right: 1px solid #b2bec3;
+      transition: background 0.15s;
+    }
+
+    .nav-list li:first-child a {
+      border-left: 1px solid #b2bec3;
+    }
+
+    .nav-list li a:hover {
+      background: #b2bec3;
+      text-decoration: none;
+    }
+
+    .nav-list li a.active {
+      background: #fff;
+      color: #1a3c5e;
+      border-bottom: 2px solid #2980b9;
+      margin-bottom: -2px;
+    }
+
+    /* Alert banner */
+    .alert-banner {
+      background: #fef9e7;
+      border-bottom: 1px solid #f9e79f;
+      padding: 10px 0;
+      font-size: 14px;
+      overflow: hidden;
+    }
+
+    .alert-banner .container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .alert-label {
+      background: #f39c12;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 2px 8px;
+      border-radius: 2px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .alert-ticker {
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .alert-ticker-inner {
+      display: inline-block;
+      animation: ticker-scroll 40s linear infinite;
+    }
+
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .alert-ticker-inner span {
+      margin-right: 60px;
+    }
+
+    .alert-ticker-inner span::before {
+      content: "●";
+      margin-right: 8px;
+      color: #f39c12;
+      font-size: 8px;
+      vertical-align: middle;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .alert-ticker-inner {
+        animation: none;
+      }
+    }
+
+    /* Container */
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Hero / Banner */
+    .hero-banner {
+      background: #e8f0f6;
+      position: relative;
+      overflow: hidden;
+      height: 220px;
+    }
+
+    .hero-banner-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(26,60,94,0.85));
+      padding: 20px;
+      color: #fff;
+    }
+
+    .hero-overlay h2 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .hero-overlay p {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+
+    /* Main layout */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 30px;
+      padding: 30px 0;
+    }
+
+    /* Content area */
+    .content-area h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a3c5e;
+      border-bottom: 2px solid #dfe6e9;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+
+    .content-area h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2d3436;
+      margin: 20px 0 8px;
+    }
+
+    .content-area p {
+      margin-bottom: 14px;
+      color: #444;
+    }
+
+    .content-area ul {
+      margin: 10px 0 16px 24px;
+      color: #444;
+    }
+
+    .content-area ul li {
+      margin-bottom: 6px;
+    }
+
+    /* Director box */
+    .director-box {
+      display: flex;
+      gap: 16px;
+      background: #f8f9fa;
+      border: 1px solid #e0e4e8;
+      padding: 16px;
+      margin: 16px 0;
+      border-radius: 4px;
+    }
+
+    .director-photo {
+      width: 80px;
+      height: 80px;
+      background: #d5d8dc;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 10px;
+      color: #888;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .director-info h4 {
+      font-size: 15px;
+      color: #1a3c5e;
+      margin-bottom: 2px;
+    }
+
+    .director-info .title {
+      font-size: 13px;
+      color: #666;
+      font-style: italic;
+    }
+
+    .director-info p {
+      font-size: 14px;
+      margin-top: 8px;
+      margin-bottom: 0;
+    }
+
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .stat-card {
+      background: #f0f4f8;
+      border: 1px solid #d5dce4;
+      border-radius: 4px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a3c5e;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    /* News items */
+    .news-item {
+      padding: 14px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .news-item:last-child {
+      border-bottom: none;
+    }
+
+    .news-date {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 4px;
+    }
+
+    .news-item h4 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a5276;
+      margin-bottom: 4px;
+    }
+
+    .news-item h4 a {
+      color: #1a5276;
+    }
+
+    .news-item p {
+      font-size: 14px;
+      color: #555;
+      margin: 0;
+    }
+
+    /* Callout box */
+    .callout-box {
+      background: #d6eaf8;
+      border: 1px solid #aed6f1;
+      border-radius: 4px;
+      padding: 16px;
+      margin: 20px 0;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .callout-box .callout-icon {
+      font-size: 22px;
+      line-height: 1;
+      flex-shrink: 0;
+      color: #2980b9;
+    }
+
+    .callout-box h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1a3c5e;
+      margin-bottom: 4px;
+    }
+
+    .callout-box p {
+      font-size: 13px;
+      color: #1a5276;
+      margin: 0;
+    }
+
+    .callout-box a {
+      font-weight: 600;
+    }
+
+    /* Sidebar */
+    .sidebar-box {
+      background: #f8f9fa;
+      border: 1px solid #e0e4e8;
+      border-radius: 4px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .sidebar-box h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1a3c5e;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #2980b9;
+      margin-bottom: 12px;
+    }
+
+    .sidebar-box ul {
+      list-style: none;
+    }
+
+    .sidebar-box ul li {
+      margin-bottom: 8px;
+    }
+
+    .sidebar-box ul li a {
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sidebar-box ul li a::before {
+      content: "▸";
+      color: #2980b9;
+      font-size: 12px;
+    }
+
+    /* Service hours */
+    .hours-table {
+      width: 100%;
+      font-size: 13px;
+    }
+
+    .hours-table tr td {
+      padding: 4px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .hours-table tr td:last-child {
+      text-align: right;
+      color: #666;
+    }
+
+    /* Contact info */
+    .contact-item {
+      display: flex;
+      gap: 8px;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .contact-label {
+      font-weight: 600;
+      color: #555;
+      min-width: 50px;
+    }
+
+    .contact-value {
+      color: #333;
+    }
+
+    /* Documents */
+    .doc-list {
+      list-style: none;
+    }
+
+    .doc-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .doc-list li:last-child {
+      border-bottom: none;
+    }
+
+    .doc-list li a {
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .doc-icon {
+      display: inline-block;
+      background: #c0392b;
+      color: #fff;
+      font-size: 8px;
+      font-weight: 700;
+      padding: 2px 4px;
+      border-radius: 2px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Footer */
+    .site-footer {
+      background: #1a2a3a;
+      color: #a0b4c8;
+      padding: 30px 0;
+      font-size: 13px;
+      margin-top: 30px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+
+    .footer-grid h4 {
+      color: #fff;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .footer-grid ul {
+      list-style: none;
+    }
+
+    .footer-grid ul li {
+      margin-bottom: 6px;
+    }
+
+    .footer-grid a {
+      color: #a0b4c8;
+    }
+
+    .footer-grid a:hover {
+      color: #fff;
+    }
+
+    .footer-bottom {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .footer-bottom a {
+      color: #a0b4c8;
+    }
+
+    .footer-compliance {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-list {
+        flex-wrap: wrap;
+      }
+
+      .nav-list li a {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header-main {
+        flex-wrap: wrap;
+      }
+
+      .header-search {
+        display: none;
+      }
+
+      .hero-banner {
+        height: 160px;
+      }
+
+      .utility-links {
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Utility Bar -->
+  <div class="utility-bar">
+    <div class="container">
+      <span>Serving the community since 1987</span>
+      <div class="utility-links">
+        <a href="#">Translate</a>
+        <a href="#">Text Size: A A A</a>
+        <a href="#">Sitemap</a>
+        <a href="portal.html">Infrastructure Portal</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-main">
+      <div class="seal">
+        <div class="seal-inner">CITY OF<br>MILLBROOK<br>EST. 1953</div>
+      </div>
+      <div class="site-title-group">
+        <div class="city-name">City of Millbrook</div>
+        <div class="dept-name">Department of Deferred Maintenance</div>
+      </div>
+      <div class="header-search">
+        <input type="text" placeholder="Search this site..." aria-label="Search">
+        <button type="button">Go</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="main-nav" aria-label="Main navigation">
+    <div class="container">
+      <ul class="nav-list">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="portal.html">Inspections &amp; Status</a></li>
+        <li><a href="audit.html">Self-Assessment</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="request.html">Service Request</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Alert Banner -->
+  <div class="alert-banner" role="alert">
+    <div class="container">
+      <span class="alert-label">Active Notices</span>
+      <div class="alert-ticker">
+        <div class="alert-ticker-inner">
+          <span>Scheduled flushing of mains in District 7 — expect temporary discoloration through Friday</span>
+          <span>Bridge 14-C load capacity reassessment underway; standard traffic patterns maintained</span>
+          <span>Annual corrosion survey of distribution network begins October 1</span>
+          <span>Scheduled flushing of mains in District 7 — expect temporary discoloration through Friday</span>
+          <span>Bridge 14-C load capacity reassessment underway; standard traffic patterns maintained</span>
+          <span>Annual corrosion survey of distribution network begins October 1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Banner -->
+  <div class="hero-banner">
+    <img src="https://picsum.photos/seed/millbrook-bridge/1080/220.jpg" alt="City infrastructure — bridge and waterway" class="hero-banner-img">
+    <div class="hero-overlay">
+      <h2>Our Commitment to Reliable Infrastructure</h2>
+      <p>Ensuring the continued function of all systems under our jurisdiction</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="main-layout">
+
+      <!-- Content Area -->
+      <main class="content-area">
+
+        <h2>Welcome to Deferred Maintenance</h2>
+
+        <p>The Department of Deferred Maintenance is responsible for assessing, monitoring, and maintaining the critical systems that sustain the City of Millbrook. Our mandate covers all infrastructure that has been in continuous operation since initial installation, with particular attention to aging components requiring ongoing evaluation and scheduled intervention.</p>
+
+        <div class="director-box">
+          <div class="director-photo">[ Photo ]</div>
+          <div class="director-info">
+            <h4>Dr. Gerald A. Pulaski</h4>
+            <div class="title">Director, Department of Deferred Maintenance</div>
+            <p>Appointed 2014. Previously served as Deputy Director of Structural Assessment and Resource Monitoring. 23 years of municipal service.</p>
+          </div>
+        </div>
+
+        <h3>Our Mission</h3>
+
+        <p>The Department of Deferred Maintenance exists to preserve the operational integrity of Millbrook's essential systems through proactive assessment, timely intervention, and evidence-based maintenance scheduling. We believe every component of our city's infrastructure deserves a documented care plan and regular review.</p>
+
+        <p>We maintain comprehensive records on every system installed throughout the community, tracking performance benchmarks and flagging degradation before it becomes critical. Our goal is straightforward: to keep everything running for as long as possible.</p>
+
+        <div class="callout-box">
+          <div class="callout-icon">📋</div>
+          <div>
+            <h4>Home Infrastructure Self-Assessment</h4>
+            <p>Not sure where your systems stand? Use our <a href="audit.html">printable self-assessment checklist</a> to evaluate your own infrastructure between professional inspections. Takes approximately 10 minutes. No tools required.</p>
+          </div>
+        </div>
+
+        <h3>Core Services</h3>
+
+        <ul>
+          <li><strong>Circulation System Maintenance</strong> — Inspection, flushing, and replacement scheduling for all arterial passages and distribution networks throughout the city</li>
+          <li><strong>Structural Load Assessment</strong> — Ongoing evaluation of load-bearing components including bridges, retaining walls, and foundational supports</li>
+          <li><strong>Waste Conveyance Management</strong> — Monitoring and maintenance of all drainage, filtration, and waste processing infrastructure</li>
+          <li><strong>Respiratory and Ventilation Services</strong> — Air quality monitoring, duct maintenance, and atmospheric testing in enclosed municipal structures</li>
+          <li><strong>Corrosion Prevention Program</strong> — Systematic treatment and coating of exposed metallic surfaces, pipes, and joints citywide</li>
+          <li><strong>Pressure Testing and Regulation</strong> — Routine evaluation of fluid pressure across all distribution and containment systems</li>
+          <li><strong>Annual Comprehensive Inspection</strong> — Full-body assessment of all city infrastructure on a rolling 12-month cycle</li>
+          <li><strong>Emergency Response Coordination</strong> — 24-hour dispatch for acute system failures, blockages, or uncontrolled discharge events</li>
+        </ul>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number">38</div>
+            <div class="stat-label">Years in Continuous Service</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">2,417</div>
+            <div class="stat-label">Components Under Active Monitoring</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">97.4%</div>
+            <div class="stat-label">System Uptime (Current Fiscal Year)</div>
+          </div>
+        </div>
+
+        <h3>Current Projects &amp; News</h3>
+
+        <div class="news-item">
+          <div class="news-date">Posted September 18, 2025</div>
+          <h4><a href="portal.html">District 4 Main Replacement Enters Phase II</a></h4>
+          <p>Crews will begin excavation on the primary distribution artery serving the western quadrant. Residents may experience reduced flow and intermittent pressure loss between the hours of 10 PM and 5 AM. The existing conduit, installed in the early 1960s, has exceeded its projected operational lifespan and requires complete replacement to maintain adequate service levels.</p>
+        </div>
+
+        <div class="news-item">
+          <div class="news-date">Posted September 4, 2025</div>
+          <h4><a href="portal.html">Bridge 14-C Stress Test Results Available for Public Review</a></h4>
+          <p>Results from the most recent load-bearing assessment are now available. The structure remains within acceptable parameters but shows measurable fatigue in two key support members. A maintenance schedule has been drafted and will be presented at the October council session. Full report available under Public Records request.</p>
+        </div>
+
+        <div class="news-item">
+          <div class="news-date">Posted August 22, 2025</div>
+          <h4><a href="portal.html">Noise Monitoring Data Released for Downtown Corridor</a></h4>
+          <p>Acoustic monitoring stations along Main Street and Elm Avenue have recorded elevated readings during peak hours over the past quarter. While no immediate action is required, baseline measurements have been updated and will inform future scheduling. Residents concerned about persistent irregular rhythms may file a formal inquiry through the complaints portal.</p>
+        </div>
+
+        <div class="news-item">
+          <div class="news-date">Posted August 9, 2025</div>
+          <h4><a href="portal.html">Filtration Capacity at Station 3 Reaches Threshold</a></h4>
+          <p>Processing throughput at Filtration Station 3 has declined to 82% of rated capacity. Engineering staff have recommended supplemental screening protocols and increased maintenance frequency. Until upgrades are completed, residents served by this station may notice changes in clarity and sediment levels. No action is required on the part of residents at this time.</p>
+        </div>
+
+        <div class="news-item">
+          <div class="news-date">Posted July 30, 2025</div>
+          <h4><a href="portal.html">Upcoming Scheduled Downtime for Control Systems</a></h4>
+          <p>The central regulation hub will undergo diagnostic review during the weekend of September 13–14. During this window, automated pressure regulation and flow control will be managed manually. Residents should not experience service interruption, but response times for adjustment requests may be longer than usual.</p>
+        </div>
+
+      </main>
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+
+        <div class="sidebar-box">
+          <h3>Office Hours</h3>
+          <table class="hours-table">
+            <tr>
+              <td>Monday – Friday</td>
+              <td>8:00 AM – 5:00 PM</td>
+            </tr>
+            <tr>
+              <td>Saturday</td>
+              <td>9:00 AM – 12:00 PM</td>
+            </tr>
+            <tr>
+              <td>Sunday</td>
+              <td>Closed</td>
+            </tr>
+            <tr>
+              <td colspan="2" style="padding-top:8px; font-size:12px; color:#888; border:none;">After-hours emergencies: call 911 or (555) 827-4357</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="sidebar-box">
+          <h3>Contact Information</h3>
+          <div class="contact-item">
+            <span class="contact-label">Phone:</span>
+            <span class="contact-value">(555) 827-4357</span>
+          </div>
+          <div class="contact-item">
+            <span class="contact-label">Fax:</span>
+            <span class="contact-value">(555) 827-4358</span>
+          </div>
+          <div class="contact-item">
+            <span class="contact-label">Email:</span>
+            <span class="contact-value"><a href="#">maintenance@millbrook.gov</a></span>
+          </div>
+          <div class="contact-item">
+            <span class="contact-label">Office:</span>
+            <span class="contact-value">Municipal Building, Suite 204<br>1400 Civic Center Drive<br>Millbrook, MN 55073</span>
+          </div>
+        </div>
+
+        <div class="sidebar-box">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="request.html">Report a Maintenance Concern</a></li>
+            <li><a href="#">Service Area Map</a></li>
+            <li><a href="portal.html">Current Inspection Schedule</a></li>
+            <li><a href="portal.html">System Performance Dashboard</a></li>
+            <li><a href="audit.html">Home Infrastructure Self-Assessment</a></li>
+            <li><a href="#">Capital Improvement Plan 2025–2030</a></li>
+            <li><a href="#">Right-of-Way Permits</a></li>
+            <li><a href="#">Underground Infrastructure Map</a></li>
+            <li><a href="#">Complaint Filing Portal</a></li>
+            <li><a href="request.html">Submit a Service Request</a></li>
+            <li><a href="faq.html">Frequently Asked Questions</a></li>
+          </ul>
+        </div>
+
+        <div class="sidebar-box">
+          <h3>Recent Documents</h3>
+          <ul class="doc-list">
+            <li>
+              <a href="portal.html">
+                <span class="doc-icon">PDF</span>
+                Annual System Assessment Report (FY 2024–25)
+              </a>
+            </li>
+            <li>
+              <a href="portal.html">
+                <span class="doc-icon">PDF</span>
+                Distribution Network Capital Plan
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <span class="doc-icon">PDF</span>
+                Standard Operating Procedures: Emergency Blockage Response
+              </a>
+            </li>
+            <li>
+              <a href="portal.html">
+                <span class="doc-icon">PDF</span>
+                Corrosion Survey Results — Priority Zones 1–6
+              </a>
+            </li>
+            <li>
+              <a href="audit.html">
+                <span class="doc-icon">PDF</span>
+                Home Infrastructure Audit Checklist
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-box">
+          <h3>Department Directory</h3>
+          <ul style="list-style:none;">
+            <li style="padding:8px 0; border-bottom:1px solid #eee;">
+              <strong style="font-size:13px; color:#1a3c5e;">Gerald A. Pulaski</strong><br>
+              <span style="font-size:12px; color:#666;">Director</span><br>
+              <span style="font-size:12px; color:#555;">Ext. 4201</span>
+            </li>
+            <li style="padding:8px 0; border-bottom:1px solid #eee;">
+              <strong style="font-size:13px; color:#1a3c5e;">Margaret Okonkwo</strong><br>
+              <span style="font-size:12px; color:#666;">Deputy Director, System Operations</span><br>
+              <span style="font-size:12px; color:#555;">Ext. 4202</span>
+            </li>
+            <li style="padding:8px 0; border-bottom:1px solid #eee;">
+              <strong style="font-size:13px; color:#1a3c5e;">David Chen</strong><br>
+              <span style="font-size:12px; color:#666;">Chief Engineer, Structural Assessment</span><br>
+              <span style="font-size:12px; color:#555;">Ext. 4210</span>
+            </li>
+            <li style="padding:8px 0; border-bottom:1px solid #eee;">
+              <strong style="font-size:13px; color:#1a3c5e;">Rhonda K. Wallace</strong><br>
+              <span style="font-size:12px; color:#666;">Supervisor, Circulation &amp; Flow Division</span><br>
+              <span style="font-size:12px; color:#555;">Ext. 4215</span>
+            </li>
+            <li style="padding:8px 0; border-bottom:1px solid #eee;">
+              <strong style="font-size:13px; color:#1a3c5e;">Thomas R. Greer</strong><br>
+              <span style="font-size:12px; color:#666;">Manager, Waste Conveyance &amp; Filtration</span><br>
+              <span style="font-size:12px; color:#555;">Ext. 4218</span>
+            </li>
+            <li style="padding:8px 0;">
+              <strong style="font-size:13px; color:#1a3c5e;">Anita L. Flores</strong><br>
+              <span style="font-size:12px; color:#666;">Coordinator, Respiratory &amp; Environmental Quality</span><br>
+              <span style="font-size:12px; color:#555;">Ext. 4222</span>
+            </li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4>City of Millbrook</h4>
+          <ul>
+            <li><a href="#">Mayor's Office</a></li>
+            <li><a href="#">City Council</a></li>
+            <li><a href="#">Boards &amp; Commissions</a></li>
+            <li><a href="#">City Code &amp; Ordinances</a></li>
+            <li><a href="#">Employment Opportunities</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Departments</h4>
+          <ul>
+            <li><a href="index.html">Deferred Maintenance</a></li>
+            <li><a href="#">Public Works</a></li>
+            <li><a href="#">Utilities</a></li>
+            <li><a href="#">Planning &amp; Zoning</a></li>
+            <li><a href="#">Parks &amp; Recreation</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="portal.html">Infrastructure Status Portal</a></li>
+            <li><a href="audit.html">Self-Assessment Tool</a></li>
+            <li><a href="request.html">Service Request Form</a></li>
+            <li><a href="faq.html">Frequently Asked Questions</a></li>
+            <li><a href="#">Public Records Requests</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>
+          © 2025 City of Millbrook. All rights reserved. The City of Millbrook is committed to ensuring the continued operation and maintenance of all systems under its jurisdiction.
+        </div>
+        <div class="footer-compliance">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Accessibility Statement</a>
+          <a href="#">ADA Compliance</a>
+          <a href="#">Web Standards</a>
+          <a href="#">Site Map</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

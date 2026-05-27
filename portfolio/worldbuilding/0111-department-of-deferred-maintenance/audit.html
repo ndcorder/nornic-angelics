@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Infrastructure Self-Assessment | City of Millbrook</title>
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Source Sans 3', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; background: #fff; line-height: 1.5; font-size: 15px; }
+    a { color: #1a5276; text-decoration: none; }
+    a:hover { text-decoration: underline; color: #2980b9; }
+    .container { max-width: 840px; margin: 0 auto; padding: 0 20px; }
+
+    .utility-bar { background: #1a2a3a; color: #a0b4c8; font-size: 12px; padding: 4px 0; }
+    .utility-bar .container { display: flex; justify-content: space-between; align-items: center; }
+    .utility-bar a { color: #a0b4c8; font-size: 12px; }
+    .utility-bar a:hover { color: #fff; text-decoration: none; }
+    .utility-links { display: flex; gap: 16px; }
+
+    .site-header { background: linear-gradient(to right, #1a3c5e, #1f4a6e); color: #fff; padding: 0; }
+    .header-main { display: flex; align-items: center; padding: 14px 0; gap: 16px; }
+    .seal { width: 48px; height: 48px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .seal-inner { width: 44px; height: 44px; border-radius: 50%; border: 2px solid #1a3c5e; display: flex; align-items: center; justify-content: center; font-size: 8px; color: #1a3c5e; font-weight: 700; text-align: center; line-height: 1.1; }
+    .site-title-group { flex: 1; }
+    .city-name { font-size: 12px; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; opacity: 0.85; }
+    .dept-name { font-size: 18px; font-weight: 700; }
+
+    .breadcrumb { background: #dfe6e9; border-bottom: 1px solid #b2bec3; padding: 8px 0; font-size: 12px; color: #666; }
+    .breadcrumb a { color: #1a5276; font-size: 12px; }
+    .breadcrumb span { margin: 0 6px; color: #999; }
+
+    .page-content { padding: 30px 0; }
+    .page-content h1 { font-size: 22px; font-weight: 700; color: #1a3c5e; margin-bottom: 6px; }
+    .page-content .intro { font-size: 14px; color: #666; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #e0e4e8; }
+    .page-content h2 { font-size: 17px; font-weight: 700; color: #1a3c5e; margin: 28px 0 10px; padding-bottom: 6px; border-bottom: 2px solid #dfe6e9; }
+    .page-content p { margin-bottom: 12px; color: #444; }
+
+    .callout { padding: 12px 16px; border-radius: 4px; font-size: 13px; margin: 14px 0; }
+    .callout-info { background: #d6eaf8; border-left: 4px solid #2980b9; color: #1a5276; }
+    .callout-warning { background: #fef9e7; border-left: 4px solid #f39c12; color: #7d6608; }
+
+    /* Checklist styling */
+    .checklist-section { margin: 24px 0; }
+    .checklist-section h3 { font-size: 15px; font-weight: 700; color: #1a3c5e; margin-bottom: 10px; padding: 8px 12px; background: #f0f4f8; border-radius: 4px; }
+
+    .check-item { display: flex; gap: 10px; padding: 10px 12px; border-bottom: 1px solid #f0f0f0; align-items: flex-start; }
+    .check-item:last-child { border-bottom: none; }
+    .check-item:hover { background: #fafbfc; }
+
+    .check-item input[type="checkbox"] { margin-top: 3px; width: 16px; height: 16px; flex-shrink: 0; accent-color: #2980b9; }
+
+    .check-label { font-size: 14px; color: #333; flex: 1; }
+    .check-label .check-sub { display: block; font-size: 12px; color: #888; margin-top: 2px; font-style: italic; }
+
+    .severity { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 2px; text-transform: uppercase; letter-spacing: 0.3px; flex-shrink: 0; margin-top: 2px; }
+    .sev-routine { background: #d5f5e3; color: #1e8449; }
+    .sev-monitor { background: #fef9e7; color: #b7950b; }
+    .sev-urgent { background: #fadbd8; color: #c0392b; }
+
+    /* Tally */
+    .tally-box { background: #f8f9fa; border: 1px solid #d5dce4; border-radius: 4px; padding: 16px; margin: 20px 0; }
+    .tally-box h3 { font-size: 15px; color: #1a3c5e; margin-bottom: 8px; }
+    .tally-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .tally-item { text-align: center; padding: 10px; background: #fff; border: 1px solid #e0e4e8; border-radius: 4px; }
+    .tally-count { font-size: 24px; font-weight: 700; color: #1a3c5e; }
+    .tally-label { font-size: 11px; color: #666; margin-top: 2px; }
+
+    .print-btn { display: inline-block; padding: 8px 20px; background: #2980b9; color: #fff; border: none; border-radius: 3px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; margin: 16px 0; }
+    .print-btn:hover { background: #2471a3; }
+
+    .site-footer { background: #1a2a3a; color: #a0b4c8; padding: 20px 0; font-size: 12px; margin-top: 30px; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .footer-inner a { color: #a0b4c8; }
+    .footer-inner a:hover { color: #fff; }
+    .footer-compliance { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    @media print {
+      .utility-bar, .site-header, .breadcrumb, .site-footer, .print-btn { display: none; }
+      body { font-size: 12px; }
+      .check-item { padding: 6px 0; }
+    }
+
+    @media (max-width: 768px) {
+      .tally-grid { grid-template-columns: 1fr; }
+      .utility-links { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="utility-bar">
+    <div class="container">
+      <span>Serving the community since 1987</span>
+      <div class="utility-links">
+        <a href="index.html">« Back to Main Site</a>
+        <a href="portal.html">Infrastructure Portal</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header-main">
+      <div class="seal"><div class="seal-inner">CITY OF<br>MILLBROOK<br>EST. 1953</div></div>
+      <div class="site-title-group">
+        <div class="city-name">City of Millbrook</div>
+        <div class="dept-name">Department of Deferred Maintenance</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="breadcrumb">
+    <div class="container">
+      <a href="index.html">Home</a>
+      <span>›</span>
+      <a href="index.html">Deferred Maintenance</a>
+      <span>›</span>
+      Home Infrastructure Self-Assessment
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="page-content">
+
+      <h1>Home Infrastructure Self-Assessment</h1>
+      <div class="intro">A printable checklist for evaluating your property's infrastructure between professional inspections. Complete annually or whenever you notice changes in system performance. Estimated completion time: 10 minutes. No tools or specialized equipment required.</div>
+
+      <div class="callout callout-info">
+        <strong>How to Use This Checklist:</strong> Review each item below. If the condition described matches what you observe at your address, check the box. Checked items may warrant professional follow-up. Bring this completed checklist to your annual inspection appointment for review by a qualified assessor.
+      </div>
+
+      <!-- Section 1: Circulation -->
+      <div class="checklist-section">
+        <h3>Section 1 — Circulation &amp; Pressure</h3>
+        <div class="check-item">
+          <input type="checkbox" id="c1">
+          <label class="check-label" for="c1">Have you noticed persistent or intermittent pressure fluctuations at rest?
+            <span class="check-sub">Systolic readings consistently above 130 or below 90 may indicate arterial regulation issues</span>
+          </label>
+          <span class="severity sev-monitor">Monitor</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="c2">
+          <label class="check-label" for="c2">Do you experience irregular cycling — skipped beats, fluttering, or periods of unusually rapid pumping?
+            <span class="check-sub">Even occasional irregular rhythms should be documented and reported</span>
+          </label>
+          <span class="severity sev-urgent">Urgent</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="c3">
+          <label class="check-label" for="c3">Have you observed coldness, numbness, or discoloration in your extremities — particularly hands or feet?
+            <span class="check-sub">May indicate reduced flow to distal branches</span>
+          </label>
+          <span class="severity sev-monitor">Monitor</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="c4">
+          <label class="check-label" for="c4">Do you experience shortness of breath, chest pressure, or jaw/arm discomfort during exertion?
+            <span class="check-sub">These symptoms may indicate occlusion in coronary distribution arteries</span>
+          </label>
+          <span class="severity sev-urgent">Urgent</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="c5">
+          <label class="check-label" for="c5">Have you noticed swelling in your lower extremities — ankles, feet, or lower legs — particularly by end of day?
+            <span class="check-sub">May indicate insufficient return flow or pressure backup in venous system</span>
+          </label>
+          <span class="severity sev-monitor">Monitor</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="c6">
+          <label class="check-label" for="c6">Do you experience dizziness when standing from a seated or lying position?
+            <span class="check-sub">Transient pressure drop on position change; common but worth documenting</span>
+          </label>
+          <span class="severity sev-routine">Routine</span>
+        </div>
+      </div>
+
+      <!-- Section 2: Filtration -->
+      <div class="checklist-section">
+        <h3>Section 2 — Filtration &amp; Processing</h3>
+        <div class="check-item">
+          <input type="checkbox" id="f1">
+          <label class="check-label" for="f1">Have you noticed changes in output frequency — particularly waking at night to process waste fluid?
+            <span class="check-sub">Nocturia (2+ episodes per night) may indicate declining filtration capacity</span>
+          </label>
+          <span class="severity sev-monitor">Monitor</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="f2">
+          <label class="check-label" for="f2">Have you observed changes in output appearance — foaminess, discoloration, or persistent cloudiness?
+            <span class="check-sub">May indicate protein leakage or sediment in the filtration output</span>
+          </label>
+          <span class="severity sev-monitor">Monitor</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="f3">
+          <label class="check-label" for="f3">Do you experience persistent bloating, abdominal discomfort, or changes in processing regularity?
+            <span class="check-sub">Lower conveyance system irregularities should be documented</span>
+          </label>
+          <span class="severity sev-routine">Routine</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="f4">
+          <label class="check-label" for="f4">Have you noticed unexplained changes in weight — gain or loss — without changes in intake?
+            <span class="check-sub">Rapid fluid retention or loss may signal filtration system imbalance</span>
+          </label>
+          <span class="severity sev-monitor">Monitor</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="f5">
+          <label class="check-label" for="f5">Do you experience persistent fatigue, brain fog, or generalized weakness not explained by activity level?
+            <span class="check-sub">Toxin accumulation from impaired filtration can affect cognitive and physical function</span>
+          </label>
+          <span class="severity sev-monitor">Monitor</span>
+        </div>
+      </div>
+
+      <!-- Section 3: Structural -->
+      <div class="checklist-section">
+        <h3>Section 3 — Structural Integrity &amp; Framework</h3>
+        <div class="check-item">
+          <input type="checkbox" id="s1">
+          <label class="check-label" for="s1">Have you noticed a decrease in your overall standing height compared to your historical maximum?
+            <span class="check-sub">Loss of 1+ inches may indicate compression in spinal support members</span>
+          </label>
+          <span class="severity sev-monitor">Monitor</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="s2">
+          <label class="check-label" for="s2">Have you experienced any fractures or breaks from minor impacts — bumps, small falls, or routine contact?
+            <span class="check-sub">Structural failures under minimal load indicate density loss requiring assessment</span>
+          </label>
+          <span class="severity sev-urgent">Urgent</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="s3">
+          <label class="check-label" for="s3">Do you experience persistent back pain, particularly in the lower (lumbar) region?
+            <span class="check-sub">Chronic load-bearing discomfort may indicate support member fatigue</span>
+          </label>
+          <span class="severity sev-monitor">Monitor</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="s4">
+          <label class="check-label" for="s4">Have you noticed decreased grip strength, difficulty opening containers, or general loss of functional strength?
+            <span class="check-sub">May indicate density changes or muscular support decline</span>
+          </label>
+          <span class="severity sev-routine">Routine</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="s5">
+          <label class="check-label" for="s5">Do you experience joint stiffness, particularly in the morning or after periods of inactivity?
+            <span class="check-sub">Connection point flexibility should be evaluated if stiffness persists beyond 30 minutes</span>
+          </label>
+          <span class="severity sev-routine">Routine</span>
+        </div>
+      </div>
+
+      <!-- Section 4: Respiratory -->
+      <div class="checklist-section">
+        <h3>Section 4 — Respiratory &amp; Ventilation</h3>
+        <div class="check-item">
+          <input type="checkbox" id="r1">
+          <label class="check-label" for="r1">Do you experience wheezing, whistling, or other audible sounds during normal or exertional breathing?
+            <span class="check-sub">Auditory irregularities may indicate flow restriction in distribution passages</span>
+          </label>
+          <span class="severity sev-monitor">Monitor</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="r2">
+          <label class="check-label" for="r2">Do you find yourself short of breath during activities that previously caused no difficulty — climbing stairs, walking moderate distances?
+            <span class="check-sub">Declining capacity on routine demand should be documented</span>
+          </label>
+          <span class="severity sev-monitor">Monitor</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="r3">
+          <label class="check-label" for="r3">Do you experience persistent coughing — dry or productive — lasting more than three weeks?
+            <span class="check-sub">Chronic irritation in air passages warrants assessment</span>
+          </label>
+          <span class="severity sev-monitor">Monitor</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="r4">
+          <label class="check-label" for="r4">Have you been told that you snore loudly, gasp, or stop breathing during sleep?
+            <span class="check-sub">Sleep-disordered breathing may indicate obstruction in ventilation pathways</span>
+          </label>
+          <span class="severity sev-monitor">Monitor</span>
+        </div>
+      </div>
+
+      <!-- Section 5: Command & Control -->
+      <div class="checklist-section">
+        <h3>Section 5 — Command &amp; Control Functions</h3>
+        <div class="check-item">
+          <input type="checkbox" id="n1">
+          <label class="check-label" for="n1">Have you noticed changes in memory — forgetting names, appointments, or recent conversations more frequently than before?
+            <span class="check-sub">Occasional lapses are normal; persistent or worsening recall issues should be documented</span>
+          </label>
+          <span class="severity sev-monitor">Monitor</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="n2">
+          <label class="check-label" for="n2">Have you experienced episodes of confusion, disorientation, or difficulty finding words?
+            <span class="check-sub">Even transient episodes warrant documentation and professional evaluation</span>
+          </label>
+          <span class="severity sev-urgent">Urgent</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="n3">
+          <label class="check-label" for="n3">Have you noticed changes in mood, motivation, or emotional regulation — persistent sadness, anxiety, or irritability?
+            <span class="check-sub">Chemical regulation imbalances can manifest as mood changes</span>
+          </label>
+          <span class="severity sev-routine">Routine</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="n4">
+          <label class="check-label" for="n4">Do you experience numbness, tingling, or "pins and needles" in any region?
+            <span class="check-sub">Sensory signal irregularities should be mapped and documented</span>
+          </label>
+          <span class="severity sev-monitor">Monitor</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="n5">
+          <label class="check-label" for="n5">Have you experienced sudden vision changes — blurriness, double vision, or temporary vision loss?
+            <span class="check-sub">Visual processing disruption requires immediate assessment</span>
+          </label>
+          <span class="severity sev-urgent">Urgent</span>
+        </div>
+        <div class="check-item">
+          <input type="checkbox" id="n6">
+          <label class="check-label" for="n6">Have you experienced sudden severe headache with no known cause — sometimes described as the worst headache of your life?
+            <span class="check-sub">Acute pressure event in cranial distribution network — seek emergency service immediately</span>
+          </label>
+          <span class="severity sev-urgent">Urgent</span>
+        </div>
+      </div>
+
+      <!-- Tally -->
+      <div class="tally-box">
+        <h3>Your Assessment Tally</h3>
+        <div class="tally-grid">
+          <div class="tally-item">
+            <div class="tally-count" id="count-routine">0</div>
+            <div class="tally-label">Routine Items</div>
+          </div>
+          <div class="tally-item">
+            <div class="tally-count" id="count-monitor">0</div>
+            <div class="tally-label">Monitor Items</div>
+          </div>
+          <div class="tally-item">
+            <div class="tally-count" id="count-urgent">0</div>
+            <div class="tally-label">Urgent Items</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-warning" id="assessment-note">
+        <strong>After completing the checklist:</strong> Bring this assessment to your annual inspection or submit it via the <a href="request.html">Service Request Form</a>. Any "Urgent" items checked should be reported to the Department immediately by calling (555) 827-4357. This self-assessment does not replace professional evaluation — it is intended to supplement your regular maintenance schedule and help you identify potential concerns between appointments.
+      </div>
+
+      <button class="print-btn" onclick="window.print()">🖨 Print This Checklist</button>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div>© 2025 City of Millbrook — Department of Deferred Maintenance. Form DDM-HIA-2025 Rev. 3.</div>
+        <div class="footer-compliance">
+          <a href="index.html">Main Site</a>
+          <a href="portal.html">Infrastructure Portal</a>
+          <a href="request.html">Service Request</a>
+          <a href="faq.html">FAQ</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Live tally
+    function updateTally() {
+      var routine = 0, monitor = 0, urgent = 0;
+      document.querySelectorAll('.check-item').forEach(function(item) {
+        var cb = item.querySelector('input[type="checkbox"]');
+        var sev = item.querySelector('.severity');
+        if (cb && cb.checked && sev) {
+          if (sev.classList.contains('sev-routine')) routine++;
+          else if (sev.classList.contains('sev-monitor')) monitor++;
+          else if (sev.classList.contains('sev-urgent')) urgent++;
+        }
+      });
+      document.getElementById('count-routine').textContent = routine;
+      document.getElementById('count-monitor').textContent = monitor;
+      document.getElementById('count-urgent').textContent = urgent;
+    }
+
+    document.querySelectorAll('.check-item input[type="checkbox"]').forEach(function(cb) {
+      cb.addEventListener('change', updateTally);
+    });
+  </script>
+
+</body>
+</html>

@@ -439,6 +439,10 @@ nodes:
     title: "Department of Deferred Maintenance: Main Page"
     domain: worldbuilding
     rating: 5
+  - id: "0111"
+    title: Department of Deferred Maintenance
+    domain: worldbuilding
+    rating: 5
 edges:
   - from: "0005"
     to: "0002"
@@ -1185,6 +1189,12 @@ edges:
     strength: 0.25925925925925924
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, worldbuilding, pitch"
+  - from: "0110"
+    to: "0111"
+    relation: thematic
+    strength: 0.5833333333333334
+    detected_by: semantic
+    notes: "Shared vocabulary: department, deferred, maintenance, main, ideas"
 constellations:
   - id: constellation-001
     name: The Code-art Thread
@@ -1259,4 +1269,4 @@ creative_dna:
       to_domain: fiction
       count: 2
   unexplored_territory: []
-updated_at: 2026-05-27T18:34:40.550Z
+updated_at: 2026-05-27T19:16:23.405Z

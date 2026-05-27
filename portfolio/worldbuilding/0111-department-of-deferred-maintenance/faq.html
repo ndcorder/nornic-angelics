@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frequently Asked Questions | City of Millbrook</title>
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Source Sans 3', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; background: #fff; line-height: 1.5; font-size: 15px; }
+    a { color: #1a5276; text-decoration: none; }
+    a:hover { text-decoration: underline; color: #2980b9; }
+    .container { max-width: 840px; margin: 0 auto; padding: 0 20px; }
+
+    .utility-bar { background: #1a2a3a; color: #a0b4c8; font-size: 12px; padding: 4px 0; }
+    .utility-bar .container { display: flex; justify-content: space-between; align-items: center; }
+    .utility-bar a { color: #a0b4c8; font-size: 12px; }
+    .utility-bar a:hover { color: #fff; text-decoration: none; }
+    .utility-links { display: flex; gap: 16px; }
+
+    .site-header { background: linear-gradient(to right, #1a3c5e, #1f4a6e); color: #fff; padding: 0; }
+    .header-main { display: flex; align-items: center; padding: 14px 0; gap: 16px; }
+    .seal { width: 48px; height: 48px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .seal-inner { width: 44px; height: 44px; border-radius: 50%; border: 2px solid #1a3c5e; display: flex; align-items: center; justify-content: center; font-size: 8px; color: #1a3c5e; font-weight: 700; text-align: center; line-height: 1.1; }
+    .site-title-group { flex: 1; }
+    .city-name { font-size: 12px; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; opacity: 0.85; }
+    .dept-name { font-size: 18px; font-weight: 700; }
+
+    .breadcrumb { background: #dfe6e9; border-bottom: 1px solid #b2bec3; padding: 8px 0; font-size: 12px; color: #666; }
+    .breadcrumb a { color: #1a5276; font-size: 12px; }
+    .breadcrumb span { margin: 0 6px; color: #999; }
+
+    .page-content { padding: 30px 0; }
+    .page-content h1 { font-size: 22px; font-weight: 700; color: #1a3c5e; margin-bottom: 6px; }
+    .page-content .intro { font-size: 14px; color: #666; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #e0e4e8; }
+
+    .faq-category { margin: 28px 0 0; }
+    .faq-category h2 { font-size: 16px; font-weight: 700; color: #1a3c5e; padding-bottom: 6px; border-bottom: 2px solid #dfe6e9; margin-bottom: 16px; }
+
+    .faq-item { margin-bottom: 16px; border: 1px solid #e0e4e8; border-radius: 4px; overflow: hidden; }
+    .faq-question { padding: 12px 16px; background: #f8f9fa; font-weight: 600; font-size: 14px; color: #1a3c5e; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+    .faq-question:hover { background: #f0f4f8; }
+    .faq-toggle { font-size: 18px; color: #2980b9; font-weight: 300; transition: transform 0.2s; }
+    .faq-item.open .faq-toggle { transform: rotate(45deg); }
+    .faq-answer { padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; }
+    .faq-item.open .faq-answer { max-height: 600px; padding: 12px 16px; }
+    .faq-answer p { font-size: 14px; color: #444; margin-bottom: 8px; }
+    .faq-answer p:last-child { margin-bottom: 0; }
+    .faq-answer ul { margin: 8px 0 8px 20px; font-size: 14px; color: #444; }
+    .faq-answer ul li { margin-bottom: 4px; }
+    .faq-answer a { font-weight: 600; }
+
+    .callout { padding: 12px 16px; border-radius: 4px; font-size: 13px; margin: 14px 0; }
+    .callout-info { background: #d6eaf8; border-left: 4px solid #2980b9; color: #1a5276; }
+
+    .site-footer { background: #1a2a3a; color: #a0b4c8; padding: 20px 0; font-size: 12px; margin-top: 30px; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .footer-inner a { color: #a0b4c8; }
+    .footer-inner a:hover { color: #fff; }
+    .footer-compliance { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    @media (max-width: 768px) {
+      .utility-links { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="utility-bar">
+    <div class="container">
+      <span>Serving the community since 1987</span>
+      <div class="utility-links">
+        <a href="index.html">« Back to Main Site</a>
+        <a href="portal.html">Infrastructure Portal</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header-main">
+      <div class="seal"><div class="seal-inner">CITY OF<br>MILLBROOK<br>EST. 1953</div></div>
+      <div class="site-title-group">
+        <div class="city-name">City of Millbrook</div>
+        <div class="dept-name">Department of Deferred Maintenance</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="breadcrumb">
+    <div class="container">
+      <a href="index.html">Home</a>
+      <span>›</span>
+      <a href="index.html">Deferred Maintenance</a>
+      <span>›</span>
+      Frequently Asked Questions
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="page-content">
+
+      <h1>Frequently Asked Questions</h1>
+      <div class="intro">Common questions about infrastructure maintenance, inspection scheduling, and service requests. Can't find what you need? Contact our office at (555) 827-4357 or submit a <a href="request.html">Service Request Form</a>.</div>
+
+      <!-- General -->
+      <div class="faq-category">
+        <h2>General Maintenance</h2>
+
+        <div class="faq-item">
+          <div class="faq-question">What does "deferred maintenance" mean? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">
+            <p>Deferred maintenance refers to the systematic practice of monitoring aging infrastructure components and scheduling maintenance interventions at the optimal time — before failure occurs, but after maximum service life has been extracted from the component. Unlike emergency repair, deferred maintenance is planned, documented, and executed according to evidence-based schedules.</p>
+            <p>Every system has a natural operational lifespan. Our role is to ensure that lifespan is fully utilized while preventing unexpected breakdowns. This approach balances cost-effectiveness with reliability.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">How often should I schedule a comprehensive system inspection? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">
+            <p>The Department recommends a full-system inspection annually for all infrastructure installed more than 20 years ago. For newer systems, biennial inspections may be sufficient. However, individual circumstances — family history of premature system failure, environmental stressors, or visible changes in performance — may warrant more frequent evaluation.</p>
+            <p>Between professional inspections, we encourage residents to use the <a href="audit.html">Home Infrastructure Self-Assessment</a> to monitor for developing concerns.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">At what age should I begin thinking about my infrastructure maintenance schedule? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">
+            <p>Baseline inspections are recommended beginning at age 40 for most residents, with earlier screening recommended for those with known risk factors or family history of early system degradation. Many serious infrastructure failures develop silently over years — the earlier a monitoring baseline is established, the more effectively we can track changes over time.</p>
+            <p>Key screening milestones:</p>
+            <ul>
+              <li><strong>Age 40:</strong> Baseline circulation assessment, metabolic panel</li>
+              <li><strong>Age 45–50:</strong> Initial structural density scan, filtration assessment</li>
+              <li><strong>Age 50:</strong> Comprehensive inspection including lower waste conveyance evaluation</li>
+              <li><strong>Age 55+:</strong> Annual full-system review with expanded diagnostics</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">Is the Home Infrastructure Self-Assessment a substitute for professional evaluation? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">
+            <p>No. The self-assessment is a screening tool designed to help you identify potential concerns between scheduled inspections. It cannot diagnose conditions — it can only flag areas that warrant professional follow-up. Think of it as a complement to your regular maintenance schedule, not a replacement.</p>
+            <p>If your self-assessment returns multiple flagged items, or any items marked "Urgent," please <a href="request.html">submit a service request</a> or call our office immediately.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Circulation -->
+      <div class="faq-category">
+        <h2>Circulation &amp; Pressure</h2>
+
+        <div class="faq-item">
+          <div class="faq-question">What is normal arterial pressure, and when should I be concerned? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">
+            <p>Current guidelines define normal resting arterial pressure as below 120/80 mmHg. Readings consistently above 130/80 are classified as elevated and warrant monitoring. Readings above 140/90 should be reported to the Department for evaluation.</p>
+            <p>However, pressure fluctuates throughout the day based on activity, stress, and time since last fluid intake. A single elevated reading is not necessarily cause for alarm. What matters is the pattern over time. If you are checking your own pressure at home, we recommend:</p>
+            <ul>
+              <li>Measure at the same time each day</li>
+              <li>Sit quietly for 5 minutes before measuring</li>
+              <li>Take 2–3 readings and average them</li>
+              <li>Keep a log and bring it to your next inspection</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">What are the warning signs of a circulation emergency? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">
+            <p>The following symptoms may indicate an acute circulation failure requiring emergency response:</p>
+            <ul>
+              <li>Sudden chest pressure, tightness, or pain that does not resolve with rest</li>
+              <li>Pain radiating to the jaw, left arm, or back</li>
+              <li>Sudden shortness of breath at rest</li>
+              <li>Sudden numbness or weakness on one side of the body</li>
+              <li>Sudden difficulty speaking or understanding speech</li>
+              <li>Sudden severe headache with no known cause</li>
+              <li>Fainting or loss of consciousness</li>
+            </ul>
+            <p>If you experience any of these symptoms, call 911 immediately. Do not wait for an appointment. Do not drive yourself to the facility. Minutes matter during an acute arterial event.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">How often should my circulation system be checked if I have a family history of arterial disease? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">
+            <p>Residents with a family history of arterial occlusion, stroke, or cardiac events should begin screening 10 years earlier than the age at which their closest relative experienced their first event. For example, if your parent had a cardiac event at age 55, you should begin enhanced screening at age 45.</p>
+            <p>Enhanced screening typically includes annual lipid panels, pressure monitoring every 6 months, and periodic stress testing of the arterial network under elevated demand conditions.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtration -->
+      <div class="faq-category">
+        <h2>Filtration &amp; Processing</h2>
+
+        <div class="faq-item">
+          <div class="faq-question">How often should I have my filtration system checked? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">
+            <p>Baseline filtration assessment (including metabolic panel and throughput evaluation) should begin at age 40 and repeat annually. Residents with hypertension, a family history of filtration failure, or personal history of elevated creatinine readings should be screened more frequently.</p>
+            <p>Your filtration system processes approximately 200 quarts of fluid daily. Over time, the filtration units (nephrons) can become less efficient. Because this decline is typically gradual and painless, it often goes unnoticed until significant capacity has been lost. Regular screening is the only reliable way to catch declining throughput early.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">What does it mean if my filtration throughput is declining? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">
+            <p>Declining throughput — measured by eGFR (estimated Glomerular Filtration Rate) — means your processing stations are operating below their rated capacity. This is not unusual in aging infrastructure, but the rate and degree of decline determine the response:</p>
+            <ul>
+              <li><strong>eGFR above 90:</strong> Normal or minimal reduction</li>
+              <li><strong>eGFR 60–89:</strong> Mild reduction — monitor and reassess annually</li>
+              <li><strong>eGFR 45–59:</strong> Moderate reduction — enhanced monitoring, lifestyle review</li>
+              <li><strong>eGFR 30–44:</strong> Significant reduction — intervention planning required</li>
+              <li><strong>eGFR below 30:</strong> Severe reduction — immediate consultation and treatment planning</li>
+            </ul>
+            <p>A single reading below normal is not necessarily cause for panic. Trends over time are more important than individual measurements. Your assessor will review your trajectory and recommend appropriate action.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">When should I schedule a lower waste conveyance inspection? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">
+            <p>The Department recommends an initial lower waste conveyance assessment (colonoscopic inspection) at age 45 for all residents, or earlier if you have risk factors including family history of structural anomalies in the lower tract, persistent processing irregularities, or unexplained weight changes.</p>
+            <p>Follow-up frequency depends on findings:</p>
+            <ul>
+              <li><strong>Clear inspection:</strong> Repeat in 10 years</li>
+              <li><strong>Minor anomalies found:</strong> Repeat in 5 years</li>
+              <li><strong>Significant findings:</strong> Repeat in 1–3 years as directed</li>
+            </ul>
+            <p>This inspection is one of the most effective preventive maintenance tools available. Early detection of structural changes in the lower conveyance network has a direct impact on long-term outcomes.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Structural -->
+      <div class="faq-category">
+        <h2>Structural Integrity</h2>
+
+        <div class="faq-item">
+          <div class="faq-question">What is a structural density scan (DXA), and when do I need one? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">
+            <p>A dual-energy X-ray absorptiometry (DXA) scan measures the density of your structural framework — your bones — and compares the results to established baselines. The result is reported as a T-Score:</p>
+            <ul>
+              <li><strong>+1.0 to -1.0:</strong> Normal density</li>
+              <li><strong>-1.0 to -2.5:</strong> Osteopenia (below optimal density — monitoring recommended)</li>
+              <li><strong>Below -2.5:</strong> Osteoporosis (significant density loss — intervention required)</li>
+            </ul>
+            <p>We recommend baseline DXA scans at age 50 for all residents, with earlier screening for those with family history of structural failure, long-term use of certain chemical regulators (corticosteroids), or history of fractures from minimal impact.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">Can structural density loss be reversed? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">
+            <p>In most cases, density loss cannot be fully reversed, but its progression can be significantly slowed and, in some cases, partially stabilized. Intervention options include:</p>
+            <ul>
+              <li><strong>Supplementation:</strong> Calcium (1,200 mg daily) and Vitamin D (800–1,000 IU daily)</li>
+              <li><strong>Weight-bearing exercise:</strong> Walking, resistance training, and other load-bearing activities stimulate structural reinforcement</li>
+              <li><strong>Chemical treatment:</strong> In advanced cases, specialized regulators may be prescribed to slow density loss</li>
+              <li><strong>Fall prevention:</strong> Environmental modifications to reduce impact risk</li>
+            </ul>
+            <p>The most effective approach is early detection through regular screening, combined with proactive maintenance before density reaches critical thresholds.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Respiratory -->
+      <div class="faq-category">
+        <h2>Respiratory &amp; Ventilation</h2>
+
+        <div class="faq-item">
+          <div class="faq-question">What do my pulmonary function test results mean? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">
+            <p>Pulmonary function tests (PFTs) measure how effectively your respiratory network moves air in and out, and how well gas exchange occurs. Key measurements include:</p>
+            <ul>
+              <li><strong>FEV1:</strong> The volume of air you can force out in one second. Reduced values may indicate obstruction in air passages.</li>
+              <li><strong>FVC:</strong> The total volume of air you can force out after a full intake. Reduced values may indicate restriction in lung expansion.</li>
+              <li><strong>FEV1/FVC Ratio:</strong> The proportion of total capacity expelled in the first second. Below 70% typically indicates obstructive patterns.</li>
+            </ul>
+            <p>Your assessor will compare your results to predicted values based on your age, height, and installation date. Results above 80% of predicted are generally considered normal. Results between 60–80% may indicate mild to moderate impairment. Below 60% warrants intervention planning.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">Should I be worried about snoring? <span class="faq-toggle">+</span></div>
+          <div class="faq-answer">
+            <p>Occasional snoring is common and usually not cause for concern. However, loud, persistent snoring — especially when accompanied by observed pauses in breathing, gasping, or daytime fatigue — may indicate obstructive sleep-disordered breathing (sleep apnea). This condition causes repeated drops in oxygen saturation during rest cycles and places additional stress on the circulation and command systems.</p>
+            <p>If a partner or household member has observed these patterns, we recommend a sleep architecture review (polysomnography) to determine whether intervention is needed. Untreated sleep-disordered breathing is associated with elevated arterial pressure, irregular rhythms, and accelerated system wear.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-info" style="margin-top: 30px;">
+        <strong>Still have questions?</strong> Contact our office at (555) 827-4357, email <a href="#">maintenance@millbrook.gov</a>, or submit a <a href="request.html">Service Request Form</a>. Our staff are available Monday–Friday, 8 AM – 5 PM. After-hours emergencies: call 911.
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div>© 2025 City of Millbrook — Department of Deferred Maintenance.</div>
+        <div class="footer-compliance">
+          <a href="index.html">Main Site</a>
+          <a href="portal.html">Infrastructure Portal</a>
+          <a href="audit.html">Self-Assessment</a>
+          <a href="request.html">Service Request</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.faq-question').forEach(function(q) {
+      q.addEventListener('click', function() {
+        var item = this.parentElement;
+        var wasOpen = item.classList.contains('open');
+        // Close all
+        document.querySelectorAll('.faq-item').forEach(function(fi) { fi.classList.remove('open'); });
+        // Toggle clicked
+        if (!wasOpen) item.classList.add('open');
+      });
+    });
+  </script>
+
+</body>
+</html>

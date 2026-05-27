@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Request Form | City of Millbrook</title>
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Source Sans 3', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; background: #fff; line-height: 1.5; font-size: 15px; }
+    a { color: #1a5276; text-decoration: none; }
+    a:hover { text-decoration: underline; color: #2980b9; }
+    .container { max-width: 840px; margin: 0 auto; padding: 0 20px; }
+
+    .utility-bar { background: #1a2a3a; color: #a0b4c8; font-size: 12px; padding: 4px 0; }
+    .utility-bar .container { display: flex; justify-content: space-between; align-items: center; }
+    .utility-bar a { color: #a0b4c8; font-size: 12px; }
+    .utility-bar a:hover { color: #fff; text-decoration: none; }
+    .utility-links { display: flex; gap: 16px; }
+
+    .site-header { background: linear-gradient(to right, #1a3c5e, #1f4a6e); color: #fff; padding: 0; }
+    .header-main { display: flex; align-items: center; padding: 14px 0; gap: 16px; }
+    .seal { width: 48px; height: 48px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .seal-inner { width: 44px; height: 44px; border-radius: 50%; border: 2px solid #1a3c5e; display: flex; align-items: center; justify-content: center; font-size: 8px; color: #1a3c5e; font-weight: 700; text-align: center; line-height: 1.1; }
+    .site-title-group { flex: 1; }
+    .city-name { font-size: 12px; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; opacity: 0.85; }
+    .dept-name { font-size: 18px; font-weight: 700; }
+
+    .breadcrumb { background: #dfe6e9; border-bottom: 1px solid #b2bec3; padding: 8px 0; font-size: 12px; color: #666; }
+    .breadcrumb a { color: #1a5276; font-size: 12px; }
+    .breadcrumb span { margin: 0 6px; color: #999; }
+
+    .page-content { padding: 30px 0; }
+    .page-content h1 { font-size: 22px; font-weight: 700; color: #1a3c5e; margin-bottom: 6px; }
+    .page-content .intro { font-size: 14px; color: #666; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #e0e4e8; }
+    .page-content p { margin-bottom: 12px; color: #444; }
+
+    /* Form styling */
+    .form-section { margin: 24px 0; border: 1px solid #d5dce4; border-radius: 4px; overflow: hidden; }
+    .form-section-header { background: #f0f4f8; padding: 10px 16px; font-size: 14px; font-weight: 700; color: #1a3c5e; border-bottom: 1px solid #d5dce4; }
+    .form-section-body { padding: 16px; }
+
+    .form-row { display: flex; gap: 16px; margin-bottom: 14px; }
+    .form-row:last-child { margin-bottom: 0; }
+
+    .form-field { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .form-field label { font-size: 12px; font-weight: 600; color: #555; }
+    .form-field .field-hint { font-size: 11px; color: #999; font-style: italic; }
+    .form-field input, .form-field select, .form-field textarea {
+      padding: 7px 10px;
+      border: 1px solid #b2bec3;
+      border-radius: 3px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fff;
+      color: #333;
+    }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+      outline: none;
+      border-color: #2980b9;
+      box-shadow: 0 0 0 2px rgba(41,128,185,0.15);
+    }
+    .form-field textarea { resize: vertical; min-height: 80px; }
+
+    .form-field .required { color: #c0392b; font-size: 11px; }
+
+    .field-unit { display: flex; align-items: center; gap: 6px; }
+    .field-unit span { font-size: 12px; color: #888; white-space: nowrap; }
+
+    .checkbox-group { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+    .checkbox-item { display: flex; gap: 8px; align-items: flex-start; }
+    .checkbox-item input[type="checkbox"] { margin-top: 3px; accent-color: #2980b9; }
+    .checkbox-item label { font-size: 13px; color: #444; }
+
+    .callout { padding: 12px 16px; border-radius: 4px; font-size: 13px; margin: 14px 0; }
+    .callout-info { background: #d6eaf8; border-left: 4px solid #2980b9; color: #1a5276; }
+    .callout-warning { background: #fef9e7; border-left: 4px solid #f39c12; color: #7d6608; }
+
+    .btn-primary { display: inline-block; padding: 10px 28px; background: #2980b9; color: #fff; border: none; border-radius: 3px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; margin: 16px 0; }
+    .btn-primary:hover { background: #2471a3; }
+    .btn-secondary { display: inline-block; padding: 10px 20px; background: #dfe6e9; color: #2d3436; border: 1px solid #b2bec3; border-radius: 3px; font-size: 14px; cursor: pointer; font-family: inherit; margin-left: 8px; }
+    .btn-secondary:hover { background: #b2bec3; }
+
+    /* Submission confirmation */
+    .confirmation-box { display: none; background: #d5f5e3; border: 1px solid #a9dfbf; border-radius: 4px; padding: 20px; margin: 20px 0; }
+    .confirmation-box h2 { font-size: 18px; color: #1e8449; margin-bottom: 8px; }
+    .confirmation-box p { font-size: 14px; color: #1e8449; margin-bottom: 8px; }
+    .confirmation-box .ref-number { font-size: 16px; font-weight: 700; color: #1e8449; background: #fff; display: inline-block; padding: 4px 12px; border-radius: 3px; border: 1px solid #a9dfbf; margin: 8px 0; }
+
+    .site-footer { background: #1a2a3a; color: #a0b4c8; padding: 20px 0; font-size: 12px; margin-top: 30px; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .footer-inner a { color: #a0b4c8; }
+    .footer-inner a:hover { color: #fff; }
+    .footer-compliance { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    @media (max-width: 768px) {
+      .form-row { flex-direction: column; gap: 10px; }
+      .utility-links { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="utility-bar">
+    <div class="container">
+      <span>Serving the community since 1987</span>
+      <div class="utility-links">
+        <a href="index.html">« Back to Main Site</a>
+        <a href="portal.html">Infrastructure Portal</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header-main">
+      <div class="seal"><div class="seal-inner">CITY OF<br>MILLBROOK<br>EST. 1953</div></div>
+      <div class="site-title-group">
+        <div class="city-name">City of Millbrook</div>
+        <div class="dept-name">Department of Deferred Maintenance</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="breadcrumb">
+    <div class="container">
+      <a href="index.html">Home</a>
+      <span>›</span>
+      <a href="index.html">Deferred Maintenance</a>
+      <span>›</span>
+      Service Request Form
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="page-content">
+
+      <h1>Maintenance Service Request</h1>
+      <div class="intro">Use this form to request a maintenance evaluation, report a system concern, or schedule an inspection. All fields marked with an asterisk (<span class="required">*</span>) are required. Your information will be used to generate a service record and schedule appropriate follow-up.</div>
+
+      <div class="callout callout-warning">
+        <strong>Emergency?</strong> If you are experiencing an acute system failure — chest pain, sudden weakness or numbness on one side, difficulty breathing, sudden confusion, or uncontrolled bleeding — <strong>call 911 immediately.</strong> Do not use this form for emergencies.
+      </div>
+
+      <form id="service-form" onsubmit="return false;">
+
+        <!-- Section 1: Property Info -->
+        <div class="form-section">
+          <div class="form-section-header">Section 1 — Property &amp; Contact Information</div>
+          <div class="form-section-body">
+            <div class="form-row">
+              <div class="form-field">
+                <label>Full Name <span class="required">*</span></label>
+                <input type="text" placeholder="First and last name" required>
+              </div>
+              <div class="form-field">
+                <label>Date of Original Installation (Date of Birth) <span class="required">*</span></label>
+                <input type="date" required>
+                <span class="field-hint">Your date of birth</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label>Service Address <span class="required">*</span></label>
+                <input type="text" placeholder="Street address" required>
+              </div>
+              <div class="form-field">
+                <label>Phone Number <span class="required">*</span></label>
+                <input type="tel" placeholder="(555) 000-0000" required>
+              </div>
+              <div class="form-field">
+                <label>Email Address</label>
+                <input type="email" placeholder="your@email.com">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label>Emergency Contact Name</label>
+                <input type="text" placeholder="Contact name">
+              </div>
+              <div class="form-field">
+                <label>Emergency Contact Phone</label>
+                <input type="tel" placeholder="(555) 000-0000">
+              </div>
+              <div class="form-field">
+                <label>Relationship to Emergency Contact</label>
+                <input type="text" placeholder="e.g., spouse, sibling, child">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Structural Dimensions -->
+        <div class="form-section">
+          <div class="form-section-header">Section 2 — Structural Dimensions</div>
+          <div class="form-section-body">
+            <p style="font-size: 13px; color: #666; margin-bottom: 14px;">Please provide your current structural measurements. These values help us calculate load-bearing capacity and determine appropriate maintenance protocols.</p>
+            <div class="form-row">
+              <div class="form-field">
+                <label>Height <span class="required">*</span></label>
+                <div class="field-unit">
+                  <input type="number" placeholder="e.g. 67" style="width: 100px;" required>
+                  <span>inches</span>
+                </div>
+                <span class="field-hint">Measure without shoes</span>
+              </div>
+              <div class="form-field">
+                <label>Current Weight <span class="required">*</span></label>
+                <div class="field-unit">
+                  <input type="number" placeholder="e.g. 185" style="width: 100px;" required>
+                  <span>lbs</span>
+                </div>
+              </div>
+              <div class="form-field">
+                <label>Structural Type (Body Frame)</label>
+                <select>
+                  <option value="">Select...</option>
+                  <option value="small">Small / Fine</option>
+                  <option value="medium">Medium / Average</option>
+                  <option value="large">Large / Broad</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: System Metrics -->
+        <div class="form-section">
+          <div class="form-section-header">Section 3 — Current System Readings</div>
+          <div class="form-section-body">
+            <p style="font-size: 13px; color: #666; margin-bottom: 14px;">If you have recently measured any of the following system metrics at home, please enter the most recent values. If you do not have this information, leave the fields blank — our technicians will take readings during your appointment.</p>
+            <div class="form-row">
+              <div class="form-field">
+                <label>Arterial Pressure (Blood Pressure)</label>
+                <div class="field-unit">
+                  <input type="text" placeholder="120" style="width: 70px;">
+                  <span>/</span>
+                  <input type="text" placeholder="80" style="width: 70px;">
+                  <span>mmHg</span>
+                </div>
+                <span class="field-hint">Systolic / Diastolic</span>
+              </div>
+              <div class="form-field">
+                <label>Pump Cycle Rate (Heart Rate)</label>
+                <div class="field-unit">
+                  <input type="number" placeholder="72" style="width: 80px;">
+                  <span>bpm</span>
+                </div>
+              </div>
+              <div class="form-field">
+                <label>Core Temperature</label>
+                <div class="field-unit">
+                  <input type="text" placeholder="98.6" style="width: 80px;">
+                  <span>°F</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: Concerns -->
+        <div class="form-section">
+          <div class="form-section-header">Section 4 — Nature of Concern</div>
+          <div class="form-section-body">
+            <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Select all systems you are concerned about or would like evaluated:</p>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="concern-circ">
+                <label for="concern-circ">Circulation &amp; Pressure (chest pain, palpitations, swelling, dizziness)</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="concern-filt">
+                <label for="concern-filt">Filtration &amp; Processing (changes in output frequency or appearance, bloating, fatigue)</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="concern-struc">
+                <label for="concern-struc">Structural Integrity (bone pain, fractures, height loss, joint stiffness)</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="concern-resp">
+                <label for="concern-resp">Respiratory &amp; Ventilation (shortness of breath, wheezing, chronic cough, snoring)</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="concern-neural">
+                <label for="concern-neural">Command &amp; Control (memory changes, confusion, numbness, vision changes, headaches)</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="concern-endocrine">
+                <label for="concern-endocrine">Internal Regulation (fatigue, weight changes, temperature sensitivity, mood changes)</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="concern-other">
+                <label for="concern-other">Other (please describe below)</label>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px;">
+              <div class="form-field">
+                <label>Please describe your concern in detail</label>
+                <textarea placeholder="Include when you first noticed the issue, how often it occurs, and any factors that seem to make it better or worse..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: History -->
+        <div class="form-section">
+          <div class="form-section-header">Section 5 — Maintenance History</div>
+          <div class="form-section-body">
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="hist-surgery">
+                <label for="hist-surgery">I have had previous structural repairs or surgical interventions</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="hist-chronic">
+                <label for="hist-chronic">I have been diagnosed with a chronic system condition (hypertension, diabetes, heart disease, etc.)</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="hist-medication">
+                <label for="hist-medication">I am currently taking chemical regulators (prescription medications)</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="hist-family">
+                <label for="hist-family">I have a family history of premature system failure (heart attack, stroke, kidney disease, cancer before age 60)</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="hist-allergy">
+                <label for="hist-allergy">I have known allergies or adverse reactions to specific chemical compounds</label>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px;">
+              <div class="form-field">
+                <label>If you checked any boxes above, please provide details</label>
+                <textarea placeholder="List conditions, medications (with dosages), prior procedures, and any relevant family history..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 6: Insurance -->
+        <div class="form-section">
+          <div class="form-section-header">Section 6 — Coverage &amp; Authorization</div>
+          <div class="form-section-body">
+            <div class="form-row">
+              <div class="form-field">
+                <label>Coverage Provider (Insurance Carrier)</label>
+                <input type="text" placeholder="e.g., BlueCross BlueShield, Aetna, Medicare">
+              </div>
+              <div class="form-field">
+                <label>Coverage ID (Policy Number)</label>
+                <input type="text" placeholder="Policy or Member ID number">
+              </div>
+              <div class="form-field">
+                <label>Group Number</label>
+                <input type="text" placeholder="If applicable">
+              </div>
+            </div>
+
+            <div style="margin-top: 14px;">
+              <div class="checkbox-item">
+                <input type="checkbox" id="auth-consent" required>
+                <label for="auth-consent" style="font-size: 12px; color: #555;">I authorize the Department of Deferred Maintenance to evaluate my infrastructure, perform necessary diagnostics, and share results with relevant specialists as needed. I understand that this request does not guarantee immediate service and that priority is determined by assessment severity. <span class="required">*</span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn-primary" id="submit-btn">Submit Service Request</button>
+        <button type="reset" class="btn-secondary">Clear Form</button>
+
+      </form>
+
+      <div class="confirmation-box" id="confirmation">
+        <h2>✓ Service Request Received</h2>
+        <p>Your request has been logged with the Department of Deferred Maintenance. A service coordinator will review your submission and contact you within 2 business days to schedule an appointment.</p>
+        <p><strong>Your Reference Number:</strong></p>
+        <div class="ref-number" id="ref-number">DM-2025-000000</div>
+        <p style="margin-top: 12px; font-size: 13px;">Please save this reference number. You will need it for any follow-up inquiries regarding this request. If your condition worsens before your appointment, call our office at (555) 827-4357 or, for emergencies, call 911.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div>© 2025 City of Millbrook — Department of Deferred Maintenance. Form DDM-SRF-2025 Rev. 2.</div>
+        <div class="footer-compliance">
+          <a href="index.html">Main Site</a>
+          <a href="portal.html">Infrastructure Portal</a>
+          <a href="audit.html">Self-Assessment</a>
+          <a href="faq.html">FAQ</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    var submitBtn = document.getElementById('submit-btn');
+    if (submitBtn) {
+      submitBtn.addEventListener('click', function() {
+        var form = document.getElementById('service-form');
+        var required = form.querySelectorAll('[required]');
+        var allFilled = true;
+        required.forEach(function(el) {
+          if (!el.value || (el.type === 'checkbox' && !el.checked)) {
+            allFilled = false;
+          }
+        });
+
+        if (!allFilled) {
+          alert('Please complete all required fields before submitting.');
+          return;
+        }
+
+        var ref = 'DM-2025-' + String(Math.floor(Math.random() * 999999)).padStart(6, '0');
+        document.getElementById('ref-number').textContent = ref;
+
+        form.style.display = 'none';
+        document.getElementById('confirmation').style.display = 'block';
+        document.getElementById('confirmation').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+  </script>
+
+</body>
+</html>
