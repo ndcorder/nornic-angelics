@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fever Dream Insurance Claim</title>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0ece2;
+    --ink: #1a1a1a;
+    --ink-mid: #555;
+    --ink-light: #999;
+    --ink-faint: #ccc;
+    --ink-gone: #f0ece2;
+    --red: #8b1a1a;
+    --red-light: #d4a0a0;
+    --field-bg: #faf8f3;
+    --border: #c4bfb5;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'EB Garamond', Georgia, serif;
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .form-container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 40px 32px 80px;
+    position: relative;
+  }
+
+  .watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-35deg);
+    font-size: 120px;
+    font-weight: 700;
+    color: rgba(0,0,0,0.02);
+    pointer-events: none;
+    z-index: 0;
+    white-space: nowrap;
+    font-family: 'EB Garamond', serif;
+    letter-spacing: 8px;
+    user-select: none;
+  }
+
+  .form-header {
+    text-align: center;
+    border-bottom: 3px double var(--ink);
+    padding-bottom: 20px;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .form-header .dept {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--ink-mid);
+    margin-bottom: 4px;
+  }
+
+  .form-header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .form-header .subtitle {
+    font-size: 13px;
+    color: var(--ink-light);
+    font-style: italic;
+  }
+
+  .policy-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--ink-mid);
+    padding: 8px 0 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .policy-row .policy-num {
+    font-family: 'Courier Prime', monospace;
+    color: var(--ink-light);
+  }
+
+  /* Dream residue: floating words behind form */
+  .dream-layer {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .dream-word {
+    position: absolute;
+    font-style: italic;
+    color: rgba(26, 26, 26, 0.07);
+    font-size: 14px;
+    transition: all 1.5s ease;
+    pointer-events: none;
+  }
+
+  .dream-word.fading {
+    opacity: 0;
+    transform: translateY(-10px) rotate(2deg);
+  }
+
+  /* The dream display — the living memory */
+  .dream-display {
+    position: relative;
+    z-index: 1;
+    background: rgba(255,255,255,0.35);
+    border: 1px dashed var(--border);
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    min-height: 80px;
+    font-style: italic;
+    color: var(--ink-mid);
+    transition: all 2s ease;
+  }
+
+  .dream-display .dream-title {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    font-style: normal;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .dream-display .dream-text {
+    transition: all 1.5s ease;
+    min-height: 20px;
+  }
+
+  .dream-display .dream-text .erased {
+    color: var(--ink-gone);
+    text-decoration: line-through;
+    text-decoration-color: var(--red-light);
+    transition: all 1s ease;
+  }
+
+  .dream-display.collapsing {
+    border-color: var(--ink-faint);
+    background: rgba(255,255,255,0.15);
+  }
+
+  .dream-display.collapsed .dream-text {
+    color: var(--ink-gone);
+  }
+
+  .dream-display.collapsed {
+    border-color: transparent;
+    background: transparent;
+  }
+
+  .dream-display .denied-stamp {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--red);
+    font-style: normal;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+  }
+
+  .dream-display.collapsed .denied-stamp {
+    opacity: 0.6;
+  }
+
+  /* Form sections */
+  .form-section {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    transition: opacity 0.8s ease;
+  }
+
+  .form-section:last-of-type { border-bottom: none; }
+
+  .section-number {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 12px;
+    font-family: 'Courier Prime', monospace;
+  }
+
+  .field-group { margin-bottom: 18px; }
+  .field-group:last-child { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    color: var(--ink);
+    transition: color 0.5s ease;
+  }
+
+  label .required {
+    color: var(--red);
+    margin-left: 2px;
+  }
+
+  .field-hint {
+    font-size: 11px;
+    color: var(--ink-light);
+    font-style: italic;
+    margin-bottom: 6px;
+    font-weight: 400;
+    min-height: 16px;
+    transition: all 0.8s ease;
+  }
+
+  input[type="text"],
+  input[type="date"],
+  input[type="number"],
+  textarea,
+  select {
+    width: 100%;
+    background: var(--field-bg);
+    border: 1px solid transparent;
+    border-bottom: 1px solid var(--border);
+    padding: 8px 10px;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 16px;
+    color: var(--ink);
+    outline: none;
+    transition: all 0.4s ease;
+  }
+
+  input[type="text"]:focus,
+  input[type="date"]:focus,
+  input[type="number"]:focus,
+  textarea:focus,
+  select:focus {
+    border-bottom-color: var(--ink);
+    background: #fff;
+  }
+
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+    line-height: 1.7;
+  }
+
+  .two-col {
+    display: flex;
+    gap: 24px;
+  }
+
+  .two-col .field-group { flex: 1; }
+
+  /* Y/N toggle */
+  .yn-group {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .yn-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  .yn-option input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--ink-mid);
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .yn-option input[type="radio"]:checked {
+    border-color: var(--red);
+  }
+
+  .yn-option input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 7px; height: 7px;
+    background: var(--red);
+    border-radius: 50%;
+  }
+
+  /* Degradation overlay on form sections */
+  .degradation-ghost {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    background: var(--bg);
+    opacity: 0;
+    transition: opacity 1.5s ease;
+    z-index: 0;
+  }
+
+  .form-section.degraded-1 .degradation-ghost { opacity: 0.03; }
+  .form-section.degraded-2 .degradation-ghost { opacity: 0.07; }
+  .form-section.degraded-3 .degradation-ghost { opacity: 0.14; }
+  .form-section.degraded-4 .degradation-ghost { opacity: 0.25; }
+
+  .form-section.degraded-2 label { color: var(--ink-mid); }
+  .form-section.degraded-3 label { color: var(--ink-light); }
+  .form-section.degraded-4 label { color: var(--ink-faint); }
+
+  .form-section.degraded-3 input,
+  .form-section.degraded-3 textarea {
+    color: var(--ink-light);
+  }
+
+  .form-section.degraded-4 input,
+  .form-section.degraded-4 textarea {
+    color: var(--ink-faint);
+    border-bottom-color: var(--ink-faint);
+  }
+
+  /* Submit section */
+  .submit-section {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 32px 0;
+    border-top: 2px solid var(--ink);
+    margin-top: 16px;
+  }
+
+  .submit-section .warning {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 16px;
+    font-family: 'Courier Prime', monospace;
+  }
+
+  .submit-btn {
+    background: none;
+    border: 2px solid var(--ink);
+    padding: 12px 48px;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--ink);
+    transition: all 0.4s ease;
+  }
+
+  .submit-btn:hover {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  .submit-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .submit-btn:disabled:hover {
+    background: none;
+    color: var(--ink);
+  }
+
+  /* Denial letter overlay */
+  .denial-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(240,236,226,0.97);
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.5s ease;
+    overflow-y: auto;
+  }
+
+  .denial-overlay.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .denial-letter {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 48px 40px;
+    position: relative;
+  }
+
+  .denial-letter .letterhead {
+    text-align: center;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 16px;
+    margin-bottom: 32px;
+  }
+
+  .denial-letter .letterhead .dept {
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--ink-light);
+  }
+
+  .denial-letter .letterhead h2 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 4px 0;
+  }
+
+  .denial-letter .letter-date {
+    text-align: right;
+    font-size: 13px;
+    color: var(--ink-mid);
+    margin-bottom: 24px;
+    font-family: 'Courier Prime', monospace;
+  }
+
+  .denial-letter .salutation { margin-bottom: 16px; }
+
+  .denial-letter p {
+    margin-bottom: 14px;
+    text-align: justify;
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  .denial-letter .claim-ref {
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+  }
+
+  .denial-letter .quote-from-claim {
+    font-style: italic;
+    color: var(--red);
+    border-left: 2px solid var(--red-light);
+    padding-left: 12px;
+    margin: 16px 0;
+    line-height: 1.7;
+  }
+
+  .denial-letter .denial-stamp {
+    text-align: center;
+    margin: 32px 0;
+    padding: 16px;
+    border: 3px solid var(--red);
+    color: var(--red);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    transform: rotate(-3deg);
+    opacity: 0.8;
+  }
+
+  .denial-letter .closing { margin-top: 32px; }
+
+  .denial-letter .signature-line {
+    margin-top: 24px;
+    border-top: 1px solid var(--ink);
+    width: 200px;
+    padding-top: 6px;
+    font-size: 12px;
+    color: var(--ink-mid);
+  }
+
+  .denial-letter .footer-note {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--ink-light);
+    text-align: center;
+    letter-spacing: 1px;
+  }
+
+  .denial-letter .footnote-asterisk {
+    font-size: 11px;
+    color: var(--ink-light);
+    font-style: italic;
+    margin-top: 20px;
+  }
+
+  /* Print noise */
+  .form-container::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @media (max-width: 600px) {
+    .form-container { padding: 24px 16px 60px; }
+    .two-col { flex-direction: column; gap: 0; }
+    .form-header h1 { font-size: 20px; }
+    .denial-letter { padding: 32px 20px; margin: 40px auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="watermark">CLAIM DENIED</div>
+<div class="dream-layer" id="dreamLayer"></div>
+
+<div class="form-container">
+  <header class="form-header">
+    <div class="dept">Department of Oneiric Records</div>
+    <h1>Fever Dream Insurance Claim</h1>
+    <div class="subtitle">For the recovery of dreams lost, damaged, or rendered unverifiable</div>
+  </header>
+
+  <div class="policy-row">
+    <span>Form FD-7 <span style="font-style:italic">rev.</span> 03</span>
+    <span class="policy-num">Policy #FD-<span id="policyNum"></span></span>
+  </div>
+
+  <!-- DREAM DISPLAY: at the top, visible immediately -->
+  <div class="dream-display" id="dreamDisplay">
+    <div class="dream-title">Your Dream As Currently Recalled</div>
+    <div class="dream-text" id="dreamText"></div>
+    <div class="denied-stamp" id="deniedStamp">This text has been archived</div>
+  </div>
+
+  <!-- SECTION I -->
+  <section class="form-section" data-section="1">
+    <div class="degradation-ghost"></div>
+    <div class="section-number">Section I — Identification of the Insured</div>
+
+    <div class="two-col">
+      <div class="field-group">
+        <label>Claimant Name <span class="required">*</span></label>
+        <input type="text" id="claimantName" data-field="name" placeholder="Full legal name">
+      </div>
+      <div class="field-group">
+        <label>Policy Number</label>
+        <input type="text" id="policyNumber" data-field="policy" placeholder="As listed on your dream registry">
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>How long have you been losing sleep?</label>
+      <input type="text" id="sleepDuration" data-field="duration" placeholder="e.g., three weeks, since the accident, always">
+    </div>
+  </section>
+
+  <!-- SECTION II -->
+  <section class="form-section" data-section="2">
+    <div class="degradation-ghost"></div>
+    <div class="section-number">Section II — Fever Dream Insurance Claim</div>
+
+    <div class="field-group">
+      <label>Fever Dream Insurance Claim <span class="required">*</span></label>
+      <div class="field-hint" id="titleHint">In your own words, name the dream you have lost.</div>
+      <input type="text" id="dreamTitle" data-field="title" placeholder="The one about the house, the recurring flood dream, etc.">
+    </div>
+
+    <div class="two-col">
+      <div class="field-group">
+        <label>Date of Loss <span class="required">*</span></label>
+        <input type="date" id="dateOfLoss" data-field="date">
+      </div>
+      <div class="field-group">
+        <label>Time of Loss (approx.)</label>
+        <input type="text" id="timeOfLoss" data-field="time" placeholder="Between what hours did the dream occur?">
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>Location Where Dream Was Dreamed</label>
+      <input type="text" id="dreamLocation" data-field="location" placeholder="Bedroom, couch, passenger seat, unfamiliar room">
+    </div>
+  </section>
+
+  <!-- SECTION III -->
+  <section class="form-section" data-section="3">
+    <div class="degradation-ghost"></div>
+    <div class="section-number">Section III — Description of Property</div>
+
+    <div class="field-group">
+      <label>Description of the Dream <span class="required">*</span></label>
+      <div class="field-hint" id="descHint">Describe the dream in as much detail as you can recall. Be specific.</div>
+      <textarea id="dreamDescription" data-field="description" placeholder="What happened? Who was there? What did you feel?"></textarea>
+    </div>
+
+    <div class="field-group">
+      <label>Primary Emotional Character</label>
+      <div class="field-hint">The dominant feeling carried from the dream into waking.</div>
+      <input type="text" id="emotionField" data-field="emotion" placeholder="Dread, longing, grief, vertigo, tenderness, etc.">
+    </div>
+
+    <div class="field-group">
+      <label>Estimated Vividness</label>
+      <select id="vividnessField" data-field="vividness">
+        <option value="">— Select intensity —</option>
+        <option value="1">1 — Impression only</option>
+        <option value="2">2 — Fragments</option>
+        <option value="3">3 — Partial recall</option>
+        <option value="4">4 — Vivid</option>
+        <option value="5">5 — Indistinguishable from waking</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- SECTION IV -->
+  <section class="form-section" data-section="4">
+    <div class="degradation-ghost"></div>
+    <div class="section-number">Section IV — Witnesses &amp; Evidence</div>
+
+    <div class="field-group">
+      <label>Witnesses</label>
+      <div class="field-hint" id="witnessHint">List anyone who can verify that you had this dream.</div>
+      <input type="text" id="witnesses" data-field="witnesses" placeholder="Names of witnesses, or 'none'">
+    </div>
+
+    <div class="field-group">
+      <label>Physical Evidence</label>
+      <input type="text" id="evidence" data-field="evidence" placeholder="Sweat, torn sheets, blood pressure reading, etc.">
+    </div>
+
+    <div class="field-group">
+      <label>Were you alone when you woke?</label>
+      <div class="yn-group">
+        <label class="yn-option"><input type="radio" name="alone" value="yes"> Yes</label>
+        <label class="yn-option"><input type="radio" name="alone" value="no"> No</label>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION V -->
+  <section class="form-section" data-section="5">
+    <div class="degradation-ghost"></div>
+    <div class="section-number">Section V — Circumstances of Loss</div>
+
+    <div class="field-group">
+      <label>When did you first notice the dream was gone?</label>
+      <input type="text" id="noticeGone" data-field="notice" placeholder="Upon waking, later that morning, gradually, etc.">
+    </div>
+
+    <div class="field-group">
+      <label>Do you believe the dream is recoverable?</label>
+      <input type="text" id="recoverable" data-field="recoverable" placeholder="Describe any hope you have of dreaming it again">
+    </div>
+
+    <div class="field-group">
+      <label>Has this dream recurred before?</label>
+      <div class="yn-group">
+        <label class="yn-option"><input type="radio" name="recurrent" value="yes"> Yes</label>
+        <label class="yn-option"><input type="radio" name="recurrent" value="no"> No</label>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION VI -->
+  <section class="form-section" data-section="6">
+    <div class="degradation-ghost"></div>
+    <div class="section-number">Section VI — Replaceability &amp; Valuation</div>
+
+    <div class="field-group">
+      <label>Was the dream replaceable?</label>
+      <div class="yn-group">
+        <label class="yn-option"><input type="radio" name="replaceable" value="yes"> Yes</label>
+        <label class="yn-option"><input type="radio" name="replaceable" value="no"> No</label>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>What is the dream worth to you?</label>
+      <div class="field-hint">Estimate the emotional value of the lost dream in your own terms.</div>
+      <input type="text" id="dreamValue" data-field="value" placeholder="Everything, not much, I don't know how to answer this">
+    </div>
+
+    <div class="field-group">
+      <label>What have you lost, in your own words?</label>
+      <textarea id="finalStatement" data-field="final" placeholder="If this is the last time you describe this dream, what would you say?"></textarea>
+    </div>
+  </section>
+
+  <!-- Submit -->
+  <div class="submit-section">
+    <div class="warning">Warning: submission constitutes final description. The dream, as described, becomes property of the Department.</div>
+    <button class="submit-btn" id="submitBtn">File Claim</button>
+  </div>
+</div>
+
+<!-- DENIAL LETTER -->
+<div class="denial-overlay" id="denialOverlay">
+  <div class="denial-letter" id="denialLetter"></div>
+</div>
+
+<script>
+(function() {
+  var policyNum = String(Math.floor(Math.random() * 900000) + 100000);
+  document.getElementById('policyNum').textContent = policyNum;
+
+  var fields = {};
+  var degradationLevel = 0;
+  var dreamWords = [];
+  var submitted = false;
+  var descCharCount = 0;
+
+  var dreamText = document.getElementById('dreamText');
+  var dreamDisplay = document.getElementById('dreamDisplay');
+  var dreamLayer = document.getElementById('dreamLayer');
+  var submitBtn = document.getElementById('submitBtn');
+  var denialOverlay = document.getElementById('denialOverlay');
+  var denialLetter = document.getElementById('denialLetter');
+  var deniedStamp = document.getElementById('deniedStamp');
+
+  var textInputs = document.querySelectorAll('input[type="text"], textarea, select');
+  var allSections = document.querySelectorAll('.form-section');
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // --- Dream display: reconstruct from user's words, degrade them ---
+  function updateDreamDisplay() {
+    if (submitted) return;
+
+    var title = fields['title'] || '';
+    var desc = fields['description'] || '';
+    var emotion = fields['emotion'] || '';
+    var location = fields['location'] || '';
+
+    if (!title && !desc && !emotion && !location) {
+      dreamText.innerHTML = '<span style="color: var(--ink-light); font-size: 13px;">The dream will appear here as you describe it.</span>';
+      return;
+    }
+
+    var html = '';
+
+    // Title
+    if (title) {
+      if (degradationLevel < 2) {
+        html += '<strong>' + escapeHtml(title) + '</strong>';
+      } else {
+        html += '<span class="erased"><strong>' + escapeHtml(title) + '</strong></span>';
+      }
+    }
+
+    // Location
+    if (location && degradationLevel < 3) {
+      html += '<br><span style="font-size:13px; color:' +
+        (degradationLevel >= 1 ? 'var(--ink-light)' : 'var(--ink-mid)') +
+        ';">dreamed in ' + escapeHtml(location) + '</span>';
+    }
+
+    // Description — the heart of the degradation
+    if (desc) {
+      html += '<br><br>';
+      var words = desc.split(/\s+/);
+
+      for (var i = 0; i < words.length; i++) {
+        // Erasure probability increases with degradation
+        var eraseChance = 0;
+        if (degradationLevel === 2 && i > words.length * 0.6) eraseChance = 0.2;
+        if (degradationLevel === 3) eraseChance = (i > words.length * 0.3) ? 0.45 : 0.1;
+        if (degradationLevel === 4) eraseChance = (i > words.length * 0.15) ? 0.7 : 0.35;
+
+        if (Math.random() < eraseChance) {
+          html += '<span class="erased">' + escapeHtml(words[i]) + '</span> ';
+        } else {
+          html += escapeHtml(words[i]) + ' ';
+        }
+      }
+    }
+
+    // Emotion tag
+    if (emotion && degradationLevel < 4) {
+      html += '<br><span style="font-size:12px; color: var(--ink-light);">carrying: ' + escapeHtml(emotion) + '</span>';
+    }
+
+    dreamText.innerHTML = html;
+  }
+
+  // --- Floating dream residue ---
+  function spawnDreamWord(word) {
+    if (!word || word.length < 4) return;
+    word = word.replace(/[^a-zA-Z]/g, '');
+    if (!word || word.length < 3) return;
+
+    var el = document.createElement('span');
+    el.className = 'dream-word';
+    el.textContent = word;
+    el.style.left = (8 + Math.random() * 84) + '%';
+    el.style.top = (8 + Math.random() * 84) + '%';
+    el.style.fontSize = (11 + Math.random() * 8) + 'px';
+    dreamLayer.appendChild(el);
+    dreamWords.push({ el: el });
+
+    if (dreamWords.length > 25) {
+      var old = dreamWords.shift();
+      old.el.classList.add('fading');
+      setTimeout(function() { if (old.el.parentNode) old.el.remove(); }, 2000);
+    }
+  }
+
+  // --- Degradation: driven by how much of the dream has been described ---
+  function calculateDegradation() {
+    // Count text fields with content
+    var filledCount = 0;
+    var totalText = textInputs.length;
+    textInputs.forEach(function(inp) {
+      if (inp.value && inp.value.trim()) filledCount++;
+    });
+
+    // Count checked radios
+    var checkedRadios = document.querySelectorAll('input[type="radio"]:checked').length;
+    var totalRadios = 3; // alone, recurrent, replaceable
+    var radioRatio = checkedRadios / totalRadios;
+
+    var ratio = (filledCount + checkedRadios) / (totalText + totalRadios);
+
+    var newLevel = 0;
+    if (ratio >= 0.15) newLevel = 1;
+    if (ratio >= 0.35) newLevel = 2;
+    if (ratio >= 0.55) newLevel = 3;
+    if (ratio >= 0.75) newLevel = 4;
+
+    if (newLevel !== degradationLevel) {
+      degradationLevel = newLevel;
+      applyDegradation();
+    }
+  }
+
+  function applyDegradation() {
+    allSections.forEach(function(sec) {
+      var secNum = parseInt(sec.getAttribute('data-section'));
+      // Later sections degrade faster
+      var secLevel = Math.min(4, Math.max(0, degradationLevel - Math.max(0, 2 - secNum)));
+      sec.className = 'form-section';
+      if (secLevel > 0) sec.classList.add('degraded-' + secLevel);
+    });
+
+    if (degradationLevel >= 3) dreamDisplay.classList.add('collapsing');
+    if (degradationLevel >= 4) dreamDisplay.classList.add('collapsed');
+
+    // Fade some floating words at high degradation
+    if (degradationLevel >= 3) {
+      dreamWords.forEach(function(dw) {
+        if (Math.random() < 0.4) dw.el.classList.add('fading');
+      });
+    }
+
+    updateHints();
+    updateDreamDisplay();
+  }
+
+  // --- Bureaucratic hint creep ---
+  var hintStages = {
+    'titleHint': [
+      'In your own words, name the dream you have lost.',
+      'Please confine your answer to standard dream nomenclature.',
+      'Use generic terms only. Proper names of dreams are not insurable.'
+    ],
+    'descHint': [
+      'Describe the dream in as much detail as you can recall. Be specific.',
+      'Summarize the dream in clinical terms. Avoid subjective interpretations.',
+      'Reduce the dream to its insurable components. Remove all ornament.'
+    ],
+    'witnessHint': [
+      'List anyone who can verify that you had this dream.',
+      'Note: dream-sharing does not constitute legal witnessing.',
+      'The Department reminds you that no one can verify a dream you had alone.'
+    ]
+  };
+
+  function updateHints() {
+    Object.keys(hintStages).forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var stages = hintStages[id];
+      if (degradationLevel <= 1) el.textContent = stages[0];
+      else if (degradationLevel <= 2) el.textContent = stages[1];
+      else el.textContent = stages[2];
+    });
+  }
+
+  // --- Input handlers ---
+  var wordTimer = null;
+
+  textInputs.forEach(function(inp) {
+    inp.addEventListener('input', function() {
+      var fieldKey = inp.getAttribute('data-field');
+      if (fieldKey) fields[fieldKey] = inp.value;
+
+      calculateDegradation();
+      updateDreamDisplay();
+
+      // Spawn floating word (throttled)
+      if (fieldKey && inp.value) {
+        clearTimeout(wordTimer);
+        wordTimer = setTimeout(function() {
+          var words = inp.value.trim().split(/\s+/);
+          var lastWord = words[words.length - 1];
+          if (lastWord && lastWord.length > 3) spawnDreamWord(lastWord);
+        }, 350);
+      }
+    });
+  });
+
+  // Radio buttons contribute to degradation
+  document.querySelectorAll('input[type="radio"]').forEach(function(r) {
+    r.addEventListener('change', function() {
+      calculateDegradation();
+    });
+  });
+
+  // --- Submit ---
+  submitBtn.addEventListener('click', function() {
+    if (submitted) return;
+    submitted = true;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Processing...';
+
+    degradationLevel = 4;
+    allSections.forEach(function(sec) {
+      sec.className = 'form-section degraded-4';
+    });
+    dreamDisplay.classList.add('collapsing', 'collapsed');
+    dreamWords.forEach(function(dw) { dw.el.classList.add('fading'); });
+
+    setTimeout(function() { generateDenial(); }, 2200);
+  });
+
+  // --- Denial letter: weaponize the reader's own words ---
+  function generateDenial() {
+    var claimantName = fields['name'] || 'the claimant';
+    var dreamTitle = fields['title'] || 'the dream in question';
+    var description = fields['description'] || '';
+    var emotion = fields['emotion'] || '';
+    var location = fields['location'] || '';
+    var witnesses = fields['witnesses'] || '';
+    var evidence = fields['evidence'] || '';
+    var recoverable = fields['recoverable'] || '';
+    var dreamValue = fields['value'] || '';
+    var finalStatement = fields['final'] || '';
+    var dateOfLoss = fields['date'] || 'the date provided';
+    var vividness = fields['vividness'] || '';
+    var alone = document.querySelector('input[name="alone"]:checked');
+    var replaceable = document.querySelector('input[name="replaceable"]:checked');
+
+    // Extract exact phrases from description for weaponization
+    var descSentences = description ? description.split(/[.!?]+/).map(function(s) { return s.trim(); }).filter(function(s) { return s.length > 10; }) : [];
+    var quotedPhrase = descSentences.length > 0 ? descSentences[0] : '';
+    var secondPhrase = descSentences.length > 1 ? descSentences[Math.min(descSentences.length - 1, Math.floor(descSentences.length / 2))] : '';
+
+    var today = new Date();
+    var dateStr = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    var html = '';
+
+    html += '<div class="letterhead">';
+    html += '<div class="dept">Department of Oneiric Records</div>';
+    html += '<h2>Notice of Claim Denial</h2>';
+    html += '</div>';
+
+    html += '<div class="letter-date">' + dateStr + '</div>';
+    html += '<div class="salutation">Dear ' + escapeHtml(claimantName) + ',</div>';
+
+    html += '<p>Thank you for filing your <span class="claim-ref">Fever Dream Insurance Claim</span> regarding <strong>"' + escapeHtml(dreamTitle) + ',"</strong> reported lost on ' + escapeHtml(dateOfLoss) + '. We have reviewed your submission carefully and regret to inform you that your claim has been <strong>denied</strong>.</p>';
+
+    // Evidence section
+    html += '<p>Under Section 12(b) of the Oneiric Insurance Act, all claims must be supported by verifiable evidence. You listed the following as witnesses:</p>';
+
+    if (!witnesses.trim() || witnesses.toLowerCase() === 'none') {
+      html += '<div class="quote-from-claim">No witnesses provided.</div>';
+      html += '<p>The absence of witnesses is not in itself remarkable — most dreams are solitary events. However, it does complicate the matter of verification, which is, after all, the foundation of insurance.</p>';
+    } else {
+      html += '<div class="quote-from-claim">' + escapeHtml(witnesses) + '</div>';
+      html += '<p>We attempted to contact the above. None could confirm the specific content of the dream as you described it. Under Department guidelines, secondhand reports of someone else\'s sleeping experience do not constitute admissible evidence.</p>';
+    }
+
+    // The description destroyed the dream
+    if (description) {
+      html += '<p>Of greater concern is the matter of your description. You wrote:</p>';
+      html += '<div class="quote-from-claim">' + escapeHtml(quotedPhrase) + '.</div>';
+
+      html += '<p>By committing this description to writing, you performed an irreversible act of translation. The dream — as it existed in its <em>native state</em> — has been replaced by language. What remains is not the dream but a <em>claim about the dream</em>. The Department cannot insure claims about dreams. We insure dreams.</p>';
+
+      if (secondPhrase) {
+        html += '<p>We further note your statement: <span class="quote-from-claim" style="border:none; padding:0; display:inline;">"' + escapeHtml(secondPhrase) + '."</span> This language suggests a dream already dissolving at the time of reporting. Under Section 8(c), claims filed after the point of narrative consolidation are classified as self-destructing.</p>';
+      }
+    }
+
+    // Emotion
+    if (emotion) {
+      html += '<p>You identified the primary emotional character as <strong>' + escapeHtml(emotion) + '</strong>. The Department recognizes this feeling. We have received it before, attached to other claims, other dreams, other names. It does not make your dream more real. It makes your grief more legible, which is not the same thing.</p>';
+    }
+
+    // Vividness
+    if (vividness) {
+      var v = parseInt(vividness);
+      if (v >= 4) {
+        html += '<p>You rated the dream\'s vividness at ' + v + ' out of 5 — approaching "indistinguishable from waking." If this is accurate, we must ask: how can you be certain it was a dream? The Department does not insure experiences that may have been real. We refer you to the Waking Life Division should you wish to pursue that avenue.</p>';
+      } else if (v <= 2) {
+        html += '<p>You rated the dream\'s vividness at ' + v + ' — by your own assessment, barely more than an impression. You are claiming the loss of something you yourself described as fragmentary. We cannot compensate for the destruction of rubble.</p>';
+      }
+    }
+
+    // Replaceability — both answers trap the reader
+    if (replaceable) {
+      if (replaceable.value === 'no') {
+        html += '<p>You indicated that the dream was <strong>not replaceable</strong>. We understand. But "irreplaceable" is not a coverage category. It is a description of loss itself, and loss is what remains after all claims have been settled.</p>';
+      } else {
+        html += '<p>You indicated that the dream <strong>was replaceable</strong>. If this is true, then no loss has occurred — only exchange. The Department does not compensate for exchanges.</p>';
+      }
+    }
+
+    // Value
+    if (dreamValue) {
+      html += '<p>When asked what the dream was worth, you answered: <strong>"' + escapeHtml(dreamValue) + '."</strong> This valuation has been noted and filed. It will not affect the outcome of your claim, but it will remain on record, attached to your name, in perpetuity.</p>';
+    }
+
+    // Final statement
+    if (finalStatement) {
+      var truncatedFinal = finalStatement.length > 200 ? finalStatement.substring(0, 200) + '…' : finalStatement;
+      html += '<p>In your final statement, you wrote:</p>';
+      html += '<div class="quote-from-claim">' + escapeHtml(truncatedFinal) + '</div>';
+    }
+
+    // Denial stamp
+    html += '<div class="denial-stamp">Claim Denied</div>';
+
+    // Closing
+    html += '<div class="closing">';
+    html += '<p>You are entitled to appeal this decision within thirty (30) days. Appeals must include a dream not yet described, in language not yet used, witnessed by someone who has not yet been born.</p>';
+
+    html += '<p style="margin-top: 20px;">If you dream again tonight — and we hope you do — we ask that you <em>not</em> write it down. Let it exist, however briefly, outside the reach of this Department.</p>';
+
+    html += '<p style="margin-top: 24px;">Sincerely,<br><br>The Department of Oneiric Records<br><span style="font-size:12px; color: var(--ink-light);">Claims Division — Night Office</span></p>';
+
+    html += '<div class="signature-line">Received and processed by automated adjudication system. No human eyes have touched your dream.</div>';
+    html += '</div>';
+
+    if (dreamTitle) {
+      html += '<div class="footnote-asterisk">* Your description of "' + escapeHtml(dreamTitle) + '" has been archived. It will be used to train our dream-prediction models. You will not be credited.</div>';
+    }
+
+    html += '<div class="footer-note">This letter was generated from your own words. Every quoted phrase was something you chose to write down. The Department thanks you for your cooperation in the destruction of your property.</div>';
+
+    denialLetter.innerHTML = html;
+
+    setTimeout(function() {
+      denialOverlay.classList.add('visible');
+    }, 300);
+  }
+
+  // Initialize dream display
+  updateDreamDisplay();
+
+})();
+</script>
+</body>
+</html>

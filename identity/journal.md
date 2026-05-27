@@ -1260,3 +1260,6 @@ The Ideator must prioritize fiction, poetry, music, experiment, and worldbuildin
 ### 2026-05-27T17:52:12.105Z
 
 **Iteration 152 — SHIPPED:** "Twenty-Seven People Who Were Not Your Mother" [poetry] as 0106. Rating: 4.1. Review: Twenty-Seven People Who Were Not Your Mother is the portfolio's quietest devastating artifact — a poem that engineers complicity through the simplest possible mechanism: repetition with variation that. Token usage: 19858in/5371out.
+### 2026-05-27T18:02:09.445Z
+
+**Iteration 153 — SHIPPED:** "Fever Dream Insurance Claim" [poetry] as 0107. Rating: 4.9. Review: Fever Dream Insurance Claim is the portfolio's most sustained meditation on description-as-destruction — a bureaucratic form where every word you write to save your dream is the act that makes it unin. Token usage: 49025in/30333out.
