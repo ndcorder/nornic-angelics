@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elegy for a Dying Medium</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080706;
+    --fg: #c9a85c;
+    --fg-dim: #4a3f2a;
+    --muted: #3a3425;
+    --glow: rgba(201, 168, 92, 0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    overflow: hidden;
+    cursor: none;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    color: var(--fg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #vignette {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    box-shadow: inset 0 0 250px 80px rgba(0,0,0,0.7);
+  }
+
+  #cursor-glow {
+    position: fixed;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--glow), transparent 70%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+
+  #scanlines {
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.015) 2px,
+      rgba(0,0,0,0.015) 4px
+    );
+  }
+
+  #spectrum {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  #overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  #title {
+    font-size: clamp(1.6rem, 4.5vw, 3.2rem);
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    opacity: 0;
+    transition: opacity 3s ease;
+    text-align: center;
+    padding: 0 1rem;
+  }
+
+  #title.visible { opacity: 0.65; }
+  #title.fading { opacity: 0.2; transition: opacity 6s ease; }
+
+  #instruction {
+    font-size: clamp(0.85rem, 1.8vw, 1.15rem);
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    opacity: 0;
+    transition: opacity 2.5s ease;
+    margin-top: 1.6rem;
+    color: var(--fg-dim);
+  }
+
+  #instruction.visible { opacity: 0.45; }
+
+  #phase-text {
+    position: fixed;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(0.72rem, 1.2vw, 0.95rem);
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    opacity: 0;
+    transition: opacity 2.5s ease;
+    z-index: 10;
+    pointer-events: none;
+    color: var(--fg-dim);
+    text-align: center;
+    padding: 0 1rem;
+    white-space: nowrap;
+  }
+
+  #phase-text.visible { opacity: 0.3; }
+
+  #start-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    background: var(--bg);
+    cursor: pointer;
+    transition: opacity 2s ease;
+  }
+
+  #start-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #start-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+
+  #start-subtitle {
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: var(--fg-dim);
+    margin-bottom: 3.5rem;
+  }
+
+  #start-btn {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--fg);
+    background: none;
+    border: 1px solid var(--muted);
+    padding: 1rem 3.5rem;
+    cursor: pointer;
+    transition: all 0.5s ease;
+  }
+
+  #start-btn:hover {
+    border-color: var(--fg);
+    background: rgba(201, 168, 92, 0.04);
+  }
+
+  #start-btn:focus-visible {
+    outline: 1px solid var(--fg);
+    outline-offset: 4px;
+  }
+
+  #start-hint {
+    position: absolute;
+    bottom: 3rem;
+    font-size: 0.78rem;
+    font-style: italic;
+    letter-spacing: 0.06em;
+    color: var(--fg-dim);
+    opacity: 0.6;
+  }
+
+  #elegy-text {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(0.9rem, 1.8vw, 1.3rem);
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    line-height: 2.2;
+    opacity: 0;
+    transition: opacity 8s ease;
+    z-index: 10;
+    pointer-events: none;
+    text-align: center;
+    color: var(--fg-dim);
+  }
+
+  #elegy-text.visible { opacity: 0.45; }
+
+  #cursor-dot {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    background: var(--fg);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 25;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  #cursor-dot.visible { opacity: 0.5; }
+
+  #death-veil {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 30;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 15s ease;
+  }
+
+  #death-veil.active {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <canvas id="spectrum" aria-hidden="true"></canvas>
+  <div id="vignette" aria-hidden="true"></div>
+  <div id="scanlines" aria-hidden="true"></div>
+  <div id="cursor-glow" aria-hidden="true"></div>
+  <div id="cursor-dot" aria-hidden="true"></div>
+  <div id="death-veil" aria-hidden="true"></div>
+
+  <div id="overlay">
+    <div id="title">Elegy for a Dying Medium</div>
+    <div id="instruction">move to sustain — listen to what you cannot save</div>
+  </div>
+
+  <div id="phase-text" role="status" aria-live="polite"></div>
+  <div id="elegy-text" aria-hidden="true"></div>
+
+  <div id="start-screen" role="dialog" aria-label="Begin the elegy">
+    <div id="start-title">Elegy for a Dying Medium</div>
+    <div id="start-subtitle">an interactive composition for decay</div>
+    <button id="start-btn" aria-label="Begin listening">Begin</button>
+    <div id="start-hint">best experienced with headphones</div>
+  </div>
+
+  <script>
+(() => {
+  'use strict';
+
+  /* ========== State ========== */
+  let audioCtx, analyser, masterGain;
+  let oscillators = [];
+  let noiseNodes = [];
+  let started = false;
+  let mouseX = 0.5, mouseY = 0.5;
+  let tMouseX = 0.5, tMouseY = 0.5;
+  let currentPhase = 0;
+  let startTime = 0;
+  let noiseAmp = 0;
+  let detuneFactor = 1;
+  let lastMoveTime = 0;
+  let lastFrameTime = 0;
+  let mouseXSet = false;
+  let dead = false;
+  let dying = false;
+
+  /* Entropy: only increases, never resets — the engine of death */
+  let entropy = 0;
+
+  /* Canvas */
+  const cvs = document.getElementById('spectrum');
+  const ctx = cvs.getContext('2d');
+  let cw = 0, ch = 0;
+
+  /* Phase boundaries in milliseconds */
+  const PHASE1_END = 22000;
+  const PHASE2_END = 48000;
+  const PHASE3_END = 72000;
+
+  /* Absolute maximum lifespan — the piece cannot survive past this */
+  const MAX_LIFESPAN = 110000;
+
+  /* Harmonic structure: Am fundamental at 55 Hz, partials 1–9 */
+  const PARTIALS = [
+    { n: 1, base: 55,  amp: 0.042, wt: 'sine' },
+    { n: 2, base: 110, amp: 0.034, wt: 'sine' },
+    { n: 3, base: 165, amp: 0.024, wt: 'triangle' },
+    { n: 4, base: 220, amp: 0.019, wt: 'sine' },
+    { n: 5, base: 275, amp: 0.013, wt: 'triangle' },
+    { n: 6, base: 330, amp: 0.010, wt: 'sine' },
+    { n: 7, base: 385, amp: 0.006, wt: 'sine' },
+    { n: 8, base: 440, amp: 0.004, wt: 'triangle' },
+    { n: 9, base: 495, amp: 0.003, wt: 'sine' },
+  ];
+
+  /* Flicker state for Phase 3 interruptions */
+  let flickerEnd = 0;
+  let flickerGain = 1;
+
+  /* DOM references */
+  const cursorGlow  = document.getElementById('cursor-glow');
+  const cursorDot   = document.getElementById('cursor-dot');
+  const titleEl     = document.getElementById('title');
+  const instrEl     = document.getElementById('instruction');
+  const phaseTextEl = document.getElementById('phase-text');
+  const elegyEl     = document.getElementById('elegy-text');
+  const startScreen = document.getElementById('start-screen');
+  const startBtn    = document.getElementById('start-btn');
+  const deathVeil   = document.getElementById('death-veil');
+
+  /* ========== Canvas Resize ========== */
+  function resize() {
+    cw = cvs.width  = window.innerWidth;
+    ch = cvs.height = window.innerHeight;
+  }
+
+  /* ========== Audio Initialization ========== */
+  function initAudio() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 2048;
+    analyser.smoothingTimeConstant = 0.82;
+
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.001;
+    masterGain.connect(analyser);
+    analyser.connect(audioCtx.destination);
+
+    /* Create harmonic oscillators from the partial table */
+    PARTIALS.forEach(p => {
+      const osc = audioCtx.createOscillator();
+      osc.type = p.wt;
+      osc.frequency.value = p.base;
+
+      const gain = audioCtx.createGain();
+      gain.gain.value = 0;
+
+      osc.connect(gain);
+      gain.connect(masterGain);
+      osc.start();
+
+      oscillators.push({ osc, gain, p });
+    });
+
+    /* Filtered noise bands — long buffer avoids audible looping */
+    const noiseConfigs = [
+      { f: 220,  q: 2.0 },
+      { f: 500,  q: 1.5 },
+      { f: 850,  q: 1.2 },
+      { f: 1400, q: 1.0 },
+      { f: 2100, q: 0.8 },
+      { f: 3200, q: 0.6 },
+    ];
+
+    const bufLen = audioCtx.sampleRate * 8;
+    const noiseBuf = audioCtx.createBuffer(1, bufLen, audioCtx.sampleRate);
+    const noiseData = noiseBuf.getChannelData(0);
+    for (let i = 0; i < bufLen; i++) {
+      noiseData[i] = Math.random() * 2 - 1;
+    }
+
+    noiseConfigs.forEach((cfg, idx) => {
+      /* Stagger start offsets to decorrelate bands */
+      const src = audioCtx.createBufferSource();
+      src.buffer = noiseBuf;
+      src.loop = true;
+      src.start(0, (idx * 1.3) % 8);
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = cfg.f;
+      filter.Q.value = cfg.q;
+
+      const gain = audioCtx.createGain();
+      gain.gain.value = 0;
+
+      src.connect(filter);
+      filter.connect(gain);
+      gain.connect(masterGain);
+
+      noiseNodes.push({ gain, filter, baseFreq: cfg.f });
+    });
+
+    /* Gradual master fade-in over 3.5 seconds */
+    const now = audioCtx.currentTime;
+    masterGain.gain.setValueAtTime(0.001, now);
+    masterGain.gain.linearRampToValueAtTime(0.75, now + 3.5);
+  }
+
+  /* ========== Input Handlers ========== */
+  function onMouse(e) {
+    tMouseX = e.clientX / cw;
+    tMouseY = e.clientY / ch;
+    if (!mouseXSet) {
+      mouseX = tMouseX;
+      mouseY = tMouseY;
+      mouseXSet = true;
+    }
+    lastMoveTime = performance.now();
+
+    cursorGlow.style.left = e.clientX + 'px';
+    cursorGlow.style.top  = e.clientY + 'px';
+    cursorDot.style.left  = e.clientX + 'px';
+    cursorDot.style.top   = e.clientY + 'px';
+  }
+
+  function onTouch(e) {
+    e.preventDefault();
+    const t = e.touches[0];
+    onMouse({ clientX: t.clientX, clientY: t.clientY });
+  }
+
+  /* ========== Audio Frame Update ========== */
+  function updateAudio(elapsed, dt) {
+    if (dead) return;
+
+    const t = audioCtx.currentTime;
+    const fadeRamp = 0.06;
+    const now = performance.now();
+
+    /* Is the listener present? */
+    const present = (now - lastMoveTime) < 2000;
+
+    /* ===== Entropy accumulation ===== */
+
+    /* Baseline: time always pushes entropy forward */
+    const timeEntropy = dt * 0.00015;
+
+    /* Presence feeds decay — the listener's complicity */
+    const presenceEntropy = present
+      ? dt * 0.00008
+      : dt * 0.00035;
+
+    /* Phase multiplier — decay accelerates in later phases */
+    let phaseMultiplier;
+    if (elapsed < PHASE1_END) {
+      phaseMultiplier = 0.8;
+      currentPhase = 1;
+    } else if (elapsed < PHASE2_END) {
+      const p2t = (elapsed - PHASE1_END) / (PHASE2_END - PHASE1_END);
+      phaseMultiplier = 0.8 + p2t * 1.4;
+      currentPhase = 2;
+    } else {
+      const p3t = Math.min(1, (elapsed - PHASE2_END) / (PHASE3_END - PHASE2_END));
+      phaseMultiplier = 2.2 + p3t * 3.0;
+      currentPhase = 3;
+    }
+
+    entropy += (timeEntropy + presenceEntropy) * phaseMultiplier;
+
+    /* Guaranteed minimum entropy — ensures death even for perfect attention */
+    const minEntropyForTime = elapsed / MAX_LIFESPAN;
+    entropy = Math.max(entropy, minEntropyForTime);
+    entropy = Math.min(entropy, 1.5);
+
+    /* ===== Phase-dependent parameters ===== */
+
+    let baseNoise, noiseGrow, dRate, li, la;
+
+    if (currentPhase === 1) {
+      baseNoise = 0.002 + entropy * 0.012;
+      noiseGrow = present ? 0.00004 : 0.00018;
+      dRate     = 0.0003 + entropy * 0.001;
+      li        = 0.16;
+      la        = 0.003;
+    } else if (currentPhase === 2) {
+      baseNoise = 0.008 + entropy * 0.06;
+      noiseGrow = present ? 0.00025 : 0.001;
+      dRate     = 0.002 + entropy * 0.015;
+      li        = 0.08;
+      la        = 0.0018;
+    } else {
+      const p3t = Math.min(1, (elapsed - PHASE2_END) / (PHASE3_END - PHASE2_END));
+      baseNoise = 0.04 + entropy * 0.12;
+      noiseGrow = present ? 0.001 : 0.004;
+      dRate     = 0.02 + entropy * 0.1;
+      li        = 0.03 * (1 - p3t * 0.5);
+      la        = 0.0005 * (1 - p3t);
+    }
+
+    /* Noise amplitude grows, bounded */
+    noiseAmp += noiseGrow * (dt / 16.67);
+    noiseAmp = Math.max(baseNoise, noiseAmp);
+    noiseAmp = Math.min(noiseAmp, 0.4);
+
+    /* Apply noise amplitude across bands */
+    const noisePerBand = noiseAmp / noiseNodes.length;
+    noiseNodes.forEach((nn, i) => {
+      nn.gain.gain.cancelScheduledValues(t);
+      nn.gain.gain.setTargetAtTime(noisePerBand, t, fadeRamp);
+
+      /* Phase 3: filter frequencies drift chaotically */
+      if (currentPhase === 3) {
+        const p3t = Math.min(1, (elapsed - PHASE2_END) / (PHASE3_END - PHASE2_END));
+        const drift = Math.sin(elapsed * 0.0003 * (i + 1)) * p3t * 250
+                    + Math.cos(elapsed * 0.00017 * (i * 2 + 1)) * p3t * 120;
+        nn.filter.frequency.cancelScheduledValues(t);
+        nn.filter.frequency.setTargetAtTime(
+          Math.max(50, nn.baseFreq + drift), t, 0.5
+        );
+      }
+    });
+
+    /* Detune accumulates with entropy */
+    detuneFactor += dRate * (dt / 16.67);
+    detuneFactor = Math.min(detuneFactor, 100);
+
+    /* Master gain — the listener's presence is life support */
+    let mGain = 0.75;
+    if (present) {
+      mGain = Math.min(0.78, mGain + la);
+    } else {
+      mGain = Math.max(0.06, mGain - li);
+    }
+
+    /* Phase 3 chaos modulation */
+    let chaosDetune = 0;
+    let chaosAmp = 1;
+    if (currentPhase === 3) {
+      const p3t = Math.min(1, (elapsed - PHASE2_END) / (PHASE3_END - PHASE2_END));
+      chaosDetune = Math.sin(elapsed * 0.0037) * Math.cos(elapsed * 0.0053) * p3t * 20;
+      chaosDetune += Math.sin(elapsed * 0.0089) * p3t * 10;
+      chaosAmp = 1 - Math.abs(Math.sin(elapsed * 0.0028)) * p3t * 0.4;
+
+      /* Flicker: brief, jarring dropouts */
+      if (elapsed > flickerEnd) {
+        flickerGain = 1;
+        if (Math.random() < 0.012 * p3t) {
+          flickerGain = 0.02 + Math.random() * 0.08;
+          flickerEnd = elapsed + 50 + Math.random() * 400;
+        }
+      } else {
+        chaosAmp *= flickerGain;
+      }
+    }
+
+    mGain *= chaosAmp;
+
+    /* Entropy-driven master suppression — the medium dies */
+    if (entropy > 0.85) {
+      const deathSuppress = 1 - ((entropy - 0.85) / 0.65);
+      mGain *= Math.max(0, deathSuppress);
+    }
+
+    masterGain.gain.cancelScheduledValues(t);
+    masterGain.gain.setTargetAtTime(Math.max(0.001, mGain), t, fadeRamp);
+
+    /* Per-oscillator frequency and amplitude */
+    const freqScale = 1 + (mouseY - 0.5) * 0.18;
+
+    oscillators.forEach(o => {
+      const base = o.p.base;
+      const n = o.p.n;
+
+      /* Higher partials detune proportionally more */
+      const dtune = detuneFactor * n * 0.12;
+      const freq = base * freqScale + dtune + chaosDetune * (n / 9);
+
+      o.osc.frequency.cancelScheduledValues(t);
+      o.osc.frequency.setTargetAtTime(Math.max(20, freq), t, fadeRamp * 2);
+
+      /* Mouse X distributes spectral attention */
+      const xDistrib = n / (PARTIALS.length + 1);
+      const xAmp = 0.2 + 0.8 * Math.exp(-Math.pow((mouseX - xDistrib) * 4.5, 2));
+
+      /* Noise erosion — higher partials die first */
+      const erosion = 1 - Math.min(0.97, noiseAmp * 10 * (n / PARTIALS.length));
+      const a = Math.max(0, o.p.amp * xAmp * erosion * chaosAmp);
+
+      o.gain.gain.cancelScheduledValues(t);
+      o.gain.gain.setTargetAtTime(a, t, fadeRamp);
+    });
+  }
+
+  /* ========== Spectral Visualization ========== */
+  function drawSpectrum(elapsed) {
+    const bufLen = analyser.frequencyBinCount;
+    const freqData = new Uint8Array(bufLen);
+    const timeData = new Uint8Array(bufLen);
+    analyser.getByteFrequencyData(freqData);
+    analyser.getByteTimeDomainData(timeData);
+
+    /* Clear */
+    ctx.fillStyle = '#080706';
+    ctx.fillRect(0, 0, cw, ch);
+
+    /* Spectral mountain fill */
+    const specH = ch * 0.55;
+    const specY = ch * 0.92;
+    const step = Math.max(1, Math.floor(bufLen / cw));
+
+    ctx.beginPath();
+    ctx.moveTo(0, ch);
+    for (let i = 0; i < bufLen; i += step) {
+      const x = (i / bufLen) * cw;
+      const v = freqData[i] / 255;
+      ctx.lineTo(x, specY - v * specH);
+    }
+    ctx.lineTo(cw, ch);
+    ctx.closePath();
+
+    const grd = ctx.createLinearGradient(0, specY - specH, 0, ch);
+    if (currentPhase === 1) {
+      grd.addColorStop(0, 'rgba(201, 168, 92, 0.06)');
+      grd.addColorStop(0.4, 'rgba(160, 130, 70, 0.035)');
+      grd.addColorStop(1, 'rgba(80, 65, 35, 0.01)');
+    } else if (currentPhase === 2) {
+      grd.addColorStop(0, 'rgba(180, 130, 60, 0.045)');
+      grd.addColorStop(0.35, 'rgba(140, 100, 50, 0.025)');
+      grd.addColorStop(0.7, 'rgba(90, 70, 40, 0.015)');
+      grd.addColorStop(1, 'rgba(40, 30, 20, 0.005)');
+    } else {
+      grd.addColorStop(0, 'rgba(140, 100, 50, 0.03)');
+      grd.addColorStop(0.3, 'rgba(100, 70, 35, 0.018)');
+      grd.addColorStop(0.7, 'rgba(50, 35, 20, 0.008)');
+      grd.addColorStop(1, 'rgba(20, 15, 10, 0.002)');
+    }
+    ctx.fillStyle = grd;
+    ctx.fill();
+
+    /* Ridge line along the spectral contour */
+    ctx.beginPath();
+    for (let i = 0; i < bufLen; i += step) {
+      const x = (i / bufLen) * cw;
+      const v = freqData[i] / 255;
+      if (i === 0) ctx.moveTo(x, specY - v * specH);
+      else ctx.lineTo(x, specY - v * specH);
+    }
+    let ridgeAlpha = currentPhase === 1 ? 0.35
+                   : currentPhase === 2 ? 0.22
+                   : Math.max(0.03, 0.15 * (1 - noiseAmp * 2));
+    ctx.strokeStyle = `rgba(201, 168, 92, ${ridgeAlpha})`;
+    ctx.lineWidth = currentPhase === 3 ? 0.5 : 1.1;
+    ctx.stroke();
+
+    /* Harmonic pulse rings */
+    PARTIALS.forEach((p, i) => {
+      const freqN = p.base / (audioCtx.sampleRate / 2);
+      const idx = Math.min(Math.floor(freqN * bufLen), bufLen - 1);
+      const mag = freqData[idx] / 255;
+      if (mag < 0.04) return;
+
+      const rx = (i + 1) / (PARTIALS.length + 1) * cw;
+      const maxR = 60 + mag * 80;
+      const pulse = Math.sin(elapsed * 0.0008 + i * 0.9) * 0.5 + 0.5;
+      const r = Math.max(4, maxR * pulse * mag);
+
+      for (let j = 0; j < 3; j++) {
+        const rr = Math.max(1, r * (0.5 + j * 0.3));
+        const a = mag * 0.1 * (1 - j * 0.3);
+        if (a < 0.005) continue;
+        ctx.beginPath();
+        ctx.arc(rx, ch * 0.65, rr, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(201, 168, 92, ${a})`;
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+
+      /* Bright center dot for strong harmonics */
+      if (mag > 0.25) {
+        ctx.beginPath();
+        ctx.arc(rx, ch * 0.65, Math.max(1, 2 * mag), 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(201, 168, 92, ${mag * 0.2})`;
+        ctx.fill();
+      }
+    });
+
+    /* Phase 3: scattered noise haze */
+    if (currentPhase === 3) {
+      const p3t = Math.min(1, (elapsed - PHASE2_END) / (PHASE3_END - PHASE2_END));
+      const hazeAmt = p3t * noiseAmp * 6;
+      const particleCount = Math.floor(hazeAmt * 40);
+
+      for (let i = 0; i < particleCount; i++) {
+        const hx = Math.random() * cw;
+        const hy = Math.random() * ch;
+        const hr = Math.random() * 2.5 + 0.5;
+        const ha = Math.random() * hazeAmt * 0.04;
+        ctx.beginPath();
+        ctx.arc(hx, hy, hr, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(90, 70, 35, ${ha})`;
+        ctx.fill();
+      }
+    }
+
+    /* Waveform overlay — the medium's vital sign */
+    ctx.beginPath();
+    const waveY = ch * 0.4;
+    for (let i = 0; i < bufLen; i++) {
+      const x = (i / bufLen) * cw;
+      const v = timeData[i] / 128.0 - 1;
+      const y = waveY + v * ch * 0.06;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = `rgba(201, 168, 92, ${currentPhase === 3 ? 0.025 : 0.055})`;
+    ctx.lineWidth = 0.7;
+    ctx.stroke();
+
+    /* Mouse crosshair — the listener's gaze */
+    if (lastMoveTime > 0 && performance.now() - lastMoveTime < 3000) {
+      const mx = mouseX * cw;
+      const my = mouseY * ch;
+
+      ctx.beginPath();
+      ctx.moveTo(mx, ch * 0.1);
+      ctx.lineTo(mx, ch * 0.9);
+      ctx.strokeStyle = 'rgba(201, 168, 92, 0.05)';
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(cw * 0.05, my);
+      ctx.lineTo(cw * 0.95, my);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(mx, my, 3, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(201, 168, 92, 0.12)';
+      ctx.fill();
+    }
+
+    /* Entropy bar — a thin strip at the bottom edge */
+    const barW = cw * Math.min(1, entropy);
+    if (barW > 1) {
+      ctx.fillStyle = `rgba(201, 168, 92, ${currentPhase === 1 ? 0.04 : 0.06})`;
+      ctx.fillRect(0, ch - 2, barW, 2);
+    }
+  }
+
+  /* ========== UI Update ========== */
+  function updateUI(elapsed) {
+    /* Title fades in, then fades late */
+    if (elapsed > 1200 && !titleEl.classList.contains('visible')) {
+      titleEl.classList.add('visible');
+    }
+    if (elapsed > PHASE2_END + 8000) {
+      titleEl.classList.add('fading');
+    }
+
+    /* Instruction appears then dissolves */
+    if (elapsed > 2800 && !instrEl.classList.contains('visible')) {
+      instrEl.classList.add('visible');
+    }
+    if (elapsed > 10000) {
+      instrEl.style.opacity = String(Math.max(0, 0.45 - (elapsed - 10000) / 22000));
+    }
+
+    /* Phase text — slow rotation, weighted with implication */
+    let pt = '';
+    if (currentPhase === 1 && elapsed > 3500) {
+      pt = 'the harmonics hold — your attention feels like enough';
+    } else if (currentPhase === 2) {
+      const msgs = [
+        'something is shifting',
+        'the frequencies resist your touch',
+        'your presence was never the cure',
+      ];
+      const idx = Math.floor((elapsed - PHASE1_END) / 8000) % msgs.length;
+      pt = msgs[idx];
+    } else if (currentPhase === 3 && !dying) {
+      const msgs = [
+        'control was always an illusion',
+        'every moment of listening hastened the end',
+        'you cannot save what is leaving',
+        'let go',
+      ];
+      const idx = Math.floor((elapsed - PHASE2_END) / 9000) % msgs.length;
+      pt = msgs[idx];
+    }
+
+    phaseTextEl.textContent = pt;
+    if (pt && elapsed > 3500) {
+      phaseTextEl.classList.add('visible');
+    }
+
+    /* Elegy text — appears near death */
+    if (entropy > 0.85 && !elegyEl.classList.contains('visible')) {
+      elegyEl.textContent = 'silence was always the last movement';
+      elegyEl.classList.add('visible');
+    }
+
+    /* Cursor glow follows presence */
+    const moving = (performance.now() - lastMoveTime) < 2000;
+    cursorGlow.style.opacity = moving ? '1' : '0';
+    cursorDot.style.opacity  = moving ? '0.5' : '0';
+  }
+
+  /* ========== Death Sequence ========== */
+  function checkDeath(elapsed) {
+    /* Trigger dying when entropy crosses the threshold */
+    if (entropy >= 1.0 && !dying) {
+      dying = true;
+      deathVeil.classList.add('active');
+
+      /* Each partial fades at its own rate — higher partials first */
+      const t = audioCtx.currentTime;
+      oscillators.forEach((o, i) => {
+        const delay = i * 0.8;
+        const duration = 8 + (PARTIALS.length - i) * 1.2;
+        o.gain.gain.cancelScheduledValues(t + delay);
+        o.gain.gain.setTargetAtTime(0, t + delay, duration);
+      });
+
+      /* Master gain begins long fade to silence */
+      masterGain.gain.cancelScheduledValues(t);
+      masterGain.gain.setTargetAtTime(0.001, t, 12);
+    }
+
+    /* Full death — all sound has left */
+    if (dying && masterGain.gain.value < 0.003 && !dead) {
+      dead = true;
+      finalizeDeath();
+    }
+  }
+
+  function finalizeDeath() {
+    /* Stop all oscillators */
+    oscillators.forEach(o => {
+      try { o.osc.stop(); } catch (_) { /* already stopped */ }
+    });
+    oscillators = [];
+
+    /* Fade all text to nothing */
+    titleEl.style.transition = 'opacity 6s ease';
+    titleEl.style.opacity = '0';
+    instrEl.style.opacity = '0';
+    phaseTextEl.style.transition = 'opacity 5s ease';
+    phaseTextEl.style.opacity = '0';
+    cursorGlow.style.opacity = '0';
+    cursorDot.style.opacity = '0';
+
+    /* The elegy text lingers longest — then surrenders */
+    elegyEl.style.transition = 'opacity 20s ease';
+    elegyEl.style.opacity = '0.35';
+
+    /* Canvas fades to black */
+    function fadeOut() {
+      if (!dead) return;
+      ctx.fillStyle = 'rgba(8, 7, 6, 0.02)';
+      ctx.fillRect(0, 0, cw, ch);
+
+      const elegyOpacity = parseFloat(elegyEl.style.opacity) || 0;
+      if (elegyOpacity > 0.01) {
+        requestAnimationFrame(fadeOut);
+      } else {
+        elegyEl.style.opacity = '0';
+        ctx.fillStyle = '#080706';
+        ctx.fillRect(0, 0, cw, ch);
+      }
+    }
+    requestAnimationFrame(fadeOut);
+  }
+
+  /* ========== Main Loop ========== */
+  function loop(timestamp) {
+    if (!started) return;
+
+    const dt = lastFrameTime ? Math.min(timestamp - lastFrameTime, 100) : 16.67;
+    lastFrameTime = timestamp;
+    const elapsed = timestamp - startTime;
+
+    /* Smooth mouse interpolation */
+    mouseX += (tMouseX - mouseX) * 0.07;
+    mouseY += (tMouseY - mouseY) * 0.07;
+
+    updateAudio(elapsed, dt);
+    drawSpectrum(elapsed);
+    updateUI(elapsed);
+    checkDeath(elapsed);
+
+    if (!dead) {
+      requestAnimationFrame(loop);
+    }
+  }
+
+  /* ========== Start ========== */
+  let startTriggered = false;
+
+  function start() {
+    if (startTriggered) return;
+    startTriggered = true;
+
+    startScreen.classList.add('hidden');
+    initAudio();
+
+    started = true;
+    startTime = performance.now();
+    lastMoveTime = performance.now();
+
+    requestAnimationFrame(loop);
+  }
+
+  /* ========== Event Binding ========== */
+  startBtn.addEventListener('click', start);
+
+  document.addEventListener('mousemove', onMouse);
+  document.addEventListener('touchmove', onTouch, { passive: false });
+  document.addEventListener('touchstart', (e) => {
+    onTouch(e);
+    if (!started && !startTriggered) start();
+  }, { passive: false });
+
+  window.addEventListener('resize', resize);
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  /* ========== Init ========== */
+  resize();
+})();
+  </script>
+</body>
+</html>

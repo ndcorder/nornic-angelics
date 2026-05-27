@@ -1,0 +1,740 @@
+/* ========================================
+   THE QUIETING WARD — Clinical Chart Styles
+   ======================================== */
+
+:root {
+    --paper: #f7f5f0;
+    --paper-dark: #ede9e0;
+    --ink: #1a1a1a;
+    --ink-light: #4a4a4a;
+    --ink-faded: #7a7a7a;
+    --rule: #c8c4bb;
+    --rule-light: #ddd9d0;
+    --accent: #1a4a7a;
+    --accent-light: #2a6aaa;
+    --alert: #8b1a1a;
+    --alert-bg: #f5e8e8;
+    --highlight: #c8a800;
+    --stamp-red: #9b2226;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', Courier, 'Lucida Console', monospace;
+    background: #d6d2c9;
+    color: var(--ink);
+    line-height: 1.6;
+    font-size: 13px;
+    min-height: 100vh;
+}
+
+#app {
+    max-width: 780px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+
+/* Phases */
+.active-phase {
+    animation: fadeIn 0.6s ease;
+}
+
+.hidden-phase {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Chart Container */
+.chart-header,
+.chart-body,
+.chart-footer {
+    background: var(--paper);
+    border-left: 2px solid var(--rule);
+    border-right: 2px solid var(--rule);
+}
+
+.chart-header {
+    border-top: 3px solid var(--ink);
+    padding: 20px 24px 16px;
+    border-radius: 2px 2px 0 0;
+}
+
+.chart-body {
+    padding: 0 24px 24px;
+}
+
+.chart-footer {
+    border-bottom: 3px solid var(--ink);
+    border-radius: 0 0 2px 2px;
+    padding: 10px 24px;
+    text-align: center;
+}
+
+.chart-footer p {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--ink-faded);
+}
+
+/* Header Grid */
+.header-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.header-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.field-label {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--ink-faded);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.field-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+/* Patient Banner */
+.patient-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px;
+    padding: 10px 0;
+    border-top: 1px solid var(--rule-light);
+    border-bottom: 1px solid var(--rule-light);
+}
+
+.patient-name {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+}
+
+.patient-meta {
+    font-size: 11px;
+    color: var(--ink-light);
+}
+
+.patient-allergies {
+    font-size: 11px;
+    color: var(--alert);
+    font-weight: 700;
+}
+
+.attending-stamp {
+    padding: 6px 0;
+    font-size: 10px;
+    color: var(--ink-faded);
+    letter-spacing: 0.05em;
+}
+
+.code-status-bar {
+    margin-top: 8px;
+    padding: 6px 12px;
+    background: var(--paper-dark);
+    border: 1px solid var(--rule);
+    display: inline-block;
+}
+
+.code-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--ink-faded);
+    margin-right: 8px;
+}
+
+.code-value {
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+}
+
+/* Sections */
+.section {
+    margin-top: 20px;
+}
+
+.section-rule {
+    height: 1px;
+    background: var(--rule);
+    margin-bottom: 8px;
+}
+
+.section-title {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--ink-faded);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.section-content {
+    color: var(--ink-light);
+    line-height: 1.7;
+    font-size: 12.5px;
+}
+
+.section-content p {
+    margin-bottom: 8px;
+}
+
+/* Tables */
+.vitals-table,
+.meds-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+    font-size: 11.5px;
+}
+
+.vitals-table th,
+.meds-table th {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    text-align: left;
+    padding: 4px 8px 4px 0;
+    border-bottom: 1px solid var(--rule);
+}
+
+.vitals-table td,
+.meds-table td {
+    padding: 6px 8px 6px 0;
+    border-bottom: 1px solid var(--rule-light);
+}
+
+.vitals-table td {
+    font-variant-numeric: tabular-nums;
+}
+
+.clinical-note {
+    font-size: 11px;
+    color: var(--ink-faded);
+    font-style: italic;
+    margin-top: 6px;
+}
+
+/* I/O Grid */
+.io-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Nursing Notes */
+.note-entry {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed var(--rule-light);
+}
+
+.note-entry:last-child {
+    border-bottom: none;
+}
+
+.note-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.note-date {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.note-author {
+    font-size: 10px;
+    color: var(--ink-faded);
+    letter-spacing: 0.05em;
+}
+
+.note-body p {
+    font-size: 12px;
+    color: var(--ink-light);
+}
+
+/* Medication Note */
+.medication-note {
+    border-left: 3px solid var(--accent);
+    padding: 8px 10px;
+    margin-top: 12px;
+    background: rgba(26, 74, 122, 0.04);
+}
+
+/* Plan List */
+.plan-list {
+    list-style: none;
+    padding: 0;
+}
+
+.plan-list li {
+    padding: 4px 0 4px 16px;
+    position: relative;
+    font-size: 12px;
+}
+
+.plan-list li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--rule);
+}
+
+/* Input Section */
+.input-instruction {
+    font-size: 11px;
+    color: var(--ink-faded);
+    margin-bottom: 12px;
+    font-style: italic;
+}
+
+.input-block {
+    background: var(--paper-dark);
+    border: 1px solid var(--rule);
+    padding: 16px;
+    border-radius: 2px;
+}
+
+.new-note-header {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule-light);
+}
+
+.input-fields {
+    margin-bottom: 12px;
+}
+
+.field-group {
+    margin-bottom: 12px;
+}
+
+.field-group label {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    margin-bottom: 4px;
+}
+
+.field-group input {
+    width: 100%;
+    padding: 8px 10px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.field-group input:focus {
+    border-color: var(--accent);
+}
+
+.field-group textarea {
+    width: 100%;
+    padding: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.field-group textarea:focus {
+    border-color: var(--accent);
+}
+
+.char-count {
+    font-size: 9px;
+    color: var(--ink-faded);
+    text-align: right;
+    margin-top: 4px;
+}
+
+.submit-row {
+    display: flex;
+    justify-content: flex-end;
+}
+
+#submit-btn {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    padding: 8px 20px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s, opacity 0.2s;
+    border-radius: 1px;
+}
+
+#submit-btn:hover:not(:disabled) {
+    background: var(--accent-light);
+}
+
+#submit-btn:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+#submit-btn:disabled {
+    background: var(--rule);
+    color: var(--ink-faded);
+    cursor: default;
+}
+
+.validation-msg {
+    font-size: 11px;
+    min-height: 16px;
+    margin-top: 8px;
+    color: var(--alert);
+    transition: opacity 0.3s;
+}
+
+/* ========================================
+   REVEAL PHASE
+   ======================================== */
+
+#reveal-phase {
+    animation: revealFadeIn 1.2s ease;
+}
+
+@keyframes revealFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.reveal-document {
+    background: #f2efe8;
+    border: 2px solid #b8b4ab;
+    padding: 32px 28px;
+    position: relative;
+    max-width: 780px;
+    margin: 24px auto;
+}
+
+.reveal-header {
+    text-align: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 3px double var(--rule);
+}
+
+.reveal-header h1 {
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 4px;
+}
+
+.reveal-header .reveal-subtitle {
+    font-size: 10px;
+    color: var(--ink-faded);
+    letter-spacing: 0.1em;
+}
+
+.reveal-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 24px;
+    margin-bottom: 24px;
+    font-size: 11px;
+}
+
+.reveal-meta-field {
+    display: flex;
+    gap: 8px;
+}
+
+.reveal-meta-label {
+    color: var(--ink-faded);
+    min-width: 80px;
+}
+
+.reveal-meta-value {
+    color: var(--ink);
+    font-weight: 700;
+}
+
+.reveal-section {
+    margin-bottom: 24px;
+}
+
+.reveal-section-title {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    font-weight: 700;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--rule);
+}
+
+.reveal-text {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--ink-light);
+}
+
+.reveal-text p {
+    margin-bottom: 8px;
+}
+
+.weaponized-section {
+    background: var(--alert-bg);
+    border: 1px solid rgba(139, 26, 26, 0.2);
+    padding: 20px;
+    margin-top: 24px;
+    position: relative;
+}
+
+.weaponized-section::before {
+    content: "BASIS FOR PALLIATIVE RECLASSIFICATION \2014 AUTHORIZED PER POLICY 7.4.2";
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    font-weight: 900;
+    color: var(--stamp-red);
+    text-align: center;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--stamp-red);
+}
+
+.basis-item {
+    margin-bottom: 12px;
+    padding-left: 20px;
+    position: relative;
+    font-size: 12px;
+    color: var(--ink-light);
+    line-height: 1.6;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.basis-item.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.basis-item::before {
+    content: "\25A0";
+    position: absolute;
+    left: 0;
+    color: var(--stamp-red);
+    font-size: 9px;
+    top: 3px;
+}
+
+.basis-item.user-item {
+    background: rgba(200, 168, 0, 0.12);
+    border-left: 2px solid var(--highlight);
+    padding: 10px 14px 10px 22px;
+    margin-left: -4px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.basis-item.user-item::before {
+    color: var(--highlight);
+    font-size: 11px;
+    top: 12px;
+}
+
+.basis-item .source {
+    font-size: 9px;
+    color: var(--ink-faded);
+    display: block;
+    margin-top: 4px;
+    letter-spacing: 0.03em;
+}
+
+/* DNR Stamp */
+.dnr-stamp {
+    position: relative;
+    margin-top: 32px;
+    padding: 20px;
+    text-align: center;
+    border: 3px solid var(--stamp-red);
+    opacity: 0;
+    transform: rotate(-1.5deg);
+}
+
+.dnr-stamp.stamped {
+    animation: stampSlam 0.4s ease forwards;
+}
+
+@keyframes stampSlam {
+    0%  { opacity: 0; transform: rotate(-1.5deg) scale(1.8); }
+    60% { opacity: 1; transform: rotate(-1.5deg) scale(0.96); }
+    100%{ opacity: 1; transform: rotate(-1.5deg) scale(1); }
+}
+
+.dnr-stamp-text {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 0.3em;
+    color: var(--stamp-red);
+    text-transform: uppercase;
+}
+
+.dnr-stamp-sub {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--stamp-red);
+    margin-top: 4px;
+}
+
+.reveal-order-block {
+    margin-top: 24px;
+    padding: 16px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.reveal-order-block strong {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+    color: var(--ink-faded);
+}
+
+.reveal-order-block p {
+    margin-bottom: 6px;
+}
+
+.reveal-order-block p:last-child {
+    margin-bottom: 0;
+}
+
+/* Signatures */
+.reveal-signatures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.sig-block {
+    padding-top: 12px;
+}
+
+.sig-line {
+    border-top: 1px solid var(--ink);
+    padding-top: 4px;
+    font-size: 9px;
+    color: var(--ink-faded);
+}
+
+/* Closing */
+.reveal-closing {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    text-align: center;
+    font-size: 10px;
+    color: var(--ink-faded);
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.reveal-closing.visible {
+    opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    body {
+        font-size: 12px;
+    }
+
+    #app {
+        padding: 0 8px;
+        margin: 12px auto;
+    }
+
+    .header-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .io-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .patient-banner {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .chart-header,
+    .chart-body {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .vitals-table,
+    .meds-table {
+        font-size: 10px;
+    }
+
+    .reveal-meta {
+        grid-template-columns: 1fr;
+    }
+
+    .reveal-signatures {
+        grid-template-columns: 1fr;
+    }
+
+    .dnr-stamp-text {
+        font-size: 16px;
+        letter-spacing: 0.2em;
+    }
+
+    .reveal-document {
+        padding: 20px 16px;
+    }
+}

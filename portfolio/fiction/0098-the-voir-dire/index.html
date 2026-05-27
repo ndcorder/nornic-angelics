@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Voir Dire</title>
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #F4F1EC;
+      --text: #1A1A1A;
+      --muted: #6B6560;
+      --faint: #B8B2AA;
+      --accent: #3C1518;
+      --border: #D9D4CC;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: Georgia, 'Times New Roman', 'Noto Serif', serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 3rem 2rem;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    main {
+      width: 100%;
+      max-width: 600px;
+    }
+
+    /* ─── Cover ──────────────────────────────────── */
+
+    .cover {
+      text-align: center;
+      padding-top: 8vh;
+    }
+
+    .cover-title {
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 2.5rem;
+    }
+
+    .cover-text {
+      font-size: 0.95rem;
+      color: var(--muted);
+      max-width: 440px;
+      margin: 0 auto 2rem;
+      line-height: 1.9;
+    }
+
+    .cover-text p {
+      margin-bottom: 0.7em;
+    }
+
+    .proceed-btn {
+      background: none;
+      border: 1px solid var(--text);
+      padding: 0.75rem 2.8rem;
+      font-family: Georgia, serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .proceed-btn:hover {
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    .proceed-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    /* ─── Questionnaire ──────────────────────────── */
+
+    .questionnaire {
+      display: none;
+    }
+
+    .question {
+      display: none;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+      padding-top: 2rem;
+    }
+
+    .question.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 2rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .question-number {
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+
+    .progress-bar {
+      width: 60px;
+      height: 2px;
+      background: var(--border);
+      border-radius: 1px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--faint);
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+
+    .question-text {
+      font-size: 1.22rem;
+      font-weight: 400;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+      min-height: 3em;
+    }
+
+    .question-text .echo {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    /* ─── Radio Options ──────────────────────────── */
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 1.2rem;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease;
+      user-select: none;
+    }
+
+    .option:hover {
+      border-color: var(--muted);
+      background: rgba(0, 0, 0, 0.015);
+    }
+
+    .option.selected {
+      border-color: var(--text);
+      background: rgba(26, 26, 26, 0.035);
+    }
+
+    .option input {
+      display: none;
+    }
+
+    .radio-mark {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--muted);
+      border-radius: 50%;
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s ease;
+    }
+
+    .option.selected .radio-mark {
+      border-color: var(--text);
+    }
+
+    .radio-mark::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text);
+      transform: scale(0);
+      transition: transform 0.2s ease;
+    }
+
+    .option.selected .radio-mark::after {
+      transform: scale(1);
+    }
+
+    .option-text {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--muted);
+      transition: color 0.2s ease;
+    }
+
+    .option.selected .option-text {
+      color: var(--text);
+    }
+
+    /* ─── Text Input ─────────────────────────────── */
+
+    .text-input {
+      width: 100%;
+      border: none;
+      border-bottom: 1.5px solid var(--border);
+      background: transparent;
+      font-family: Georgia, serif;
+      font-size: 1.1rem;
+      padding: 0.8rem 0;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.3s ease, opacity 1.5s ease;
+      line-height: 1.6;
+      resize: none;
+    }
+
+    .text-input:focus {
+      border-bottom-color: var(--text);
+    }
+
+    .text-input::placeholder {
+      color: var(--faint);
+      font-style: italic;
+    }
+
+    .text-input.muted {
+      opacity: 0.2;
+    }
+
+    .text-input.absent {
+      opacity: 0;
+    }
+
+    /* ─── Checkbox Options ───────────────────────── */
+
+    .checkbox-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .checkbox-option {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.8rem 1.2rem;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+      user-select: none;
+    }
+
+    .checkbox-option:hover {
+      background: rgba(0, 0, 0, 0.018);
+    }
+
+    .checkbox-option.checked {
+      background: rgba(26, 26, 26, 0.03);
+      border-color: var(--border);
+    }
+
+    .checkbox-option input {
+      display: none;
+    }
+
+    .check-mark {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--faint);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .checkbox-option.checked .check-mark {
+      border-color: var(--text);
+      background: var(--text);
+    }
+
+    .check-mark::after {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 8px;
+      border: solid var(--bg);
+      border-width: 0 1.5px 1.5px 0;
+      transform: rotate(45deg) scale(0);
+      transition: transform 0.15s ease;
+      margin-top: -1px;
+    }
+
+    .checkbox-option.checked .check-mark::after {
+      transform: rotate(45deg) scale(1);
+    }
+
+    .checkbox-text {
+      font-size: 0.98rem;
+      color: var(--muted);
+      transition: color 0.2s ease;
+    }
+
+    .checkbox-option.checked .checkbox-text {
+      color: var(--text);
+    }
+
+    /* ─── Continue Button ────────────────────────── */
+
+    .continue-btn {
+      background: none;
+      border: none;
+      border-bottom: 1px solid var(--text);
+      font-family: Georgia, serif;
+      font-size: 0.88rem;
+      padding: 0.4rem 0;
+      cursor: pointer;
+      color: var(--text);
+      letter-spacing: 0.06em;
+      transition: opacity 0.3s ease, color 0.3s ease;
+      float: right;
+    }
+
+    .continue-btn:hover {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .continue-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+    }
+
+    .continue-btn:disabled {
+      opacity: 0.25;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .action-row {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      clear: both;
+    }
+
+    /* ─── End Screen ─────────────────────────────── */
+
+    .end-screen {
+      display: none;
+      opacity: 0;
+      transition: opacity 2.5s ease;
+      padding-top: 2rem;
+    }
+
+    .end-screen.visible {
+      opacity: 1;
+    }
+
+    .end-stamp {
+      font-size: 0.82rem;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--faint);
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .end-seal {
+      margin-top: 4rem;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 2s ease;
+    }
+
+    .end-seal.visible {
+      opacity: 1;
+    }
+
+    .seal-text {
+      font-size: 0.65rem;
+      letter-spacing: 0.55em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+
+    .end-void {
+      margin-top: 2.5rem;
+      text-align: center;
+      font-size: 0.6rem;
+      letter-spacing: 0.6em;
+      text-transform: uppercase;
+      color: rgba(184, 178, 170, 0.4);
+      opacity: 0;
+      transition: opacity 4s ease;
+    }
+
+    .end-void.visible {
+      opacity: 1;
+    }
+
+    /* ─── Cursor ─────────────────────────────────── */
+
+    .silence-cursor {
+      display: inline-block;
+      width: 1px;
+      height: 1.1em;
+      background: var(--faint);
+      margin-left: 2px;
+      vertical-align: text-bottom;
+      animation: blink 1.1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* ─── Responsive ─────────────────────────────── */
+
+    @media (max-width: 640px) {
+      body {
+        padding: 2rem 1.2rem;
+      }
+      .cover-title {
+        font-size: 1.4rem;
+        letter-spacing: 0.25em;
+      }
+      .question-text {
+        font-size: 1.1rem;
+      }
+      .option,
+      .checkbox-option {
+        padding: 0.8rem 1rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .question,
+      .end-screen,
+      .end-seal,
+      .end-void {
+        transition: none !important;
+      }
+      .silence-cursor {
+        animation: none;
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <!-- Cover -->
+    <section class="cover" id="cover" role="region" aria-label="Questionnaire introduction">
+      <h1 class="cover-title">The Voir Dire</h1>
+      <div class="cover-text">
+        <p>You have been summoned for jury duty in a matter pending before this court.</p>
+        <p>The following questionnaire is administered to determine your suitability to serve as an impartial juror. Your answers will become part of the official record.</p>
+        <p>Please answer each question truthfully. There are no correct responses.</p>
+      </div>
+      <button class="proceed-btn" id="proceed-btn" aria-label="Begin questionnaire">Proceed</button>
+    </section>
+
+    <!-- Questionnaire -->
+    <section class="questionnaire" id="questionnaire" role="form" aria-label="Voir dire questionnaire">
+
+      <!-- Q1: Name -->
+      <div class="question" data-step="1" role="group" aria-labelledby="q1-text">
+        <div class="question-header">
+          <span class="question-number">Question I</span>
+          <div class="progress-bar"><div class="progress-fill" style="width:8%"></div></div>
+        </div>
+        <p class="question-text" id="q1-text">What is your full legal name?</p>
+        <div class="input-group">
+          <input type="text" class="text-input" id="input-1"
+            placeholder="Enter your name as it appears on official documents"
+            aria-required="true" autocomplete="off">
+        </div>
+        <div class="action-row">
+          <button class="continue-btn" data-next="2" disabled>Continue</button>
+        </div>
+      </div>
+
+      <!-- Q2: Prior service -->
+      <div class="question" data-step="2" role="radiogroup" aria-labelledby="q2-text">
+        <div class="question-header">
+          <span class="question-number">Question II</span>
+          <div class="progress-bar"><div class="progress-fill" style="width:15%"></div></div>
+        </div>
+        <p class="question-text" id="q2-text">Have you ever served on a jury before?</p>
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="q2" value="Yes, more than once">
+            <span class="radio-mark"></span>
+            <span class="option-text">Yes, more than once</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="q2" value="Yes, once before">
+            <span class="radio-mark"></span>
+            <span class="option-text">Yes, once before</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="q2" value="No, this would be my first time">
+            <span class="radio-mark"></span>
+            <span class="option-text">No, this would be my first time</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="q2" value="I was summoned but not selected">
+            <span class="radio-mark"></span>
+            <span class="option-text">I was summoned but not selected</span>
+          </label>
+        </div>
+        <div class="action-row">
+          <button class="continue-btn" data-next="3" disabled>Continue</button>
+        </div>
+      </div>
+
+      <!-- Q3: Relationship to parties -->
+      <div class="question" data-step="3" role="radiogroup" aria-labelledby="q3-text">
+        <div class="question-header">
+          <span class="question-number">Question III</span>
+          <div class="progress-bar"><div class="progress-fill" style="width:23%"></div></div>
+        </div>
+        <p class="question-text" id="q3-text">Do you have a personal or professional relationship with any of the parties in this matter?</p>
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="q3" value="Yes">
+            <span class="radio-mark"></span>
+            <span class="option-text">Yes</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="q3" value="No">
+            <span class="radio-mark"></span>
+            <span class="option-text">No</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="q3" value="I'm not sure who the parties are">
+            <span class="radio-mark"></span>
+            <span class="option-text">I'm not sure who the parties are</span>
+          </label>
+        </div>
+        <div class="action-row">
+          <button class="continue-btn" data-next="4" disabled>Continue</button>
+        </div>
+      </div>
+
+      <!-- Q4: Impartiality -->
+      <div class="question" data-step="4" role="radiogroup" aria-labelledby="q4-text">
+        <div class="question-header">
+          <span class="question-number">Question IV</span>
+          <div class="progress-bar"><div class="progress-fill" style="width:31%"></div></div>
+        </div>
+        <p class="question-text" id="q4-text">Is there any reason you believe you cannot render a fair and impartial verdict?</p>
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="q4" value="No reason I can think of">
+            <span class="radio-mark"></span>
+            <span class="option-text">No reason I can think of</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="q4" value="I'd prefer not to answer">
+            <span class="radio-mark"></span>
+            <span class="option-text">I'd prefer not to answer</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="q4" value="I'm not sure yet — I'd need to hear more">
+            <span class="radio-mark"></span>
+            <span class="option-text">I'm not sure yet — I'd need to hear more</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="q4" value="Yes, there is">
+            <span class="radio-mark"></span>
+            <span class="option-text">Yes, there is</span>
+          </label>
+        </div>
+        <div class="action-row">
+          <button class="continue-btn" data-next="5" disabled>Continue</button>
+        </div>
+      </div>
+
+      <!-- Q5: Turn — accountability -->
+      <div class="question" data-step="5" role="radiogroup" aria-labelledby="q5-text">
+        <div class="question-header">
+          <span class="question-number">Question V</span>
+          <div class="progress-bar"><div class="progress-fill" style="width:38%"></div></div>
+        </div>
+        <p class="question-text" id="q5-text">Have you ever been called to account for something you did — or didn't do — and felt the judgment was unfair?</p>
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="q5" value="Yes">
+            <span class="radio-mark"></span>
+            <span class="option-text">Yes</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="q5" value="No">
+            <span class="radio-mark"></span>
+            <span class="option-text">No</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="q5" value="I don't remember">
+            <span class="radio-mark"></span>
+            <span class="option-text">I don't remember</span>
+          </label>
+        </div>
+        <div class="action-row">
+          <button class="continue-btn" data-next="6" disabled>Continue</button>
+        </div>
+      </div>
+
+      <!-- Q6: Someone you think about -->
+      <div class="question" data-step="6" role="group" aria-labelledby="q6-text">
+        <div class="question-header">
+          <span class="question-number">Question VI</span>
+          <div class="progress-bar"><div class="progress-fill" style="width:46%"></div></div>
+        </div>
+        <p class="question-text" id="q6-text">Is there someone you think about more than they think about you?</p>
+        <div class="input-group">
+          <input type="text" class="text-input" id="input-6"
+            placeholder="If you wish, you may name them. Or describe them."
+            aria-required="true" autocomplete="off">
+        </div>
+        <div class="action-row">
+          <button class="continue-btn" data-next="7" disabled>Continue</button>
+        </div>
+      </div>
+
+      <!-- Q7: Something kept -->
+      <div class="question" data-step="7" role="group" aria-labelledby="q7-text">
+        <div class="question-header">
+          <span class="question-number">Question VII</span>
+          <div class="progress-bar"><div class="progress-fill" style="width:54%"></div></div>
+        </div>
+        <p class="question-text" id="q7-text">When was the last time you kept something that wasn't yours to keep?</p>
+        <div class="input-group">
+          <input type="text" class="text-input" id="input-7"
+            placeholder="An object. A word. A silence."
+            aria-required="true" autocomplete="off">
+        </div>
+        <div class="action-row">
+          <button class="continue-btn" data-next="8" disabled>Continue</button>
+        </div>
+      </div>
+
+      <!-- Q8: Admission — checkboxes -->
+      <div class="question" data-step="8" role="group" aria-labelledby="q8-text">
+        <div class="question-header">
+          <span class="question-number">Question VIII</span>
+          <div class="progress-bar"><div class="progress-fill" style="width:62%"></div></div>
+        </div>
+        <p class="question-text" id="q8-text">Select all that you have ever done:</p>
+        <div class="checkbox-options" id="checkboxes-8">
+          <label class="checkbox-option">
+            <input type="checkbox" value="Told a lie to protect someone's feelings">
+            <span class="check-mark"></span>
+            <span class="checkbox-text">Told a lie to protect someone's feelings</span>
+          </label>
+          <label class="checkbox-option">
+            <input type="checkbox" value="Let a phone ring without answering">
+            <span class="check-mark"></span>
+            <span class="checkbox-text">Let a phone ring without answering</span>
+          </label>
+          <label class="checkbox-option">
+            <input type="checkbox" value="Said 'I love you' without meaning it">
+            <span class="check-mark"></span>
+            <span class="checkbox-text">Said "I love you" without meaning it</span>
+          </label>
+          <label class="checkbox-option">
+            <input type="checkbox" value="Kept a letter or message you should have returned">
+            <span class="check-mark"></span>
+            <span class="checkbox-text">Kept a letter or message you should have returned</span>
+          </label>
+          <label class="checkbox-option">
+            <input type="checkbox" value="Waited for someone who was not coming">
+            <span class="check-mark"></span>
+            <span class="checkbox-text">Waited for someone who was not coming</span>
+          </label>
+          <label class="checkbox-option">
+            <input type="checkbox" value="None of these">
+            <span class="check-mark"></span>
+            <span class="checkbox-text">None of these</span>
+          </label>
+        </div>
+        <div class="action-row">
+          <button class="continue-btn" data-next="9" disabled>Continue</button>
+        </div>
+      </div>
+
+      <!-- Q9: Guilt without law -->
+      <div class="question" data-step="9" role="radiogroup" aria-labelledby="q9-text">
+        <div class="question-header">
+          <span class="question-number">Question IX</span>
+          <div class="progress-bar"><div class="progress-fill" style="width:69%"></div></div>
+        </div>
+        <p class="question-text" id="q9-text">Do you believe a person can be guilty of something without breaking any law?</p>
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="q9" value="Yes">
+            <span class="radio-mark"></span>
+            <span class="option-text">Yes</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="q9" value="No">
+            <span class="radio-mark"></span>
+            <span class="option-text">No</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="q9" value="That depends on what you mean by guilty">
+            <span class="radio-mark"></span>
+            <span class="option-text">That depends on what you mean by guilty</span>
+          </label>
+        </div>
+        <div class="action-row">
+          <button class="continue-btn" data-next="10" disabled>Continue</button>
+        </div>
+      </div>
+
+      <!-- Q10: ECHO — references Q6 and Q7 -->
+      <div class="question" data-step="10" role="group" aria-labelledby="q10-text">
+        <div class="question-header">
+          <span class="question-number">Question X</span>
+          <div class="progress-bar"><div class="progress-fill" style="width:77%"></div></div>
+        </div>
+        <p class="question-text" id="q10-text"></p>
+        <div class="input-group">
+          <input type="text" class="text-input" id="input-10"
+            placeholder="The court is listening."
+            aria-required="true" autocomplete="off">
+        </div>
+        <div class="action-row">
+          <button class="continue-btn" data-next="11" disabled>Continue</button>
+        </div>
+      </div>
+
+      <!-- Q11: Deep cut -->
+      <div class="question" data-step="11" role="group" aria-labelledby="q11-text">
+        <div class="question-header">
+          <span class="question-number">Question XI</span>
+          <div class="progress-bar"><div class="progress-fill" style="width:85%"></div></div>
+        </div>
+        <p class="question-text" id="q11-text">If you could say one thing to someone you failed — someone who would not be surprised to hear from you, though you have been silent — what would it be?</p>
+        <div class="input-group">
+          <input type="text" class="text-input" id="input-11"
+            placeholder="Speak freely. This portion is off the record."
+            aria-required="true" autocomplete="off">
+        </div>
+        <div class="action-row">
+          <button class="continue-btn" data-next="12" disabled>Continue</button>
+        </div>
+      </div>
+
+      <!-- Q12: The final question — unanswerable -->
+      <div class="question" data-step="12" role="group" aria-labelledby="q12-text">
+        <div class="question-header">
+          <span class="question-number">Question XII</span>
+          <div class="progress-bar"><div class="progress-fill" style="width:92%"></div></div>
+        </div>
+        <p class="question-text" id="q12-text"></p>
+        <div class="input-group">
+          <input type="text" class="text-input" id="input-12"
+            placeholder=""
+            aria-required="true" autocomplete="off">
+        </div>
+        <div class="action-row">
+          <button class="continue-btn" data-next="end" disabled style="display:none">Continue</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- End Screen -->
+    <section class="end-screen" id="end-screen" role="region" aria-label="Questionnaire complete">
+      <p class="end-stamp">Questionnaire Complete</p>
+      <div class="end-seal" id="end-seal">
+        <p class="seal-text">Thank you for your service. You are excused.</p>
+      </div>
+      <div class="end-void" id="end-void">
+        <span class="silence-cursor"></span>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    /* ─── State ─────────────────────────────────────── */
+    var answers = {};
+    var currentStep = 0;
+    var q12Timer = null;
+    var endStarted = false;
+
+    /* ─── DOM references ────────────────────────────── */
+    var cover = document.getElementById('cover');
+    var proceedBtn = document.getElementById('proceed-btn');
+    var questionnaire = document.getElementById('questionnaire');
+    var endScreen = document.getElementById('end-screen');
+    var endSeal = document.getElementById('end-seal');
+    var endVoid = document.getElementById('end-void');
+
+    /* ─── Initialization ────────────────────────────── */
+    proceedBtn.addEventListener('click', startQuestionnaire);
+    setupTextInputs();
+    setupRadioOptions();
+    setupCheckboxOptions();
+    setupContinueButtons();
+
+    /* ─── Start ─────────────────────────────────────── */
+    function startQuestionnaire() {
+      cover.style.transition = 'opacity 0.8s ease';
+      cover.style.opacity = '0';
+      setTimeout(function () {
+        cover.style.display = 'none';
+        questionnaire.style.display = 'block';
+        showQuestion(1);
+      }, 800);
+    }
+
+    /* ─── Setup: text inputs ────────────────────────── */
+    function setupTextInputs() {
+      var inputs = document.querySelectorAll('.text-input');
+      for (var i = 0; i < inputs.length; i++) {
+        (function (input) {
+          var step = parseInt(input.closest('.question').dataset.step, 10);
+
+          input.addEventListener('input', function () {
+            if (step === 12) {
+              handleQ12Input(input);
+              return;
+            }
+            var btn = input.closest('.question').querySelector('.continue-btn');
+            btn.disabled = input.value.trim().length === 0;
+          });
+
+          input.addEventListener('keydown', function (e) {
+            if (step === 12) {
+              e.preventDefault();
+              return;
+            }
+            if (e.key === 'Enter') {
+              var btn = input.closest('.question').querySelector('.continue-btn');
+              if (!btn.disabled) btn.click();
+            }
+          });
+        })(inputs[i]);
+      }
+    }
+
+    /* ─── Setup: radio options ──────────────────────── */
+    function setupRadioOptions() {
+      var options = document.querySelectorAll('.option');
+      for (var i = 0; i < options.length; i++) {
+        (function (option) {
+          option.addEventListener('click', function () {
+            var question = option.closest('.question');
+            var name = option.querySelector('input').name;
+            var siblings = question.querySelectorAll('.option input[name="' + name + '"]');
+            for (var j = 0; j < siblings.length; j++) {
+              siblings[j].closest('.option').classList.remove('selected');
+            }
+            option.classList.add('selected');
+            option.querySelector('input').checked = true;
+            question.querySelector('.continue-btn').disabled = false;
+          });
+        })(options[i]);
+      }
+    }
+
+    /* ─── Setup: checkbox options ───────────────────── */
+    function setupCheckboxOptions() {
+      var options = document.querySelectorAll('.checkbox-option');
+      for (var i = 0; i < options.length; i++) {
+        (function (option) {
+          option.addEventListener('click', function (e) {
+            if (e.target.tagName === 'INPUT') return;
+
+            var input = option.querySelector('input');
+            input.checked = !input.checked;
+            option.classList.toggle('checked', input.checked);
+
+            /* "None of these" exclusivity */
+            if (input.value === 'None of these' && input.checked) {
+              var others = option.parentElement.querySelectorAll('.checkbox-option');
+              for (var k = 0; k < others.length; k++) {
+                if (others[k] !== option) {
+                  others[k].querySelector('input').checked = false;
+                  others[k].classList.remove('checked');
+                }
+              }
+            } else if (input.value !== 'None of these' && input.checked) {
+              var noneOpt = option.parentElement.querySelector('.checkbox-option input[value="None of these"]');
+              if (noneOpt) {
+                noneOpt.checked = false;
+                noneOpt.closest('.checkbox-option').classList.remove('checked');
+              }
+            }
+
+            var question = option.closest('.question');
+            var anyChecked = question.querySelectorAll('.checkbox-option input:checked').length > 0;
+            question.querySelector('.continue-btn').disabled = !anyChecked;
+          });
+        })(options[i]);
+      }
+    }
+
+    /* ─── Setup: continue buttons ───────────────────── */
+    function setupContinueButtons() {
+      var buttons = document.querySelectorAll('.continue-btn');
+      for (var i = 0; i < buttons.length; i++) {
+        (function (btn) {
+          btn.addEventListener('click', function () {
+            var step = parseInt(btn.closest('.question').dataset.step, 10);
+            recordAnswer(step);
+            var next = btn.dataset.next;
+            if (next === 'end') {
+              showEnd();
+            } else {
+              showQuestion(parseInt(next, 10));
+            }
+          });
+        })(buttons[i]);
+      }
+    }
+
+    /* ─── Q12: the silent input ─────────────────────── */
+    function handleQ12Input(input) {
+      if (!input._charCount) input._charCount = 0;
+      input._charCount++;
+
+      /* Characters dissolve from the left after a few keystrokes */
+      if (input._charCount > 4) {
+        var val = input.value;
+        input.value = val.length > 1 ? val.substring(1) : '';
+      }
+
+      /* Fade the input visually */
+      if (input._charCount > 2) input.classList.add('muted');
+      if (input._charCount > 5) input.classList.add('absent');
+
+      /* After enough attempts, the silence answers for them */
+      if (input._charCount > 7 && !q12Timer) {
+        answers[12] = '';
+        q12Timer = setTimeout(function () {
+          showEnd();
+        }, 3000);
+      }
+    }
+
+    /* ─── Record answer ─────────────────────────────── */
+    function recordAnswer(step) {
+      var question = document.querySelector('.question[data-step="' + step + '"]');
+      var isTextStep = (step === 1 || step === 6 || step === 7 || step === 10 || step === 11 || step === 12);
+
+      if (isTextStep) {
+        var input = question.querySelector('.text-input');
+        answers[step] = input.value.trim();
+      } else if (step === 8) {
+        var checked = [];
+        var cbs = question.querySelectorAll('.checkbox-option input:checked');
+        for (var i = 0; i < cbs.length; i++) checked.push(cbs[i].value);
+        answers[step] = checked.join('; ');
+      } else {
+        var selected = question.querySelector('input[type="radio"]:checked');
+        answers[step] = selected ? selected.value : '';
+      }
+    }
+
+    /* ─── Show question ─────────────────────────────── */
+    function showQuestion(step) {
+      var current = document.querySelector('.question.active');
+      if (current) {
+        current.classList.remove('visible');
+        setTimeout(function () {
+          current.style.display = 'none';
+          current.classList.remove('active');
+          revealQuestion(step);
+        }, 500);
+      } else {
+        revealQuestion(step);
+      }
+    }
+
+    function revealQuestion(step) {
+      currentStep = step;
+      var question = document.querySelector('.question[data-step="' + step + '"]');
+      if (!question) return;
+
+      /* Build dynamic questions */
+      if (step === 10) buildEchoQuestion();
+      if (step === 12) buildFinalQuestion();
+
+      question.style.display = 'block';
+      /* Force reflow before triggering transition */
+      void question.offsetHeight;
+
+      question.classList.add('active');
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          question.classList.add('visible');
+          var input = question.querySelector('.text-input');
+          if (input) {
+            setTimeout(function () { input.focus(); }, 600);
+          }
+        });
+      });
+    }
+
+    /* ─── Build echo question (step 10) ─────────────── */
+    function buildEchoQuestion() {
+      var textEl = document.getElementById('q10-text');
+      var personName = answers[6] || 'this person';
+
+      var rawAnswer = (answers[7] || '').trim();
+      var echoFragment = 'a silence';
+      if (rawAnswer.length > 0 && rawAnswer.length <= 60) {
+        echoFragment = rawAnswer;
+      } else if (rawAnswer.length > 60) {
+        echoFragment = rawAnswer.substring(0, 55).replace(/\s+\S*$/, '') + '\u2026';
+      }
+
+      textEl.innerHTML =
+        'Earlier you told us about <span class="echo">' +
+        escapeHtml(echoFragment) +
+        '</span>. Now tell us about the person connected to it. ' +
+        'Is <span class="echo">' + escapeHtml(personName) +
+        '</span> the type to forgive \u2014 or the type to remember?';
+    }
+
+    /* ─── Build final question (step 12) ────────────── */
+    function buildFinalQuestion() {
+      var textEl = document.getElementById('q12-text');
+      var name = (answers[1] || '').trim().split(/\s+/).pop() || '';
+      var nameDisplay = name || 'you';
+
+      var admission = (answers[11] || '').trim();
+      var echoPart = '';
+      if (admission.length > 0) {
+        var frag = admission.length <= 50
+          ? admission
+          : admission.substring(0, 45).replace(/\s+\S*$/, '') + '\u2026';
+        echoPart = ' You told this court, <span class="echo">\u201C' +
+          escapeHtml(frag) + '\u201D</span>.';
+      }
+
+      textEl.innerHTML =
+        'One final question, <span class="echo">' +
+        escapeHtml(nameDisplay) +
+        '</span>.' + echoPart +
+        ' In the matter before this court \u2014 the only matter that has ever been before this court \u2014 do you believe you are innocent?';
+
+      document.getElementById('input-12').placeholder = '';
+    }
+
+    /* ─── Show end ──────────────────────────────────── */
+    function showEnd() {
+      if (endStarted) return;
+      endStarted = true;
+
+      if (q12Timer) {
+        clearTimeout(q12Timer);
+        q12Timer = null;
+      }
+
+      var current = document.querySelector('.question.active');
+      if (current) {
+        current.classList.remove('visible');
+        setTimeout(function () {
+          current.style.display = 'none';
+          current.classList.remove('active');
+          questionnaire.style.display = 'none';
+          renderEnd();
+        }, 600);
+      } else {
+        questionnaire.style.display = 'none';
+        renderEnd();
+      }
+    }
+
+    function renderEnd() {
+      endScreen.style.display = 'block';
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          endScreen.classList.add('visible');
+        });
+      });
+
+      setTimeout(function () {
+        endSeal.classList.add('visible');
+      }, 4000);
+
+      setTimeout(function () {
+        endVoid.classList.add('visible');
+      }, 7000);
+    }
+
+    /* ─── Utility ───────────────────────────────────── */
+    function escapeHtml(text) {
+      var div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>

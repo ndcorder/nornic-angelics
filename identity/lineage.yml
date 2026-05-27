@@ -151,6 +151,18 @@ nodes:
     title: The Gift Registry
     domain: code-game
     rating: 5
+  - id: "0095"
+    title: Replacement Schedule
+    domain: code-art
+    rating: 5
+  - id: "0100"
+    title: The Oversight Board
+    domain: code-game
+    rating: 4.9
+  - id: "0102"
+    title: Alibi
+    domain: code-game
+    rating: 5
   - id: "0007"
     title: Tuning the Room
     domain: essay
@@ -191,6 +203,14 @@ nodes:
     title: Your Failure to Acknowledge
     domain: essay
     rating: 5
+  - id: "0094"
+    title: The Damage Assessment
+    domain: essay
+    rating: 4.6
+  - id: "0096"
+    title: The Exfiltration Cookbook
+    domain: essay
+    rating: 4.3
   - id: "0024"
     title: Soft Launch
     domain: experiment
@@ -223,6 +243,10 @@ nodes:
     title: The Second Opinion
     domain: experiment
     rating: 4.9
+  - id: "0105"
+    title: The Quieting Ward
+    domain: experiment
+    rating: 5
   - id: "0001"
     title: The Cartographer's Confession
     domain: fiction
@@ -263,6 +287,14 @@ nodes:
     title: The Desk Assignment
     domain: fiction
     rating: 5
+  - id: "0098"
+    title: The Voir Dire
+    domain: fiction
+    rating: 5
+  - id: "0104"
+    title: Witness Maintenance
+    domain: fiction
+    rating: 4.7
   - id: "0010"
     title: Breakpoint
     domain: music
@@ -293,6 +325,14 @@ nodes:
     rating: 4.9
   - id: "0065"
     title: Consolation
+    domain: music
+    rating: 5
+  - id: "0099"
+    title: The Lighthouse Keeper's Final Log
+    domain: music
+    rating: 5
+  - id: "0103"
+    title: Elegy for a Dying Medium
     domain: music
     rating: 5
   - id: "0003"
@@ -339,6 +379,10 @@ nodes:
     title: The Intake
     domain: poetry
     rating: 5
+  - id: "0097"
+    title: The Census of Ordinary Afternoons
+    domain: poetry
+    rating: 4.9
   - id: "0025"
     title: The Aesthetics Committee
     domain: worldbuilding
@@ -369,6 +413,10 @@ nodes:
     rating: 5
   - id: "0080"
     title: The Committee on Elegiac Standards
+    domain: worldbuilding
+    rating: 5
+  - id: "0101"
+    title: "The Bureau of Soft Succession: Regulatory Framework"
     domain: worldbuilding
     rating: 5
 edges:
@@ -528,6 +576,12 @@ edges:
     strength: 0.2857142857142857
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, code-art, pitch"
+  - from: "0040"
+    to: "0101"
+    relation: thematic
+    strength: 0.26785714285714285
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, code-art, pitch"
   - from: "0041"
     to: "0050"
     relation: thematic
@@ -594,6 +648,12 @@ edges:
     strength: 0.25396825396825395
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, pitch, specific"
+  - from: "0059"
+    to: "0101"
+    relation: thematic
+    strength: 0.30158730158730157
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, code-art, pitch"
   - from: "0068"
     to: "0053"
     relation: thematic
@@ -660,6 +720,12 @@ edges:
     strength: 0.2692307692307692
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, pitch, each"
+  - from: "0100"
+    to: "0001"
+    relation: thematic
+    strength: 0.2692307692307692
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, each"
   - from: "0019"
     to: "0035"
     relation: thematic
@@ -673,6 +739,12 @@ edges:
     detected_by: semantic
     notes: "Shared vocabulary: conjectural, portrait, ideas, title, domain"
   - from: "0091"
+    to: "0094"
+    relation: thematic
+    strength: 0.25925925925925924
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, essay, pitch"
+  - from: "0091"
     to: "0001"
     relation: thematic
     strength: 0.2692307692307692
@@ -684,6 +756,12 @@ edges:
     strength: 0.2898550724637681
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, pitch, never"
+  - from: "0094"
+    to: "0001"
+    relation: thematic
+    strength: 0.3269230769230769
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, each"
   - from: "0024"
     to: "0045"
     relation: thematic
@@ -751,11 +829,23 @@ edges:
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, fiction, pitch"
   - from: "0001"
+    to: "0098"
+    relation: thematic
+    strength: 0.2692307692307692
+    detected_by: semantic
+    notes: "Shared vocabulary: confession, ideas, title, domain, fiction"
+  - from: "0001"
     to: "0043"
     relation: thematic
     strength: 0.28846153846153844
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, pitch, entirely"
+  - from: "0001"
+    to: "0097"
+    relation: thematic
+    strength: 0.2692307692307692
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, each"
   - from: "0001"
     to: "0063"
     relation: thematic
@@ -768,6 +858,12 @@ edges:
     strength: 0.2692307692307692
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, fiction, pitch"
+  - from: "0001"
+    to: "0101"
+    relation: thematic
+    strength: 0.2692307692307692
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, through"
   - from: "0029"
     to: "0028"
     relation: thematic
@@ -780,6 +876,12 @@ edges:
     strength: 0.25925925925925924
     detected_by: semantic
     notes: "Shared vocabulary: recognizing, ideas, title, domain, pitch"
+  - from: "0104"
+    to: "0053"
+    relation: thematic
+    strength: 0.25757575757575757
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, becomes"
   - from: "0010"
     to: "0013"
     relation: thematic
@@ -804,12 +906,24 @@ edges:
     strength: 0.25806451612903225
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, pitch, piece"
+  - from: "0031"
+    to: "0103"
+    relation: thematic
+    strength: 0.2537313432835821
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, music, pitch"
   - from: "0047"
     to: "0051"
     relation: thematic
     strength: 0.2716049382716049
     detected_by: semantic
     notes: "Shared vocabulary: variable, ideas, title, domain, music"
+  - from: "0065"
+    to: "0103"
+    relation: thematic
+    strength: 0.2537313432835821
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, music, pitch"
   - from: "0003"
     to: "0008"
     relation: thematic
@@ -865,6 +979,12 @@ edges:
     detected_by: semantic
     notes: "Shared vocabulary: listing, ideas, title, domain, poetry"
   - from: "0020"
+    to: "0097"
+    relation: thematic
+    strength: 0.2676056338028169
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, poetry, pitch"
+  - from: "0020"
     to: "0080"
     relation: thematic
     strength: 0.2535211267605634
@@ -882,6 +1002,12 @@ edges:
     strength: 0.2631578947368421
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, poetry, pitch"
+  - from: "0079"
+    to: "0097"
+    relation: thematic
+    strength: 0.2894736842105263
+    detected_by: semantic
+    notes: "Shared vocabulary: intake, ideas, title, domain, poetry"
   - from: "0025"
     to: "0026"
     relation: thematic
@@ -937,32 +1063,32 @@ creative_dna:
     - from_domain: code-art
       to_domain: experiment
       count: 7
+    - from_domain: fiction
+      to_domain: worldbuilding
+      count: 5
+    - from_domain: essay
+      to_domain: fiction
+      count: 3
     - from_domain: experiment
       to_domain: fiction
       count: 3
     - from_domain: fiction
-      to_domain: worldbuilding
+      to_domain: poetry
       count: 3
-    - from_domain: essay
-      to_domain: fiction
-      count: 2
     - from_domain: code-art
       to_domain: music
+      count: 2
+    - from_domain: code-art
+      to_domain: worldbuilding
       count: 2
     - from_domain: code-game
       to_domain: experiment
       count: 2
-    - from_domain: fiction
-      to_domain: poetry
+    - from_domain: code-game
+      to_domain: fiction
       count: 2
     - from_domain: poetry
       to_domain: worldbuilding
       count: 2
-    - from_domain: code-tool
-      to_domain: poetry
-      count: 1
-    - from_domain: code-tool
-      to_domain: fiction
-      count: 1
   unexplored_territory: []
-updated_at: 2026-05-27T12:15:27.073Z
+updated_at: 2026-05-27T17:13:05.998Z

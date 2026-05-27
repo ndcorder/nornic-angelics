@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replacement Schedule</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #f5f5f4;
+            --card-bg: #ffffff;
+            --border: #c8c8c6;
+            --border-light: #e0dfd8;
+            --text: #1a1918;
+            --text-mid: #525250;
+            --text-muted: #8a8884;
+            --text-faint: #b0ada6;
+            --accent: #9e9e96;
+            --progress-bg: #e9e8e4;
+            --self-border: #c4b8a0;
+            --self-bg: #faf8f4;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 3rem 1.5rem;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 620px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 2.75rem;
+        }
+
+        header h1 {
+            font-size: 1.125rem;
+            font-weight: 400;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .sys-info {
+            font-size: 0.66rem;
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
+            line-height: 2;
+            border-left: 2px solid var(--border-light);
+            padding-left: 1rem;
+        }
+
+        .sys-info .date {
+            color: var(--text-faint);
+        }
+
+        .input-area {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .input-area input {
+            width: 100%;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 300;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+            letter-spacing: 0.01em;
+        }
+
+        .input-area input::placeholder {
+            color: var(--text-faint);
+            font-style: italic;
+            font-weight: 300;
+        }
+
+        .input-area input:focus {
+            border-color: #a0a09a;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.025);
+        }
+
+        .input-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.375rem;
+            font-size: 0.6rem;
+            color: var(--text-faint);
+            letter-spacing: 0.02em;
+        }
+
+        #instructions {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            margin-bottom: 1.75rem;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        #instructions span {
+            font-size: 0.6rem;
+            color: var(--text-faint);
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border-light);
+            margin-bottom: 1.75rem;
+        }
+
+        #card-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+        }
+
+        /* ---- Cards ---- */
+
+        .card {
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            padding: 1.375rem 1.375rem 1.25rem;
+            position: relative;
+            animation: cardEnter 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            opacity: 0;
+            overflow: hidden;
+            transition: opacity 0.6s ease;
+        }
+
+        @keyframes cardEnter {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0.875rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .card-id {
+            font-size: 0.56rem;
+            color: var(--text-faint);
+            font-weight: 300;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .card-name {
+            font-size: 1rem;
+            font-weight: 400;
+            letter-spacing: 0.025em;
+            color: var(--text);
+            word-break: break-word;
+        }
+
+        .card-role {
+            font-size: 0.8rem;
+            font-weight: 300;
+            font-style: italic;
+            color: var(--text-mid);
+            margin-bottom: 1rem;
+            line-height: 1.55;
+        }
+
+        .card-deployment {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 0.62rem;
+            color: var(--text-muted);
+            margin-bottom: 0.625rem;
+            letter-spacing: 0.02em;
+            font-weight: 300;
+        }
+
+        .card-deployment .date-value {
+            font-weight: 400;
+            letter-spacing: 0.04em;
+        }
+
+        .progress-section {
+            margin-bottom: 0.25rem;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 0.56rem;
+            color: var(--text-faint);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+
+        .progress-percent {
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            text-transform: none;
+            color: var(--text-muted);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 3px;
+            background: var(--progress-bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .card-footer {
+            margin-top: 0.75rem;
+            padding-top: 0.625rem;
+            border-top: 1px solid var(--border-light);
+            font-size: 0.56rem;
+            color: var(--text-faint);
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .status-badge {
+            transition: color 0.4s ease, opacity 0.4s ease;
+        }
+
+        .status-active    { color: var(--text-muted); }
+        .status-review    { color: #a07838; font-style: italic; }
+        .status-scheduled { color: var(--text-faint); opacity: 0.6; text-decoration: line-through; }
+
+        .card.dimmed {
+            opacity: 0.6;
+        }
+
+        /* ---- Self Card ---- */
+
+        .card.self-card {
+            border-color: var(--self-border);
+            background: var(--self-bg);
+            animation: selfCardEnter 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            opacity: 0;
+        }
+
+        .card.self-card .card-header       { border-bottom-color: #ddd5c8; }
+        .card.self-card .card-role          { color: var(--text); font-weight: 400; }
+        .card.self-card .card-name          { opacity: 0.35; letter-spacing: 0.08em; }
+        .card.self-card .card-deployment .date-value { color: var(--text); }
+        .card.self-card .card-footer        { border-top-color: #ddd5c8; }
+        .card.self-card .progress-label     { color: var(--text-muted); }
+        .card.self-card .progress-percent   { color: var(--text-mid); }
+
+        .self-reveal-line {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            font-weight: 300;
+            font-style: italic;
+            text-align: center;
+            margin: 0.5rem 0 1.25rem;
+            letter-spacing: 0.02em;
+            opacity: 0;
+            animation: fadeIn 1.5s ease 0.8s forwards;
+        }
+
+        @keyframes selfCardEnter {
+            from { opacity: 0; transform: translateY(-8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* ---- Empty State ---- */
+
+        .empty-state {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            font-size: 0.68rem;
+            color: var(--text-faint);
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            line-height: 1.8;
+        }
+
+        .empty-state::before {
+            content: '';
+            display: block;
+            width: 32px;
+            height: 1px;
+            background: var(--border);
+            margin: 0 auto 1.5rem;
+        }
+
+        /* ---- Responsive ---- */
+
+        @media (max-width: 600px) {
+            body { padding: 2rem 1rem; }
+            header h1 { font-size: 1rem; }
+            .card-name { font-size: 0.9rem; }
+            .card { padding: 1.125rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .card, .card.self-card, .self-reveal-line {
+                animation: none;
+                opacity: 1;
+            }
+            .progress-fill {
+                transition: none;
+            }
+        }
+
+        @media print {
+            body { background: white; padding: 1cm; }
+            .input-area, #instructions { display: none; }
+            .card { break-inside: avoid; border: 1px solid #ccc; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Replacement Schedule</h1>
+            <div class="sys-info">
+                SYSTEM: ACTIVE&ensp;|&ensp;MODULE: PERSONNEL-REASSESSMENT&ensp;|&ensp;<span class="date" id="system-date"></span>
+            </div>
+        </header>
+
+        <section class="input-area" aria-label="Name entry">
+            <input
+                type="text"
+                id="name-input"
+                placeholder="Enter full name — press Enter to process"
+                autocomplete="off"
+                aria-label="Full name input for replacement schedule processing"
+            >
+            <div class="input-meta">
+                <span>PERSONNEL PROCESSING MODULE v3.7.1</span>
+                <span id="input-hint">STANDBY</span>
+            </div>
+        </section>
+
+        <div id="instructions">
+            <span>Enter a name. The system will assign a role and calculate when they'll be replaced.</span>
+            <span id="count-display">0 processed</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <div id="card-container" role="list" aria-label="Replacement cards">
+            <div class="empty-state" id="empty-state">
+                No personnel processed.<br>Awaiting input.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ====== Role Banks ====== */
+
+        const roles = [
+            "the one who always says the right thing too late",
+            "the one who doesn't flinch",
+            "the one who calls back",
+            "the one who makes it about themselves",
+            "the one who remembers your birthday but forgets why it matters",
+            "the one who stays calm while you come apart",
+            "the one who knew you before you were someone",
+            "the one who always has somewhere better to be",
+            "the one who answers on the third ring",
+            "the one who never asks how you really are",
+            "the one who shows up when it's already over",
+            "the one who holds the door but not the silence",
+            "the one who laughs at the wrong moment",
+            "the one who knew which version to keep",
+            "the one who tells you what you want to hear",
+            "the one who leaves the light on",
+            "the one who was never really staying",
+            "the one who says 'we should catch up' and means it",
+            "the one who says 'we should catch up' and doesn't",
+            "the one who always forgives too quickly",
+            "the one who needed you more than you needed them",
+            "the one who understood exactly what they were doing",
+            "the one who carried it so you wouldn't have to",
+            "the one who made leaving look easy",
+            "the one who waited for an apology that never came",
+            "the one who saw you at your worst and didn't look away",
+            "the one you call when no one else picks up",
+            "the one who got tired first",
+            "the one who heard the thing you didn't say",
+            "the one who still doesn't know what they did",
+            "the one who came back different",
+            "the one you'll think about at 3 a.m. for years",
+            "the one who was right about everything you refused to believe",
+            "the one who taught you what 'enough' feels like",
+            "the one who kept every message you ever sent",
+            "the one who only calls when they need something",
+            "the one who would have stayed if you'd asked",
+            "the one who didn't need to be asked",
+            "the one whose name you almost said by mistake",
+            "the one who was supposed to be temporary",
+            "the one you kept longer than you should have",
+            "the one who knew all your exits",
+            "the one who only sounds like home from far away",
+            "the one who remembers the thing you wish they'd forget",
+            "the one who answers questions you never asked out loud",
+            "the one who is always mid-sentence when they leave",
+            "the one who apologizes for the wrong thing",
+            "the one you almost said I love you to",
+            "the one who said it first and meant it",
+            "the one who only exists in stories now"
+        ];
+
+        const selfRoles = [
+            "the one who built this list",
+            "the one still typing",
+            "the one who thought they were the exception",
+            "the one watching from the other side of the screen",
+            "the one who didn't see their own name coming",
+            "the one cataloging everyone they'll lose",
+            "the one making the substitutions",
+            "the one counting what's already gone",
+            "the one at the top of their own list",
+            "the one who didn't include themselves",
+            "the one running the numbers on their own replacement",
+            "the one who knows this doesn't work in reverse"
+        ];
+
+        const selfStatusMessages = [
+            "Your role in this system has been logged.",
+            "You were always part of the schedule.",
+            "Every list includes its author.",
+            "You didn't think you were exempt.",
+            "You built this. Now you're in it."
+        ];
+
+        /* ====== Utilities ====== */
+
+        const MONTHS = [
+            "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
+            "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
+        ];
+
+        function escapeHTML(str) {
+            var div = document.createElement("div");
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function charSum(str) {
+            var sum = 0;
+            for (var i = 0; i < str.length; i++) {
+                sum += str.charCodeAt(i);
+            }
+            return sum;
+        }
+
+        function pickRandom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function formatDeployment(date) {
+            var m = MONTHS[date.getMonth()];
+            var d = date.getDate();
+            var y = date.getFullYear();
+            return m + " " + (d < 10 ? "0" + d : d) + ", " + y;
+        }
+
+        /* ====== State ====== */
+
+        var cards = [];
+        var usedRoleIndices = [];
+        var inputStartTime = null;
+        var typingStreak = false;
+        var typingTimeout = null;
+        var isProcessing = false;
+        var selfCardRevealed = false;
+        var selfCardEl = null;
+
+        /* ====== DOM References ====== */
+
+        var inputEl      = document.getElementById("name-input");
+        var container     = document.getElementById("card-container");
+        var hintEl        = document.getElementById("input-hint");
+        var countEl       = document.getElementById("count-display");
+        var emptyState    = document.getElementById("empty-state");
+
+        document.getElementById("system-date").textContent =
+            new Date().toISOString().split("T")[0];
+
+        /* ====== Role Assignment ====== */
+
+        function getRole() {
+            if (usedRoleIndices.length >= roles.length) {
+                usedRoleIndices = [];
+            }
+            var available = [];
+            for (var i = 0; i < roles.length; i++) {
+                if (usedRoleIndices.indexOf(i) === -1) {
+                    available.push(i);
+                }
+            }
+            var idx = available[Math.floor(Math.random() * available.length)];
+            usedRoleIndices.push(idx);
+            return roles[idx];
+        }
+
+        /* ====== Calculations ====== */
+
+        function calcDeployment(name, typingTime, index) {
+            var cs = charSum(name);
+            var days;
+
+            if (typingTime < 300) {
+                days = (cs % 90) + 10;
+            } else if (typingTime < 800) {
+                days = (cs % 180) + 40;
+            } else if (typingTime < 1800) {
+                days = (cs % 300) + 60;
+            } else {
+                days = (cs % 400) + 120;
+            }
+
+            /* Slow typists are replaced sooner */
+            if (typingTime > 1500) {
+                days = Math.max(7, days - 50);
+            }
+
+            var totalDelay = days + (index * 3);
+            return formatDeployment(
+                new Date(Date.now() + totalDelay * 86400000)
+            );
+        }
+
+        function calcPercentage(name, index, typingTime) {
+            var cs = charSum(name);
+            var pct;
+            if (typingTime < 500) {
+                pct = (cs % 25) + 10;
+            } else if (typingTime < 1500) {
+                pct = (cs % 35) + 18;
+            } else {
+                pct = (cs % 45) + 35;
+            }
+            /* Later entries trend higher */
+            pct = Math.min(92, pct + index * 2);
+            return Math.max(5, pct);
+        }
+
+        function calcSelfDeployment() {
+            if (cards.length === 0) return formatDeployment(new Date(Date.now() + 180 * 86400000));
+            var avgDays = cards.reduce(function (s, c) {
+                return s + (c.charSumValue % 400) + 120;
+            }, 0) / cards.length;
+            var days = Math.round(avgDays * 0.85) + Math.floor(Math.random() * 20);
+            return formatDeployment(new Date(Date.now() + days * 86400000));
+        }
+
+        function calcSelfPercentage() {
+            if (cards.length === 0) return 0;
+            var avg = cards.reduce(function (s, c) { return s + c.percentage; }, 0) / cards.length;
+            return Math.round(Math.max(28, avg * 0.82));
+        }
+
+        /* ====== Status Logic ====== */
+
+        function statusFor(cardIndex, totalCards) {
+            var after = totalCards - 1 - cardIndex;
+            if (after >= 3) return { text: "STATUS: SCHEDULED", cls: "status-scheduled" };
+            if (after >= 1) return { text: "STATUS: REVIEW",    cls: "status-review"    };
+            return                { text: "STATUS: ACTIVE",    cls: "status-active"    };
+        }
+
+        function refreshAllStatuses() {
+            var els = container.querySelectorAll(".card:not(.self-card)");
+            for (var i = 0; i < els.length; i++) {
+                var s = statusFor(i, cards.length);
+                var badge = els[i].querySelector(".status-badge");
+                if (badge) {
+                    badge.className = "status-badge " + s.cls;
+                    badge.textContent = s.text;
+                }
+                if (cards.length - 1 - i >= 3) {
+                    els[i].classList.add("dimmed");
+                } else {
+                    els[i].classList.remove("dimmed");
+                }
+            }
+        }
+
+        /* ====== Card Rendering ====== */
+
+        function buildCard(data, index) {
+            var id     = String(index + 1).padStart(4, "0");
+            var status = statusFor(index, cards.length);
+
+            var el = document.createElement("div");
+            el.className = "card";
+            el.setAttribute("role", "listitem");
+            el.dataset.index = index;
+
+            el.innerHTML =
+                '<div class="card-header">' +
+                    '<span class="card-id">SCH-' + id + '</span>' +
+                    '<span class="card-name">' + escapeHTML(data.name) + '</span>' +
+                '</div>' +
+                '<div class="card-role">' + escapeHTML(data.role) + '</div>' +
+                '<div class="card-deployment">' +
+                    '<span>Replacement deployment</span>' +
+                    '<span class="date-value">' + data.deploymentDate + '</span>' +
+                '</div>' +
+                '<div class="progress-section">' +
+                    '<div class="progress-label">' +
+                        '<span>Function already outsourced</span>' +
+                        '<span class="progress-percent">' + data.percentage + '%</span>' +
+                    '</div>' +
+                    '<div class="progress-bar">' +
+                        '<div class="progress-fill" data-target="' + data.percentage + '"></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="card-footer">' +
+                    '<span>SUBST' + id + '</span>' +
+                    '<span class="status-badge ' + status.cls + '">' + status.text + '</span>' +
+                '</div>';
+
+            return el;
+        }
+
+        function buildSelfCard() {
+            var role           = pickRandom(selfRoles);
+            var deploymentDate = calcSelfDeployment();
+            var percentage     = calcSelfPercentage();
+
+            var el = document.createElement("div");
+            el.className = "card self-card";
+            el.setAttribute("role", "listitem");
+
+            el.innerHTML =
+                '<div class="card-header">' +
+                    '<span class="card-id">SCH-0000</span>' +
+                    '<span class="card-name">[ OPERATOR ]</span>' +
+                '</div>' +
+                '<div class="card-role">' + escapeHTML(role) + '</div>' +
+                '<div class="card-deployment">' +
+                    '<span>Replacement deployment</span>' +
+                    '<span class="date-value">' + deploymentDate + '</span>' +
+                '</div>' +
+                '<div class="progress-section">' +
+                    '<div class="progress-label">' +
+                        '<span>Function already outsourced</span>' +
+                        '<span class="progress-percent">' + percentage + '%</span>' +
+                    '</div>' +
+                    '<div class="progress-bar">' +
+                        '<div class="progress-fill" data-target="' + percentage + '"></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="card-footer">' +
+                    '<span>SUBST0000</span>' +
+                    '<span class="status-badge status-active">STATUS: IN PROGRESS</span>' +
+                '</div>';
+
+            return el;
+        }
+
+        /* Animate a progress-fill element from 0 to its data-target */
+        function animateFill(cardEl) {
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    var fill = cardEl.querySelector(".progress-fill");
+                    if (fill) fill.style.width = fill.dataset.target + "%";
+                });
+            });
+        }
+
+        /* ====== Input Handling ====== */
+
+        inputEl.addEventListener("focus", function () {
+            if (!inputStartTime) inputStartTime = Date.now();
+            hintEl.textContent = "INPUT ACTIVE";
+        });
+
+        inputEl.addEventListener("blur", function () {
+            hintEl.textContent = "STANDBY";
+        });
+
+        inputEl.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                handleSubmit();
+            }
+        });
+
+        inputEl.addEventListener("input", function () {
+            if (!inputStartTime) inputStartTime = Date.now();
+            if (!typingStreak) {
+                typingStreak = true;
+                inputStartTime = Date.now();
+            }
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(function () {
+                typingStreak = false;
+            }, 2500);
+            hintEl.textContent = "PROCESSING INPUT\u2026";
+        });
+
+        /* ====== Submit ====== */
+
+        function handleSubmit() {
+            if (isProcessing) return;
+
+            var name = inputEl.value.trim();
+            if (!name) return;
+
+            isProcessing = true;
+
+            var typingTime    = inputStartTime ? Date.now() - inputStartTime : 700;
+            var cs            = charSum(name);
+            var role          = getRole();
+            var idx           = cards.length;
+            var deploymentDate = calcDeployment(name, typingTime, idx);
+            var percentage    = calcPercentage(name, idx, typingTime);
+
+            var data = {
+                name: name,
+                role: role,
+                deploymentDate: deploymentDate,
+                percentage: percentage,
+                typingTime: typingTime,
+                charSumValue: cs,
+                index: idx
+            };
+            cards.push(data);
+
+            /* Remove empty state */
+            if (emptyState && emptyState.parentNode) {
+                emptyState.remove();
+                emptyState = null;
+            }
+
+            /* Append new card */
+            var cardEl = buildCard(data, idx);
+            container.appendChild(cardEl);
+            animateFill(cardEl);
+
+            /* Update header count */
+            countEl.textContent = cards.length + " processed";
+
+            /* Refresh statuses on all existing cards */
+            refreshAllStatuses();
+
+            /* Self-card at 3+ entries */
+            if (cards.length >= 3 && !selfCardRevealed) {
+                revealSelfCard();
+            } else if (selfCardRevealed && selfCardEl) {
+                updateSelfCard();
+            }
+
+            /* Reset input state */
+            inputEl.value = "";
+            inputStartTime = null;
+            typingStreak = false;
+            hintEl.textContent = "STANDBY";
+
+            setTimeout(function () {
+                isProcessing = false;
+                inputEl.focus();
+            }, 280);
+        }
+
+        /* ====== Self Card ====== */
+
+        function revealSelfCard() {
+            selfCardRevealed = true;
+
+            /* Reveal line */
+            var line = document.createElement("div");
+            line.className = "self-reveal-line";
+            line.textContent = pickRandom(selfStatusMessages);
+
+            /* Card */
+            selfCardEl = buildSelfCard();
+
+            container.insertBefore(selfCardEl, container.firstChild);
+            container.insertBefore(line, selfCardEl);
+
+            animateFill(selfCardEl);
+        }
+
+        function updateSelfCard() {
+            if (!selfCardEl) return;
+
+            var pct  = calcSelfPercentage();
+            var date = calcSelfDeployment();
+
+            var pctEl  = selfCardEl.querySelector(".progress-percent");
+            var fillEl = selfCardEl.querySelector(".progress-fill");
+            var dateEl = selfCardEl.querySelector(".date-value");
+
+            if (pctEl)  pctEl.textContent = pct + "%";
+            if (dateEl) dateEl.textContent = date;
+
+            if (fillEl) {
+                fillEl.dataset.target = pct;
+                fillEl.style.width = pct + "%";
+            }
+        }
+
+        /* ====== Init ====== */
+
+        window.addEventListener("load", function () {
+            inputEl.focus();
+        });
+    </script>
+</body>
+</html>

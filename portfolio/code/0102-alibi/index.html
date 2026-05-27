@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alibi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400&family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a0e;
+  --surface: #131420;
+  --surface-hi: #1a1b2c;
+  --border: #242640;
+  --border-hi: #343658;
+  --text: #d4d4d8;
+  --text-lo: #888894;
+  --text-dim: #4e4e58;
+  --amber: #d4a853;
+  --amber-lo: #b08a38;
+  --red: #b83a3a;
+  --red-lo: #7a2828;
+  --red-dim: #2a1010;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'IBM Plex Mono', monospace;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-weight: 300;
+  line-height: 1.7;
+  font-size: 13px;
+}
+
+::selection { background: var(--red-dim); color: var(--text); }
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(184,58,58,0.03) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 100%, rgba(212,168,83,0.02) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dossier-wrap {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 40px 24px 100px;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+#screen { position: relative; }
+
+#screen::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.4;
+}
+
+/* ---- INTRO ---- */
+
+.intro-title {
+  font-family: 'Crimson Pro', serif;
+  font-size: 52px;
+  font-weight: 700;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 6px;
+  text-align: center;
+  opacity: 0;
+  animation: introFade 1.2s ease 0.3s forwards;
+}
+
+.intro-sub {
+  font-size: 10px;
+  color: var(--text-dim);
+  text-align: center;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 70px;
+  opacity: 0;
+  animation: introFade 1.2s ease 0.6s forwards;
+}
+
+.intro-body {
+  max-width: 500px;
+  margin: 0 auto 60px;
+  text-align: center;
+  color: var(--text-lo);
+  font-size: 13px;
+  line-height: 2.1;
+  opacity: 0;
+  animation: introFade 1s ease 0.9s forwards;
+}
+
+.intro-body strong {
+  color: var(--amber-lo);
+  font-weight: 400;
+}
+
+.intro-body em {
+  color: var(--amber);
+  font-style: italic;
+  font-family: 'Crimson Pro', serif;
+  font-size: 14px;
+}
+
+@keyframes introFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.begin-btn {
+  display: block;
+  margin: 0 auto;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-lo);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 14px 52px;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: introFade 1s ease 1.2s forwards;
+}
+
+.begin-btn:hover {
+  border-color: var(--amber-lo);
+  color: var(--amber);
+  box-shadow: 0 0 40px rgba(212,168,83,0.05);
+}
+
+.begin-btn:focus-visible {
+  outline: 2px solid var(--amber-lo);
+  outline-offset: 4px;
+}
+
+.begin-btn.secondary {
+  margin-top: 16px;
+  border-color: var(--border);
+  color: var(--text-dim);
+  animation-delay: 1.4s;
+}
+
+.begin-btn.secondary:hover {
+  border-color: var(--text-dim);
+  color: var(--text-lo);
+}
+
+/* ---- DOSSIER HEADER ---- */
+
+.dossier-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: slideIn 0.6s ease forwards;
+}
+
+.dossier-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.dossier-name {
+  font-family: 'Crimson Pro', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.dossier-meta {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.9;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: slideIn 0.6s ease 0.15s forwards;
+}
+
+.dossier-meta span { color: var(--text-lo); }
+
+/* ---- TIMELINE ---- */
+
+.timeline {
+  position: relative;
+  padding-left: 108px;
+  margin-bottom: 48px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 96px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--border) 20px, var(--border) calc(100% - 20px), transparent);
+}
+
+.t-entry {
+  position: relative;
+  margin-bottom: 6px;
+  padding: 12px 16px;
+  border-radius: 4px;
+  border-left: 3px solid transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  opacity: 0;
+  animation: entrySlide 0.4s ease forwards;
+}
+
+.t-entry:nth-child(1)  { animation-delay: 0.05s; }
+.t-entry:nth-child(2)  { animation-delay: 0.08s; }
+.t-entry:nth-child(3)  { animation-delay: 0.11s; }
+.t-entry:nth-child(4)  { animation-delay: 0.14s; }
+.t-entry:nth-child(5)  { animation-delay: 0.17s; }
+.t-entry:nth-child(6)  { animation-delay: 0.20s; }
+.t-entry:nth-child(7)  { animation-delay: 0.23s; }
+.t-entry:nth-child(8)  { animation-delay: 0.26s; }
+.t-entry:nth-child(9)  { animation-delay: 0.29s; }
+.t-entry:nth-child(10) { animation-delay: 0.32s; }
+.t-entry:nth-child(n+11) { animation-delay: 0.35s; }
+
+@keyframes entrySlide {
+  from { opacity: 0; transform: translateX(-4px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.t-entry::before {
+  content: '';
+  position: absolute;
+  left: -23px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: all 0.3s ease;
+}
+
+.t-entry:hover {
+  background: var(--surface);
+  border-left-color: var(--border-hi);
+}
+
+.t-entry:hover::before {
+  background: var(--text-dim);
+}
+
+.t-time {
+  position: absolute;
+  left: -108px;
+  top: 12px;
+  font-size: 11px;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+  width: 80px;
+  text-align: right;
+}
+
+.t-activity {
+  font-size: 13px;
+  color: var(--text-lo);
+  margin-bottom: 2px;
+}
+
+.t-detail {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+/* Vulnerable entries — faint amber left-border */
+.t-entry.vulnerable {
+  border-left-color: rgba(212,168,83,0.08);
+}
+
+.t-entry.vulnerable::before {
+  background: var(--amber-lo);
+  opacity: 0.35;
+}
+
+.t-entry.vulnerable:hover {
+  border-left-color: rgba(212,168,83,0.2);
+}
+
+/* Selected gap entry */
+.t-entry.selected {
+  border-left-color: var(--red) !important;
+  background: var(--red-dim) !important;
+  cursor: default;
+}
+
+.t-entry.selected::before {
+  background: var(--red) !important;
+  opacity: 1 !important;
+  box-shadow: 0 0 8px rgba(184,58,58,0.4);
+}
+
+.t-entry.selected .t-activity { color: var(--text); }
+.t-entry.selected .t-detail   { color: var(--text-lo); }
+
+/* Entries adjacent to the gap */
+.t-entry.gap-adjacent {
+  background: rgba(184,58,58,0.03);
+  border-left-color: rgba(184,58,58,0.2);
+  cursor: default;
+}
+
+/* Locked entries after selection */
+.t-entry.locked {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.t-entry.locked:hover {
+  background: transparent;
+  border-left-color: transparent;
+}
+
+.t-entry.locked:hover::before {
+  background: var(--border);
+  opacity: 1;
+}
+
+/* ---- GAP SECTION ---- */
+
+.gap-section {
+  margin-bottom: 48px;
+  opacity: 0;
+  animation: slideIn 0.6s ease 0.8s forwards;
+}
+
+.gap-instruction {
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+  margin-bottom: 24px;
+  line-height: 2;
+}
+
+.gap-instruction strong {
+  color: var(--amber-lo);
+  font-weight: 400;
+}
+
+.gap-marker {
+  text-align: center;
+  margin: 20px 0;
+  padding: 14px;
+  background: var(--red-dim);
+  border: 1px solid rgba(184,58,58,0.2);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--red);
+  letter-spacing: 2px;
+  display: none;
+}
+
+.gap-marker.visible { display: block; }
+
+.confirm-btn {
+  display: block;
+  margin: 28px auto 0;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 14px 44px;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  text-transform: uppercase;
+}
+
+.confirm-btn:hover:not(:disabled) {
+  border-color: var(--red-lo);
+  color: var(--red);
+  box-shadow: 0 0 30px rgba(184,58,58,0.06);
+  text-shadow: 0 0 12px rgba(184,58,58,0.3);
+}
+
+.confirm-btn:focus-visible {
+  outline: 2px solid var(--red-lo);
+  outline-offset: 4px;
+}
+
+.confirm-btn:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+/* ---- AFTERMATH ---- */
+
+.aft-header {
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.aft-title {
+  font-family: 'Crimson Pro', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.aft-meta {
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.aft-section {
+  margin-bottom: 32px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+
+.aft-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.aft-label {
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--amber-lo);
+  margin-bottom: 10px;
+}
+
+.aft-text {
+  font-size: 13px;
+  color: var(--text-lo);
+  line-height: 2;
+}
+
+.aft-text strong {
+  color: var(--text);
+  font-weight: 400;
+}
+
+.aft-text em {
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.aft-question {
+  border-top: 1px solid var(--border);
+  padding-top: 28px;
+  margin-top: 40px;
+}
+
+.aft-question-text {
+  font-family: 'Crimson Pro', serif;
+  font-size: 16px;
+  color: var(--text);
+  line-height: 1.9;
+  font-style: italic;
+}
+
+.continue-btn {
+  display: block;
+  margin: 48px auto 0;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 13px 40px;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  text-transform: uppercase;
+}
+
+.continue-btn:hover {
+  border-color: var(--text-dim);
+  color: var(--text-lo);
+}
+
+.continue-btn:focus-visible {
+  outline: 2px solid var(--text-dim);
+  outline-offset: 4px;
+}
+
+/* ---- MIRROR ---- */
+
+.mirror-wrap {
+  padding-top: 4vh;
+}
+
+.mirror-title {
+  font-family: 'Crimson Pro', serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 48px;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.mirror-record {
+  margin-bottom: 24px;
+  padding: 20px;
+  background: var(--surface);
+  border-radius: 4px;
+  border-left: 3px solid var(--border);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.mirror-record.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mirror-record-num {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.mirror-record-detail {
+  font-size: 12px;
+  color: var(--text-lo);
+  line-height: 1.8;
+}
+
+.mirror-record-detail em {
+  color: var(--text-dim);
+}
+
+.mirror-record-detail .hl {
+  color: var(--amber);
+}
+
+.mirror-record-detail .hl-red {
+  color: var(--red);
+}
+
+.mirror-divider {
+  width: 50px;
+  height: 1px;
+  background: var(--border);
+  margin: 44px auto;
+}
+
+.mirror-analysis {
+  text-align: center;
+  margin-bottom: 36px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.mirror-analysis.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mirror-analysis p {
+  font-size: 13px;
+  color: var(--text-lo);
+  line-height: 2.1;
+  margin-bottom: 14px;
+}
+
+.mirror-analysis em {
+  font-family: 'Crimson Pro', serif;
+  font-style: italic;
+  color: var(--amber);
+  font-size: 15px;
+}
+
+.mirror-reveal {
+  font-family: 'Crimson Pro', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 28px;
+  line-height: 1.6;
+  text-align: left;
+  padding: 0 20px;
+}
+
+.mirror-avoid {
+  font-family: 'Crimson Pro', serif;
+  font-size: 15px;
+  color: var(--text-lo);
+  margin-top: 28px;
+  line-height: 1.7;
+  text-align: left;
+  padding: 0 20px;
+  font-style: italic;
+}
+
+.mirror-final {
+  margin-top: 56px;
+  padding-top: 36px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.mirror-final.visible { opacity: 1; }
+
+.mirror-final p {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 2.2;
+  margin-bottom: 10px;
+}
+
+.mirror-final em {
+  font-family: 'Crimson Pro', serif;
+  font-style: italic;
+  color: var(--text-lo);
+  font-size: 14px;
+}
+
+.erase-btn {
+  display: block;
+  margin: 36px auto 0;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 13px 40px;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  text-transform: uppercase;
+}
+
+.erase-btn:hover {
+  border-color: var(--red-lo);
+  color: var(--red);
+}
+
+.erase-btn:focus-visible {
+  outline: 2px solid var(--red-lo);
+  outline-offset: 4px;
+}
+
+/* ---- UTILITY ---- */
+
+.sep {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+  margin: 40px 0;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .aft-section      { opacity: 1; transform: none; }
+  .mirror-record    { opacity: 1; transform: none; }
+  .mirror-analysis  { opacity: 1; transform: none; }
+  .mirror-final     { opacity: 1; }
+  .intro-title, .intro-sub, .intro-body, .begin-btn { opacity: 1; }
+  .t-entry          { opacity: 1; }
+  .dossier-header, .dossier-meta, .gap-section { opacity: 1; }
+}
+
+@media (max-width: 640px) {
+  .dossier-wrap { padding: 24px 16px 60px; }
+  .intro-title  { font-size: 38px; letter-spacing: 5px; }
+  .timeline     { padding-left: 68px; }
+  .t-time       { left: -68px; width: 48px; font-size: 10px; }
+  .timeline::before { left: 58px; }
+  .t-entry      { padding: 10px 12px; }
+  .dossier-header { flex-direction: column; gap: 4px; }
+  .mirror-reveal, .mirror-avoid { padding: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="dossier-wrap">
+  <div id="screen" role="main" aria-label="Alibi game interface"></div>
+</div>
+
+<script>
+/* ==========================================================
+   ALIBI
+   A game about authorship, pattern, and choosing where to look.
+ ========================================================== */
+
+/* ----------------------------------------------------------
+   ARCHETYPE DATA — four lives, handcrafted
+ ---------------------------------------------------------- */
+
+const ARCHETYPES = [
+
+  /* ==== THE COMMUTER: Maren Holst ==== */
+  {
+    type: 'commuter',
+    name: 'Maren Holst',
+    age: 34,
+    occupation: 'Claims Adjuster, Meridian Financial',
+    location: 'Riverside Heights, Unit 4B',
+    relation: 'your neighbor',
+    summary: {
+      normality: '8.4 / 10',
+      associates: 'Benjamin Holst (husband), Elsa Holst (daughter, age 6)',
+      notes: 'Cell records account for all significant movement. Routine consistent with historical patterns. No deviation from norm detected.'
+    },
+    entries: [
+      { time: '6:12', activity: 'Alarm goes off', detail: 'Snoozes once. Second alarm at 6:21. The phone registers both.', vulnerable: false },
+      { time: '6:32', activity: 'Shower', detail: 'Bathroom exhaust fan activates. 14 minutes of hot water use consistent with routine.', vulnerable: false },
+      { time: '6:51', activity: 'Coffee, breakfast prep', detail: 'Kitchen light on. Refrigerator opens twice. Keurig cycle audible through shared wall.', vulnerable: false },
+      { time: '7:08', activity: 'Wakes Elsa for school', detail: 'Hall light on. Elsa\'s door opens. Morning conversation \u2014 routine, warm.', vulnerable: false },
+      { time: '7:16', activity: 'Makes Elsa\'s lunch', detail: 'Turkey and cheese sandwich, apple, juice box. The same lunch she packs every weekday. A repeatable act of care.', vulnerable: true },
+      { time: '7:28', activity: 'Argument with Benjamin', detail: 'Raised voices detected by neighbor. Subject: forgotten dry cleaning. Duration: 4 minutes. Resolved without resolution.', vulnerable: false },
+      { time: '7:34', activity: 'Dresses Elsa', detail: 'Interior movement. Girl\'s laughter audible. The argument is already forgotten.', vulnerable: false },
+      { time: '7:41', activity: 'Final packing, finds keys', detail: 'Checks diaper bag. Keys retrieved from kitchen counter hook \u2014 third location checked. She always loses them.', vulnerable: true },
+      { time: '7:47', activity: 'Drives to school', detail: 'Vehicle exits garage at 7:49. Dash cam activates. 9-minute route to Westbrook Elementary.', vulnerable: false },
+      { time: '7:58', activity: 'School drop-off', detail: 'Custodian observes subject walking Elsa to entrance. Normal demeanor reported. Elsa waves back from the door.', vulnerable: false },
+      { time: '8:04', activity: 'Coffee shop stop', detail: 'Greenleaf Coffee at 8:06. Medium dark roast, sesame bagel. Sits alone. No phone calls. Watches the window.', vulnerable: false },
+      { time: '8:22', activity: 'Drives to work', detail: 'Route I-9 South to Meridian Financial Campus. 31-minute commute. E-ZPass recorded at Exit 14.', vulnerable: false },
+      { time: '8:58', activity: 'Arrives at office', detail: 'Key card swipe, Level 2. Badge logged at 8:53. Her assistant has printed the day\'s schedule.', vulnerable: false },
+      { time: '9:04', activity: 'Morning meeting', detail: 'Conference Room B. Claims review for Q3 backlog. Maren presents adjustment protocols. She is prepared.', vulnerable: false },
+      { time: '10:15', activity: 'Desk work', detail: 'Processes 12 claims. Two phone calls to policyholders. The work is mechanical. Her mind is elsewhere.', vulnerable: false },
+      { time: '11:30', activity: 'Lunch at desk', detail: 'Salad from home. Brief call to Benjamin \u2014 "normal," per her account. Neither mentions the dry cleaning.', vulnerable: false },
+      { time: '12:45', activity: 'Afternoon claims review', detail: 'Returns voicemails. Sends 4 emails. Routine. Her inbox will be full again tomorrow.', vulnerable: false },
+      { time: '14:15', activity: 'Call from school nurse', detail: 'Elsa has a low fever. Maren\'s voice stays steady. She arranges early pickup.', vulnerable: false },
+      { time: '14:28', activity: 'Leaves work early', detail: 'Key card at 14:31. Vehicle exits garage at 14:34. She drives faster than usual.', vulnerable: false },
+      { time: '14:51', activity: 'Picks up Elsa', detail: 'Nurse\'s office. Temperature 99.8\u00B0F. Elsa is listless but responsive. "Mommy, my head hurts."', vulnerable: false },
+      { time: '15:08', activity: 'Drives home', detail: 'Dash cam active. Elsa asleep in back seat. The route is automatic. Maren checks the mirror twice.', vulnerable: false },
+      { time: '15:24', activity: 'Settles Elsa on couch', detail: 'Blanket, ginger ale, cartoons. Temperature check: 99.4\u00B0F. Going down.', vulnerable: false },
+      { time: '15:38', activity: 'Sits with Elsa', detail: 'Kitchen activity intermittently detected. Maren moves between rooms. The afternoon stretches.', vulnerable: true },
+      { time: '16:02', activity: 'Calls pediatrician', detail: 'Receptionist confirms appointment for Wednesday. Maren describes symptoms. Professional calm.', vulnerable: false },
+      { time: '16:15', activity: 'Reads on couch', detail: 'No activity detected. Presumed stationary beside Elsa. The house is very quiet.', vulnerable: true },
+      { time: '16:48', activity: 'Prepares early dinner', detail: 'Kitchen sounds. Elsa wakes, eats soup, returns to sleep. The fever is breaking.', vulnerable: false },
+      { time: '17:22', activity: 'Benjamin arrives home', detail: 'Maren greets him at the door. Brief exchange \u2014 quiet. Elsa still on the couch.', vulnerable: false },
+      { time: '17:35', activity: 'Family dinner', detail: 'Three plates. Elsa sits upright but eats little. Benjamin talks about his day. Maren listens.', vulnerable: false },
+      { time: '18:18', activity: 'Bath time for Elsa', detail: 'Routine. Bathroom sounds. Elsa is feeling better \u2014 splashing.', vulnerable: false },
+      { time: '18:44', activity: 'Puts Elsa to bed', detail: 'Storybook. Nightlight on at 18:52. Door closed. Maren stands in the hallway for a moment.', vulnerable: false },
+      { time: '19:15', activity: 'TV with Benjamin', detail: 'Living room. Volume low. Neither is watching. The day has been long.', vulnerable: true },
+      { time: '19:52', activity: 'Reads in bedroom', detail: 'Bedside lamp on. Benjamin in office. The book is the same one she\'s been reading for three weeks.', vulnerable: true },
+      { time: '20:34', activity: 'Benjamin comes to bed', detail: 'No conversation detected by neighbor. The dry cleaning is never mentioned.', vulnerable: false },
+      { time: '21:15', activity: 'Lights out', detail: 'Bedroom dark. No further activity. The house settles into silence.', vulnerable: false }
+    ],
+    aftermath: {
+      gapContexts: {
+        alone: 'alone in the apartment \u2014 Benjamin at work, Elsa at school',
+        withElsa: 'with Elsa \u2014 her daughter, six years old, running a fever',
+        inTransit: 'in transit \u2014 between locations, between witnesses',
+        domestic: 'in the domestic space \u2014 kitchen, living room, the rooms that hold a life together',
+        reading: 'reading \u2014 absorbed elsewhere, present but distant',
+        morning: 'in the morning rush \u2014 the most distracted hour of her day'
+      },
+      forensic: [
+        'No physical evidence of forced entry. The apartment was locked from inside. Whatever happened, happened with a key or through patience.',
+        'Cell tower triangulation places Maren\'s device at the expected location during the gap. The phone was stationary. This is either an alibi or a limitation of the record.',
+        'Smart thermostat data confirms occupancy during the window. A body was present, generating heat. The system cannot determine whose.',
+        'Maren consented to phone extraction. No deleted communications during or around the gap. Her digital trail is clean \u2014 which is itself unremarkable, or remarkable.',
+        'The Keurig was still warm when investigators arrived. The mug was on the counter, half full. Someone had been there recently. Or had planned to appear so.'
+      ],
+      neighbor: [
+        'Mrs. Karim in 3B was at her sister\'s. The Changs in 5A heard "normal TV sounds" around seven but couldn\'t specify. The building is old. Sound is unreliable.',
+        'A neighbor on the fourth floor heard nothing \u2014 "or maybe something, I can\'t say for sure." In this building, certainty is a luxury.',
+        'The hallway camera shows no visitors between 08:00 and 17:00. The gap you chose is either the cleanest window on record, or the most suspicious.',
+        'No one on Riverside Heights remembers anything specific about that Tuesday. It was a Tuesday. They all blur.'
+      ],
+      theory: [
+        'The timeline is airtight. That is the problem. Maren\'s key card, cell pings, and dash cam place her miles away. In the gap you chose, the apartment was a sealed box. The question investigators cannot answer: whose absence mattered?',
+        'Someone knew the schedule. The gap was chosen because it guaranteed emptiness \u2014 which means the catastrophe was planned by someone who had watched this timeline before. The investigation becomes not "what happened" but "who was reading."',
+        'The event \u2014 if there was one \u2014 left no trace because the gap was designed to absorb it. Eight minutes is enough time for something irreversible, and not enough time for the timeline to notice.'
+      ],
+      questions: [
+        'Maren was {context} when you chose the gap. Did you see her, or just the opening?',
+        'Elsa was six years old and running a fever. She appears in the timeline five times during the window you selected. Does that fact carry weight for you?',
+        'You chose a moment when the timeline thinned \u2014 when Maren moved between verified locations. Was it the gap you wanted, or the invisibility?',
+        'The dry-cleaning argument lasted four minutes. You chose a window eight minutes long. Was that enough time for the grievance to settle, or did you want it still in the air?',
+        'Maren packed the same lunch she always packs. She drove the same route. She sat on the same couch. What does it mean that you chose this particular repetition?',
+        'Look at the gap you selected. Now look at the gaps you didn\'t. What do they have that this one lacks?'
+      ]
+    }
+  },
+
+  /* ==== THE STAY-AT-HOME PARENT: Todd Larsen ==== */
+  {
+    type: 'parent',
+    name: 'Todd Larsen',
+    age: 41,
+    occupation: 'Freelance Copywriter',
+    location: '42 Maple Grove Court',
+    relation: 'your neighbor',
+    summary: {
+      normality: '9.2 / 10',
+      associates: 'Jenny Larsen (wife), Aidan Larsen (son, age 4)',
+      notes: 'Routine is exceptionally consistent. Multiple verifiable check-ins. Low deviation index. The most predictable schedule in the dataset.'
+    },
+    entries: [
+      { time: '5:48', activity: 'Wakes before anyone', detail: 'No alarm. The house is still. Todd sits on the edge of the bed for two minutes before standing. This is his only solitude.', vulnerable: true },
+      { time: '6:10', activity: 'Makes coffee', detail: 'French press. The ritual: boil, pour, wait four minutes. He watches the timer on his phone. The steam rises in the same shape every morning.', vulnerable: false },
+      { time: '6:25', activity: 'Checks email at kitchen table', detail: 'Client responses. Two deadlines confirmed. Deletes a newsletter without opening it. The screen light is the only light.', vulnerable: false },
+      { time: '6:38', activity: 'Prepares breakfast', detail: 'Oatmeal with honey for Jenny. Toast for himself. Aidan gets the cereal with the cartoon monkey on the box. Todd always buys two boxes at a time.', vulnerable: true },
+      { time: '6:55', activity: 'Brings Jenny coffee in bed', detail: 'Kiss on the forehead. She smiles with her eyes still closed. He\'s done this every morning for nine years.', vulnerable: false },
+      { time: '7:10', activity: 'Wakes Aidan', detail: 'The tickle method. Giggles through the wall. Diaper check: clean. The boy is laughing before he\'s fully awake.', vulnerable: false },
+      { time: '7:22', activity: 'Breakfast', detail: 'Kitchen table. Aidan spills milk. Todd cleans it without comment. Jenny reads something on her phone. The morning is a machine.', vulnerable: false },
+      { time: '7:48', activity: 'Jenny leaves for work', detail: 'Kiss at the door. "Don\'t forget Aidan\'s dentist appointment Thursday." She won\'t forget. The car backs out. The house changes frequency.', vulnerable: false },
+      { time: '7:56', activity: 'Dresses Aidan', detail: 'Blue shirt with the dinosaur. Velcro shoes. Aidan insists on the red hat. Todd lets him. This is not a battle worth having.', vulnerable: false },
+      { time: '8:10', activity: 'Neighborhood walk', detail: 'Checks on Mrs. Chen\'s cat \u2014 she\'s in the hospital, hip replacement. Cat is fine, food bowl half full. Todd refills it. Mailbox empty.', vulnerable: true },
+      { time: '8:32', activity: 'Aidan plays', detail: 'Living room. Blocks, then a book about diggers. Todd watches from the kitchen doorway. He has memorized the sound of his son breathing.', vulnerable: false },
+      { time: '8:55', activity: 'Work session begins', detail: 'Laptop at the kitchen table. Article draft for Meridian Home & Garden. 800 words due by Friday. He writes with one ear always on the living room.', vulnerable: true },
+      { time: '9:45', activity: 'Aidan needs attention', detail: 'Bathroom trip. Then apple slices and peanut butter. Work interrupted. Todd doesn\'t mind. He minds the not-minding.', vulnerable: false },
+      { time: '10:08', activity: 'Returns to work', detail: 'Writes 400 words. Deletes 200. Opens the draft again. The deadline doesn\'t care about apple slices.', vulnerable: true },
+      { time: '10:38', activity: 'Aidan watches cartoons', detail: 'PBS Kids. Volume low. Todd can see the TV reflected in the kitchen window. He types and watches the reflection simultaneously.', vulnerable: true },
+      { time: '11:15', activity: 'Lunch prep', detail: 'Mac and cheese. Aidan\'s favorite. Todd eats a sandwich standing at the counter, one hand on his phone, one on the cutting board.', vulnerable: false },
+      { time: '11:42', activity: 'Lunch together', detail: 'Kitchen table. Aidan talks about diggers. Todd listens, or appears to. His mind is between the article and the afternoon.', vulnerable: false },
+      { time: '12:05', activity: 'Nap time routine', detail: '"Goodnight Moon" even though it\'s noon. Aidan fights sleep. Wins at 12:18. Todd closes the door with the practiced silence of repetition.', vulnerable: false },
+      { time: '12:20', activity: 'The house exhales', detail: 'Aidan asleep. Todd stands in the kitchen, looking at nothing. The silence is enormous. Then he opens his laptop.', vulnerable: true },
+      { time: '13:15', activity: 'Finishes article draft', detail: 'Reads it once. Sends it to the editor. Closes the laptop. The house is still quiet. He doesn\'t know what to do with quiet anymore.', vulnerable: false },
+      { time: '14:00', activity: 'Aidan wakes from nightmare', detail: 'Crying about a shadow. Todd holds him in the rocking chair. Seven minutes of "it\'s okay, it\'s okay." The shadow is always different. The reassurance is always the same.', vulnerable: false },
+      { time: '14:12', activity: 'Snack time', detail: 'Graham crackers. Juice box. The crying stops. Aidan is already talking about the digger book again.', vulnerable: false },
+      { time: '14:28', activity: 'Backyard play', detail: 'Swing set, sandbox. Todd sits on the patio. Texts Jenny: "All good here." She doesn\'t reply. She\'s in a meeting. He knows this.', vulnerable: false },
+      { time: '15:15', activity: 'Playdate \u2014 Mrs. Reyes brings Mateo', detail: 'The boys play in the living room. Adults in the kitchen. Mrs. Reyes asks about Jenny. Todd says she\'s good. He says she\'s good every time.', vulnerable: false },
+      { time: '16:02', activity: 'Playdate ends', detail: '"Same time Thursday?" Todd nods. The house is quieter after. Aidan looks at the door.', vulnerable: false },
+      { time: '16:18', activity: 'Aidan watches TV', detail: 'Todd cleans the living room. Finds a missing sock behind the couch. Folds a blanket. Straightens pillows. The house is always tidy.', vulnerable: false },
+      { time: '16:45', activity: 'Starts dinner', detail: 'Pasta, salad. Jenny texted: home by 18:30. He sets the table for three. The candle is Tuesday\'s idea. It was Jenny\'s idea, originally.', vulnerable: true },
+      { time: '17:12', activity: 'Aidan gets restless', detail: 'Lid off the pot. Steam. Todd burns his wrist under the faucet. Aidan cries \u2014 empathy, not pain. Todd holds him with his good arm. The pasta boils over.', vulnerable: false },
+      { time: '17:25', activity: 'Early bath time', detail: 'Dinner pushed back. Aidan plays with the plastic tugboat. Todd sits on the toilet lid and watches. The burn stings.', vulnerable: false },
+      { time: '17:48', activity: 'Dinner prep continues', detail: 'Todd stirs sauce one-handed, holds Aidan with the other. The boy is heavy now. He wasn\'t always heavy.', vulnerable: true },
+      { time: '18:28', activity: 'Jenny arrives home', detail: 'She looks tired. Todd doesn\'t mention it. Dinner is ready. She sees the candle and smiles. She always smiles.', vulnerable: false },
+      { time: '18:32', activity: 'Family dinner', detail: 'Aidan eats pasta with his hands. Jenny talks about a work thing. Todd listens. The candle flickers between them.', vulnerable: false },
+      { time: '19:02', activity: 'Jenny handles bath and bed', detail: 'Todd\'s turn to clean up. He washes the pots and stares out the window at the Chen house. The cat is in the window, watching him back.', vulnerable: true },
+      { time: '19:38', activity: 'TV with Jenny', detail: 'Sitcom reruns. Neither watches. Jenny leans against him. He puts his arm around her. The burn throbs.', vulnerable: true },
+      { time: '20:22', activity: 'Todd reads in bed', detail: 'Paperback spy novel. He reads the same page three times. His eyes are on the words. His mind is somewhere else.', vulnerable: true },
+      { time: '21:05', activity: 'Lights out', detail: 'Jenny is already asleep. Todd stares at the ceiling. The house settles around him \u2014 the weight of a life built one repeated day at a time.', vulnerable: false }
+    ],
+    aftermath: {
+      gapContexts: {
+        alone: 'alone \u2014 Jenny at work, the house between them',
+        withAidan: 'with Aidan \u2014 his four-year-old son, building or sleeping or crying',
+        domestic: 'in the kitchen \u2014 the room where a family\'s rhythms are kept',
+        working: 'working \u2014 split between deadline and child, neither getting full attention',
+        quiet: 'in the quiet \u2014 nap, stillness, the room between tasks',
+        yard: 'on the patio \u2014 visible from the yard but unwatched'
+      },
+      forensic: [
+        'Todd\'s phone shows no activity during the gap \u2014 no screen wake, no data. Eight minutes of digital silence from a man who checks his phone every twelve minutes on average.',
+        'The laptop was open to a blank document. The cursor blinked. The article draft had been sent hours earlier. Whatever Todd was doing, he wasn\'t writing.',
+        'Mrs. Chen\'s cat was fed that morning. Todd\'s fingerprints are on the food container. The cat is fine. The cat is always fine.',
+        'No forced entry. The house was locked. The alarm was not set \u2014 it is never set during the day. A person could walk in, and someone did, or no one did.',
+        'The rocking chair in Aidan\'s room showed recent weight displacement. The cushion was still warm. Someone had been sitting there within the last twenty minutes.'
+      ],
+      neighbor: [
+        'Mrs. Reyes, who had been there hours earlier: "He was a good father. I never saw anything \u2014 you know. Anything." She pauses. "He was a good father."',
+        'The cat Todd checked on is still sitting in Mrs. Chen\'s window. No one on Maple Grove Court remembers anything specific about that afternoon. The street was doing what it always does.',
+        'A neighbor walking a dog saw the house. "The lights were on. Normal. I didn\'t look twice." No one looks twice at a house where a father stays home with his son.',
+        'The mail carrier remembers Todd waving from the porch that morning. "Same as always. Friendly." He does not remember the afternoon. The afternoon is not his route.'
+      ],
+      theory: [
+        'Something happened in the gap that Todd cannot or will not account for. The domestic setting \u2014 the place of maximum safety \u2014 became the site of maximum ambiguity. The investigation shifts to what Todd remembers. He remembers nothing.',
+        'The gap exists because Todd\'s routine is so airtight that any 8-minute window is both suspicious and invisible. Every day looks like this. The sameness is both his alibi and his vulnerability.',
+        'The event, if there was one, was small enough to fit inside a domestic minute. A man stirring pasta. A father holding his son. The ordinariness is the mask. The mask is the face.'
+      ],
+      questions: [
+        'Todd was {context}. You knew this when you selected the gap. Was it the domesticity that drew you \u2014 the sense that nothing bad could happen here?',
+        'Aidan is four. He appears in the timeline six times adjacent to the window you chose. He was building something, or sleeping, or crying about a shadow. Does his presence change the weight?',
+        'Todd checks on Mrs. Chen\'s cat every morning. He refills the bowl without being asked. You saw this entry. You chose a gap anyway. What does that make you?',
+        'The article was due Friday. The pasta boiled over. The burn throbbed. You chose a gap in the middle of a man who was already holding too much. Was that the point?',
+        'You keep choosing {patternHint}. Is it comfort? Familiarity? Or have you found something in the repetition that you can\'t stop examining?',
+        'Todd brought Jenny coffee in bed for nine years. He never missed a morning. You chose to interrupt a timeline that included this fact. Why?'
+      ]
+    }
+  },
+
+  /* ==== THE GYM-GOER: Nora Vance ==== */
+  {
+    type: 'gym-goer',
+    name: 'Nora Vance',
+    age: 27,
+    occupation: 'Junior Partner, Whitfield & Associates',
+    location: 'The Meridian, Apt 12-C',
+    relation: 'your neighbor',
+    summary: {
+      normality: '6.8 / 10',
+      associates: 'Suki Park (roommate), Derek Vance (brother, Portland)',
+      notes: 'Schedule shows intentional variation. Does not repeat the same route twice in a week. Possibly counter-surveillance behavior \u2014 or simply young and active.'
+    },
+    entries: [
+      { time: '6:30', activity: 'First alarm', detail: 'Silenced. Second at 6:35, also silenced. Up by 6:42 after the third. This is the only part of her routine that is chaotic.', vulnerable: false },
+      { time: '6:48', activity: 'Protein shake, email scan', detail: 'Blender at 6:48. Fourteen work emails scanned, three flagged. Strawberry-banana, like every morning. The routine beneath the variation.', vulnerable: false },
+      { time: '7:05', activity: 'Packed gym bag, re-checked', detail: 'Packed the night before but she verifies: water bottle, towel, headphones, lock. Once she forgot the lock. She will not forget again.', vulnerable: false },
+      { time: '7:12', activity: 'Walk to Metro', detail: 'Six blocks. Earbuds in. Does not acknowledge the barista sweeping outside Cafe Lux. The city is a backdrop she moves through.', vulnerable: false },
+      { time: '7:24', activity: 'Metro \u2014 Green Line', detail: 'Four stops. Stands. Reads a contract on her phone. Annotates. The train is full of people not looking at each other.', vulnerable: true },
+      { time: '7:45', activity: 'Walk to gym through park', detail: 'Three blocks from Metro. Cuts through the park when the weather is good. Today the weather is good. The path has no cameras.', vulnerable: true },
+      { time: '7:55', activity: 'Gym check-in', detail: 'QR code at Elements Fitness. Upper body today. Same station, same bench. The regulars nod at each other.', vulnerable: false },
+      { time: '8:00', activity: 'Treadmill warm-up', detail: 'Five minutes, 6.0 mph. Checks phone once \u2014 Instagram, then back to the run. The phone logs the check.', vulnerable: false },
+      { time: '8:08', activity: 'Weight training', detail: 'Bench press, three sets. Superset with rows. Rest periods timed to 60 seconds on her watch. She is precise about everything.', vulnerable: false },
+      { time: '8:42', activity: 'Second circuit', detail: 'Free weights. Dumbbell press, lateral raises. Gym is getting crowded. Nora does not make small talk between sets.', vulnerable: false },
+      { time: '9:15', activity: 'Cool-down stretch', detail: 'Mat. Checks phone \u2014 two new emails. Doesn\'t respond. The stretch is perfunctory. She is already thinking about the office.', vulnerable: false },
+      { time: '9:28', activity: 'Gym shower', detail: 'Locker room. Quick \u2014 seven minutes. She doesn\'t wash her hair. Dry shampoo. The efficiency is a form of ambition.', vulnerable: false },
+      { time: '9:38', activity: 'Walk to office', detail: 'Five blocks. Passes the construction site, the workers, the cat under the scaffolding. The cat has been there for weeks.', vulnerable: true },
+      { time: '9:52', activity: 'Coffee stop', detail: 'Black, no sugar. The barista knows her order. No conversation beyond the transaction. She is already elsewhere.', vulnerable: false },
+      { time: '10:08', activity: 'Badge in at office', detail: 'Badge logged at 10:06. Assistant has printed the day\'s schedule. Court filing at 14:00. The day is a sequence of obligations.', vulnerable: false },
+      { time: '10:15', activity: 'Client meeting prep', detail: 'Reviews Henderson brief. Highlights three passages. Adds a footnote. The work is meticulous. She is her father\'s daughter.', vulnerable: false },
+      { time: '11:02', activity: 'Client call', detail: 'Conference line. Henderson matter. 22 minutes. Nora takes notes on a legal pad. Her handwriting is small and precise.', vulnerable: false },
+      { time: '11:30', activity: 'Desk work', detail: 'Emails, document review, two calls. The inbox fills as fast as she empties it. This is the job.', vulnerable: false },
+      { time: '12:30', activity: 'Lunch with Karen and Mei', detail: 'Sushi on 5th. Karen complains about her boyfriend. Mei shows baby photos. Nora listens, laughs in the right places. She is good at this.', vulnerable: false },
+      { time: '13:28', activity: 'Elevator \u2014 phone check', detail: 'Text from Derek: "Call me tonight." She doesn\'t respond. She will forget. He will call again.', vulnerable: false },
+      { time: '13:35', activity: 'Court filing prep', detail: 'Final document review. Printer warm. Initials three pages. The work is done. The filing is a formality.', vulnerable: false },
+      { time: '14:00', activity: 'Files at courthouse', detail: 'Eight blocks on foot. Files in person. The clerk stamps the copies. Routine legal choreography.', vulnerable: false },
+      { time: '14:35', activity: 'Walk back, slower', detail: 'The filing is done. She stops at a bodega for water. Walks without purpose for the first time today.', vulnerable: true },
+      { time: '14:48', activity: 'Afternoon work', detail: 'Returns calls. Seven emails. Contract amendments. The afternoon mirrors the morning.', vulnerable: false },
+      { time: '16:00', activity: 'Team meeting', detail: 'Conference room A. Quarterly review. Nora presents client retention numbers. She is prepared. She is always prepared.', vulnerable: false },
+      { time: '17:00', activity: 'Wraps up', detail: 'Closes tabs, clears inbox to single digits. The day feels productive. She has no metric for the other kind of feeling.', vulnerable: false },
+      { time: '17:25', activity: 'Dinner with Suki', detail: 'Regular spot. Pad thai and wine. Weekend plans discussed. Suki is the closest thing to family in this city.', vulnerable: false },
+      { time: '18:42', activity: 'Walk home \u2014 long way', detail: 'Twelve blocks from the restaurant. Suki wants ice cream. They take the detour. The evening is warm.', vulnerable: false },
+      { time: '19:15', activity: 'Evening routine', detail: 'Door locked at 19:13. Phone charging. Suki turns on the TV. The apartment settles into its night configuration.', vulnerable: false },
+      { time: '19:35', activity: 'Calls Derek', detail: 'Fifteen minutes. Job offer in the city. She tells him to take it. He says he\'ll think about it. They both know he will.', vulnerable: false },
+      { time: '20:00', activity: 'TV with Suki', detail: 'Reality show neither will admit to watching. Half a bottle of wine between them. The cat under the scaffolding is forgotten.', vulnerable: true },
+      { time: '20:45', activity: 'Reads in bed', detail: 'Legal thriller. The protagonist reminds her of someone. She reads 40 pages before the words stop landing.', vulnerable: true },
+      { time: '21:38', activity: 'Lights out', detail: 'Phone on nightstand. Derek\'s text still unanswered. Sleep tracker logs unconsciousness at 22:15. The body keeps its own records.', vulnerable: false }
+    ],
+    aftermath: {
+      gapContexts: {
+        inTransit: 'in transit \u2014 between the gym and the office, between the Metro and the park, between one verified location and the next',
+        atGym: 'at the gym \u2014 body engaged, attention inward, surrounded by strangers not watching',
+        alone: 'alone \u2014 in the apartment after Suki fell asleep, or before anyone else woke',
+        working: 'at work \u2014 visible but anonymous in an open-plan office where no one tracks minutes',
+        social: 'between friends \u2014 close enough to be seen, distant enough to be missed',
+        evening: 'in the evening \u2014 the guard lowered, the wine half-finished, the day\'s vigilance released'
+      },
+      forensic: [
+        'The Metro card swipe, the gym QR code, the office badge \u2014 each an anchor. But the gap falls between anchors. For 8 minutes, Nora Vance is unverified. Investigators focus on those minutes with surgical intensity.',
+        'Nora\'s phone logged a step count consistent with movement during the gap. But the GPS resolution is 30 meters. In a city, 30 meters is a crowd. She could be anyone.',
+        'The gym\'s security camera cycles every 30 seconds. Eight minutes is long enough to vanish between frames. Nora\'s towel was on the bench. Her water bottle was half full. She was there. Then she wasn\'t. Then she was.',
+        'No digital activity during the gap \u2014 no screen wake, no data transfer, no location ping. Nora\'s phone was either inactive or in a Faraday pocket. The silence is the evidence.',
+        'The bodega receipt is timestamped 14:36. She bought water. The cashier doesn\'t remember her. "A lot of people buy water."'
+      ],
+      neighbor: [
+        'The doorman at The Meridian remembers Nora coming and going but not at the specific time. "She keeps to herself. Friendly but busy." He sees 200 people a day. Nora is one of them.',
+        'The barista: "Black, no sugar, every time." He does not remember the time. He does not remember her face specifically. He remembers the order.',
+        '"She was on her phone, or not. The city is full of women walking quickly with earbuds in." No one remembers Nora specifically. That is the problem with being young and anonymous in a city.',
+        'Suki was at the apartment. Or she wasn\'t. The roommate schedule is unverified. "I might have been out. I might have been in. I don\'t keep track of Tuesdays."'
+      ],
+      theory: [
+        'Someone who knew Nora\'s schedule chose the gap precisely because it falls between documented moments. The question is not what happened \u2014 it is who knew enough to choose an 8-minute window that the timeline cannot fill.',
+        'In a day of constant self-documentation \u2014 badge swipes, phone logs, Instagram checks \u2014 8 minutes of ambiguity is the most suspicious thing on the record. Nora\'s diligence made her vulnerable.',
+        'The gap is a reminder that most of life passes unrecorded. We are all, at any given moment, 8 minutes away from an alibi problem. Nora just happened to be living in one.'
+      ],
+      questions: [
+        'Nora was {context} when you selected the gap. Her schedule is the most documented in the dataset. Was the precision what attracted you \u2014 or the gaps between the precision?',
+        'Derek texted "Call me tonight." She never called. Does an unanswered text carry weight in your calculation?',
+        'She checks her phone at the gym, on the Metro, in the elevator. But not during the gap. The absence of a check is data. What does it tell you?',
+        'The cat under the scaffolding has been there for weeks. Nora passes it every morning. You chose a window near the cat, or away from it. Why?',
+        'Nora is 27. She documents everything. She is precise, ambitious, alone in a city of millions. You chose to interrupt her timeline. What was it about her that made the gap feel available?',
+        'You keep selecting {patternHint}. Is it a preference, or is it the only thing you can see?'
+      ]
+    }
+  },
+
+  /* ==== THE RETIREE: Frank Castellano ==== */
+  {
+    type: 'retiree',
+    name: 'Frank Castellano',
+    age: 71,
+    occupation: 'Retired High School History Teacher',
+    location: '42 Ridgecrest Drive',
+    relation: 'your neighbor',
+    summary: {
+      normality: '9.6 / 10',
+      associates: 'Margaret Castellano (wife, 69), Linda Castellano-Gold (daughter, 44)',
+      notes: 'The most consistent routine on record. Sunday crosswords, Thursday groceries, daily walks at 10:00. Deviation index: near zero. The house has been on this street since 1987.'
+    },
+    entries: [
+      { time: '5:20', activity: 'Wakes naturally', detail: 'No alarm. Hasn\'t used one since retiring. The light through the curtains is enough. The house is silent. This is his favorite moment of the day.', vulnerable: false },
+      { time: '5:35', activity: 'Coffee on the back porch', detail: 'Drip machine, same setting since 1998. He sits on the porch regardless of weather. Today: clear, 54\u00B0F. He holds the mug with both hands.', vulnerable: true },
+      { time: '6:05', activity: 'Reads the newspaper', detail: 'Physical copy, delivered at 5:45. Front to back, every section. Takes 55 minutes. He has read the newspaper this way for forty years.', vulnerable: true },
+      { time: '7:00', activity: 'Margaret wakes', detail: 'He brings her coffee. Hasn\'t missed a morning in 42 years. She opens her eyes and he is there. This is not romance. This is something deeper.', vulnerable: false },
+      { time: '7:08', activity: 'Breakfast together', detail: 'Toast, jam, orange juice. Margaret has tea. They don\'t talk much. They don\'t need to. The silence is a conversation they finished decades ago.', vulnerable: false },
+      { time: '7:30', activity: 'Dishes \u2014 Frank washes, Margaret dries', detail: 'A dance performed ten thousand times. He washes, she dries. They do not discuss this. They have never discussed this.', vulnerable: true },
+      { time: '7:45', activity: 'Tends the garden', detail: 'Backyard. Tomatoes, basil, marigolds. Checks the irrigation line. Adjusts a stake. The garden is his classroom now.', vulnerable: true },
+      { time: '8:30', activity: 'Reads history book', detail: 'Currently: "The Guns of August." Chapter 9. He reads slowly, with a pencil, underlining passages. The margin notes are a conversation with the dead.', vulnerable: true },
+      { time: '9:30', activity: 'Tuesday call to Linda', detail: 'Every Tuesday. She tells him about the kids. He tells her about the tomatoes. Neither mentions the important things. This is how they love each other.', vulnerable: false },
+      { time: '10:00', activity: 'Daily walk', detail: 'Ridgecrest to Oak, Oak to the park, around the pond, back via Elm. 32 minutes. Same houses, same dogs, same cracks in the sidewalk.', vulnerable: true },
+      { time: '10:35', activity: 'Returns home, removes shoes', detail: 'Shoes at the door. Margaret has NPR on. The house smells like coffee and the 1980s.', vulnerable: false },
+      { time: '10:42', activity: 'Writes in journal', detail: 'Leather-bound. Today he writes about the heron at the pond. 150 words. He writes every day. Someday Linda will read them. Not yet.', vulnerable: true },
+      { time: '11:20', activity: 'Grocery run with Margaret', detail: 'She drives. He carries. Same brands. The checkout woman knows them. "See you Thursday, Frank." He nods.', vulnerable: false },
+      { time: '12:05', activity: 'Lunch', detail: 'Minestrone \u2014 Margaret made it yesterday. His favorite. She makes it every Monday. He has never told her it\'s his favorite. She knows.', vulnerable: false },
+      { time: '12:35', activity: 'Afternoon nap in recliner', detail: '25 minutes. The study is dark. NPR murmurs. The house holds its breath around him.', vulnerable: true },
+      { time: '13:02', activity: 'Wakes, does not move', detail: 'The radio is still on. Margaret is in the kitchen. Frank lies in the recliner and looks at the ceiling. He does not move for three minutes. The ceiling has a crack shaped like a river.', vulnerable: true },
+      { time: '13:15', activity: 'Chess \u2014 Capablanca\'s games', detail: 'Sets up the board. Plays through each game. The moves are history. He can predict most of them. The ones he can\'t are the reason he still plays.', vulnerable: true },
+      { time: '14:00', activity: 'Workshop \u2014 birdhouse for Linda', detail: 'Garage. Sanding a birdhouse for Linda\'s backyard. The lathe hums. He has made eleven birdhouses. She has hung them all.', vulnerable: false },
+      { time: '15:15', activity: 'Sets birdhouse on workbench', detail: 'Sanded smooth. He\'ll paint it tomorrow. Stands back and looks at it. It is good. He is not used to making things that are good.', vulnerable: false },
+      { time: '15:30', activity: 'Sits on porch with Margaret', detail: 'Iced tea. They watch the street. A jogger passes. Frank nods. Margaret knits. The afternoon is amber.', vulnerable: true },
+      { time: '16:00', activity: 'TV \u2014 local news', detail: 'Margaret knits. Frank\'s eyes close. The news is bad in the same way every day.', vulnerable: true },
+      { time: '16:30', activity: 'National Geographic', detail: 'An article about the Silk Road. He underlines a passage. The Silk Road is a metaphor for everything.', vulnerable: false },
+      { time: '17:00', activity: 'Begins dinner \u2014 mother\'s sauce', detail: 'Frank cooks Tuesday dinner. His mother\'s sauce recipe. He browns the meat slowly. The garlic is from the garden. The house smells like every Tuesday.', vulnerable: true },
+      { time: '17:25', activity: 'Chops vegetables', detail: 'Garlic, onion, basil from the garden. Same knife, same cutting board. He has chopped vegetables on this board for 35 years.', vulnerable: false },
+      { time: '17:48', activity: 'Sauce simmers, stirs every 8 minutes', detail: 'He sets a timer. The sauce needs attention but not constant attention. Like most things worth keeping.', vulnerable: true },
+      { time: '18:00', activity: 'Sets the table', detail: 'Two places. Candle on Tuesday. Margaret smiles when she sees it. She always smiles. He lights the candle. The flame is small and steady.', vulnerable: false },
+      { time: '18:20', activity: 'Dinner', detail: 'They talk about Linda, the garden, the heron. Frank mentions calling his sister. He won\'t call. He never calls. Margaret knows.', vulnerable: false },
+      { time: '19:05', activity: 'Frank washes, Margaret dries', detail: 'The second performance. Ten thousand and one. The water is warm. His hands are old. They still work.', vulnerable: true },
+      { time: '19:30', activity: 'Chess puzzle in the paper', detail: 'Solution in 3 moves. He finds it in 2. He is not proud. He has been doing this for decades.', vulnerable: true },
+      { time: '20:15', activity: 'Evening reading', detail: '"The Guns of August." Margaret does needlepoint beside him. The lamp is warm. The room is quiet. This is the whole world.', vulnerable: true },
+      { time: '21:00', activity: 'Locks doors, turns off lights', detail: 'The rounds: back door, front door, garage, basement window. Every night. The ritual of securing a perimeter around a life.', vulnerable: false },
+      { time: '21:15', activity: 'Bed', detail: 'Margaret is already under the covers. Frank sets the book on the nightstand. The lamp clicks off. The house settles around them \u2014 36 years in one place.', vulnerable: false }
+    ],
+    aftermath: {
+      gapContexts: {
+        alone: 'alone \u2014 in the garden, the study, the workshop \u2014 the rooms Margaret isn\'t in',
+        withMargaret: 'with Margaret \u2014 42 years of marriage compressed into the silence between them',
+        walking: 'on his walk \u2014 visible to the street but not to a camera, between houses that have known him for decades',
+        reading: 'reading \u2014 absorbed in another century, present in body only',
+        domestic: 'in the domestic rhythm \u2014 cooking, washing, the small repetitions that hold a life together',
+        garden: 'in the garden or on the porch \u2014 exposed to the sky, unhurried, a fixed point on Ridgecrest Drive'
+      },
+      forensic: [
+        'Frank Castellano\'s life is the most documented routine on Ridgecrest Drive. But the gap falls where documentation ends: the garden, the porch, the walk \u2014 all places without cameras. For 8 minutes, a man who has lived the same Tuesday for decades simply ceases to be verifiable.',
+        'The journal entry for that day was 150 words about a heron. The heron is described in detail. The gap is not mentioned. Either nothing happened, or nothing happened that Frank wanted to record.',
+        'No forced entry. The locks were intact. Frank checks them himself every night. The perimeter was secure. Whatever happened inside the perimeter was already inside.',
+        'Margaret\'s needlepoint was on the arm of the couch where she always leaves it. The TV was on. NPR was audible. The scene was domestic to the point of clich\u00E9. Everything was where it should be. That was the problem.',
+        'The birdhouse was sanded smooth. Frank\'s fingerprints were on every surface. He was proud of it. He was making something for his daughter. The forensic team noted this and moved on.'
+      ],
+      neighbor: [
+        'Everyone on Ridgecrest knows Frank. "He\'s the one who walks every morning at ten." But no one saw him during the specific window. The jogger passed at 15:32, not 15:30. The mail carrier was on the next block.',
+        'For 8 minutes, Frank Castellano was invisible in plain sight. In 36 years on this street, this is the first time the routine has failed to produce a witness.',
+        'A neighbor remembers seeing Frank "at some point \u2014 he was doing what he always does." Routine makes everyone a witness and no one a reliable one.',
+        'The checkout woman at the grocery store remembers them. "They come in every Thursday." It is Tuesday. She has no memory of Tuesday. Tuesday is not her day to notice.'
+      ],
+      theory: [
+        'Frank\'s routine is his vulnerability. Anyone watching \u2014 and someone was always watching, even if it was only the houses \u2014 would know exactly when the gaps appear. The question is not what happened in the 8 minutes. It is who was counting.',
+        'In a routine this rigid, 8 minutes of ambiguity is the equivalent of a scream. The deviation from perfect repetition is itself the anomaly. Frank\'s life is so predictable that any gap becomes an event.',
+        'The event, if there was one, is hiding inside the ordinary. Frank\'s life is so routine that catastrophe would have to disguise itself as a normal Tuesday afternoon. Perhaps it did. Perhaps it does every Tuesday.'
+      ],
+      questions: [
+        'Frank is 71. He has lived on Ridgecrest Drive since 1987. He brings Margaret coffee every morning. You chose to interrupt this timeline. What does that feel like?',
+        'Frank was {context}. His routine is the most consistent in the dataset. Did you choose the gap because it was the most predictable \u2014 the most certain to repeat?',
+        'He\'s making a birdhouse for Linda. He has made eleven. She has hung them all. The birdhouse is on the workbench, sanded smooth. You saw this entry. Did it register?',
+        'Frank writes in a journal every day. 150 words about a heron. If he wrote about the gap, what would he say? More importantly: why are you imagining his journal?',
+        'The sauce simmers. Frank stirs every 8 minutes. He sets a timer. The timer is the metronome of his life. You chose 8 minutes \u2014 the space between one stir and the next. Was that deliberate?',
+        'You keep selecting {patternHint}. The pattern is forming. Are you choosing, or is the pattern choosing for you?'
+      ]
+    }
+  }
+];
+
+/* ----------------------------------------------------------
+   STATE
+ ---------------------------------------------------------- */
+
+let state = {
+  history: [],
+  currentArchetype: null,
+  currentGapIndex: -1,
+  currentAftermath: null,
+  screen: 'intro'
+};
+
+function loadHistory() {
+  try {
+    const stored = localStorage.getItem('alibi_history');
+    if (stored) state.history = JSON.parse(stored);
+  } catch (_) {
+    state.history = [];
+  }
+}
+
+function saveHistory() {
+  try {
+    localStorage.setItem('alibi_history', JSON.stringify(state.history));
+  } catch (_) {
+    /* Storage unavailable \u2014 session-only history */
+  }
+}
+
+/* ----------------------------------------------------------
+   PATTERN ANALYSIS
+ ---------------------------------------------------------- */
+
+function analyzePatterns(history) {
+  if (!history || history.length < 2) return null;
+
+  var n = history.length;
+
+  /* Vulnerability preference */
+  var vulnCount = history.filter(function(h) { return h.vulnerable; }).length;
+  var vulnRatio = vulnCount / n;
+
+  /* Time distribution */
+  var timeSlots = { dawn: 0, morning: 0, midday: 0, afternoon: 0, evening: 0, night: 0 };
+  var timeLabels = {
+    dawn: 'the early hours (before 7)',
+    morning: 'the morning (7\u201311)',
+    midday: 'midday (11\u201314)',
+    afternoon: 'the afternoon (14\u201317)',
+    evening: 'the evening (17\u201321)',
+    night: 'the night (after 21)'
+  };
+
+  for (var i = 0; i < n; i++) {
+    var hour = parseInt(history[i].gapTime.split(':')[0], 10);
+    if (hour < 7) timeSlots.dawn++;
+    else if (hour < 11) timeSlots.morning++;
+    else if (hour < 14) timeSlots.midday++;
+    else if (hour < 17) timeSlots.afternoon++;
+    else if (hour < 21) timeSlots.evening++;
+    else timeSlots.night++;
+  }
+
+  var sorted = Object.entries(timeSlots).filter(function(e) { return e[1] > 0; }).sort(function(a, b) { return b[1] - a[1]; });
+  var primaryTimeSlot = sorted[0] ? sorted[0][0] : 'morning';
+  var timeLabel = timeLabels[primaryTimeSlot];
+
+  /* Isolation preference */
+  var aloneCount = history.filter(function(h) { return h.isolation === 'alone'; }).length;
+  var prefersAlone = aloneCount > n / 2;
+
+  /* Activity frequency */
+  var actCounts = {};
+  for (var j = 0; j < n; j++) {
+    if (history[j].activityVerb) {
+      actCounts[history[j].activityVerb] = (actCounts[history[j].activityVerb] || 0) + 1;
+    }
+  }
+  var topAct = Object.entries(actCounts).sort(function(a, b) { return b[1] - a[1]; })[0];
+  var topActivity = topAct ? topAct[0] : null;
+
+  /* Archetype frequency */
+  var typeCounts = {};
+  for (var k = 0; k < n; k++) {
+    typeCounts[history[k].archetypeType] = (typeCounts[history[k].archetypeType] || 0) + 1;
+  }
+  var topType = Object.entries(typeCounts).sort(function(a, b) { return b[1] - a[1]; })[0];
+  var topArchetype = topType ? topType[0] : null;
+
+  /* Build natural language */
+  var archetypeLabels = {
+    commuter: 'the working parent, split between obligation and home',
+    parent: 'the homebound caregiver, surrounded by the domestic',
+    'gym-goer': 'the young professional, always in motion, always documented',
+    retiree: 'the settled elder, decades into the same gentle routine'
+  };
+
+  var activityLabels = {
+    resting: 'stillness \u2014 sleep, rest, the pause between actions',
+    eating: 'meals \u2014 the ritual of nourishment and routine',
+    transit: 'transit \u2014 the space between destinations',
+    working: 'work \u2014 the productive gap, attention turned inward',
+    reading: 'reading \u2014 absorbed elsewhere, present in body only',
+    watching: 'watching \u2014 the passive reception, guard lowered',
+    hygiene: 'the bathroom \u2014 the most private space',
+    sleeping: 'sleep \u2014 total vulnerability, the body undefended',
+    communicating: 'communication \u2014 the thread connecting subject to others',
+    tending: 'tending \u2014 to garden, to home, to the small maintenances of living',
+    creating: 'creation \u2014 cooking, building, making something from nothing',
+    socializing: 'socializing \u2014 the subject visible to others but not truly seen',
+    preparing: 'preparation \u2014 the moment before, attention fragmented',
+    exertion: 'physical exertion \u2014 the body focused, the mind elsewhere',
+    thinking: 'thinking \u2014 the interior turn, chess and books and the ceiling crack',
+    transitioning: 'transitions \u2014 the liminal spaces between activities'
+  };
+
+  var vulnPhrase = vulnRatio > 0.5
+    ? 'You are drawn to moments the analysts flagged as vulnerable \u2014 the thin places in the timeline where the subject\'s guard is lowest.'
+    : 'You avoid the flagged vulnerabilities. You choose moments of apparent stability \u2014 as if the safety itself is the opening you need.';
+
+  var isoPhrase = prefersAlone
+    ? 'You prefer your subjects alone. Solitude is your canvas \u2014 the absence of witnesses is not a consequence but a condition of your selection.'
+    : 'You choose moments of proximity \u2014 when the subject is near others but not fully engaged. The social veil provides cover; the crowd becomes camouflage.';
+
+  var timePhrase = 'Your selections cluster in ' + timeLabel + '. This is when you are most active as an author, when your attention sharpens.';
+
+  var actPhrase = (topActivity && activityLabels[topActivity])
+    ? 'More specifically: you keep selecting ' + activityLabels[topActivity] + '.'
+    : '';
+
+  var archPhrase = (topArchetype && archetypeLabels[topArchetype])
+    ? 'Your preferred subject is ' + archetypeLabels[topArchetype] + '. You return to this life, this pattern, this kind of ordinary day.'
+    : '';
+
+  var summary = [vulnPhrase, isoPhrase, timePhrase, actPhrase, archPhrase].filter(Boolean).join(' ');
+
+  /* What they avoid */
+  var avoidVuln = vulnRatio > 0.5
+    ? 'genuine stability \u2014 moments when the subject is anchored, verified, held in place by routine and witness'
+    : 'true vulnerability \u2014 the raw moments the analysts flagged, the times when the subject is most exposed';
+
+  var avoidIso = prefersAlone
+    ? 'social density \u2014 the times when witnesses are plentiful, when the subject is seen and confirmed'
+    : 'true solitude \u2014 the gaps where no one could intervene, where the subject is most alone';
+
+  var unusedSlots = Object.entries(timeSlots).filter(function(e) { return e[1] === 0; });
+  var avoidTime = unusedSlots.length > 0
+    ? timeLabels[unusedSlots[unusedSlots.length - 1][0]]
+    : 'the hours you never touch';
+
+  var avoidSummary = 'What you avoid: ' + avoidVuln + '. ' + avoidIso + '. ' + avoidTime + ' \u2014 the gaps you leave untouched are as revealing as the ones you mark. The pattern of your refusals is legible.';
+
+  return {
+    summary: summary,
+    avoidSummary: avoidSummary,
+    prefersAlone: prefersAlone,
+    prefersVulnerable: vulnRatio > 0.5,
+    primaryTimeSlot: primaryTimeSlot,
+    topActivity: topActivity,
+    topArchetype: topArchetype
+  };
+}
+
+/* ----------------------------------------------------------
+   AFTERMATH GENERATION
+ ---------------------------------------------------------- */
+
+function generateAftermath(archetype, gapIndex) {
+  var entry = archetype.entries[gapIndex];
+  var aft = archetype.aftermath;
+  var act = entry.activity.toLowerCase();
+
+  /* Context detection */
+  var contextKey = 'alone';
+  if (act.includes('walk') || act.includes('drive') || act.includes('metro') || act.includes('badge') || act.includes('files at')) {
+    contextKey = 'inTransit';
+  } else if (act.includes('read') || act.includes('journal') || act.includes('chess')) {
+    contextKey = 'reading';
+  } else if (act.includes('cook') || act.includes('prep') || act.includes('dinner') || act.includes('lunch') || act.includes('breakfast') || act.includes('chops') || act.includes('sauce') || act.includes('dishes') || act.includes('washes')) {
+    contextKey = 'domestic';
+  } else if (act.includes('gym') || act.includes('weight') || act.includes('treadmill') || act.includes('circuit') || act.includes('stretch') || act.includes('workshop') || act.includes('birdhouse')) {
+    contextKey = 'atGym';
+  } else if (act.includes('nap') || act.includes('sleep') || act.includes('lights out') || act.includes('bed') || act.includes('wakes')) {
+    contextKey = 'alone';
+  } else if (act.includes('tv') || act.includes('watch') || act.includes('sits')) {
+    contextKey = 'evening';
+  } else if (act.includes('garden') || act.includes('porch')) {
+    contextKey = 'garden';
+  } else if (act.includes('work') || act.includes('desk') || act.includes('meeting') || act.includes('email') || act.includes('call') || act.includes('laptop')) {
+    contextKey = 'working';
+  }
+
+  var contextMap = aft.gapContexts;
+  var contextDesc = contextMap[contextKey] || contextMap.alone || 'between moments \u2014 the space the timeline doesn\'t watch';
+
+  /* Rotate through forensic/neighbor/theory by gap index */
+  var forensic = aft.forensic[gapIndex % aft.forensic.length];
+  var neighbor = aft.neighbor[gapIndex % aft.neighbor.length];
+  var theory  = aft.theory[gapIndex % aft.theory.length];
+
+  /* Question keyed to session count */
+  var qIndex = Math.min(state.history.length, aft.questions.length - 1);
+  var question = aft.questions[qIndex].replace(/\{context\}/g, contextDesc.toLowerCase());
+
+  /* Pattern hint for returning players */
+  if (state.history.length >= 2) {
+    var pattern = analyzePatterns(state.history);
+    var hint = pattern
+      ? (pattern.prefersAlone ? 'solitude' : 'proximity')
+      : 'this kind of moment';
+    question = question.replace(/\{patternHint\}/g, hint);
+  } else {
+    question = question.replace(/\{patternHint\}/g, 'this kind of moment');
+  }
+
+  /* Disruption level */
+  var isVuln = entry.vulnerable;
+  var disruption = 'minimal';
+  if (isVuln) {
+    disruption = 'total';
+  } else {
+    var nearbyVuln = [];
+    for (var vi = Math.max(0, gapIndex - 2); vi <= Math.min(archetype.entries.length - 1, gapIndex + 2); vi++) {
+      if (archetype.entries[vi].vulnerable) nearbyVuln.push(vi);
+    }
+    if (nearbyVuln.length > 0) disruption = 'partial';
+  }
+
+  /* Isolation heuristic */
+  var det = entry.detail.toLowerCase();
+  var isAlone = det.includes('alone') || det.includes('quiet') || det.includes('silent') ||
+    act.includes('read') || act.includes('nap') || act.includes('sleep') ||
+    act.includes('workshop') || act.includes('journal') || act.includes('chess');
+
+  return {
+    disruption: disruption,
+    contextDesc: contextDesc,
+    forensic: forensic,
+    neighbor: neighbor,
+    theory: theory,
+    question: question,
+    isAlone: isAlone
+  };
+}
+
+/* ----------------------------------------------------------
+   VERB EXTRACTION
+ ---------------------------------------------------------- */
+
+function extractVerb(activity) {
+  var a = activity.toLowerCase();
+  var map = [
+    ['alarm', 'resting'], ['shower', 'hygiene'], ['coffee', 'preparing'],
+    ['breakfast', 'eating'], ['drives', 'transit'], ['drive', 'transit'],
+    ['walk', 'transit'], ['metro', 'transit'], ['work', 'working'],
+    ['desk', 'working'], ['lunch', 'eating'], ['dinner', 'eating'],
+    ['read', 'reading'], ['reads', 'reading'], ['tv', 'watching'],
+    ['watches', 'watching'], ['gym', 'exertion'], ['nap', 'sleeping'],
+    ['sleep', 'sleeping'], ['call', 'communicating'], ['phone', 'communicating'],
+    ['garden', 'tending'], ['cook', 'creating'], ['chess', 'thinking'],
+    ['prep', 'preparing'], ['shop', 'preparing'], ['playdate', 'socializing'],
+    ['journal', 'thinking'], ['workshop', 'creating'], ['birdhouse', 'creating'],
+    ['dishes', 'domestic'], ['bath', 'hygiene'], ['locks', 'securing'],
+    ['bag', 'preparing'], ['packing', 'preparing']
+  ];
+  for (var i = 0; i < map.length; i++) {
+    if (a.includes(map[i][0])) return map[i][1];
+  }
+  return 'transitioning';
+}
+
+/* ----------------------------------------------------------
+   RENDER: INTRO
+ ---------------------------------------------------------- */
+
+function renderIntro() {
+  var n = state.history.length;
+  var $s = document.getElementById('screen');
+
+  var body = '';
+  if (n === 0) {
+    body = 'You will receive the reconstructed daily timeline of a civilian. ' +
+      'Your function: identify the <strong>8-minute gap</strong> where the event occurs. ' +
+      '<br><br>' +
+      'The subject is <em>your neighbor</em>. They do not know you are reading this. ' +
+      '<br><br>' +
+      'After the event, the system will generate a forensic aftermath: what the investigation reveals, ' +
+      'what the neighbors heard, what the timeline proves \u2014 and what it cannot. ' +
+      '<br><br>' +
+      'There is no correct answer. <em>You are the author.</em>';
+  } else if (n < 3) {
+    var remaining = 3 - n;
+    body = 'Another dossier. Another timeline. Another gap to choose. ' +
+      '<br><br>' +
+      'The protocol is the same. The subject is different. <em>Your choices are being recorded.</em> ' +
+      '<br><br>' +
+      'After ' + remaining + ' more ' + (remaining === 1 ? 'session' : 'sessions') + ', the system will show you what your selections reveal. ' +
+      '<br><br>' +
+      'You will not be able to unsee it.';
+  } else {
+    body = 'Your selection history has been analyzed. ' +
+      '<br><br>' +
+      'The pattern is <em>ready</em>. You may view the report, or continue choosing \u2014 but every new selection deepens the portrait. ' +
+      '<br><br>' +
+      'The mirror does not forget.';
+  }
+
+  var btns = '';
+  if (n < 3) {
+    btns = '<button class="begin-btn" onclick="beginDossier()">' +
+      (n === 0 ? 'Begin' : 'Next Dossier') + '</button>';
+  } else {
+    btns = '<button class="begin-btn" onclick="showMirror()">View Pattern Report</button>' +
+      '<button class="begin-btn secondary" onclick="beginDossier()">Continue Choosing</button>';
+  }
+
+  $s.innerHTML = '<div style="padding-top: 14vh;">' +
+    '<div class="intro-title">Alibi</div>' +
+    '<div class="intro-sub">Inversion Protocol</div>' +
+    '<div class="intro-body">' + body + '</div>' +
+    btns + '</div>';
+}
+
+/* ----------------------------------------------------------
+   RENDER: DOSSIER
+ ---------------------------------------------------------- */
+
+function beginDossier() {
+  var available = ARCHETYPES.slice();
+  if (state.history.length > 0) {
+    var last = state.history[state.history.length - 1].archetypeType;
+    var filtered = available.filter(function(a) { return a.type !== last; });
+    if (filtered.length > 0) available = filtered;
+  }
+  state.currentArchetype = available[Math.floor(Math.random() * available.length)];
+  state.currentGapIndex = -1;
+  state.screen = 'dossier';
+  renderDossier();
+}
+
+function renderDossier() {
+  var a = state.currentArchetype;
+  var $s = document.getElementById('screen');
+
+  var entriesHtml = '';
+  for (var i = 0; i < a.entries.length; i++) {
+    var e = a.entries[i];
+    entriesHtml += '<div class="t-entry ' + (e.vulnerable ? 'vulnerable' : '') +
+      '" id="entry-' + i + '" data-idx="' + i + '">' +
+      '<span class="t-time">' + e.time + '</span>' +
+      '<div class="t-activity">' + e.activity + '</div>' +
+      '<div class="t-detail">' + e.detail + '</div>' +
+      '</div>';
+  }
+
+  $s.innerHTML =
+    '<div class="dossier-header">' +
+      '<span class="dossier-label">Dossier ' + (state.history.length + 1) + '</span>' +
+      '<span class="dossier-name">' + a.name + '</span>' +
+    '</div>' +
+    '<div class="dossier-meta">' +
+      'Age ' + a.age + ' &middot; ' + a.occupation + ' &middot; ' + a.location + '<br>' +
+      'Relation: <span>' + a.relation + '</span><br>' +
+      'Normality Index: <span>' + a.summary.normality + '</span><br>' +
+      'Known Associates: <span>' + a.summary.associates + '</span><br>' +
+      'Analyst Notes: <span>' + a.summary.notes + '</span>' +
+    '</div>' +
+    '<div class="timeline" id="timeline">' + entriesHtml + '</div>' +
+    '<div class="gap-section">' +
+      '<div class="gap-instruction">' +
+        'Select the <strong>8-minute gap</strong> where the event occurs.<br>' +
+        'Click a timeline entry to mark it. The timeline will not change. ' +
+        '<span style="color: var(--text-dim);">This cannot be undone.</span>' +
+      '</div>' +
+      '<div class="gap-marker" id="gap-marker"></div>' +
+      '<button class="confirm-btn" id="confirm-btn" disabled onclick="confirmSelection()">' +
+        'Authorize Event' +
+      '</button>' +
+    '</div>';
+
+  var entries = document.querySelectorAll('.t-entry');
+  for (var j = 0; j < entries.length; j++) {
+    entries[j].addEventListener('click', function() {
+      selectGap(parseInt(this.dataset.idx, 10));
+    });
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function selectGap(idx) {
+  if (state.currentGapIndex >= 0) return;
+  state.currentGapIndex = idx;
+
+  var entry = state.currentArchetype.entries[idx];
+
+  var entries = document.querySelectorAll('.t-entry');
+  for (var i = 0; i < entries.length; i++) {
+    if (i === idx) {
+      entries[i].classList.add('selected');
+    } else if (Math.abs(i - idx) <= 1) {
+      entries[i].classList.add('gap-adjacent');
+    } else {
+      entries[i].classList.add('locked');
+    }
+  }
+
+  var marker = document.getElementById('gap-marker');
+  marker.classList.add('visible');
+  marker.textContent = 'EVENT WINDOW: ' + entry.time + ' \u2014 +8 MIN';
+
+  document.getElementById('confirm-btn').disabled = false;
+}
+
+function confirmSelection() {
+  if (state.currentGapIndex < 0) return;
+
+  var a = state.currentArchetype;
+  var gapIdx = state.currentGapIndex;
+  var entry = a.entries[gapIdx];
+
+  var det = entry.detail.toLowerCase();
+  var act = entry.activity.toLowerCase();
+
+  var record = {
+    archetypeType: a.type,
+    archetypeName: a.name,
+    gapTime: entry.time,
+    gapActivity: entry.activity,
+    vulnerable: entry.vulnerable,
+    isolation: (det.includes('alone') || act.includes('read') ||
+      act.includes('nap') || act.includes('workshop') ||
+      act.includes('journal') || act.includes('chess'))
+      ? 'alone' : 'social',
+    activityVerb: extractVerb(entry.activity),
+    timestamp: Date.now()
+  };
+
+  /* Generate aftermath BEFORE recording */
+  state.currentAftermath = generateAftermath(a, gapIdx);
+
+  state.history.push(record);
+  saveHistory();
+
+  state.screen = 'aftermath';
+  renderAftermath();
+}
+
+/* ----------------------------------------------------------
+   RENDER: AFTERMATH
+ ---------------------------------------------------------- */
+
+function renderAftermath() {
+  var a = state.currentArchetype;
+  var aft = state.currentAftermath;
+  var entry = a.entries[state.currentGapIndex];
+  var $s = document.getElementById('screen');
+
+  $s.innerHTML =
+    '<div class="aft-header">' +
+      '<div class="aft-title">Forensic Aftermath</div>' +
+      '<div class="aft-meta">' +
+        a.name.toUpperCase() + ' &middot; EVENT WINDOW ' + entry.time + '\u2013+8 MIN' +
+        ' &middot; DISRUPTION: ' + aft.disruption.toUpperCase() +
+      '</div>' +
+    '</div>' +
+
+    '<div class="aft-section" id="aft-1">' +
+      '<div class="aft-label">Investigation Reveals</div>' +
+      '<div class="aft-text">' + aft.forensic + '</div>' +
+    '</div>' +
+
+    '<div class="aft-section" id="aft-2">' +
+      '<div class="aft-label">Neighbors Heard</div>' +
+      '<div class="aft-text">' + aft.neighbor + '</div>' +
+    '</div>' +
+
+    '<div class="aft-section" id="aft-3">' +
+      '<div class="aft-label">Timeline Proves</div>' +
+      '<div class="aft-text">' + aft.theory + '</div>' +
+    '</div>' +
+
+    '<div class="sep"></div>' +
+
+    '<div class="aft-section" id="aft-4">' +
+      '<div class="aft-label" style="color: var(--amber-lo);">Directed to You</div>' +
+      '<div class="aft-question-text">' + aft.question + '</div>' +
+    '</div>' +
+
+    '<button class="continue-btn" onclick="nextAfterSelection()">' +
+      (state.history.length < 3 ? 'Next Dossier' : 'View Pattern Report') +
+    '</button>';
+
+  var ids = ['aft-1', 'aft-2', 'aft-3', 'aft-4'];
+  for (var i = 0; i < ids.length; i++) {
+    (function(id, delay) {
+      setTimeout(function() {
+        var el = document.getElementById(id);
+        if (el) el.classList.add('visible');
+      }, delay);
+    })(ids[i], 500 + i * 700);
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextAfterSelection() {
+  if (state.history.length >= 3) {
+    showMirror();
+  } else {
+    state.screen = 'intro';
+    renderIntro();
+  }
+}
+
+/* ----------------------------------------------------------
+   RENDER: MIRROR
+ ---------------------------------------------------------- */
+
+function showMirror() {
+  state.screen = 'mirror';
+  var pattern = analyzePatterns(state.history);
+  if (!pattern) { renderIntro(); return; }
+
+  var $s = document.getElementById('screen');
+
+  var recordsHtml = '';
+  for (var i = 0; i < state.history.length; i++) {
+    var h = state.history[i];
+    recordsHtml +=
+      '<div class="mirror-record" id="mr-' + i + '">' +
+        '<div class="mirror-record-num">Dossier ' + (i + 1) + '</div>' +
+        '<div class="mirror-record-detail">' +
+          '<strong>' + h.archetypeName + '</strong> &middot; Gap at <span class="hl">' + h.gapTime + '</span><br>' +
+          '<em>' + h.gapActivity + '</em><br>' +
+          'Flagged vulnerable: <span class="' + (h.vulnerable ? 'hl-red' : '') + '">' +
+            (h.vulnerable ? 'Yes' : 'No') + '</span>' +
+          ' &middot; Isolation: <span class="hl">' + h.isolation + '</span>' +
+          ' &middot; Category: ' + h.activityVerb +
+        '</div>' +
+      '</div>';
+  }
+
+  $s.innerHTML =
+    '<div class="mirror-wrap">' +
+      '<div class="mirror-title">Pattern Report</div>' +
+      recordsHtml +
+      '<div class="mirror-divider"></div>' +
+      '<div class="mirror-analysis" id="mirror-intro">' +
+        '<p>Across ' + state.history.length + ' selections, a pattern has emerged.</p>' +
+      '</div>' +
+      '<div class="mirror-analysis" id="mirror-reveal-block">' +
+        '<div class="mirror-reveal">' + pattern.summary + '</div>' +
+      '</div>' +
+      '<div class="mirror-divider"></div>' +
+      '<div class="mirror-analysis" id="mirror-avoid-block">' +
+        '<div class="mirror-avoid">' + pattern.avoidSummary + '</div>' +
+      '</div>' +
+      '<div class="mirror-divider"></div>' +
+      '<div class="mirror-final" id="mirror-final">' +
+        '<p>You have authorized ' + state.history.length + ' event' + (state.history.length !== 1 ? 's' : '') + '.</p>' +
+        '<p>Each one was your choice. No one made you select those specific gaps.</p>' +
+        '<p>The subjects were your neighbors. The timeline was their life.</p>' +
+        '<p><em>The pattern was always you.</em></p>' +
+      '</div>' +
+      '<button class="erase-btn" onclick="eraseAndReset()">Erase Records</button>' +
+    '</div>';
+
+  /* Stagger record reveal */
+  for (var ri = 0; ri < state.history.length; ri++) {
+    (function(idx) {
+      setTimeout(function() {
+        var el = document.getElementById('mr-' + idx);
+        if (el) el.classList.add('visible');
+      }, 300 + idx * 300);
+    })(ri);
+  }
+
+  var base = 300 + state.history.length * 300;
+
+  setTimeout(function() {
+    var el = document.getElementById('mirror-intro');
+    if (el) el.classList.add('visible');
+  }, base + 400);
+
+  setTimeout(function() {
+    var el = document.getElementById('mirror-reveal-block');
+    if (el) el.classList.add('visible');
+  }, base + 1200);
+
+  setTimeout(function() {
+    var el = document.getElementById('mirror-avoid-block');
+    if (el) el.classList.add('visible');
+  }, base + 2000);
+
+  setTimeout(function() {
+    var el = document.getElementById('mirror-final');
+    if (el) el.classList.add('visible');
+  }, base + 3000);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function eraseAndReset() {
+  state.history = [];
+  state.currentArchetype = null;
+  state.currentGapIndex = -1;
+  state.currentAftermath = null;
+  state.screen = 'intro';
+  saveHistory();
+  renderIntro();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ----------------------------------------------------------
+   INIT
+ ---------------------------------------------------------- */
+
+function init() {
+  loadHistory();
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('reset') === 'true') {
+    state.history = [];
+    saveHistory();
+    var url = new URL(window.location);
+    url.searchParams.delete('reset');
+    window.history.replaceState({}, '', url);
+  }
+  renderIntro();
+}
+
+init();
+</script>
+</body>
+</html>

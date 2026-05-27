@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Census of Ordinary Afternoons — Bureau of Transitional Moments</title>
+<style>
+  :root {
+    --ink: #1c1917;
+    --paper: #f5f0e6;
+    --paper-deep: #ebe5d8;
+    --accent: #6b7c62;
+    --rule: #c8bda8;
+    --muted: #8a8070;
+    --carbon: #a0937d;
+    --warm: #7a5e3a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--paper);
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 31px,
+        var(--rule) 31px,
+        var(--rule) 32px
+      );
+    color: var(--ink);
+    line-height: 1.65;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .census {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px 28px 80px;
+  }
+
+  @media (max-width: 600px) {
+    .census { padding: 16px 18px 60px; }
+    .header-title { font-size: 0.95rem !important; }
+    .question-content { padding: 24px 20px 28px !important; }
+    .field-declaration { font-size: 0.88rem !important; }
+    .poem-section { padding: 28px 24px !important; }
+    .stanza-label { font-size: 0.65rem !important; }
+    .verse { font-size: 1.1rem !important; }
+  }
+
+  /* ── HEADER ── */
+  .census-header {
+    text-align: center;
+    padding: 56px 0 40px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .bureau-name {
+    font-size: 0.68rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  .header-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.55;
+    max-width: 460px;
+    margin: 0 auto 20px;
+  }
+
+  .header-subtitle {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 440px;
+    margin: 0 auto;
+    font-style: italic;
+  }
+
+  .header-rule {
+    width: 100px;
+    height: 1px;
+    background: var(--rule);
+    margin: 28px auto 0;
+  }
+
+  .form-number {
+    font-size: 0.6rem;
+    color: var(--carbon);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-top: 16px;
+    font-weight: 500;
+  }
+
+  /* ── PREAMBLE ── */
+  .preamble {
+    padding: 28px 0 36px;
+    text-align: center;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .preamble p {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.9;
+  }
+
+  .preamble p + p { margin-top: 1.2em; }
+
+  /* ── QUESTIONS ── */
+  .field {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .field.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .question-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0;
+    padding: 0 0 8px;
+  }
+
+  .field-declaration {
+    font-size: 1.02rem;
+    font-weight: 400;
+    line-height: 1.75;
+    color: var(--ink);
+    margin: 0;
+    padding: 0;
+  }
+
+  .question-content {
+    background: var(--paper-deep);
+    border-left: 3px solid var(--accent);
+    padding: 28px 28px 32px;
+    margin: 14px 0 48px;
+    border-radius: 0 6px 6px 0;
+  }
+
+  .field-instruction {
+    font-size: 0.74rem;
+    color: var(--carbon);
+    margin-bottom: 16px;
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  .response-area { position: relative; }
+
+  .response-area textarea {
+    width: 100%;
+    border: none;
+    border-bottom: 1.5px solid var(--rule);
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.92rem;
+    line-height: 1.85;
+    color: var(--ink);
+    padding: 10px 0;
+    resize: vertical;
+    min-height: 52px;
+    max-height: 180px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+
+  .response-area textarea:focus {
+    border-bottom-color: var(--accent);
+  }
+
+  .response-area textarea::placeholder {
+    color: var(--carbon);
+    opacity: 0.45;
+    font-style: italic;
+    font-size: 0.84rem;
+  }
+
+  .field-note {
+    font-size: 0.66rem;
+    color: var(--carbon);
+    margin-top: 10px;
+    font-style: italic;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .field-note.visible { opacity: 1; }
+
+  /* ── SUBMIT ── */
+  .submit-section {
+    text-align: center;
+    padding: 40px 0 20px;
+    border-top: 1px solid var(--rule);
+    margin-top: 16px;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .submit-section.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .submit-section button {
+    background: var(--accent);
+    color: var(--paper);
+    border: none;
+    padding: 14px 44px;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.15s ease;
+    border-radius: 2px;
+    font-family: inherit;
+  }
+
+  .submit-section button:hover { background: var(--warm); }
+  .submit-section button:active { transform: scale(0.97); }
+
+  .submit-note {
+    font-size: 0.68rem;
+    color: var(--carbon);
+    margin-top: 14px;
+    font-style: italic;
+    line-height: 1.7;
+  }
+
+  /* ── GENERATING OVERLAY ── */
+  .generating-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--paper);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .generating-overlay.active { display: flex; }
+
+  .gen-status {
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    min-height: 1.4em;
+  }
+
+  .gen-dots { display: flex; gap: 10px; }
+
+  .gen-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.2;
+    transition: opacity 0.3s ease;
+  }
+
+  .gen-dot.lit { opacity: 1; }
+
+  /* ── REPORT SECTION ── */
+  .report {
+    display: none;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 48px 32px 100px;
+  }
+
+  .report.active { display: block; }
+
+  .report-header {
+    text-align: center;
+    padding-bottom: 40px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 48px;
+  }
+
+  .report-bureau {
+    font-size: 0.62rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+
+  .report-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.6;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .report-meta {
+    font-size: 0.65rem;
+    color: var(--carbon);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 18px;
+  }
+
+  /* ── POEM STANZAS ── */
+  .poem-section {
+    margin-bottom: 48px;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .poem-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .stanza-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--carbon);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .stanza-number { color: var(--accent); }
+
+  .verse {
+    font-size: 1.22rem;
+    line-height: 2.1;
+    font-weight: 300;
+    color: var(--ink);
+  }
+
+  .verse em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--warm);
+  }
+
+  /* ── SIGNATURE ── */
+  .signature {
+    text-align: center;
+    padding-top: 36px;
+    margin-top: 20px;
+    border-top: 1px solid var(--rule);
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+
+  .signature.visible { opacity: 1; }
+
+  .sig-line {
+    font-size: 0.95rem;
+    font-style: italic;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .sig-dept {
+    font-size: 0.58rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--carbon);
+    margin-top: 10px;
+    font-weight: 500;
+  }
+
+  .sig-disclaimer {
+    font-size: 0.6rem;
+    color: var(--carbon);
+    margin-top: 24px;
+    line-height: 1.6;
+    font-style: italic;
+    opacity: 0.7;
+  }
+
+  /* ── RETURN LINK ── */
+  .return-section {
+    text-align: center;
+    margin-top: 48px;
+    padding-top: 28px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .return-link {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease;
+    font-weight: 500;
+  }
+
+  .return-link:hover { border-bottom-color: var(--accent); }
+
+  /* ── FOOTER ── */
+  .census-footer {
+    text-align: center;
+    padding: 40px 0 20px;
+    border-top: 1px solid var(--rule);
+    margin-top: 20px;
+  }
+
+  .footer-text {
+    font-size: 0.56rem;
+    color: var(--carbon);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    line-height: 1.8;
+  }
+</style>
+</head>
+<body>
+
+<div id="census" class="census">
+  <header class="census-header">
+    <p class="bureau-name">Bureau of Transitional Moments</p>
+    <h1 class="header-title">The Census of Ordinary Afternoons</h1>
+    <p class="header-subtitle">
+      A study of the hours most likely to be misremembered,<br>
+      lost between the notable and the unforgettable.
+    </p>
+    <div class="header-rule"></div>
+    <p class="form-number">Form TM-27 · Responses will not be shared</p>
+  </header>
+
+  <div class="preamble">
+    <p>The Bureau is conducting a study on the texture of ordinary time — the unmarked hours between events that, despite their constancy, are the first to be forgotten.</p>
+    <p>Please answer honestly and with as much precision as your memory allows.</p>
+  </div>
+
+  <form id="censusForm" autocomplete="off">
+
+    <!-- Q1: Location -->
+    <div class="field" data-index="0">
+      <p class="question-label">Question 1 of 7 — Section II (Location)</p>
+      <p class="field-declaration">Name a place you pass through at least twice a week and rarely think about after.</p>
+      <div class="question-content">
+        <p class="field-instruction">For example: a hallway, a particular stretch of road, the space between two buildings. Describe it as you would to someone who has never seen it.</p>
+        <div class="response-area">
+          <textarea id="q1" data-field="location" rows="2" placeholder="A place so familiar it has become invisible..."></textarea>
+        </div>
+        <p class="field-note">This is where you spend a measurable percentage of your life.</p>
+      </div>
+    </div>
+
+    <!-- Q2: Light -->
+    <div class="field" data-index="1">
+      <p class="question-label">Question 2 of 7 — Section IV (Illumination)</p>
+      <p class="field-declaration">Describe the quality of light at an hour you have never thought to name.</p>
+      <div class="question-content">
+        <p class="field-instruction">Not sunrise or sunset — something in between. Mid-morning, perhaps, or the hour before you begin to think about dinner. What does it look like?</p>
+        <div class="response-area">
+          <textarea id="q2" data-field="light" rows="2" placeholder="The light you've never tried to describe before..."></textarea>
+        </div>
+        <p class="field-note">Every light is temporary. This one more than most.</p>
+      </div>
+    </div>
+
+    <!-- Q3: Sound -->
+    <div class="field" data-index="2">
+      <p class="question-label">Question 3 of 7 — Section VI (Acoustics)</p>
+      <p class="field-declaration">What is the last sound you heard before you began reading this sentence?</p>
+      <div class="question-content">
+        <p class="field-instruction">Try to be specific. Not "a noise" but the thing itself — its texture, its distance, how long it lasted.</p>
+        <div class="response-area">
+          <textarea id="q3" data-field="sound" rows="2" placeholder="The sound that was there a moment ago, already fading..."></textarea>
+        </div>
+        <p class="field-note">That sound is now part of the historical record.</p>
+      </div>
+    </div>
+
+    <!-- Q4: Temperature -->
+    <div class="field" data-index="3">
+      <p class="question-label">Question 4 of 7 — Section VII (Temperature)</p>
+      <p class="field-declaration">Recall the temperature of water against your hands during an ordinary washing.</p>
+      <div class="question-content">
+        <p class="field-instruction">Not the dramatic — the routine. Washing dishes, rinsing an apple, testing the bath. The body knows temperatures the mind forgets.</p>
+        <div class="response-area">
+          <textarea id="q4" data-field="temperature" rows="2" placeholder="The warmth you barely notice..."></textarea>
+        </div>
+        <p class="field-note">Somewhere between indifference and comfort, you live.</p>
+      </div>
+    </div>
+
+    <!-- Q5: Distance -->
+    <div class="field" data-index="4">
+      <p class="question-label">Question 5 of 7 — Section IX (Distance)</p>
+      <p class="field-declaration">How far away is the person you have known the longest, right now?</p>
+      <div class="question-content">
+        <p class="field-instruction">Measure it in whatever units make sense — miles, rooms, hours of travel. Include the distance that cannot be measured, if you can find words for it.</p>
+        <div class="response-area">
+          <textarea id="q5" data-field="distance" rows="2" placeholder="The distance that matters more than you'll say..."></textarea>
+        </div>
+        <p class="field-note">The Bureau notes: this question receives the fewest complete answers.</p>
+      </div>
+    </div>
+
+    <!-- Q6: Constancy -->
+    <div class="field" data-index="5">
+      <p class="question-label">Question 6 of 7 — Section XI (Constancy)</p>
+      <p class="field-declaration">What is one thing in your environment that was already there when you arrived and will remain after you leave?</p>
+      <div class="question-content">
+        <p class="field-instruction">Something that has outlasted your attention without ever asking for it. A crack in the wall, a particular tree, the stain on the ceiling.</p>
+        <div class="response-area">
+          <textarea id="q6" data-field="constancy" rows="2" placeholder="Something that was here before you noticed it..."></textarea>
+        </div>
+        <p class="field-note">The Bureau thanks you for not looking away.</p>
+      </div>
+    </div>
+
+    <!-- Q7: Language -->
+    <div class="field" data-index="6">
+      <p class="question-label">Question 7 of 7 — Section XIII (Language)</p>
+      <p class="field-declaration">Complete this sentence: "I have never told anyone that I —"</p>
+      <div class="question-content">
+        <p class="field-instruction">The Bureau is not a courtroom. Say the small thing. The thing that has no consequence to anyone but you, and therefore every consequence in the world.</p>
+        <div class="response-area">
+          <textarea id="q7" data-field="language" rows="2" placeholder="The sentence you've carried without sending..."></textarea>
+        </div>
+        <p class="field-note">This response will be treated as confidential. They all are.</p>
+      </div>
+    </div>
+
+    <div id="submitSection" class="submit-section">
+      <button type="submit">Submit Response</button>
+      <p class="submit-note">Upon submission, the Bureau will issue your Personal Population Report.</p>
+    </div>
+
+  </form>
+
+  <footer class="census-footer">
+    <p class="footer-text">Form TM-27 · Bureau of Transitional Moments · All data held in confidence</p>
+  </footer>
+</div>
+
+<!-- Generating overlay -->
+<div id="generating" class="generating-overlay">
+  <p class="gen-status" id="genStatus">Compiling response</p>
+  <div class="gen-dots">
+    <span class="gen-dot" id="dot0"></span>
+    <span class="gen-dot" id="dot1"></span>
+    <span class="gen-dot" id="dot2"></span>
+  </div>
+</div>
+
+<!-- Report section -->
+<div id="report" class="report">
+  <header class="report-header">
+    <p class="report-bureau">Bureau of Transitional Moments</p>
+    <h2 class="report-title">Personal Population Report</h2>
+    <p class="report-meta" id="reportDate"></p>
+  </header>
+  <div id="poemBody"></div>
+  <div class="signature" id="signature">
+    <p class="sig-line">Filed on your behalf, with gratitude,<br>by the Bureau of Transitional Moments</p>
+    <p class="sig-dept">Department of Ordinary Hours · Room 114 · Always Open</p>
+    <p class="sig-disclaimer">This report is non-transferable. The moments described herein belong to you. The Bureau merely holds the pen.</p>
+  </div>
+  <div class="return-section">
+    <a class="return-link" id="returnLink">Complete another census</a>
+  </div>
+</div>
+
+<script>
+  // ═══════════════════════════════════════
+  // FIELD DATA & UTILITIES
+  // ═══════════════════════════════════════
+
+  const fields = ['location', 'light', 'sound', 'temperature', 'distance', 'constancy', 'language'];
+
+  function extract(raw) {
+    if (!raw || !raw.trim()) return { full: '', words: [], first: '', mid: '', last: '', body: '', rest: '' };
+    const s = raw.trim();
+    const cleaned = s.replace(/[\.\!\?\,\;\:]+$/, '');
+    const words = cleaned.split(/\s+/).filter(w => w.length > 0);
+    const n = words.length;
+    if (n === 0) return { full: '', words: [], first: '', mid: '', last: '', body: '', rest: '' };
+    if (n === 1) return { full: s, words, first: words[0], mid: words[0], last: words[0], body: '', rest: '' };
+    if (n === 2) return { full: s, words, first: words[0], mid: words[1], last: words[1], body: words[1], rest: words[1] };
+    return {
+      full: s,
+      words,
+      first: words[0],
+      mid: words.slice(1, -1).join(' '),
+      last: words[n - 1],
+      body: words.slice(1).join(' '),
+      rest: words.slice(1).join(' ')
+    };
+  }
+
+  function em(text) {
+    return '<em>' + text + '</em>';
+  }
+
+  function gather() {
+    const data = {};
+    fields.forEach((f, i) => {
+      const el = document.getElementById('q' + (i + 1));
+      data[f] = extract(el.value);
+    });
+    return data;
+  }
+
+  // ═══════════════════════════════════════
+  // POEM GENERATION
+  // ═══════════════════════════════════════
+
+  function generatePoem(d) {
+    const L = d.location;
+    const I = d.light;
+    const S = d.sound;
+    const T = d.temperature;
+    const D = d.distance;
+    const C = d.constancy;
+    const N = d.language;
+    const verses = [];
+
+    // ── STANZA I: Inhabitation ──
+    const s1 = [];
+    verses.push({ label: 'I', lines: s1 });
+
+    if (L.full) {
+      if (L.words.length >= 4) {
+        s1.push(em(L.first) + ', ' + em(L.body) + '.');
+      } else {
+        s1.push(em(L.full) + '.');
+      }
+      s1.push('You have been counted.');
+    } else {
+      s1.push('Somewhere unremarked.');
+      s1.push('You have been counted anyway.');
+    }
+
+    s1.push('');
+
+    if (I.full) {
+      if (I.mid && I.mid.length > 20) {
+        s1.push('In the ' + em(I.first.toLowerCase()) + ' of ' + em(I.mid) + ',');
+      } else {
+        s1.push('In the ' + em(I.first.toLowerCase()) + ' of ' + em(I.full) + ',');
+      }
+      s1.push('you happened.');
+    } else {
+      s1.push('In unrecorded light,');
+      s1.push('you happened.');
+    }
+
+    s1.push('');
+    s1.push('This is now a matter of record.');
+
+    // ── STANZA II: Registration ──
+    const s2 = [];
+    verses.push({ label: 'II', lines: s2 });
+
+    if (S.full) {
+      const soundDesc = S.mid || S.full;
+      s2.push('The Bureau has registered a sound —');
+      s2.push(em(soundDesc) + ' —');
+      s2.push('and notes that it existed.');
+    } else {
+      s2.push('A sound went unregistered.');
+      s2.push('It existed regardless.');
+    }
+
+    s2.push('');
+
+    if (T.full) {
+      s2.push(em(T.full) + ' touches skin');
+      s2.push('without asking permission,');
+    } else {
+      s2.push('Warmth touches skin');
+      s2.push('without asking permission,');
+    }
+
+    if (L.mid) {
+      s2.push('which is what it means to live in ' + em(L.mid) + '.');
+    } else if (L.first) {
+      s2.push('which is what it means to live in ' + em(L.full) + '.');
+    } else {
+      s2.push('which is what it means to live anywhere.');
+    }
+
+    s2.push('');
+    s2.push('You were there.');
+    s2.push('The Bureau confirms it.');
+
+    // ── STANZA III: The Distance ──
+    const s3 = [];
+    verses.push({ label: 'III', lines: s3 });
+
+    s3.push('A field officer reports:');
+    s3.push('');
+
+    if (D.full) {
+      s3.push(em(D.full) + '.');
+      s3.push('');
+      s3.push('This is how far.');
+    } else {
+      s3.push('The distance was not disclosed.');
+      s3.push('');
+      s3.push('This, too, is a form of proximity.');
+    }
+
+    s3.push('');
+
+    if (C.full) {
+      s3.push('Meanwhile, ' + em(C.full));
+    } else {
+      s3.push('Meanwhile, something unnamed');
+    }
+
+    s3.push('continues to be there.');
+    s3.push('The Bureau has included it in your file.');
+    s3.push('');
+    s3.push('It did not need your attention.');
+    s3.push('It will not need it later.');
+    s3.push('');
+
+    if (L.first) {
+      s3.push('But ' + em(L.first.toLowerCase()) + ' holds everything.');
+    } else {
+      s3.push('But the place holds everything.');
+    }
+
+    // ── STANZA IV: The Unsent ──
+    const s4 = [];
+    verses.push({ label: 'IV', lines: s4 });
+
+    if (N.full) {
+      const cleanN = N.full.replace(/[\.\!\?]$/, '');
+      s4.push('Item seven, for the record:');
+      s4.push('');
+      s4.push('You have never told anyone that you ' + em(cleanN) + '.');
+      s4.push('');
+    } else {
+      s4.push('Some things remain unspoken.');
+      s4.push('');
+    }
+
+    s4.push('But the light —');
+
+    if (I.mid && I.words.length >= 3) {
+      s4.push(em(I.mid) + ' —');
+    } else if (I.full) {
+      s4.push(em(I.full) + ' —');
+    } else {
+      s4.push('the unrecorded light —');
+    }
+
+    s4.push('has told someone.');
+    s4.push('');
+
+    if (L.last && L.words.length >= 3) {
+      s4.push('And ' + em(L.last) + ', despite its silence,');
+    } else if (L.full) {
+      s4.push('And the place, despite its silence,');
+    } else {
+      s4.push('And the world, despite its silence,');
+    }
+
+    s4.push('has listened.');
+    s4.push('');
+
+    if (D.last) {
+      s4.push('Even at ' + em(D.last) + ' away.');
+    } else {
+      s4.push('Even at whatever distance.');
+    }
+
+    // ── STANZA V: The Finding ──
+    const s5 = [];
+    verses.push({ label: 'V', lines: s5 });
+
+    s5.push('This report finds one person');
+    s5.push('alive in the middle of an ordinary afternoon.');
+    s5.push('');
+
+    if (T.mid) {
+      s5.push('They are warm with ' + em(T.mid) + '.');
+    } else if (T.full) {
+      s5.push('They are held by ' + em(T.full) + '.');
+    } else {
+      s5.push('They are warm, which is to say alive.');
+    }
+
+    if (C.last) {
+      s5.push('They are near ' + em(C.last) + '.');
+    } else {
+      s5.push('They are near something permanent.');
+    }
+
+    if (D.mid && D.words.length >= 4) {
+      s5.push('They are ' + em(D.first.toLowerCase()) + ' from what they love');
+      s5.push('and carrying that distance with them');
+      s5.push('like ' + em(D.last) + ' of weather they have decided not to name.');
+    } else if (D.full) {
+      s5.push('They are ' + em(D.full) + ' from what they love');
+      s5.push('and carrying that distance with them');
+      s5.push('the way the sky carries a season it will not announce.');
+    } else {
+      s5.push('They are some distance from what they love');
+      s5.push('and carrying that distance with them');
+      s5.push('the way the sky carries a season it will not announce.');
+    }
+
+    s5.push('');
+    s5.push('The Bureau checked.');
+    s5.push('');
+    s5.push('You were there.');
+    s5.push('You were, for a moment, paying attention.');
+    s5.push('');
+
+    if (S.last) {
+      s5.push(em(S.last) + ' is still in the room.');
+    } else {
+      s5.push('The room is still here.');
+    }
+
+    s5.push('');
+
+    if (I.full) {
+      s5.push('And the light — ' + em(I.full) + ' —');
+    } else {
+      s5.push('And the light —');
+    }
+
+    s5.push('is already changing.');
+
+    return verses;
+  }
+
+  // ═══════════════════════════════════════
+  // RENDERING
+  // ═══════════════════════════════════════
+
+  function renderPoem(verses) {
+    const container = document.getElementById('poemBody');
+    container.innerHTML = '';
+
+    verses.forEach(function(stanza) {
+      const section = document.createElement('div');
+      section.className = 'poem-section';
+
+      const label = document.createElement('p');
+      label.className = 'stanza-label';
+      label.innerHTML = 'Stanza <span class="stanza-number">' + stanza.label + '</span>';
+      section.appendChild(label);
+
+      stanza.lines.forEach(function(text) {
+        const verse = document.createElement('p');
+        verse.className = 'verse';
+        if (text === '') {
+          verse.innerHTML = '&nbsp;';
+        } else {
+          verse.innerHTML = text;
+        }
+        section.appendChild(verse);
+      });
+
+      container.appendChild(section);
+    });
+  }
+
+  function animateStanzas() {
+    const stanzas = document.querySelectorAll('.poem-section');
+    stanzas.forEach(function(stanza, i) {
+      setTimeout(function() {
+        stanza.classList.add('visible');
+      }, i * 800);
+    });
+
+    setTimeout(function() {
+      document.getElementById('signature').classList.add('visible');
+    }, stanzas.length * 800 + 600);
+  }
+
+  // ═══════════════════════════════════════
+  // GENERATION ANIMATION
+  // ═══════════════════════════════════════
+
+  const genMessages = [
+    'Compiling response',
+    'Verifying attention',
+    'Cross-referencing ordinary hours',
+    'Noting what was overlooked',
+    'Assembling population report',
+    'Recording the unrecorded'
+  ];
+
+  function animateGeneration() {
+    return new Promise(function(resolve) {
+      const overlay = document.getElementById('generating');
+      overlay.classList.add('active');
+      const statusEl = document.getElementById('genStatus');
+      const dots = [
+        document.getElementById('dot0'),
+        document.getElementById('dot1'),
+        document.getElementById('dot2')
+      ];
+
+      let msgIndex = 0;
+      let dotIndex = 0;
+      let count = 0;
+
+      var dotInterval = setInterval(function() {
+        dots.forEach(function(d) { d.classList.remove('lit'); });
+        dots[dotIndex].classList.add('lit');
+        dotIndex = (dotIndex + 1) % 3;
+        count++;
+
+        if (count % 8 === 0 && msgIndex < genMessages.length - 1) {
+          msgIndex++;
+          statusEl.textContent = genMessages[msgIndex];
+        }
+
+        if (count >= 36) {
+          clearInterval(dotInterval);
+          dots.forEach(function(d) { d.classList.remove('lit'); });
+          resolve();
+        }
+      }, 80);
+    });
+  }
+
+  // ═══════════════════════════════════════
+  // FORM SUBMISSION
+  // ═══════════════════════════════════════
+
+  document.getElementById('censusForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    // Require at least one field filled
+    var anyFilled = fields.some(function(f, i) {
+      return document.getElementById('q' + (i + 1)).value.trim().length > 0;
+    });
+
+    if (!anyFilled) {
+      document.getElementById('q1').focus();
+      return;
+    }
+
+    var data = gather();
+    var verses = generatePoem(data);
+
+    // Show generating animation
+    await animateGeneration();
+
+    // Set report date
+    var now = new Date();
+    var dateStr = now.toLocaleDateString('en-US', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    }) + ' · ' + now.toLocaleTimeString('en-US', {
+      hour: '2-digit', minute: '2-digit'
+    });
+    document.getElementById('reportDate').textContent = dateStr;
+
+    // Render poem into report
+    renderPoem(verses);
+
+    // Transition: hide form + overlay, show report
+    document.getElementById('census').style.display = 'none';
+    document.getElementById('generating').classList.remove('active');
+    document.getElementById('report').classList.add('active');
+
+    window.scrollTo({ top: 0, behavior: 'instant' });
+
+    // Animate stanzas after paint
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        animateStanzas();
+      });
+    });
+  });
+
+  // ═══════════════════════════════════════
+  // RETURN LINK
+  // ═══════════════════════════════════════
+
+  document.getElementById('returnLink').addEventListener('click', function() {
+    document.getElementById('report').classList.remove('active');
+    document.getElementById('census').style.display = 'block';
+    document.getElementById('censusForm').reset();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+
+    // Reset revealed fields
+    document.querySelectorAll('.field').forEach(function(f) {
+      f.classList.remove('revealed');
+    });
+    document.getElementById('submitSection').classList.remove('revealed');
+    document.querySelectorAll('.field-note').forEach(function(n) {
+      n.classList.remove('visible');
+    });
+
+    // Re-trigger first field
+    setTimeout(function() { revealField(0); }, 300);
+  });
+
+  // ═══════════════════════════════════════
+  // PROGRESSIVE REVEAL
+  // ═══════════════════════════════════════
+
+  function revealField(index) {
+    var allFields = document.querySelectorAll('.field');
+    if (index < allFields.length) {
+      allFields[index].classList.add('revealed');
+    }
+    if (index === allFields.length - 1) {
+      setTimeout(function() {
+        document.getElementById('submitSection').classList.add('revealed');
+      }, 600);
+    }
+  }
+
+  // Reveal first field on load
+  revealField(0);
+
+  // When a textarea receives focus, reveal the next field
+  fields.forEach(function(field, i) {
+    var el = document.getElementById('q' + (i + 1));
+
+    el.addEventListener('focus', function() {
+      if (i + 1 < fields.length) {
+        revealField(i + 1);
+      }
+    });
+
+    // Show field note after some input
+    var noteEl = el.closest('.field').querySelector('.field-note');
+    el.addEventListener('input', function() {
+      if (el.value.trim().length > 5 && noteEl) {
+        noteEl.classList.add('visible');
+      }
+    });
+  });
+</script>
+</body>
+</html>

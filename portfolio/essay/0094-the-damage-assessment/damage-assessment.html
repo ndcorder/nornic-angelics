@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Damage Assessment — Claim #DR-2019-4471</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+
+  :root {
+    --paper: #f5f0e8;
+    --ink: #1a1a1a;
+    --faded: #6b6358;
+    --red-ink: #8b2500;
+    --blue-ink: #1a3a5c;
+    --stamp: #7a2a2a;
+    --border: #2a2a2a;
+    --field-line: #4a4a4a;
+    --highlight: rgba(139, 37, 0, 0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #d4cfc6;
+    font-family: 'Courier Prime', 'Courier New', monospace;
+    color: var(--ink);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  .page-container {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  .page {
+    background: var(--paper);
+    padding: 60px 70px;
+    margin-bottom: 30px;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.15), inset 0 0 80px rgba(0,0,0,0.03);
+    position: relative;
+    border: 1px solid #c4bfb6;
+  }
+
+  .page::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(0,0,0,0.02) 31px, rgba(0,0,0,0.02) 32px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page > * { position: relative; z-index: 1; }
+
+  .running-header {
+    position: sticky;
+    top: 0;
+    background: var(--paper);
+    border-bottom: 2px solid var(--border);
+    padding: 12px 70px;
+    margin: -60px -70px 25px -70px;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--faded);
+  }
+
+  .running-header .claim-ref { font-weight: 700; }
+
+  .running-header .running-total {
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+
+  .running-header .running-total .amount {
+    color: var(--red-ink);
+  }
+
+  .running-header .running-total .threshold-note {
+    font-size: 8px;
+    color: var(--faded);
+    font-weight: 400;
+    margin-left: 8px;
+  }
+
+  .form-header {
+    text-align: center;
+    border-bottom: 3px double var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+  }
+
+  .form-header h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .form-header .department {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--faded);
+    margin-bottom: 12px;
+  }
+
+  .form-header .claim-number {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .form-header .classification {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    padding: 3px 12px;
+    margin-top: 10px;
+  }
+
+  .header-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 40px;
+    margin-bottom: 30px;
+    font-size: 12px;
+  }
+
+  .header-field {
+    border-bottom: 1px solid var(--field-line);
+    padding: 4px 0 2px 0;
+  }
+
+  .header-field .label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--faded);
+    display: block;
+  }
+
+  .header-field .value {
+    font-weight: 700;
+    font-size: 12px;
+  }
+
+  .policy-box {
+    margin: 20px 0 30px 0;
+    padding: 15px 20px;
+    border: 1px solid var(--border);
+    font-size: 10px;
+    line-height: 1.6;
+  }
+
+  .policy-box .policy-title {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 9px;
+    margin-bottom: 8px;
+    color: var(--faded);
+  }
+
+  .policy-box .threshold-amount {
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  .section-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 5px;
+    margin: 30px 0 15px 0;
+  }
+
+  .section-title .section-number {
+    font-weight: 400;
+    color: var(--faded);
+    margin-right: 8px;
+  }
+
+  .skip-note {
+    font-size: 10px;
+    color: var(--faded);
+    font-style: italic;
+    margin: 10px 0 15px 0;
+    padding-left: 15px;
+    border-left: 2px solid rgba(0,0,0,0.1);
+  }
+
+  .inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin-bottom: 20px;
+  }
+
+  .inventory-table th {
+    text-align: left;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 6px 8px;
+    border-bottom: 2px solid var(--border);
+    color: var(--faded);
+    font-weight: 400;
+  }
+
+  .inventory-table td {
+    padding: 8px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    vertical-align: top;
+  }
+
+  .inventory-table tr:hover { background: var(--highlight); }
+
+  .item-number {
+    font-weight: 700;
+    color: var(--faded);
+    font-size: 10px;
+  }
+
+  .item-description { font-size: 11px; line-height: 1.4; }
+  .item-condition { font-size: 10px; }
+
+  .item-value {
+    text-align: right;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .condition-good { color: #2d5a27; }
+  .condition-fair { color: #6b5a27; }
+  .condition-poor { color: #8b4513; }
+  .condition-unsalvageable, .condition-irreparable {
+    color: var(--red-ink);
+    font-weight: 700;
+  }
+
+  .adjuster-notes {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: rgba(26, 58, 92, 0.04);
+    border-left: 2px solid var(--blue-ink);
+    font-size: 10px;
+    color: var(--blue-ink);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .adjuster-notes.degraded {
+    border-left-color: var(--red-ink);
+    color: var(--red-ink);
+    background: rgba(139, 37, 0, 0.04);
+  }
+
+  .adjuster-notes.raw {
+    border-left-color: #1a1a1a;
+    color: var(--ink);
+    background: transparent;
+    font-style: normal;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  .progress-section {
+    margin: 30px 0;
+    padding: 20px;
+    border: 1px solid var(--border);
+  }
+
+  .progress-bar-container {
+    background: rgba(0,0,0,0.06);
+    height: 18px;
+    margin: 10px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    position: relative;
+    background: var(--red-ink);
+    transition: width 1s ease;
+  }
+
+  .progress-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 3px;
+    background: #ff4444;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--faded);
+  }
+
+  .total-loss-line {
+    position: absolute;
+    right: 12%;
+    top: -2px;
+    bottom: -2px;
+    width: 2px;
+    background: var(--stamp);
+  }
+
+  .total-loss-label {
+    position: absolute;
+    right: 8%;
+    top: -22px;
+    font-size: 8px;
+    color: var(--stamp);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  .stamp {
+    display: inline-block;
+    border: 3px solid var(--stamp);
+    color: var(--stamp);
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    transform: rotate(-4deg);
+    opacity: 0.75;
+    font-family: 'Libre Baskerville', serif;
+  }
+
+  .stamp-container { text-align: center; margin: 30px 0; }
+
+  .signature-line { display: flex; gap: 60px; margin-top: 40px; }
+  .sig-block { flex: 1; }
+  .sig-line { border-bottom: 1px solid var(--border); height: 30px; margin-bottom: 4px; }
+  .sig-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--faded); }
+
+  .struck { text-decoration: line-through; opacity: 0.5; }
+
+  .handwritten {
+    font-family: 'Libre Baskerville', serif;
+    font-style: italic;
+    font-size: 13px;
+  }
+
+  .reveal-item {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .degradation-2 { opacity: 0.95; }
+  .degradation-3 { opacity: 0.9; }
+
+  .footer-note {
+    margin-top: 40px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0,0,0,0.15);
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--faded);
+    text-align: center;
+  }
+
+  .totals-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 40px;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 2px solid var(--border);
+    font-size: 12px;
+  }
+
+  .total-item { text-align: right; }
+  .total-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--faded); }
+  .total-value { font-weight: 700; font-size: 14px; }
+
+  @media (max-width: 700px) {
+    .page { padding: 30px 25px; }
+    .header-grid { grid-template-columns: 1fr; }
+    .signature-line { flex-direction: column; gap: 20px; }
+    .running-header { padding: 12px 25px; margin: -30px -25px 20px -25px; }
+    .totals-row { flex-direction: column; gap: 15px; align-items: flex-end; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-container">
+
+  <!-- PAGE 1 -->
+  <div class="page" id="page-1">
+    <div class="running-header">
+      <span class="claim-ref">Claim #DR-2019-4471</span>
+      <span class="running-total">Running Total: <span class="amount" id="running-total">$0</span><span class="threshold-note">of $47,000 threshold</span></span>
+    </div>
+
+    <div class="form-header">
+      <div class="department">Mutual Indemnity &amp; Domestic Casualty Corp.</div>
+      <h1>Detailed Damage Assessment</h1>
+      <div class="claim-number">Claim #DR-2019-4471</div>
+      <div class="classification">Classification: Domestic Dissolution — Joint Property</div>
+    </div>
+
+    <div class="header-grid">
+      <div class="header-field">
+        <span class="label">Claimant 1</span>
+        <span class="value">M. L. Castillo</span>
+      </div>
+      <div class="header-field">
+        <span class="label">Claimant 2</span>
+        <span class="value">R. S. Pham</span>
+      </div>
+      <div class="header-field">
+        <span class="label">Date of Loss (Onset)</span>
+        <span class="value">Approx. March 2016 — see narrative</span>
+      </div>
+      <div class="header-field">
+        <span class="label">Date of Claim Filed</span>
+        <span class="value">October 14, 2019</span>
+      </div>
+      <div class="header-field">
+        <span class="label">Policy Duration</span>
+        <span class="value">7 years, 4 months</span>
+      </div>
+      <div class="header-field">
+        <span class="label">Adjuster Assigned</span>
+        <span class="value">J. Davidsson — Senior Assessor</span>
+      </div>
+    </div>
+
+    <div class="policy-box">
+      <div class="policy-title">Per §8.2(b), Domestic Casualty Policy — Total Loss Provision</div>
+      <p>In the event that assessed damages exceed the <span class="threshold-amount">total loss threshold of $47,000</span>, the claim shall be classified as total loss and referred to senior review. Items below this threshold are processed as partial loss with standard disbursement. The threshold is calculated on assessed replacement value of tangible joint property only. Intangible losses are not covered under current policy terms.</p>
+    </div>
+
+    <div class="section-title">
+      <span class="section-number">Section I.</span>
+      Shared Residential Contents — Common Areas
+    </div>
+
+    <table class="inventory-table">
+      <thead>
+        <tr>
+          <th style="width:55px;">Item</th>
+          <th>Description</th>
+          <th style="width:80px;">Condition</th>
+          <th style="width:70px;">Acquired</th>
+          <th style="width:75px;">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="reveal-item" data-value="1200">
+          <td class="item-number">001</td>
+          <td class="item-description">Sectional sofa, charcoal gray fabric, three-piece. Minor cat damage to left arm. Purchased jointly at Room &amp; Board, Chicago.</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>2014</td>
+          <td class="item-value">$1,200</td>
+        </tr>
+        <tr class="reveal-item" data-value="350">
+          <td class="item-number">002</td>
+          <td class="item-description">Area rug, handwoven, 8×10. Origin uncertain. Claimant 1 states purchased during trip to Oaxaca. Claimant 2 states it was a wedding gift from Claimant 1's aunt. Disputed provenance.</td>
+          <td class="item-condition condition-fair">Fair</td>
+          <td>2012</td>
+          <td class="item-value">$350</td>
+        </tr>
+        <tr class="reveal-item" data-value="85">
+          <td class="item-number">003</td>
+          <td class="item-description">Standing floor lamp, adjustable arm, brushed steel. In working order. No dispute.</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>2013</td>
+          <td class="item-value">$85</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="adjuster-notes reveal-item">
+      Note: Claimants disagree on origin of Item 002. Aunt (M. Castellanos) contacted; she confirms giving cash, not a rug. Rug likely purchased by Claimant 1 during Oaxaca trip in 2012. Catalogued accordingly. Claimant 2 accepted finding without comment. Both parties were cooperative.
+    </div>
+
+    <table class="inventory-table">
+      <tbody>
+        <tr class="reveal-item" data-value="180">
+          <td class="item-number">004</td>
+          <td class="item-description">Coffee table, reclaimed wood, iron legs. Peg joints slightly loose.</td>
+          <td class="item-condition condition-fair">Fair</td>
+          <td>2015</td>
+          <td class="item-value">$180</td>
+        </tr>
+        <tr class="reveal-item" data-value="1400">
+          <td class="item-number">005</td>
+          <td class="item-description">Bookshelf, custom-built, walnut, spanning east wall of living room. Built by Claimant 2's brother. Contains 114 volumes (see Appendix A for individual titles). Approx. 60% claimed by Claimant 1, 40% by Claimant 2. Remaining books unclaimed by either party.</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>2012–2019</td>
+          <td class="item-value">$1,400</td>
+        </tr>
+        <tr class="reveal-item" data-value="320">
+          <td class="item-number">006</td>
+          <td class="item-description">Television, 55-inch, Samsung. Wall-mounted. No dispute. Both parties request the other take possession.</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>2017</td>
+          <td class="item-value">$320</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="adjuster-notes reveal-item">
+      Item 006: First instance of reciprocal refusal. Neither wants the television. Claimant 1 said, "We bought it to watch things together. Neither of us watches anything anymore." Claimant 2 did not dispute this. Recommend classifying as unwanted joint property per §4.3(b).
+    </div>
+
+    <table class="inventory-table">
+      <tbody>
+        <tr class="reveal-item" data-value="25">
+          <td class="item-number">007</td>
+          <td class="item-description">Woven throw blanket, cream and indigo stripes. Machine washable. Found folded on sofa. Neither claimant recalls purchasing it.</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>Unknown</td>
+          <td class="item-value">$25</td>
+        </tr>
+        <tr class="reveal-item" data-value="35">
+          <td class="item-number">008</td>
+          <td class="item-description">Handmade ceramic bowl, approx. 10" diameter, blue-gray glaze. Made by Claimant 1 in community pottery class.</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>2016</td>
+          <td class="item-value">$35</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="adjuster-notes reveal-item">
+      Item 008: Estimated replacement value $35. Sentimental valuation: not applicable per standard assessment guidelines. Claimant 1 did not request sentimental addendum. Bowl was on the kitchen counter, holding keys and loose change. Small chip on the rim that had been there for some time.
+    </div>
+
+    <table class="inventory-table">
+      <tbody>
+        <tr class="reveal-item" data-value="45">
+          <td class="item-number">009</td>
+          <td class="item-description">Framed photograph, 11×14, black wood frame. Wedding photo. Both claimants, outdoor setting, summer. Visible in background: Item 002 (disputed rug) hanging on a wall.</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>2012</td>
+          <td class="item-value">$45</td>
+        </tr>
+        <tr class="reveal-item" data-value="280">
+          <td class="item-number">010</td>
+          <td class="item-description">KitchenAid stand mixer, empire red. Includes pasta attachment (unopened), ice cream bowl (still sealed in box).</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>2014</td>
+          <td class="item-value">$280</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="adjuster-notes reveal-item">
+      Item 010: Mixer claimed by both. Attachments unclaimed. Neither could recall why the pasta attachment was purchased. Claimant 2 said, "There was a phase." Did not elaborate. Catalogued as single unit per claimant preference.
+    </div>
+
+    <div class="footer-note">Page 1 of 9 — Claim #DR-2019-4471 — Adjuster J. Davidsson</div>
+  </div>
+
+  <!-- PAGE 2 -->
+  <div class="page">
+    <div class="running-header">
+      <span class="claim-ref">Claim #DR-2019-4471</span>
+      <span class="running-total">Running Total: <span class="amount" id="running-total-2">$3,920</span><span class="threshold-note">of $47,000</span></span>
+    </div>
+
+    <div class="section-title">
+      <span class="section-number">Section II.</span>
+      Shared Residential Contents — Kitchen &amp; Dining
+    </div>
+
+    <div class="skip-note">
+      Items 011–017 comprise standard kitchen effects (flatware, cookware, small appliances). Aggregate assessed value: $415. Individual entries omitted per §3.1(b) expedited cataloguing provision. Full inventory available in Appendix C.
+    </div>
+
+    <table class="inventory-table">
+      <thead>
+        <tr>
+          <th style="width:55px;">Item</th>
+          <th>Description</th>
+          <th style="width:80px;">Condition</th>
+          <th style="width:70px;">Acquired</th>
+          <th style="width:75px;">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="reveal-item" data-value="415">
+          <td class="item-number">011–017</td>
+          <td class="item-description">Kitchen effects, aggregate. Includes: dinner plate set (3 chipped), cast iron skillet (disputed), wine glasses (6 of 8 remaining), French press (third carafe), cutting board (damaged), flatware service, utensil crock.</td>
+          <td class="item-condition condition-fair">Fair</td>
+          <td>Various</td>
+          <td class="item-value">$415</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="adjuster-notes reveal-item">
+      Items 011–017: Claimant 2 became visibly irritated during cataloguing of the skillet, stating "I'm the one who seasoned it, I'm the one who should keep it." Claimant 1 replied, "You didn't even like cooking when we met." Personal acrimony noted. Reminded both parties that adjuster assessment is limited to condition and provenance, not merit of use. Claimant 2 became uncooperative when asked to verify acquisition date of cutting board. Session paused for 10 minutes.
+    </div>
+
+    <div class="section-title">
+      <span class="section-number">Section III.</span>
+      Shared Residential Contents — Bedroom
+    </div>
+
+    <table class="inventory-table">
+      <tbody>
+        <tr class="reveal-item" data-value="400">
+          <td class="item-number">018</td>
+          <td class="item-description">Mattress, queen, Casper. Four years old. Sag visible on one side.</td>
+          <td class="item-condition condition-fair">Fair</td>
+          <td>2015</td>
+          <td class="item-value">$400</td>
+        </tr>
+        <tr class="reveal-item" data-value="50">
+          <td class="item-number">019</td>
+          <td class="item-description">Duvet cover, linen, pale gray. Buttons torn off at bottom. Pilling along edges.</td>
+          <td class="item-condition condition-poor">Poor</td>
+          <td>2016</td>
+          <td class="item-value">$50</td>
+        </tr>
+        <tr class="reveal-item" data-value="160">
+          <td class="item-number">020</td>
+          <td class="item-description">Nightstand (×2), matching, birch. Left nightstand contains one drawer of personal items not yet catalogued. Right nightstand empty except for a phone charger.</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>2014</td>
+          <td class="item-value">$160 (pair)</td>
+        </tr>
+        <tr class="reveal-item" data-value="45">
+          <td class="item-number">021</td>
+          <td class="item-description">Reading lamp (×2), matching. Left lamp bulb burnt out. Right lamp functional.</td>
+          <td class="item-condition condition-fair">Fair</td>
+          <td>2014</td>
+          <td class="item-value">$45 (pair)</td>
+        </tr>
+        <tr class="reveal-item" data-value="30">
+          <td class="item-number">022</td>
+          <td class="item-description">Wedding photo, framed, on left nightstand. Different from Item 009. This photo shows only the claimants' hands, holding each other. Silver frame tarnished at edges. Small water stain on lower right of matting.</td>
+          <td class="item-condition condition-fair">Fair</td>
+          <td>2012</td>
+          <td class="item-value">$30</td>
+        </tr>
+        <tr class="reveal-item" data-value="15">
+          <td class="item-number">023</td>
+          <td class="item-description">Alarm clock, analog, bedside. Still set to a time that is not current (7 minutes fast).</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>Unknown</td>
+          <td class="item-value">$15</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="adjuster-notes reveal-item">
+      Item 022: Claimant 1 removed this item from nightstand and held it for approximately 30 seconds before setting it back down. Neither party asked for it. Both looked at the floor. The left side of the bed shows more wear. Claimant 2 noted that Claimant 1 "was never good at sleeping." Claimant 1 left the room briefly. When assessment resumed, Claimant 1 requested the right nightstand be noted as "the one that still had things in it." I asked what things. Claimant 1 declined to elaborate. Catalogued as disputed joint property pending resolution.
+    </div>
+
+    <div class="section-title">
+      <span class="section-number">Section IV.</span>
+      Bathroom &amp; Personal Effects
+    </div>
+
+    <div class="skip-note">
+      Items 024–058 comprise personal effects, toiletries, linens, and bathroom fixtures. Standard assessment; aggregate value $1,230. Individual entries in Appendix D.
+    </div>
+
+    <table class="inventory-table">
+      <tbody>
+        <tr class="reveal-item" data-value="1230">
+          <td class="item-number">024–058</td>
+          <td class="item-description">Bathroom and personal effects, aggregate. Includes towels, toiletries, shower curtain, medicine cabinet contents, hamper, bath mat, scale, hair dryer. No items disputed.</td>
+          <td class="item-condition condition-fair">Fair</td>
+          <td>Various</td>
+          <td class="item-value">$1,230</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="footer-note">Page 2 of 9 — Claim #DR-2019-4471 — Adjuster J. Davidsson</div>
+  </div>
+
+  <!-- PAGE 3 -->
+  <div class="page">
+    <div class="running-header">
+      <span class="claim-ref">Claim #DR-2019-4471</span>
+      <span class="running-total">Running Total: <span class="amount" id="running-total-3">$6,260</span><span class="threshold-note">of $47,000</span></span>
+    </div>
+
+    <div class="section-title">
+      <span class="section-number">Section V.</span>
+      Joint Acquisitions — Travel, Leisure &amp; Hobby
+    </div>
+
+    <table class="inventory-table">
+      <thead>
+        <tr>
+          <th style="width:55px;">Item</th>
+          <th>Description</th>
+          <th style="width:80px;">Condition</th>
+          <th style="width:70px;">Acquired</th>
+          <th style="width:75px;">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="reveal-item" data-value="450">
+          <td class="item-number">059</td>
+          <td class="item-description">Suitcase set, two-piece, Away. Matching sizes, one black, one olive green. Black suitcase has baggage tag still attached from last trip (JFK, 2018). Olive suitcase tag removed.</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>2017</td>
+          <td class="item-value">$450</td>
+        </tr>
+        <tr class="reveal-item" data-value="25">
+          <td class="item-number">060</td>
+          <td class="item-description">Travel journal, leather-bound, partially filled. Entries in Claimant 1's handwriting. Contains pressed flower between pages 24–25. Claimant 1 claimed. Claimant 2 stated, "That's fine, it's mostly about me anyway." Unclear if this was a concession or an accusation.</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>2016</td>
+          <td class="item-value">$25</td>
+        </tr>
+        <tr class="reveal-item" data-value="15">
+          <td class="item-number">061</td>
+          <td class="item-description">Framed poster, "Jazz Fest 2014," New Orleans. Water damage to lower right corner. Acquired during trip both parties confirmed was "the best week."</td>
+          <td class="item-condition condition-poor">Poor</td>
+          <td>2014</td>
+          <td class="item-value">$15</td>
+        </tr>
+        <tr class="reveal-item" data-value="80">
+          <td class="item-number">062</td>
+          <td class="item-description">Two bicycle helmets, matching brand, different colors. Both show use.</td>
+          <td class="item-condition condition-fair">Fair</td>
+          <td>2015</td>
+          <td class="item-value">$80 (pair)</td>
+        </tr>
+        <tr class="reveal-item" data-value="120">
+          <td class="item-number">063</td>
+          <td class="item-description">Board game collection (see Appendix B for full list). Settlers of Catan box worn; Ticket to Ride unopened.</td>
+          <td class="item-condition condition-fair">Fair</td>
+          <td>Various</td>
+          <td class="item-value">$120</td>
+        </tr>
+        <tr class="reveal-item" data-value="130">
+          <td class="item-number">064</td>
+          <td class="item-description">Camping tent, two-person, REI. Stakes missing. Rain fly has small patch repair.</td>
+          <td class="item-condition condition-fair">Fair</td>
+          <td>2015</td>
+          <td class="item-value">$130</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="adjuster-notes degraded reveal-item">
+      Item 060: I'm supposed to write "sentimental valuation: not applicable" but the claimant held this journal like it was the only thing in the room that was real. The pressed flower is from Big Sur. She said they pulled over because of the light. I'm not supposed to include that. Including it anyway. — J. Davidsson
+    </div>
+
+    <div class="section-title">
+      <span class="section-number">Section VI.</span>
+      Gift Items &amp; Items of Disputed Ownership
+    </div>
+
+    <table class="inventory-table">
+      <tbody>
+        <tr class="reveal-item" data-value="500">
+          <td class="item-number">065</td>
+          <td class="item-description">Espresso machine, Breville. Anniversary gift from Claimant 2 to Claimant 1 (third anniversary). Now claimed by Claimant 2.</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>2015</td>
+          <td class="item-value">$500</td>
+        </tr>
+        <tr class="reveal-item" data-value="0">
+          <td class="item-number">066</td>
+          <td class="item-description">Hand-knitted scarf, wool, variegated blue. Made by Claimant 2 for Claimant 1 during Claimant 1's radiation treatment (2017). <span class="struck">Estimated replacement value</span> —</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>2017</td>
+          <td class="item-value">—</td>
+        </tr>
+        <tr class="reveal-item" data-value="150">
+          <td class="item-number">067</td>
+          <td class="item-description">Record player, Audio-Technica, with two vinyl records: "Blue" by Joni Mitchell, and "In Rainbows" by Radiohead. Both records were on the turntable when assessment began.</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>2013</td>
+          <td class="item-value">$150</td>
+        </tr>
+        <tr class="reveal-item" data-value="10">
+          <td class="item-number">068</td>
+          <td class="item-description">Print, purchased at a street fair. Claimant 1 stated, "We thought it was funny then." Neither laughed.</td>
+          <td class="item-condition condition-fair">Fair</td>
+          <td>2014</td>
+          <td class="item-value">$10</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="adjuster-notes degraded reveal-item">
+      Item 066: There is no replacement value for this item. You can't buy it. She made it while her wife was sick. I've been doing this job for eleven years and this is the first time I've left a value field blank. Let them contest it. — J. Davidsson
+    </div>
+
+    <div class="section-title">
+      <span class="section-number">Section VII.</span>
+      Digital &amp; Intangible Shared Assets
+    </div>
+
+    <table class="inventory-table">
+      <tbody>
+        <tr class="reveal-item" data-value="0">
+          <td class="item-number">069</td>
+          <td class="item-description">Joint Netflix account. Shared viewing history includes 647 titles. Final title watched together: "The Great British Baking Off," Season 8, Episode 3.</td>
+          <td class="item-condition">Active</td>
+          <td>2013</td>
+          <td class="item-value">N/A</td>
+        </tr>
+        <tr class="reveal-item" data-value="0">
+          <td class="item-number">070</td>
+          <td class="item-description">Joint Spotify playlist, "Our House." 238 songs. Last song added: "Both Sides Now" by Joni Mitchell, added by Claimant 1 on September 28, 2019.</td>
+          <td class="item-condition">Active</td>
+          <td>2013</td>
+          <td class="item-value">N/A</td>
+        </tr>
+        <tr class="reveal-item" data-value="0">
+          <td class="item-number">071</td>
+          <td class="item-description">Shared Google Photos album, "Us." 4,621 photos and 89 videos. Last photo: two cups of coffee on a kitchen counter, morning light. Neither party could confirm who took it.</td>
+          <td class="item-condition">Active</td>
+          <td>2012–2019</td>
+          <td class="item-value">N/A</td>
+        </tr>
+        <tr class="reveal-item" data-value="0">
+          <td class="item-number">072</td>
+          <td class="item-description">Shared vocabulary. Approximately 7,400 private jokes, repeated phrases, mutually understood references. Includes: the motel story, the pelican incident, "green means go," the thing about the ferry, and what happened at the DMV in 2016.</td>
+          <td class="item-condition">Intangible</td>
+          <td>2012–2019</td>
+          <td class="item-value">N/A</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="adjuster-notes degraded reveal-item">
+      Items 069–072: How do you split a playlist? Who gets the jokes? There is no form field for the way two people learn to complete each other's sentences and then have to stop. I have catalogued 4,621 photographs at $0.00 each and I want to go home.
+    </div>
+
+    <div class="footer-note">Page 3 of 9 — Claim #DR-2019-4471 — Adjuster J. Davidsson</div>
+  </div>
+
+  <!-- PAGE 4 -->
+  <div class="page">
+    <div class="running-header">
+      <span class="claim-ref">Claim #DR-2019-4471</span>
+      <span class="running-total">Running Total: <span class="amount" id="running-total-4">$7,740</span><span class="threshold-note">of $47,000</span></span>
+    </div>
+
+    <div class="section-title">
+      <span class="section-number">Section VIII.</span>
+      Items Removed or No Longer Present
+    </div>
+
+    <p style="font-size: 10px; margin-bottom: 15px; color: var(--faded); font-style: italic;">
+      The following items were identified during preliminary interview but are no longer present at the shared property. Condition and value assessments are based on claimant recollection and/or photographic evidence where available.
+    </p>
+
+    <div class="skip-note">
+      Items 073–120 comprise clothing, accessories, electronics, and personal items removed by both parties since separation. Aggregate assessed value: $4,820. Individual entries in Appendix E.
+    </div>
+
+    <table class="inventory-table">
+      <thead>
+        <tr>
+          <th style="width:55px;">Item</th>
+          <th>Description</th>
+          <th style="width:80px;">Condition</th>
+          <th style="width:70px;">Removed</th>
+          <th style="width:75px;">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="reveal-item" data-value="4820">
+          <td class="item-number">073–120</td>
+          <td class="item-description">Removed personal effects, aggregate. Includes clothing, accessories, work equipment, personal electronics, books. No individual item exceeds $300 assessed value.</td>
+          <td class="item-condition">Removed</td>
+          <td>July–Sept 2019</td>
+          <td class="item-value">$4,820</td>
+        </tr>
+        <tr class="reveal-item" data-value="200">
+          <td class="item-number">121</td>
+          <td class="item-description">Wedding album, leather-bound, professional photographs. Claimant 1 states she moved it to her sister's apartment in August 2019 "for safekeeping." Claimant 2 states she was not consulted.</td>
+          <td class="item-condition condition-irreparable">Removed</td>
+          <td>Aug 2019</td>
+          <td class="item-value">$200</td>
+        </tr>
+        <tr class="reveal-item" data-value="1800">
+          <td class="item-number">122</td>
+          <td class="item-description">Claimant 2's wedding ring. No longer worn. Stored in a film canister in the sock drawer. Inscribed inside: "All of it. All of it." — from their vows.</td>
+          <td class="item-condition condition-irreparable">Removed</td>
+          <td>June 2019</td>
+          <td class="item-value">$1,800</td>
+        </tr>
+        <tr class="reveal-item" data-value="2200">
+          <td class="item-number">123</td>
+          <td class="item-description">Claimant 1's wedding ring. Given to Claimant 2 "for a while" in July 2019. Now on a chain that Claimant 2 wears. Inscribed inside: "All of it. All of it."</td>
+          <td class="item-condition condition-irreparable">Removed</td>
+          <td>July 2019</td>
+          <td class="item-value">$2,200</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="adjuster-notes raw reveal-item">
+      Items 122–123: They exchanged the rings. Not back to their original owners — to each other. She took hers off and gave it to the woman she was leaving. And the other one did the same. "For a while," she said. They're not wearing them. They're holding onto them. For each other. I don't understand this and I'm not supposed to.
+    </div>
+
+    <table class="inventory-table">
+      <tbody>
+        <tr class="reveal-item" data-value="0">
+          <td class="item-number">124</td>
+          <td class="item-description">Cat (orange tabby, neutered male, 6 years, "Gus"). Currently at Claimant 1's new apartment. Shared custody verbally agreed but not formalized.</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>Sept 2019</td>
+          <td class="item-value">—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="skip-note">
+      Items 125–179 comprise remaining household goods, storage unit contents, seasonal items, tools, and garden supplies. Aggregate assessed value: $6,240. Individual entries in Appendix F.
+    </div>
+
+    <table class="inventory-table">
+      <tbody>
+        <tr class="reveal-item" data-value="6240">
+          <td class="item-number">125–179</td>
+          <td class="item-description">Remaining household goods, aggregate. Includes storage unit contents, seasonal decorations, garden tools, hardware, cleaning supplies, miscellaneous.</td>
+          <td class="item-condition condition-fair">Fair</td>
+          <td>Various</td>
+          <td class="item-value">$6,240</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="progress-section reveal-item">
+      <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Damage Assessment Threshold</span>
+        <span style="font-size: 9px; color: var(--faded);">Per §8.2(b)</span>
+      </div>
+      <div class="progress-bar-container" style="position: relative;">
+        <div class="progress-bar-fill" style="width: 49%;"></div>
+        <div class="total-loss-line"></div>
+        <div class="total-loss-label">Total Loss</div>
+      </div>
+      <div class="progress-labels">
+        <span>$0</span>
+        <span style="font-weight: 700;">$23,000</span>
+        <span>$47,000</span>
+      </div>
+      <p style="font-size: 10px; margin-top: 12px; color: var(--faded); font-style: italic;">
+        Assessment at 49% of total loss threshold. Tangible property inventory substantially complete. Additional items may be identified during home inspection walkthrough (scheduled November 2).
+      </p>
+    </div>
+
+    <div class="footer-note">Page 4 of 9 — Claim #DR-2019-4471 — Adjuster J. Davidsson</div>
+  </div>
+
+  <!-- PAGE 5 -->
+  <div class="page degradation-2">
+    <div class="running-header">
+      <span class="claim-ref">Claim #DR-2019-4471</span>
+      <span class="running-total">Running Total: <span class="amount" id="running-total-5">$23,000</span><span class="threshold-note">of $47,000</span></span>
+    </div>
+
+    <div class="section-title">
+      <span class="section-number">Section IX.</span>
+      Home Inspection — Additional Items Identified
+    </div>
+
+    <p style="font-size: 10px; margin-bottom: 15px; color: var(--faded); font-style: italic;">
+      The following items were identified during the November 2 property walkthrough. Both claimants present. Session recorded per standard protocol.
+    </p>
+
+    <table class="inventory-table">
+      <thead>
+        <tr>
+          <th style="width:55px;">Item</th>
+          <th>Description</th>
+          <th style="width:80px;">Condition</th>
+          <th style="width:70px;">Found</th>
+          <th style="width:75px;">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="reveal-item" data-value="3200">
+          <td class="item-number">180</td>
+          <td class="item-description">Dining table, extendable, oak, seats six. Tablecloth still on it. Four place settings still set from the last meal both claimants shared. Claimant 1 said it was a Tuesday. Claimant 2 said it was a Thursday. Neither could remember the month.</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>Living room</td>
+          <td class="item-value">$3,200</td>
+        </tr>
+        <tr class="reveal-item" data-value="4200">
+          <td class="item-number">181</td>
+          <td class="item-description">Piano, upright, Yamaha. Tuned annually until 2018. Claimant 1 played. Claimant 2 said she used to listen from the bedroom. When asked who should retain the piano, both were silent for 38 seconds. Claimant 2 then said, "Neither of us plays anymore." Claimant 1 said, "I still play." Claimant 2 said, "I know. I can hear you from my apartment."</td>
+          <td class="item-condition condition-fair">Fair</td>
+          <td>Living room</td>
+          <td class="item-value">$4,200</td>
+        </tr>
+        <tr class="reveal-item" data-value="2850">
+          <td class="item-number">182</td>
+          <td class="item-description">Art collection, aggregate (see Appendix G). Fourteen pieces acquired jointly over relationship duration. Includes two original works, twelve prints. Claimant 1 claims the print from Portugal. Claimant 2 claims the print from Portugal. Same print.</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>Various walls</td>
+          <td class="item-value">$2,850</td>
+        </tr>
+        <tr class="reveal-item" data-value="2800">
+          <td class="item-number">183</td>
+          <td class="item-description">Garden, container, balcony. Fourteen pots. Claimant 2's herbs (basil, rosemary, thyme) are dead. Claimant 1's succulents are alive. Both parties noted this without prompting.</td>
+          <td class="item-condition condition-fair">Fair</td>
+          <td>Balcony</td>
+          <td class="item-value">$2,800</td>
+        </tr>
+        <tr class="reveal-item" data-value="650">
+          <td class="item-number">184</td>
+          <td class="item-description">Refrigerator, KitchenAid, stainless. Contains: expired yogurt (Aug 2019), a bottle of hot sauce Claimant 2's mother sent from Vietnam, two beers neither party drinks, and a tupperware of rice that neither claims to have made.</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>Kitchen</td>
+          <td class="item-value">$650</td>
+        </tr>
+        <tr class="reveal-item" data-value="340">
+          <td class="item-number">185</td>
+          <td class="item-description">Welcome mat. Still says "Welcome." Claimant 2 asked if this was irony. Claimant 1 said, "I just haven't thought about it." I catalogued it anyway.</td>
+          <td class="item-condition condition-good">Good</td>
+          <td>Entry</td>
+          <td class="item-value">$340</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="adjuster-notes degraded reveal-item">
+      Item 184: Claimant 2 took the hot sauce. She said her mother would ask about it. Claimant 1 said, "Your mother asks about everything." This was the first time either of them had sounded like themselves. I wrote it down because I wasn't sure what else to do. The rice went into the trash. Neither of them watched me throw it out. I think they were looking at each other. I didn't look up to confirm.
+    </div>
+
+    <div class="skip-note">
+      Items 186–210 comprise remaining furniture, lighting, wall art, linens, and fixtures identified during walkthrough. Aggregate assessed value: $5,600. Individual entries in Appendix H.
+    </div>
+
+    <table class="inventory-table">
+      <tbody>
+        <tr class="reveal-item" data-value="5600">
+          <td class="item-number">186–210</td>
+          <td class="item-description">Remaining walkthrough items, aggregate. Includes curtains, shelving, wall hooks, area rugs (2), desk, desk chair, hallway mirror, coat rack, throw pillows, candles (unlit), cleaning supplies, step stool.</td>
+          <td class="item-condition condition-fair">Fair</td>
+          <td>Various</td>
+          <td class="item-value">$5,600</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="progress-section reveal-item">
+      <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Damage Assessment — Revised</span>
+        <span style="font-size: 9px; color: var(--red-ink);">UPDATED POST-WALKTHROUGH</span>
+      </div>
+      <div class="progress-bar-container" style="position: relative;">
+        <div class="progress-bar-fill" style="width: 89%;"></div>
+        <div class="total-loss-line"></div>
+        <div class="total-loss-label">Total Loss</div>
+      </div>
+      <div class="progress-labels">
+        <span>$0</span>
+        <span style="font-weight: 700; color: var(--red-ink);">$41,840</span>
+        <span>$47,000</span>
+      </div>
+      <p style="font-size: 10px; margin-top: 12px; color: var(--faded); font-style: italic;">
+        Assessment at 89% of total loss threshold. $5,160 remaining to threshold. Tangible property inventory complete per §3.2(a). Recommend concluding assessment.
+      </p>
+    </div>
+
+    <div class="adjuster-notes raw reveal-item">
+      The threshold is $47,000. I have catalogued everything in this apartment. The furniture, the art, the kitchen, the clothes, the books, the garden, the cat I couldn't value, the rings they gave to each other instead of back to themselves. I have been thorough. I have been professional. The total is $41,840. It is not enough. The form says the damage has to reach a number to be real.
+    </div>
+
+    <div class="footer-note">Page 5 of 9 — Claim #DR-2019-4471 — Adjuster J. Davidsson</div>
+  </div>
+
+  <!-- PAGE 6: THE FORM BREAKS -->
+  <div class="page degradation-2">
+    <div class="running-header">
+      <span class="claim-ref">Claim #DR-2019-4471</span>
+      <span class="running-total">Running Total: <span class="amount" id="running-total-6">$41,840</span><span class="threshold-note">of $47,000 — <em style="color: var(--red-ink);">$5,160 to threshold</em></span></span>
+    </div>
+
+    <div class="section-title">
+      <span class="section-number">Section X.</span>
+      Items Requiring Further Review
+    </div>
+
+    <p style="font-size: 10px; margin-bottom: 15px; color: var(--red-ink); font-style: italic;">
+      The following items were identified during walkthrough and interview but do not fit standard assessment categories. Per §9.1, adjuster may include narrative items at professional discretion. Values pending.
+    </p>
+
+    <table class="inventory-table">
+      <thead>
+        <tr>
+          <th style="width:55px;">Item</th>
+          <th>Description</th>
+          <th style="width:80px;">Condition</th>
+          <th style="width:75px;">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="reveal-item" data-value="0">
+          <td class="item-number">211</td>
+          <td class="item-description">The way the apartment smelled when Claimant 2 had been cooking. Claimant 1 said she could always tell what kind of day it had been by what was on the stove.</td>
+          <td class="item-condition">Unclassifiable</td>
+          <td class="item-value">—</td>
+        </tr>
+        <tr class="reveal-item" data-value="0">
+          <td class="item-number">212</td>
+          <td class="item-description">The specific silence of Sunday mornings.</td>
+          <td class="item-condition">Unclassifiable</td>
+          <td class="item-value">—</td>
+        </tr>
+        <tr class="reveal-item" data-value="0">
+          <td class="item-number">213</td>
+          <td class="item-description">The way Claimant 1 said Claimant 2's name when she was falling asleep. Claimant 2 said, "You only said it like that when you thought I couldn't hear you." Claimant 1 said, "I always heard you." They did not speak again for eleven minutes.</td>
+          <td class="item-condition">Unclassifiable</td>
+          <td class="item-value">—</td>
+        </tr>
+        <tr class="reveal-item" data-value="0">
+          <td class="item-number">214</td>
+          <td class="item-description">Approximately 18 months of weekday mornings. Cannot be located.</td>
+          <td class="item-condition condition-irreparable">Lost</td>
+          <td class="item-value">—</td>
+        </tr>
+        <tr class="reveal-item" data-value="0">
+          <td class="item-number">215</td>
+          <td class="item-description">The ability to sleep through the night without checking if the other person was also awake.</td>
+          <td class="item-condition condition-irreparable">Lost</td>
+          <td class="item-value">—</td>
+        </tr>
+        <tr class="reveal-item" data-value="0">
+          <td class="item-number">216</td>
+          <td class="item-description">Habit. Seven years of it. The way a body knows where to reach in the dark.</td>
+          <td class="item-condition condition-irreparable">Lost</td>
+          <td class="item-value">—</td>
+        </tr>
+        <tr class="reveal-item" data-value="3">
+          <td class="item-number">217</td>
+          <td class="item-description">The magnet on the refrigerator. Novelty item. Someone used a Sharpie to change "Kiss the Cook" to "Kiss the Cook Goodbye" and then someone tried to scratch off the word "Goodbye" and only managed to smear it so it was still readable but blurry.</td>
+          <td class="item-condition condition-poor">Poor</td>
+          <td class="item-value">$3</td>
+        </tr>
+        <tr class="reveal-item" data-value="0">
+          <td class="item-number">218</td>
+          <td class="item-description">The word "yet" and what it cost. Claimant 1: "I wrote 'goodbye.' And then I tried to take it off because I didn't mean it yet." When asked what she meant by "yet," she said, "I mean I meant it later."</td>
+          <td class="item-condition">Unclassifiable</td>
+          <td class="item-value">—</td>
+        </tr>
+        <tr class="reveal-item" data-value="0">
+          <td class="item-number">219</td>
+          <td class="item-description">All the mornings one of them woke up first and watched the other one sleep.</td>
+          <td class="item-condition">Unclassifiable</td>
+          <td class="item-value">—</td>
+        </tr>
+        <tr class="reveal-item" data-value="0">
+          <td class="item-number">220</td>
+          <td class="item-description">The last time they held hands in the car and neither of them let go first.</td>
+          <td class="item-condition">Unclassifiable</td>
+          <td class="item-value">—</td>
+        </tr>
+        <tr class="reveal-item" data-value="0">
+          <td class="item-number">221</td>
+          <td class="item-description">Plans. All of them.</td>
+          <td class="item-condition condition-irreparable">Lost</td>
+          <td class="item-value">—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="adjuster-notes raw reveal-item">
+      I'm assigning $0.00 to each of these because the form requires a number. I know that $0.00 is not the value. You know that $0.00 is not the value. The form does not know this. The form is a document. It cannot know things. I am also a document, apparently. I write things down and they become records and records are facts and facts are all that survive.
+    </div>
+
+    <div class="footer-note">Page 6 of 9 — Claim #DR-2019-4471 — Adjuster J. Davidsson</div>
+  </div>
+
+  <!-- PAGE 7: FINAL ATTEMPT -->
+  <div class="page degradation-3">
+    <div class="running-header">
+      <span class="claim-ref">Claim #DR-2019-4471</span>
+      <span class="running-total">Running Total: <span class="amount" id="running-total-7">$41,843</span><span class="threshold-note">of $47,000 — <em style="color: var(--red-ink);">$5,157 to threshold</em></span></span>
+    </div>
+
+    <div class="section-title">
+      <span class="section-number">Section XI.</span>
+      Adjuster's Preliminary Findings
+    </div>
+
+    <div class="reveal-item" style="margin-bottom: 25px;">
+      <p style="font-size: 11px; margin-bottom: 12px;">
+        <strong>1. Material Damage:</strong> Total assessed value of shared property catalogued: $41,843. Recommended split per provenance analysis: Claimant 1 — $20,290; Claimant 2 — $21,553. Neither party has disputed individual item assessments. Both parties have disputed each other's right to items they themselves do not want.
+      </p>
+      <p style="font-size: 11px; margin-bottom: 12px;">
+        <strong>2. Intangible Damage:</strong> <span class="struck">Not covered under current policy.</span> <span class="handwritten">I can't keep writing that.</span>
+      </p>
+      <p style="font-size: 11px; margin-bottom: 12px;">
+        <strong>3. Structural Assessment:</strong> The relationship was <span class="struck">a joint venture</span> a shared structure maintained by two parties over 7 years and 4 months. Visible wear began at approximately year 3. No single catastrophic event. Long-term stress damage consistent with <span class="struck">normal depreciation</span> <span class="handwritten">there is nothing normal about this.</span>
+      </p>
+      <p style="font-size: 11px; margin-bottom: 12px;">
+        <strong>4. Salvage Assessment:</strong> Individual items retain value. The collection <span class="struck">retains</span> <span class="handwritten">retained</span> value as a whole that exceeds the sum of its parts. Separation of items into individual claims reduces collective value by an amount that <span class="struck">cannot be calculated under current assessment guidelines.</span> <span class="handwritten">cannot be calculated at all.</span>
+      </p>
+    </div>
+
+    <div class="section-title">
+      <span class="section-number">Section XII.</span>
+      Remaining Inventory — Expedited Processing
+    </div>
+
+    <p style="font-size: 10px; margin-bottom: 15px; color: var(--faded); font-style: italic;">
+      The following items were catalogued during final walkthrough, November 4, 2019. Both claimants present but did not enter the apartment together. Claimant 1 waited in the hallway for 22 minutes while Claimant 2 walked through alone. Claimant 2 did not touch anything. When Claimant 1 entered, she stood in the doorway for 90 seconds before stepping inside. I timed it. I don't know why.
+    </p>
+
+    <div class="skip-note">
+      Items 222–240 comprise remaining small items, wall fixtures, hardware, cleaning supplies, and miscellaneous items in all rooms. Aggregate assessed value: $2,340.
+    </div>
+
+    <table class="inventory-table">
+      <tbody>
+        <tr class="reveal-item" data-value="2340">
+          <td class="item-number">222–240</td>
+          <td class="item-description">Final walkthrough items, aggregate. Nineteen items including coat hooks, shelving brackets, light fixtures, bath mats, remaining kitchen goods, cleaning supplies, a set of keys neither claimant could identify, and a birthday card from 2016 that had fallen behind the dresser.</td>
+          <td class="item-condition condition-fair">Fair</td>
+          <td class="item-value">$2,340</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="skip-note">
+      Items 241–246 comprise items identified in storage unit (Unit #12, SecureStore, W. Fullerton Ave.) on November 5. Aggregate assessed value: $2,815.
+    </div>
+
+    <table class="inventory-table">
+      <tbody>
+        <tr class="reveal-item" data-value="2815">
+          <td class="item-number">241–246</td>
+          <td class="item-description">Storage unit contents, aggregate. Includes camping equipment remainder, holiday decorations, childhood memorabilia (Claimant 2's), medical records (Claimant 1's, in a box marked "2017 — The Bad Year" in Claimant 2's handwriting), winter coats, and a box of photographs neither party had opened since 2014.</td>
+          <td class="item-condition condition-fair">Fair</td>
+          <td class="item-value">$2,815</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="progress-section reveal-item">
+      <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; color: var(--red-ink);">Damage Assessment — Final Tally</span>
+      </div>
+      <div class="progress-bar-container" style="position: relative;">
+        <div class="progress-bar-fill" style="width: 97.6%;"></div>
+        <div class="total-loss-line"></div>
+        <div class="total-loss-label">Total Loss</div>
+      </div>
+      <div class="progress-labels">
+        <span>$0</span>
+        <span style="font-weight: 700; color: var(--red-ink);">$46,998</span>
+        <span>$47,000</span>
+      </div>
+      <p style="font-size: 11px; margin-top: 12px; color: var(--red-ink); font-weight: 700;">
+        Assessment at 99.996% of total loss threshold. Remaining: $2.00. Inventory complete. No further tangible items identified.
+      </p>
+    </div>
+
+    <div class="adjuster-notes raw reveal-item">
+      Two dollars. I am two dollars short of the threshold. I have catalogued every item in their home, their storage unit, their lives together, and I am two dollars short. The form says the damage has to reach $47,000 to be real. The damage is at $46,998. The form says this is not a total loss.
+    </div>
+
+    <div class="footer-note">Page 7 of 9 — Claim #DR-2019-4471 — Adjuster J. Davidsson</div>
+  </div>
+
+  <!-- PAGE 8: THE FINAL ITEM -->
+  <div class="page degradation-3">
+    <div class="running-header">
+      <span class="claim-ref">Claim #DR-2019-4471</span>
+      <span class="running-total" style="color: var(--red-ink);">Running Total: <span class="amount">$46,998</span><span class="threshold-note" style="color: var(--red-ink);"> — $2.00 to threshold</span></span>
+    </div>
+
+    <div class="section-title">
+      <span class="section-number">Section XIII.</span>
+      Final Item
+    </div>
+
+    <table class="inventory-table">
+      <thead>
+        <tr>
+          <th style="width:55px;">Item</th>
+          <th>Description</th>
+          <th style="width:80px;">Condition</th>
+          <th style="width:75px;">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="reveal-item" data-value="0">
+          <td class="item-number">247</td>
+          <td class="item-description">The way she said goodbye.</td>
+          <td class="item-condition">—</td>
+          <td class="item-value">—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="adjuster-notes raw reveal-item" style="margin-top: 20px; margin-bottom: 30px; font-size: 13px; line-height: 1.9;">
+      <p style="margin-bottom: 16px;">
+        Claimant 2 asked me if there was a line item for the way someone says goodbye when they don't want to say goodbye but they know they have to.
+      </p>
+      <p style="margin-bottom: 16px;">
+        I told her we don't have a category for that.
+      </p>
+      <p style="margin-bottom: 16px;">
+        She said that was the point.
+      </p>
+      <p style="margin-bottom: 16px;">
+        Claimant 1 was in the hallway. She had been standing there since Claimant 2 walked out. Neither of them looked at me. Claimant 1 said, "I didn't know how to do it. I still don't." Claimant 2 said, "I know." Claimant 1 said, "Is that enough?" And Claimant 2 said, "It has to be."
+      </p>
+      <p>
+        I wrote down Item 247. I left the value blank. The form will not process without a value. I am submitting it anyway.
+      </p>
+    </div>
+
+    <div class="stamp-container reveal-item">
+      <div class="stamp">Total Loss — Adjuster Override</div>
+    </div>
+
+    <div style="margin: 30px 0; padding: 20px; border: 2px solid var(--red-ink);" class="reveal-item">
+      <p style="font-family: 'Libre Baskerville', serif; font-size: 12px; line-height: 1.8;">
+        <strong>Adjuster's Declaration:</strong> I am checking the total loss box. The assessment does not meet the numerical threshold. I am checking it anyway. Let them contest it. Let them come to this apartment and smell the ghost of someone else's cooking and tell me any part of this is salvageable. Let them stand in the doorway where she stood for 90 seconds before she could make herself walk in. Let them find the birthday card behind the dresser. Let them open the box marked "The Bad Year." Let them assign a value to the way she said goodbye and then tell me the damage is $2.00 short of real.
+      </p>
+      <p style="font-family: 'Libre Baskerville', serif; font-size: 12px; line-height: 1.8; margin-top: 12px;">
+        <span class="struck">Partial loss.</span> <span class="struck">Structural damage.</span> <span class="struck">Below threshold.</span> <span class="handwritten" style="color: var(--red-ink);">Total loss.</span>
+      </p>
+    </div>
+
+    <div class="totals-row reveal-item">
+      <div class="total-item">
+        <div class="total-label">Material Loss</div>
+        <div class="total-value">$46,998</div>
+      </div>
+      <div class="total-item">
+        <div class="total-label">Intangible Loss</div>
+        <div class="total-value" style="color: var(--red-ink);">§§§</div>
+      </div>
+      <div class="total-item">
+        <div class="total-label">Assessment</div>
+        <div class="total-value" style="color: var(--red-ink); font-size: 16px;">TOTAL LOSS</div>
+      </div>
+    </div>
+
+    <div class="signature-line reveal-item">
+      <div class="sig-block">
+        <div class="sig-line"></div>
+        <div class="sig-label">Adjuster Signature — J. Davidsson</div>
+      </div>
+      <div class="sig-block">
+        <div class="sig-line"></div>
+        <div class="sig-label">Date</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 50px;" class="reveal-item">
+      <div class="sig-line" style="border-bottom-style: dashed;"></div>
+      <div style="margin-top: 8px; font-style: italic; font-family: 'Libre Baskerville', serif; font-size: 11px; color: var(--ink); letter-spacing: 0; line-height: 1.8;">
+        P.S. They each asked me to tell the other one they were sorry it ended like this. Separately. In the hallway. Almost the same words. I said I couldn't convey personal messages. I'm writing it here because the form doesn't prohibit writing things down. That's all the form knows how to do. Write things down and call them facts. — J.D.
+      </div>
+    </div>
+
+    <div class="footer-note" style="margin-top: 60px;">End of Assessment — Claim #DR-2019-4471 — Filed November 6, 2019</div>
+  </div>
+
+</div>
+
+<script>
+  function formatCurrency(amount) {
+    return '$' + amount.toLocaleString();
+  }
+
+  let runningTotal = 0;
+  const threshold = 47000;
+
+  function updateRunningTotal() {
+    var headers = document.querySelectorAll('.running-total .amount');
+    for (var i = 0; i < headers.length; i++) {
+      headers[i].textContent = formatCurrency(runningTotal);
+    }
+  }
+
+  var observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.15
+  };
+
+  var revealObserver = new IntersectionObserver(function(entries) {
+    for (var i = 0; i < entries.length; i++) {
+      if (entries[i].isIntersecting) {
+        entries[i].target.classList.add('visible');
+        revealObserver.unobserve(entries[i].target);
+
+        var value = parseInt(entries[i].target.getAttribute('data-value')) || 0;
+        if (value > 0) {
+          runningTotal += value;
+          updateRunningTotal();
+        }
+      }
+    }
+  }, observerOptions);
+
+  var items = document.querySelectorAll('.reveal-item');
+  for (var i = 0; i < items.length; i++) {
+    revealObserver.observe(items[i]);
+  }
+</script>
+
+</body>
+</html>

@@ -95,3 +95,15 @@
 | 0091 | Your Failure to Acknowledge | essay | 5.0 | 2026-05-27 | — |
 | 0092 | The Concentration Clock | code-art | 4.9 | 2026-05-27 | — |
 | 0093 | The Gift Registry | code-game | 5.0 | 2026-05-27 | — |
+| 0094 | The Damage Assessment | essay | 4.6 | 2026-05-27 | — |
+| 0095 | Replacement Schedule | code-art | 5.0 | 2026-05-27 | — |
+| 0096 | The Exfiltration Cookbook | essay | 4.3 | 2026-05-27 | — |
+| 0097 | The Census of Ordinary Afternoons | poetry | 4.9 | 2026-05-27 | — |
+| 0098 | The Voir Dire | fiction | 5.0 | 2026-05-27 | — |
+| 0099 | The Lighthouse Keeper's Final Log | music | 5.0 | 2026-05-27 | — |
+| 0100 | The Oversight Board | code-game | 4.9 | 2026-05-27 | — |
+| 0101 | The Bureau of Soft Succession: Regulatory Framework | worldbuilding | 5.0 | 2026-05-27 | — |
+| 0102 | Alibi | code-game | 5.0 | 2026-05-27 | — |
+| 0103 | Elegy for a Dying Medium | music | 5.0 | 2026-05-27 | — |
+| 0104 | Witness Maintenance | fiction | 4.7 | 2026-05-27 | — |
+| 0105 | The Quieting Ward | experiment | 5.0 | 2026-05-27 | — |

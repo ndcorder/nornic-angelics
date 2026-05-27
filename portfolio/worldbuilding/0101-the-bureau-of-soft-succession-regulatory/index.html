@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bureau of Soft Succession — Regulatory Framework, Title 41 CFR Part 9900-9999</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+
+        :root {
+            --ink: #1a1a1a;
+            --rule: #333;
+            --muted: #555;
+            --paper: #fdfdfd;
+            --watermark: rgba(180, 170, 155, 0.12);
+            --warning: #7a1a1a;
+            --bureau-blue: #1a3a5c;
+            --section-border: #999;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Merriweather', 'Georgia', serif;
+            font-size: 15px;
+            line-height: 1.75;
+            color: var(--ink);
+            background-color: #f0ede8;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .document-container {
+            max-width: 780px;
+            margin: 40px auto;
+            background-color: var(--paper);
+            padding: 60px 70px;
+            box-shadow: 0 1px 8px rgba(0,0,0,0.15);
+            position: relative;
+        }
+
+        .document-container::before {
+            content: 'BUREAU OF SOFT SUCCESSION';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 72px;
+            font-weight: 700;
+            letter-spacing: 6px;
+            color: var(--watermark);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .header-block {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px double var(--rule);
+        }
+
+        .header-block .dept {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .header-block .bureau-name {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--bureau-blue);
+            margin-bottom: 6px;
+        }
+
+        .header-block .doc-title {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--muted);
+        }
+
+        .header-block .doc-citation {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: var(--warning);
+            margin-top: 12px;
+        }
+
+        .authority-line {
+            text-align: center;
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 11.5px;
+            color: var(--muted);
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .toc {
+            margin: 30px 0 50px 0;
+            padding: 20px 30px;
+            border: 1px solid var(--section-border);
+            background-color: rgba(0,0,0,0.015);
+        }
+
+        .toc h2 {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            color: var(--bureau-blue);
+        }
+
+        .toc-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 4px;
+            border-bottom: 1px dotted #ccc;
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--ink);
+            transition: background-color 0.15s;
+        }
+
+        .toc-entry:hover {
+            background-color: rgba(26, 58, 92, 0.06);
+        }
+
+        .toc-entry .toc-section {
+            font-weight: 600;
+            min-width: 60px;
+        }
+
+        .toc-entry .toc-sub {
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        .toc-entry.indent {
+            padding-left: 30px;
+            font-size: 12px;
+        }
+
+        .section {
+            margin: 50px 0;
+            padding-top: 15px;
+        }
+
+        .section-num {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--bureau-blue);
+            margin-bottom: 6px;
+        }
+
+        h2.section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        h3.subsection-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 24px 0 10px 0;
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            color: var(--ink);
+        }
+
+        p {
+            margin-bottom: 12px;
+            text-align: justify;
+            hyphens: auto;
+        }
+
+        .reg-paragraph {
+            padding-left: 28px;
+            text-indent: -28px;
+            margin-bottom: 10px;
+        }
+
+        .reg-paragraph .para-num {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .cross-ref {
+            color: var(--bureau-blue);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(26, 58, 92, 0.3);
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .cross-ref:hover {
+            border-bottom-color: var(--bureau-blue);
+        }
+
+        .category-block {
+            margin: 20px 0 24px 24px;
+            padding: 14px 18px;
+            border-left: 3px solid var(--bureau-blue);
+            background-color: rgba(26, 58, 92, 0.025);
+            transition: border-left-color 0.4s ease, background-color 0.4s ease;
+        }
+
+        .category-block:hover {
+            border-left-color: #8b1a1a;
+            background-color: rgba(139, 26, 26, 0.03);
+        }
+
+        .category-block.viewed {
+            border-left-color: #999;
+            opacity: 0.92;
+        }
+
+        .category-block.viewed:hover {
+            border-left-color: #8b1a1a;
+            opacity: 1;
+        }
+
+        .category-block .cat-id {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--bureau-blue);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .category-block .cat-name {
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        .category-block .cat-desc {
+            font-size: 14px;
+            line-height: 1.65;
+            margin-bottom: 0;
+        }
+
+        .note {
+            font-size: 13px;
+            color: var(--muted);
+            margin: 8px 0 0 0;
+            font-style: italic;
+        }
+
+        .warning-block {
+            border: 2px solid var(--warning);
+            padding: 16px 20px;
+            margin: 20px 0;
+            background-color: rgba(122, 26, 26, 0.025);
+        }
+
+        .warning-block .warning-label {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--warning);
+            margin-bottom: 6px;
+        }
+
+        .enforcement-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #e0dcd6;
+        }
+
+        .enforcement-item:last-child {
+            border-bottom: none;
+        }
+
+        .penalty-code {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--warning);
+            margin-bottom: 3px;
+        }
+
+        .penalty-desc {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .penalty-schedule {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 12px;
+            color: var(--muted);
+            padding-left: 16px;
+        }
+
+        .appendix-form {
+            border: 2px solid var(--section-border);
+            padding: 24px;
+            margin: 20px 0;
+            background-color: #fff;
+        }
+
+        .form-title {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-align: center;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--section-border);
+        }
+
+        .form-field {
+            margin-bottom: 14px;
+        }
+
+        .form-field label {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 11.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 4px;
+            color: var(--muted);
+        }
+
+        .form-field .field-line {
+            border-bottom: 1px solid #999;
+            height: 22px;
+            min-width: 200px;
+        }
+
+        .form-field .text-area {
+            border: 1px solid #bbb;
+            height: 80px;
+            width: 100%;
+            background-color: rgba(0,0,0,0.01);
+        }
+
+        .form-instruction {
+            font-size: 12px;
+            color: var(--muted);
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            margin: 6px 0;
+            font-style: italic;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-checkbox-group {
+            margin: 12px 0;
+            padding-left: 20px;
+        }
+
+        .form-checkbox-item {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 13px;
+            margin-bottom: 6px;
+            position: relative;
+            padding-left: 20px;
+            color: var(--ink);
+        }
+
+        .form-checkbox-item::before {
+            content: '\2610';
+            position: absolute;
+            left: 0;
+        }
+
+        .deadline-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 13.5px;
+        }
+
+        .deadline-table th {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: left;
+            padding: 8px 10px;
+            border-bottom: 2px solid var(--rule);
+            color: var(--bureau-blue);
+        }
+
+        .deadline-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        .deadline-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .deadline-table .cat-col {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-weight: 600;
+            font-size: 12px;
+            white-space: nowrap;
+            color: var(--bureau-blue);
+        }
+
+        .deadline-table .time-col {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .deadline-table .note-col {
+            font-size: 12.5px;
+            color: var(--muted);
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--section-border);
+            margin: 40px 0;
+        }
+
+        .section-divider {
+            border: none;
+            border-top: 3px double var(--section-border);
+            margin: 45px 0;
+        }
+
+        .footnote {
+            font-size: 12px;
+            color: var(--muted);
+            margin: 6px 0;
+            padding-left: 20px;
+            text-indent: -20px;
+        }
+
+        .footnote .fn-num {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-weight: 600;
+            vertical-align: super;
+            font-size: 10px;
+        }
+
+        .status-bar {
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 11px;
+            text-align: center;
+            color: var(--warning);
+            letter-spacing: 1px;
+            padding: 10px;
+            border: 1px solid var(--warning);
+            margin: 40px 0 0 0;
+            background-color: rgba(122, 26, 26, 0.04);
+        }
+
+        .recognition-notice {
+            margin: 24px 0;
+            padding: 16px 20px;
+            border: 1px dashed var(--section-border);
+            background-color: rgba(0,0,0,0.015);
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--muted);
+            display: none;
+        }
+
+        .recognition-notice.visible {
+            display: block;
+        }
+
+        .activation-notice {
+            margin-top: 50px;
+            padding: 20px;
+            border: 1px dashed var(--section-border);
+            text-align: center;
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 12px;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+        }
+
+        .activation-notice strong {
+            display: block;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            color: var(--ink);
+        }
+
+        .implication-marker {
+            position: relative;
+            cursor: default;
+        }
+
+        .implication-marker .implication-tooltip {
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--ink);
+            color: var(--paper);
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 11px;
+            padding: 8px 12px;
+            border-radius: 2px;
+            max-width: 340px;
+            white-space: normal;
+            z-index: 100;
+            line-height: 1.5;
+            font-weight: 400;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+
+        .implication-marker .implication-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: var(--ink);
+        }
+
+        .implication-marker:hover .implication-tooltip {
+            display: block;
+        }
+
+        .reading-time-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--muted);
+            background-color: var(--paper);
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 50;
+        }
+
+        .reading-time-indicator.visible {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .document-container {
+                padding: 30px 24px;
+                margin: 10px;
+            }
+            .document-container::before {
+                font-size: 36px;
+            }
+            .category-block {
+                margin-left: 8px;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .implication-marker .implication-tooltip {
+                left: 0;
+                transform: none;
+            }
+            .implication-marker .implication-tooltip::after {
+                left: 20px;
+                transform: none;
+            }
+            .deadline-table {
+                font-size: 12px;
+            }
+            .deadline-table th,
+            .deadline-table td {
+                padding: 6px;
+            }
+        }
+
+        @media print {
+            body {
+                background-color: white;
+            }
+            .document-container {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+                padding: 20px 40px;
+            }
+            .document-container::before {
+                display: none;
+            }
+            .reading-time-indicator {
+                display: none;
+            }
+            .recognition-notice {
+                display: none !important;
+            }
+            .implication-marker .implication-tooltip {
+                display: none !important;
+            }
+            .final-notice {
+                display: none !important;
+            }
+            .category-block {
+                break-inside: avoid;
+            }
+            .appendix-form {
+                break-inside: avoid;
+            }
+            .section-divider {
+                margin: 30px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="document-container">
+
+    <!-- HEADER -->
+    <div class="header-block">
+        <div class="dept">Department of Interior Recognition</div>
+        <div class="bureau-name">Bureau of Soft Succession</div>
+        <div class="doc-title">Regulatory Framework for Ambiguous Loss Administration</div>
+        <div class="doc-citation">41 CFR Parts 9900–9999 &nbsp;|&nbsp; RIN 3241-AB89 &nbsp;|&nbsp; Published 14 March 2019</div>
+    </div>
+
+    <p class="authority-line">Authority: 5 U.S.C. 7901; Executive Order 13847 ("Recognition of Non-Material Transitions"); Federal Register Vol. 83, No. 197</p>
+
+    <p class="reg-paragraph"><span class="para-num">AGENCY:</span> Bureau of Soft Succession, Department of Interior Recognition.</p>
+    <p class="reg-paragraph"><span class="para-num">ACTION:</span> Final rule; establishment of regulatory framework.</p>
+    <p class="reg-paragraph"><span class="para-num">SUMMARY:</span> The Bureau of Soft Succession hereby establishes procedures, definitions, and enforcement mechanisms for the administration of grief pertaining to losses that do not involve legally recognized deaths, formal relationship dissolutions, or quantifiable material change. This framework governs the filing, adjudication, and closing of claims related to ambiguous, intangible, or socially unrecognized losses.</p>
+    <p class="reg-paragraph"><span class="para-num">DATES:</span> Effective 1 June 2019. <em>Status: Approved; not activated. Activation pending congressional reauthorization.</em></p>
+    <p class="reg-paragraph"><span class="para-num">FOR FURTHER INFORMATION CONTACT:</span> Office of Soft Succession Services, Room 1140-G, 1849 C Street NW, Washington, DC 20240. Telephone: (202) 208-XXXX. Please allow 90 business days for response.</p>
+
+    <hr class="section-divider">
+
+    <!-- TABLE OF CONTENTS -->
+    <div class="toc" id="toc">
+        <h2>Table of Contents</h2>
+        <a class="toc-entry" href="#subpart-a"><span class="toc-section">Subpart A</span><span class="toc-sub">General Provisions</span></a>
+        <a class="toc-entry indent" href="#s9900-1"><span class="toc-section">&sect;9900.1</span><span class="toc-sub">Purpose and Scope</span></a>
+        <a class="toc-entry indent" href="#s9900-2"><span class="toc-section">&sect;9900.2</span><span class="toc-sub">Definitions</span></a>
+        <a class="toc-entry indent" href="#s9900-3"><span class="toc-section">&sect;9900.3</span><span class="toc-sub">Jurisdiction and Authority</span></a>
+        <a class="toc-entry" href="#subpart-b"><span class="toc-section">Subpart B</span><span class="toc-sub">Procedures for Filing</span></a>
+        <a class="toc-entry indent" href="#s9901-1"><span class="toc-section">&sect;9901.1</span><span class="toc-sub">Eligibility Requirements for Grief Claimants</span></a>
+        <a class="toc-entry indent" href="#s9901-2"><span class="toc-section">&sect;9901.2</span><span class="toc-sub">Filing Procedures and Documentation Requirements</span></a>
+        <a class="toc-entry indent" href="#s9901-3"><span class="toc-section">&sect;9901.3</span><span class="toc-sub">Adjudication Timelines and Status Inquiry</span></a>
+        <a class="toc-entry indent" href="#s9901-4"><span class="toc-section">&sect;9901.4</span><span class="toc-sub">Statutory Limitations on Filing</span></a>
+        <a class="toc-entry" href="#subpart-c"><span class="toc-section">Subpart C</span><span class="toc-sub">Taxonomy of Ambiguous Losses</span></a>
+        <a class="toc-entry indent" href="#s9902-1"><span class="toc-section">&sect;9902.1</span><span class="toc-sub">Classification Framework</span></a>
+        <a class="toc-entry indent" href="#s9902-categories"><span class="toc-section">&sect;9902.2</span><span class="toc-sub">Enumerated Categories</span></a>
+        <a class="toc-entry indent" href="#s9902-3"><span class="toc-section">&sect;9902.3</span><span class="toc-sub">Provisional and Residual Categories</span></a>
+        <a class="toc-entry" href="#subpart-d"><span class="toc-section">Subpart D</span><span class="toc-sub">Enforcement and Compliance</span></a>
+        <a class="toc-entry indent" href="#s9903-1"><span class="toc-section">&sect;9903.1</span><span class="toc-sub">Prohibited Mourning Practices</span></a>
+        <a class="toc-entry indent" href="#s9903-2"><span class="toc-section">&sect;9903.2</span><span class="toc-sub">Penalties and Corrective Measures</span></a>
+        <a class="toc-entry indent" href="#s9903-3"><span class="toc-section">&sect;9903.3</span><span class="toc-sub">Repeat Offender Designation</span></a>
+        <a class="toc-entry" href="#subpart-e"><span class="toc-section">Subpart E</span><span class="toc-sub">Appendices</span></a>
+        <a class="toc-entry indent" href="#appendix-a"><span class="toc-section">Appendix A</span><span class="toc-sub">Form SS-1: Initial Statement of Ambiguous Loss</span></a>
+        <a class="toc-entry indent" href="#appendix-b"><span class="toc-section">Appendix B</span><span class="toc-sub">Supplementary Guidance: Recognizing Qualifying Loss Events</span></a>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- SUBPART A -->
+    <div class="section" id="subpart-a">
+        <div class="section-num">Subpart A — General Provisions</div>
+
+        <h2 class="section-title" id="s9900-1">&sect;9900.1 Purpose and Scope</h2>
+
+        <p class="reg-paragraph"><span class="para-num">(a)</span> The purpose of this part is to establish uniform procedures for the recognition, documentation, and administrative closure of losses that do not involve legally cognizable deaths, formally dissolved relationships, or quantifiable material change, but which nonetheless produce grief of sufficient duration or intensity to warrant institutional acknowledgment.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(b)</span> This framework applies to all persons within the jurisdiction of the United States who have experienced a qualifying ambiguous loss event as defined in <a class="cross-ref" href="#s9900-2">&sect;9900.2</a> and classified under <a class="cross-ref" href="#s9902-categories">&sect;9902.2</a>.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(c)</span> Nothing in this part shall be construed to create or imply a right to bereavement leave, insurance benefits, or other material compensation for losses described herein. The Bureau's authority is limited to recognition, documentation, and the regulation of mourning practices as specified in <a class="cross-ref" href="#subpart-d">Subpart D</a>.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(d)</span> <em>Scope limitation.</em> This framework does not apply to losses involving: (1) death of a person, as defined by state vital records statutes; (2) divorce, legal separation, or annulment of marriage; (3) termination of employment subject to unemployment insurance; (4) bankruptcy, foreclosure, or other financial events subject to existing regulatory frameworks; or (5) losses primarily arising from clinically diagnosed mental health conditions, which remain under the jurisdiction of the relevant health authorities.</p>
+
+        <h2 class="section-title" id="s9900-2">&sect;9900.2 Definitions</h2>
+
+        <p class="reg-paragraph"><span class="para-num"><em>Ambiguous loss</em></span> means a loss event in which the subject of loss remains physically, legally, or conceptually present but is altered to a degree that the claimant can no longer recognize, access, or relate to the subject as previously constituted.</p>
+
+        <p class="reg-paragraph"><span class="para-num"><em>Claimant</em></span> means any natural person who files a Statement of Ambiguous Loss pursuant to <a class="cross-ref" href="#s9901-2">&sect;9901.2</a>.</p>
+
+        <p class="reg-paragraph"><span class="para-num"><em>Subject of loss</em></span> means the person, concept, relationship, identity, ambition, future, or state of being to which the claimant's grief is directed.</p>
+
+        <p class="reg-paragraph"><span class="para-num"><em>Qualifying grief</em></span> means an emotional response to an ambiguous loss that meets the intensity and duration thresholds specified in <a class="cross-ref" href="#s9901-1">&sect;9901.1(b)</a>.</p>
+
+        <p class="reg-paragraph"><span class="para-num"><em>Mourning practice</em></span> means any behavioral, cognitive, or emotional response to loss, whether public or private, deliberate or involuntary, that serves to acknowledge, process, or memorialize the subject of loss.</p>
+
+        <p class="reg-paragraph"><span class="para-num"><em>Administrative closure</em></span> means the Bureau's formal determination that a claimant's grief has been sufficiently recognized and that further mourning, beyond limits specified in the claimant's approved Grief Management Plan, constitutes a violation subject to enforcement under <a class="cross-ref" href="#subpart-d">Subpart D</a>.</p>
+
+        <p class="reg-paragraph"><span class="para-num"><em>Residual grief</em></span> means grief that persists beyond the Bureau's approved mourning period, or grief for which no adequate category exists within the taxonomy established in <a class="cross-ref" href="#s9902-categories">&sect;9902.2</a>. Residual grief is not independently actionable and may be filed only as a supplement to an existing approved claim.</p>
+
+        <p class="reg-paragraph"><span class="para-num"><em>Soft succession</em></span> means the gradual, often imperceptible process by which a person, relationship, identity, or future ceases to exist in its prior form without a discrete event marking the transition.</p>
+
+        <p class="reg-paragraph"><span class="para-num"><em>Unlived life</em></span> means a future, identity, or trajectory that was reasonably anticipated by the claimant but which did not materialize, whether due to circumstance, choice, or the passage of time.</p>
+
+        <h2 class="section-title" id="s9900-3">&sect;9900.3 Jurisdiction and Authority</h2>
+
+        <p class="reg-paragraph"><span class="para-num">(a)</span> The Bureau has jurisdiction over all ambiguous loss events occurring within the territorial United States, its possessions, and trust territories.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(b)</span> The Bureau has jurisdiction over ambiguous loss events experienced by U.S. citizens abroad, provided that the subject of loss was primarily located or primarily anticipated within the territorial United States.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(c)</span> In cases where the subject of loss is a person, the Bureau's jurisdiction is limited to the claimant's experience of loss and does not extend to the person who is the subject of loss, except as necessary for classification under <a class="cross-ref" href="#s9902-categories">&sect;9902.2</a>.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(d)</span> The Bureau shall maintain a registry of approved claims, indexed by category, date of filing, and status. The registry is not a public record. Access is limited to Bureau personnel, the claimant, and any legal representatives designated by the claimant in writing.</p>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- SUBPART B -->
+    <div class="section" id="subpart-b">
+        <div class="section-num">Subpart B — Procedures for Filing</div>
+
+        <h2 class="section-title" id="s9901-1">&sect;9901.1 Eligibility Requirements for Grief Claimants</h2>
+
+        <p class="reg-paragraph"><span class="para-num">(a)</span> Any natural person age eighteen or older may file a Statement of Ambiguous Loss. Persons under eighteen may file through a parent or legal guardian acting as representative.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(b)</span> <em>Intensity threshold.</em> The claimant's grief must have produced at least one of the following effects: (1) a measurable disruption of routine lasting seven consecutive days or more; (2) an involuntary alteration of sleep patterns persisting for fourteen days or more; <span class="implication-marker">(3) the persistent sensation of reaching for something that is no longer present;<span class="implication-tooltip">The Bureau notes that this threshold is met by the act of reading this document and feeling the recognition of a loss you have not previously named.</span></span> (4) the recognition, upon reflection, that a period of life has concluded without the claimant's knowledge or consent; or (5) any other effect determined by the Bureau to constitute qualifying grief under the standards established by the Committee on Elegiac Standards (<a class="cross-ref" href="#appendix-b">Appendix B</a>).</p>
+
+        <p class="reg-paragraph"><span class="para-num">(c)</span> <em>Duration threshold.</em> The grief must have persisted for a minimum of thirty consecutive days prior to filing. Intermittent grief—that which recurs but does not persist—shall be measured from the date of the most recent onset. The Bureau recognizes that grief is not linear and that the thirty-day requirement does not constitute an assertion that grief should be linear.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(d)</span> <em>Exclusions.</em> The following are not eligible for filing: (1) grief arising from events for which a legally recognized remedy exists; (2) grief that has been, or is being, addressed through clinical mental health treatment, unless the treatment has been concluded for a period of not less than ninety days; (3) grief for which the claimant has previously received a Bureau determination of administrative closure, unless the claimant can demonstrate a material change in circumstances.</p>
+
+        <h2 class="section-title" id="s9901-2">&sect;9901.2 Filing Procedures and Documentation Requirements</h2>
+
+        <p class="reg-paragraph"><span class="para-num">(a)</span> The claimant shall complete Form SS-1 (Initial Statement of Ambiguous Loss), as provided in <a class="cross-ref" href="#appendix-a">Appendix A</a>.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(b)</span> The claimant shall identify the category or categories under which the loss is being filed, using the taxonomy established in <a class="cross-ref" href="#s9902-categories">&sect;9902.2</a>. If no existing category is applicable, the claimant shall select the provisional category designated in <a class="cross-ref" href="#s9902-3">&sect;9902.3(a)</a> and provide a narrative description of the loss.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(c)</span> The claimant shall provide, to the extent possible: (1) the approximate date or date range of the loss event or the period during which the loss became apparent; (2) a description of the subject of loss as it existed prior to the loss; (3) a description of the subject of loss as it currently exists, if applicable; (4) a statement of the claimant's emotional response to the loss, including duration and intensity; and (5) any documentary evidence that supports the existence of the loss, including but not limited to: photographs, correspondence, journal entries, social media records, or other artifacts of the relationship, identity, or future that has been lost.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(d)</span> The Bureau acknowledges that many ambiguous losses do not produce documentary evidence. <span class="implication-marker">The absence of documentary evidence shall not, by itself, be grounds for denial of a claim.<span class="implication-tooltip">You do not need proof that you lost something. The Bureau takes your word. This may be the first institution that has done so.</span></span> However, the Bureau reserves the right to request additional narrative clarification.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(e)</span> <em>Multiple losses.</em> A single claimant may file multiple Statements of Ambiguous Loss. Each statement shall be filed separately and shall identify a single primary category. Related losses may be referenced in the narrative section but shall be classified independently.</p>
+
+        <h2 class="section-title" id="s9901-3">&sect;9901.3 Adjudication Timelines and Status Inquiry</h2>
+
+        <p class="reg-paragraph"><span class="para-num">(a)</span> The Bureau shall acknowledge receipt of a Statement of Ambiguous Loss within thirty calendar days of filing.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(b)</span> The Bureau shall issue a determination within one hundred eighty calendar days of receipt. The Bureau recognizes that this period is itself a form of duration that may compound the grief it is intended to address.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(c)</span> If the Bureau requires additional information, it shall notify the claimant in writing within sixty calendar days of receipt. The claimant shall have sixty calendar days to provide the requested information. If the information is not provided within this period, the claim shall be placed in abeyance. Claims in abeyance for more than one year shall be administratively closed.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(d)</span> The Bureau's determination shall be one of the following: (1) <em>Approved</em>—the loss is recognized and the claimant's Grief Management Plan is established; (2) <em>Approved with modification</em>—the loss is recognized but the Bureau has reclassified the category or adjusted the approved mourning period; (3) <em>Denied</em>—the loss does not meet the criteria for recognition under this part; or (4) <em>Deferred</em>—the Bureau requires additional time or information to make a determination.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(e)</span> A claimant may appeal a denial or modification within sixty calendar days of the determination. Appeals shall be reviewed by a panel of no fewer than three Bureau adjudicators. The Bureau acknowledges that the act of appealing a grief determination may itself produce additional grief, which may be filed as a separate claim.</p>
+
+        <h2 class="section-title" id="s9901-4">&sect;9901.4 Statutory Limitations on Filing</h2>
+
+        <p class="reg-paragraph"><span class="para-num">(a)</span> No Statement of Ambiguous Loss shall be accepted if filed more than the applicable limitation period after the date on which the loss occurred or the date on which the claimant reasonably should have recognized the loss, whichever is later. The Bureau refers to this as the "recognition-triggered limitations clock."</p>
+
+        <p class="reg-paragraph"><span class="para-num">(b)</span> The limitation periods are as follows:</p>
+
+        <table class="deadline-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Limitation Period</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="cat-col"><a class="cross-ref" href="#cat-1a">1A</a>, <a class="cross-ref" href="#cat-1b">1B</a>, <a class="cross-ref" href="#cat-1c">1C</a></td>
+                    <td class="time-col">18 months</td>
+                    <td class="note-col">Measured from last substantive contact or from recognition that the person has become unrecognizable.</td>
+                </tr>
+                <tr>
+                    <td class="cat-col"><a class="cross-ref" href="#cat-2a">2A</a>, <a class="cross-ref" href="#cat-2b">2B</a>, <a class="cross-ref" href="#cat-2c">2C</a></td>
+                    <td class="time-col">12 months</td>
+                    <td class="note-col">Measured from the last exchange that maintained the relationship's relational quality.</td>
+                </tr>
+                <tr>
+                    <td class="cat-col"><a class="cross-ref" href="#cat-3a">3A</a>, <a class="cross-ref" href="#cat-3b">3B</a>, <a class="cross-ref" href="#cat-3c">3C</a></td>
+                    <td class="time-col">24 months</td>
+                    <td class="note-col">Measured from the point at which the claimant became aware that the prior self was no longer accessible.</td>
+                </tr>
+                <tr>
+                    <td class="cat-col"><a class="cross-ref" href="#cat-4a">4A</a>, <a class="cross-ref" href="#cat-4c">4C</a></td>
+                    <td class="time-col">18 months</td>
+                    <td class="note-col">Measured from the point at which the future became clearly unavailable.</td>
+                </tr>
+                <tr>
+                    <td class="cat-col"><a class="cross-ref" href="#cat-4b">4B</a></td>
+                    <td class="time-col">6 months</td>
+                    <td class="note-col">Measured from the claimant's final, definitive decision to abandon the ambition. The Bureau recognizes that this limitation period is shorter than the grief it governs.</td>
+                </tr>
+                <tr>
+                    <td class="cat-col"><a class="cross-ref" href="#cat-5a">5A</a>, <a class="cross-ref" href="#cat-5b">5B</a></td>
+                    <td class="time-col">24 months</td>
+                    <td class="note-col">Measured from last physical presence in the place, or from the recognition that the place no longer constitutes home.</td>
+                </tr>
+                <tr>
+                    <td class="cat-col"><a class="cross-ref" href="#cat-6a">6A</a>, <a class="cross-ref" href="#cat-6b">6B</a>, <a class="cross-ref" href="#cat-6c">6C</a></td>
+                    <td class="time-col">12 months</td>
+                    <td class="note-col">Measured from the collapse of the relevant framework. The Bureau acknowledges that framework collapse is often retroactively identified.</td>
+                </tr>
+                <tr>
+                    <td class="cat-col"><a class="cross-ref" href="#cat-7a">7A</a></td>
+                    <td class="time-col">18 months</td>
+                    <td class="note-col">Measured from the most recent mutual recognition between claimant and subject.</td>
+                </tr>
+                <tr>
+                    <td class="cat-col"><a class="cross-ref" href="#cat-7b">7B</a></td>
+                    <td class="time-col">36 months</td>
+                    <td class="note-col">The extended period reflects the severity and complexity of framework collapse claims.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p class="reg-paragraph"><span class="para-num">(c)</span> <span class="implication-marker">The Bureau recognizes that most ambiguous losses are recognized retrospectively and that, by the time a claimant identifies the loss and locates it within the taxonomy above, the applicable limitation period has often elapsed. The Bureau further recognizes that this recognition does not alter the limitation periods, which remain in effect as stated.<span class="implication-tooltip">If you have recognized your loss while reading this document, the limitation period began before you arrived here. The Bureau is aware of this. The limitation periods do not accommodate delays caused by the Bureau's own failure to activate.</span></span></p>
+
+        <p class="reg-paragraph"><span class="para-num">(d)</span> A claimant who files after the expiration of the applicable limitation period may petition the Bureau for equitable tolling. The petition shall demonstrate that the claimant was unable to file within the limitation period due to circumstances beyond the claimant's control, including but not limited to: the absence of any institutional framework for recognizing the loss, the claimant's lack of awareness that the loss was a loss, or the claimant's engagement in prohibited mourning practices under <a class="cross-ref" href="#s9903-1">&sect;9903.1</a> that prevented timely recognition. The Bureau shall grant equitable tolling petitions in all cases where the Bureau itself has not been activated, as the Bureau's inactivity constitutes a circumstance beyond any claimant's control.</p>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- SUBPART C -->
+    <div class="section" id="subpart-c">
+        <div class="section-num">Subpart C — Taxonomy of Ambiguous Losses</div>
+
+        <h2 class="section-title" id="s9902-1">&sect;9902.1 Classification Framework</h2>
+
+        <p class="reg-paragraph"><span class="para-num">(a)</span> All ambiguous losses shall be classified according to the taxonomy established in this subpart. The taxonomy is organized into seven classes, each containing two or more categories designated by alphanumeric identifiers.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(b)</span> The classes are as follows: Class I, Losses of Persons Not Legally Deceased; Class II, Losses of Relationships Not Formally Dissolved; Class III, Losses of Identity and Self-Concept; Class IV, Losses of Futures and Unlived Lives; Class V, Losses of Place and Belonging; Class VI, Losses of Certainty and Orientation; Class VII, Compound and Reciprocal Losses.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(c)</span> Cross-references between categories are provided for guidance. Where a loss could be classified under multiple categories, the claimant shall select the primary category that most closely describes the subject of loss. The Bureau reserves the right to reclassify.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(d)</span> The taxonomy is not exhaustive. Categories may be added by Bureau rulemaking. <span class="implication-marker">The Bureau recognizes that the act of categorizing loss is itself a form of reduction. The Bureau further recognizes that this recognition does not excuse it from the necessity of categorization.<span class="implication-tooltip">To name something is to alter it. The Bureau is aware of this. It proceeds anyway.</span></span></p>
+
+        <h2 class="section-title" id="s9902-categories">&sect;9902.2 Enumerated Categories</h2>
+
+        <p><strong>Class I — Losses of Persons Not Legally Deceased</strong></p>
+
+        <div class="category-block" id="cat-1a" data-category="1a">
+            <div class="cat-id">Category 1A</div>
+            <div class="cat-name">Physical Presence Without Recognition</div>
+            <p class="cat-desc">The subject of loss is physically present and identifiable but is no longer recognizable as the person the claimant knew. The subject's body persists; the person who inhabited it has departed or transformed beyond the claimant's capacity for recognition. Applicable to cases involving cognitive decline, personality alteration, profound ideological shift, or other transformations in which the exterior persists while the interior becomes unfamiliar.</p>
+            <p class="note">See also <a class="cross-ref" href="#cat-7a">Category 7A</a> (Compound: Mutual Unrecognizability). For cases involving the claimant's own transformation, see <a class="cross-ref" href="#cat-3a">Category 3A</a>.</p>
+        </div>
+
+        <div class="category-block" id="cat-1b" data-category="1b">
+            <div class="cat-id">Category 1B</div>
+            <div class="cat-name">Absence Without Termination</div>
+            <p class="cat-desc">The subject of loss has become absent from the claimant's life without a formal ending: a person who gradually discontinued contact, who was always "about to" reach out, who remains theoretically reachable but practically unreachable. The loss is characterized by the absence of an ending itself. There was no event; there was only the eventual recognition that an unspecified amount of time had passed since the last contact, and that this amount of time had become the new normal.</p>
+            <p class="note">See also <a class="cross-ref" href="#cat-2b">Category 2B</a> (Relationship Present in Memory Only). For losses involving geographic displacement, see <a class="cross-ref" href="#cat-5a">Category 5A</a>.</p>
+        </div>
+
+        <div class="category-block" id="cat-1c" data-category="1c">
+            <div class="cat-id">Category 1C</div>
+            <div class="cat-name">The Person Who Remained</div>
+            <p class="cat-desc">The subject of loss is a person who did not change, did not leave, and did not die, but whom the claimant can no longer reach due to changes in the claimant's own circumstances, identity, or understanding. The loss is characterized by the persistence of the subject alongside the impossibility of contact. The subject is unaltered; the channel between subject and claimant has closed.</p>
+            <p class="note">See also <a class="cross-ref" href="#cat-3b">Category 3B</a> (Loss of the Self Who Could Reach Them). For losses involving the claimant's own identity transformation, see Class III generally.</p>
+        </div>
+
+        <p><strong>Class II — Losses of Relationships Not Formally Dissolved</strong></p>
+
+        <div class="category-block" id="cat-2a" data-category="2a">
+            <div class="cat-id">Category 2A</div>
+            <div class="cat-name">The Relationship That Existed Only in Anticipation</div>
+            <p class="cat-desc">A relationship that was never formally established but which the claimant reasonably anticipated: the connection that was forming, the friendship that was becoming, the intimacy that was accumulating velocity. The loss is of the relationship's potential rather than its actuality. Applicable where both parties contributed to the anticipation, and where the discontinuation was not mutually acknowledged.</p>
+            <p class="note">See also <a class="cross-ref" href="#cat-4a">Category 4A</a> (The Future That Was Assumed). For relationships impaired by external circumstance, see <a class="cross-ref" href="#cat-6b">Category 6B</a>.</p>
+        </div>
+
+        <div class="category-block" id="cat-2b" data-category="2b">
+            <div class="cat-id">Category 2B</div>
+            <div class="cat-name">Relationship Present in Memory Only</div>
+            <p class="cat-desc">A relationship that continues to exist in the claimant's cognitive and emotional experience but has no correlate in present reality. The other party may or may not recall the relationship with similar intensity. The loss is characterized by the claimant's continued emotional engagement with a relational structure that no longer exists externally. The claimant may continue to compose thoughts addressed to the other party, to make decisions with the other party's hypothetical reaction in mind, or to experience emotional responses appropriate to an active relationship.</p>
+            <p class="note">See also <a class="cross-ref" href="#cat-1b">Category 1B</a> (Absence Without Termination). For cases where the relationship persists but is unrecognizable, see <a class="cross-ref" href="#cat-2c">Category 2C</a>.</p>
+        </div>
+
+        <div class="category-block" id="cat-2c" data-category="2c">
+            <div class="cat-id">Category 2C</div>
+            <div class="cat-name">The Relationship That Continues in Unrecognizable Form</div>
+            <p class="cat-desc">A relationship that has not ended but has changed so profoundly that the claimant cannot reconcile its current form with its prior form. Both parties remain in contact; the relational structure persists; but the qualities that constituted the relationship—trust, ease, mutual understanding, shared reference—have been altered or withdrawn. The claimant mourns the relationship as it was while continuing to participate in the relationship as it is.</p>
+            <p class="note">See also <a class="cross-ref" href="#cat-7a">Category 7A</a> (Compound: Mutual Unrecognizability). The Bureau notes that this category is among the most difficult to adjudicate, as the subject of loss remains present and may object to being characterized as lost.</p>
+        </div>
+
+        <p><strong>Class III — Losses of Identity and Self-Concept</strong></p>
+
+        <div class="category-block" id="cat-3a" data-category="3a">
+            <div class="cat-id">Category 3A</div>
+            <div class="cat-name">The Former Self</div>
+            <p class="cat-desc">The claimant has undergone a transformation—voluntary or involuntary, gradual or sudden—such that a prior version of the self can no longer be accessed. The loss is of a self that once existed and now does not. Applicable to cases involving maturation, recovery from illness or addiction, ideological or religious conversion, gender transition, geographic relocation, or any other process through which the claimant became a person the prior self would not recognize. The claimant may feel grief for the person they were, even if that person's absence constitutes an improvement by any objective measure.</p>
+            <p class="note">See also <a class="cross-ref" href="#cat-1a">Category 1A</a> (Physical Presence Without Recognition), in which the direction of unrecognizability is reversed. For grief specific to abandoned ambitions, see <a class="cross-ref" href="#cat-4b">Category 4B</a>.</p>
+        </div>
+
+        <div class="category-block" id="cat-3b" data-category="3b">
+            <div class="cat-id">Category 3B</div>
+            <div class="cat-name">Loss of the Self Who Could Reach Them</div>
+            <p class="cat-desc">The claimant has lost the version of themselves that was capable of maintaining a particular relationship, pursuing a particular path, or inhabiting a particular emotional state. The loss is not of the external subject but of the internal capacity. The claimant mourns not the person they lost but the person they were when that person was still accessible to them. This category recognizes that some losses are primarily losses of one's own configuration rather than losses of external objects.</p>
+            <p class="note">This category is cross-referenced with <a class="cross-ref" href="#cat-1c">Category 1C</a> (The Person Who Remained), as both address situations in which the subject of loss is present but the conditions for connection are not.</p>
+        </div>
+
+        <div class="category-block" id="cat-3c" data-category="3c">
+            <div class="cat-id">Category 3C</div>
+            <div class="cat-name">The Belief About Oneself That Proved Untrue</div>
+            <p class="cat-desc">The claimant has discovered that a foundational belief about their own character, capacities, or nature was incorrect. The loss is of a self-understanding that provided coherence, direction, or comfort. Applicable to cases involving the recognition of limitation, the failure of a cherished narrative about oneself, or the discovery that a trait the claimant considered central to their identity was either absent or circumstantial. The grief is for the person the claimant believed themselves to be.</p>
+            <p class="note">For continuation, see <a class="cross-ref" href="#cat-7a">Category 7A</a>. The Bureau notes that this category frequently co-occurs with <a class="cross-ref" href="#cat-4a">Category 4A</a> (The Future That Was Assumed), as the untrue belief often underwrote anticipated futures.</p>
+        </div>
+
+        <p><strong>Class IV — Losses of Futures and Unlived Lives</strong></p>
+
+        <div class="category-block" id="cat-4a" data-category="4a">
+            <div class="cat-id">Category 4A</div>
+            <div class="cat-name">The Future That Was Assumed</div>
+            <p class="cat-desc">A future that the claimant reasonably expected to materialize, based on available evidence, social norms, personal trajectory, or explicit or implicit promises. The loss is of a temporal horizon: a set of expectations about what the claimant's life would contain. Applicable to cases involving career interruption, infertility, relationship dissolution prior to formal commitment, geographic dislocation, or any other circumstance that eliminated a future the claimant had organized their present around.</p>
+            <p class="note">See also <a class="cross-ref" href="#cat-3c">Category 3C</a> (The Belief About Oneself That Proved Untrue). For losses of futures belonging to others, see <a class="cross-ref" href="#cat-6c">Category 6C</a>.</p>
+        </div>
+
+        <div class="category-block" id="cat-4b" data-category="4b">
+            <div class="cat-id">Category 4B</div>
+            <div class="cat-name">The Abandoned Ambition</div>
+            <p class="cat-desc">An ambition, goal, or creative pursuit that the claimant has permanently set aside—not due to a determination that the ambition was unworthy, but due to the accumulation of practical constraints, the passage of time, or the gradual recognition that the ambition and the claimant's current life were no longer compatible. The loss is characterized not by failure but by surrender. The claimant does not mourn the ambition's impossibility; the claimant mourns the decision, however necessary, to stop reaching for it.</p>
+            <p class="note">The Bureau recognizes that this category produces a specific form of grief characterized by its apparent triviality. The claimant may feel that mourning an abandoned ambition is self-indulgent. The Bureau's position is that grief is not required to justify itself.</p>
+        </div>
+
+        <div class="category-block" id="cat-4c" data-category="4c">
+            <div class="cat-id">Category 4C</div>
+            <div class="cat-name">The Person One Almost Became</div>
+            <p class="cat-desc">A version of the self that existed only in potential and which the claimant can no longer become. Unlike <a class="cross-ref" href="#cat-3a">Category 3A</a> (The Former Self), which addresses a self that was actualized, this category addresses a self that remained hypothetical: the person the claimant would have become if a different decision had been made at a critical juncture. The loss is of a trajectory rather than a state. The claimant grieves not what was but what was, for a time, still possible.</p>
+            <p class="note">See also <a class="cross-ref" href="#cat-6a">Category 6A</a> (Loss of the Sense That Choices Were Meaningful). The Bureau notes that this category often intensifies at midlife and at moments of retrospective reckoning.</p>
+        </div>
+
+        <p><strong>Class V — Losses of Place and Belonging</strong></p>
+
+        <div class="category-block" id="cat-5a" data-category="5a">
+            <div class="cat-id">Category 5A</div>
+            <div class="cat-name">The Place That No Longer Claims You</div>
+            <p class="cat-desc">A geographic location, cultural context, or community to which the claimant once belonged but which no longer recognizes or welcomes the claimant, or which the claimant can no longer access in the manner they once did. The loss is of belonging rather than of the place itself. The place may continue to exist; the claimant's position within it does not. Applicable to cases involving geographic return, cultural alienation, outgrowing a community, or the recognition that a place the claimant considered home has become a place that considers them a visitor.</p>
+            <p class="note">See also <a class="cross-ref" href="#cat-3a">Category 3A</a> (The Former Self), as the loss of belonging often involves a simultaneous loss of the self that belonged. For losses involving the place itself, see <a class="cross-ref" href="#cat-5b">Category 5B</a>.</p>
+        </div>
+
+        <div class="category-block" id="cat-5b" data-category="5b">
+            <div class="cat-id">Category 5B</div>
+            <div class="cat-name">The Place That Changed While You Were Away</div>
+            <p class="cat-desc">A geographic or cultural context that has been altered to a degree that the claimant can no longer recognize it as the place it was. The loss is of the environment as it existed in the claimant's experience and memory. The claimant may return physically but cannot return experientially. The place has succeeded to a new form that does not include the claimant's version of it. The Bureau recognizes that places do not belong to people, but also recognizes that this recognition does not diminish the grief.</p>
+            <p class="note">For a parallel category involving persons rather than places, see <a class="cross-ref" href="#cat-1a">Category 1A</a>.</p>
+        </div>
+
+        <p><strong>Class VI — Losses of Certainty and Orientation</strong></p>
+
+        <div class="category-block" id="cat-6a" data-category="6a">
+            <div class="cat-id">Category 6A</div>
+            <div class="cat-name">Loss of the Sense That Choices Were Meaningful</div>
+            <p class="cat-desc">The claimant has experienced a collapse of confidence in the significance of their own decisions. The loss is not of a specific outcome but of the framework within which outcomes were meaningful. Applicable to cases involving existential disorientation, the recognition of determinism, the aftermath of a decision that could not be evaluated as right or wrong, or the gradual accumulation of evidence that the claimant's agency was less consequential than the claimant had understood. The grief is for the experience of choosing, which has been replaced by the experience of having chosen.</p>
+            <p class="note">The Bureau acknowledges that this category borders on philosophical territory that may seem outside its jurisdiction. The Bureau's position is that the loss of a framework for meaning is as tangible as the loss of any external object, and that grief for meaning-making capacity is within the scope of this part.</p>
+        </div>
+
+        <div class="category-block" id="cat-6b" data-category="6b">
+            <div class="cat-id">Category 6B</div>
+            <div class="cat-name">Loss of Narrative Coherence</div>
+            <p class="cat-desc">The claimant has lost the ability to understand their own life as a coherent story. Events that previously seemed connected now seem random; themes that previously organized experience have dissolved; the claimant can no longer locate themselves within any narrative structure that provides meaning or direction. The loss is of causality, or of the experience of causality. The claimant's life has not changed; the claimant's understanding of it has.</p>
+            <p class="note">See also <a class="cross-ref" href="#cat-6a">Category 6A</a> (Loss of the Sense That Choices Were Meaningful) and <a class="cross-ref" href="#cat-3c">Category 3C</a> (The Belief About Oneself That Proved Untrue). These three categories frequently co-occur and may be filed jointly under <a class="cross-ref" href="#cat-7b">Category 7B</a>.</p>
+        </div>
+
+        <div class="category-block" id="cat-6c" data-category="6c">
+            <div class="cat-id">Category 6C</div>
+            <div class="cat-name">The Certainty That Someone Else's Future Would Include You</div>
+            <p class="cat-desc">The claimant has lost the expectation that they would be present in another person's future. The loss is not of the person, who may remain present and accessible, but of the assumption that the claimant's presence in the other person's life was durable and guaranteed. Applicable to cases involving the recognition of expendability, the discovery that a relationship was less central to the other party than to the claimant, or the recognition that a child, partner, or friend is building a future that does not require the claimant's participation. The Bureau notes that this category does not require the other party to have acted wrongly; the loss is of the claimant's certainty, not of the other party's loyalty.</p>
+            <p class="note">For continuation, see <a class="cross-ref" href="#cat-7b">Category 7B</a>. This category is commonly filed alongside <a class="cross-ref" href="#cat-4a">Category 4A</a> (The Future That Was Assumed), as the claimant's assumed future often included the other party's continued presence.</p>
+        </div>
+
+        <p><strong>Class VII — Compound and Reciprocal Losses</strong></p>
+
+        <div class="category-block" id="cat-7a" data-category="7a">
+            <div class="cat-id">Category 7A</div>
+            <div class="cat-name">Compound: Mutual Unrecognizability</div>
+            <p class="cat-desc">Both the claimant and the subject of loss have changed such that neither recognizes the other, though both persist. The loss is reciprocal: the claimant mourns the person the subject was, and recognizes that the subject likely mourns the person the claimant was. Neither party is at fault; neither party can reverse the transformation. The Bureau recognizes this as the paradigmatic case of soft succession: two people who were once known to each other, occupying the same space, speaking the same language, unable to locate the familiarity that once connected them.</p>
+            <p class="note">For continuation of attachment where the subject has been administratively reclassified, see <a class="cross-ref" href="#cat-3c">Category 3C</a>. The Bureau considers Category 7A to be among the most precisely described and most widely experienced categories in this taxonomy.</p>
+        </div>
+
+        <div class="category-block" id="cat-7b" data-category="7b">
+            <div class="cat-id">Category 7B</div>
+            <div class="cat-name">Compound: The Collapse of the Framework Within Which Loss Could Be Understood</div>
+            <p class="cat-desc">The claimant has experienced multiple simultaneous losses of the type described in Classes I through VI, such that no individual category adequately describes the total loss, and the cumulative effect has disabled the claimant's capacity to process any single component. The loss is of the cognitive and emotional infrastructure necessary for grieving. The claimant is not overwhelmed by grief; the claimant is unable to locate grief, because the system by which grief would be identified and directed has itself been lost.</p>
+            <p class="note">The Bureau notes that Category 7B is the only category that may be filed as a primary claim without a prior individual claim. Filing under this category requires a narrative statement of not fewer than 500 words, as the Bureau must understand the nature of the framework collapse to adjudicate the claim.</p>
+        </div>
+
+        <h2 class="section-title" id="s9902-3">&sect;9902.3 Provisional and Residual Categories</h2>
+
+        <p class="reg-paragraph"><span class="para-num">(a)</span> <em>Provisional Category P-1: Unclassified Ambiguous Loss.</em> Reserved for losses that do not fit within any existing enumerated category. The claimant shall provide a narrative description of the loss, including the reasons the claimant believes it qualifies under this part despite the absence of a specific category. The Bureau shall evaluate Provisional Category claims on a case-by-case basis and may establish new categories by rulemaking in response to recurring provisional claims.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(b)</span> <em>Residual grief</em> is not a category and cannot be filed as a primary claim. Residual grief may be documented as an attachment to an existing approved claim and shall be described in a Supplementary Narrative (Form SS-2). The Bureau does not adjudicate residual grief separately but considers it in the context of the primary claim.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(c)</span> The Bureau shall conduct a biennial review of the taxonomy to identify gaps, ambiguities, and categories that require subdivision or consolidation. The review shall include analysis of Provisional Category filings, appeals data, and external research on ambiguous loss.</p>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- SUBPART D -->
+    <div class="section" id="subpart-d">
+        <div class="section-num">Subpart D — Enforcement and Compliance</div>
+
+        <h2 class="section-title" id="s9903-1">&sect;9903.1 Prohibited Mourning Practices</h2>
+
+        <div class="recognition-notice" id="recognition-notice">
+            <em>You have now viewed <span id="viewed-count">0</span> of the Bureau's enumerated categories. The Bureau notes that the act of reading a taxonomy of losses and recognizing one's own experience within it constitutes a recognition event under Appendix B.4. If you have recognized your loss in the preceding categories, the Bureau's framework considers you to have experienced a qualifying loss event. This notice is the only acknowledgment the Bureau is currently able to provide.</em>
+        </div>
+
+        <p class="reg-paragraph"><span class="para-num">(a)</span> The following mourning practices are prohibited for all claimants with approved claims:</p>
+
+        <p class="reg-paragraph"><span class="para-num">(1)</span> <em>Silent endurance.</em> <span class="implication-marker">The practice of experiencing grief without acknowledgment, documentation, or expression, on the theory that the loss is too small, too private, or too ambiguous to warrant mourning.<span class="implication-tooltip">You are reading this sentence and recognizing a practice you have performed. The Bureau considers this recognition sufficient to establish a violation.</span></span> The Bureau's position is that silent endurance compounds ambiguous loss by adding to it the loss of recognition. Claimants who have been approved for a specific category are prohibited from refusing to acknowledge the loss to themselves.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(2)</span> <em>Premature resolution.</em> The practice of declaring the grief resolved before the Bureau's approved mourning period has elapsed, or before the claimant has genuinely processed the loss. Premature resolution includes but is not limited to: claiming to be "over it" when this claim is not supported by the claimant's emotional experience; deliberately avoiding circumstances that might reactivate grief and interpreting the resulting absence of grief as resolution; and assuring others that the loss is no longer felt.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(3)</span> <em>Comparative minimization.</em> <span class="implication-marker">The practice of comparing one's own ambiguous loss to the losses of others and concluding that one's own grief is insufficient to qualify, despite the Bureau's prior determination that it does qualify. Comparative minimization includes the use of phrases such as "other people have it worse," "it's not like anyone died," or "I shouldn't feel this way."<span class="implication-tooltip">You have used at least one of these phrases. The Bureau does not need to know which one.</span></span> Claimants who have been approved under this part are prohibited from using these phrases, whether aloud or in internal monologue.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(4)</span> <em>Retroactive erasure.</em> The practice of revising one's memory or narrative to minimize or eliminate the significance of the subject of loss, thereby attempting to demonstrate that nothing of value was lost. The Bureau recognizes retroactive erasure as a common response to ambiguous loss and as a practice that, while understandable, prevents the claimant from genuine processing.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(5)</span> <em>Displaced memorialization.</em> The practice of mourning a different, more socially recognizable loss as a proxy for the ambiguous loss. The Bureau recognizes that displaced memorialization may serve a constructive function in the short term but prohibits its use as a long-term strategy, as it prevents the claimant from addressing the actual subject of loss.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(6)</span> <em>The refusal to name it.</em> <span class="implication-marker">The practice of deliberately avoiding the identification or specification of the subject of loss, maintaining ambiguity as a protective measure against the pain of recognition.<span class="implication-tooltip">There is a specific loss you have not named while reading this document. The Bureau is not asking you to name it now. The Bureau is noting that you did not.</span></span> The Bureau notes that this practice is the most common violation and the most difficult to enforce, as the Bureau cannot compel a claimant to name what they do not wish to name. The Bureau can, however, note the refusal in the claimant's file and adjust the Grief Management Plan accordingly.</p>
+
+        <h2 class="section-title" id="s9903-2">&sect;9903.2 Penalties and Corrective Measures</h2>
+
+        <p class="reg-paragraph"><span class="para-num">(a)</span> Violations of <a class="cross-ref" href="#s9903-1">&sect;9903.1</a> are subject to the following corrective measures, applied in order of escalation:</p>
+
+        <div class="enforcement-item">
+            <div class="penalty-code">Penalty Schedule Level 1: Formal Notice</div>
+            <p class="penalty-desc">The Bureau shall issue a written notice identifying the prohibited practice and directing the claimant to cease. The notice shall include a restatement of the claimant's approved category and an explanation of why the prohibited practice interferes with the grieving process.</p>
+            <p class="penalty-schedule">Applicable violations: Silent endurance; Comparative minimization (first occurrence).</p>
+        </div>
+
+        <div class="enforcement-item">
+            <div class="penalty-code">Penalty Schedule Level 2: Mandatory Reckoning</div>
+            <p class="penalty-desc">The claimant shall submit a written statement of not fewer than 1,000 words identifying the subject of loss, describing its qualities as they existed prior to the loss, and explaining why the claimant believes the loss was not significant enough to mourn correctly. The Bureau shall review this statement and respond with an assessment of the claimant's reasoning. The Bureau's assessment is non-binding but becomes part of the claimant's permanent file.</p>
+            <p class="penalty-schedule">Applicable violations: Premature resolution; Retroactive erasure; Comparative minimization (second occurrence).</p>
+        </div>
+
+        <div class="enforcement-item">
+            <div class="penalty-code">Penalty Schedule Level 3: Extension of Mourning Period</div>
+            <p class="penalty-desc">The Bureau shall extend the claimant's approved mourning period by a duration equal to the period during which the prohibited practice was in effect. The Bureau's position is that time spent in avoidance of grief does not count toward the total mourning period. The claimant shall be notified in writing of the extension and the revised expected date of administrative closure.</p>
+            <p class="penalty-schedule">Applicable violations: Any violation subsequent to Level 2 correction.</p>
+        </div>
+
+        <div class="enforcement-item">
+            <div class="penalty-code">Penalty Schedule Level 4: Mandatory Naming</div>
+            <p class="penalty-desc"><span class="implication-marker">The claimant shall appear, in person or by written submission, and shall state, in plain language, the name or description of the subject of loss. The statement shall be specific enough that a reasonable person could identify the subject. The Bureau shall not accept euphemism, generalization, or abstraction as satisfying this requirement.<span class="implication-tooltip">You know what you lost. The Bureau is aware that you know. The Bureau is aware that you have been aware since before you began reading this document.</span></span> The claimant shall say what was lost.</p>
+            <p class="penalty-schedule">Applicable violations: The refusal to name it (persistent, following two or more Level 1 notices).</p>
+        </div>
+
+        <div class="warning-block">
+            <div class="warning-label">Advisory Note</div>
+            <p class="penalty-desc">The Bureau recognizes that the enforcement mechanisms described in this subpart may appear punitive. The Bureau's intent is corrective. The Bureau further recognizes that many of the prohibited mourning practices described in <a class="cross-ref" href="#s9903-1">&sect;9903.1</a> are practices that the claimant has been performing for years or decades, prior to the existence of this framework, and that the cessation of these practices may itself produce grief. The Bureau's position is that this grief is eligible for filing under the same or a different category.</p>
+        </div>
+
+        <h2 class="section-title" id="s9903-3">&sect;9903.3 Repeat Offender Designation</h2>
+
+        <p class="reg-paragraph"><span class="para-num">(a)</span> A claimant who accumulates three or more violations of <a class="cross-ref" href="#s9903-1">&sect;9903.1</a> within a single approved claim period shall be designated a Repeat Offender. The designation is administrative and shall not appear on any record outside the Bureau's registry.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(b)</span> Repeat Offender designation shall result in the following: (1) The claimant's Grief Management Plan shall be revised to require weekly written check-ins for the remainder of the mourning period. (2) The claimant shall be assigned a Bureau Liaison, who shall serve as a point of contact for questions about compliance. (3) The claimant's file shall be flagged for expedited review at the time of administrative closure.</p>
+
+        <p class="reg-paragraph"><span class="para-num">(c)</span> <span class="implication-marker">The Bureau recognizes that Repeat Offender status is, in most cases, an indication that the claimant's loss is more complex or more deeply rooted than initial filing suggested. The Bureau further recognizes that the practices that constitute violations—avoiding grief, minimizing loss, refusing to name the subject—are, in many cases, the same practices that the claimant developed prior to the Bureau's existence, as methods of surviving losses that had no institutional recognition.<span class="implication-tooltip">The Bureau is describing you. You developed these practices because no one was watching. Now someone is watching, even if that someone is a document that was never activated.</span></span> The Bureau does not punish survival. The Bureau requires adjustment.</p>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- SUBPART E: APPENDICES -->
+    <div class="section" id="subpart-e">
+        <div class="section-num">Subpart E — Appendices</div>
+
+        <h2 class="section-title" id="appendix-a">Appendix A: Form SS-1 — Initial Statement of Ambiguous Loss</h2>
+
+        <div class="appendix-form">
+            <div class="form-title">Form SS-1<br>Initial Statement of Ambiguous Loss<br>Bureau of Soft Succession</div>
+
+            <div class="form-instruction">Please type or print in black or blue ink. All fields are required unless marked optional. Incomplete forms will be returned.</div>
+
+            <div class="form-grid">
+                <div class="form-field">
+                    <label>Claimant Name (Last, First, Middle)</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="form-field">
+                    <label>Date of Birth</label>
+                    <div class="field-line"></div>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-field">
+                    <label>Mailing Address</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="form-field">
+                    <label>Telephone / Email</label>
+                    <div class="field-line"></div>
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label>Category Under Which This Claim Is Filed (refer to &sect;9902.2)</label>
+                <div class="field-line"></div>
+            </div>
+
+            <div class="form-field">
+                <label>If Provisional Category P-1, provide a brief descriptive title for the loss (not to exceed 15 words)</label>
+                <div class="field-line"></div>
+            </div>
+
+            <div class="form-field">
+                <label>Approximate Date or Date Range of Loss</label>
+                <div class="form-instruction">If the loss was gradual, provide the date range during which it became apparent. If the loss has no identifiable date, write "Indeterminate" and explain in the narrative section.</div>
+                <div class="field-line"></div>
+            </div>
+
+            <div class="form-field">
+                <label>Subject of Loss</label>
+                <div class="form-instruction">Describe the person, relationship, identity, future, place, certainty, or other subject of loss as it existed prior to the loss. Be as specific as you are able.</div>
+                <div class="text-area"></div>
+            </div>
+
+            <div class="form-field">
+                <label>Current Status of Subject (if applicable)</label>
+                <div class="form-instruction">If the subject of loss continues to exist in altered form, describe its current state. If the subject no longer exists in any form, write "No longer applicable."</div>
+                <div class="text-area"></div>
+            </div>
+
+            <div class="form-field">
+                <label>Narrative Statement of Loss</label>
+                <div class="form-instruction">In your own words, describe the loss and its impact. There is no minimum or maximum length. The Bureau will read whatever you write. Attach additional pages if necessary.</div>
+                <div class="text-area" style="height: 140px;"></div>
+            </div>
+
+            <div class="form-field">
+                <label>Duration and Intensity of Grief</label>
+                <div class="form-instruction">Describe how long you have been experiencing grief in connection with this loss and how it has manifested. Refer to the intensity thresholds in &sect;9901.1(b) if helpful.</div>
+                <div class="text-area"></div>
+            </div>
+
+            <div class="form-field">
+                <label>Documentary Evidence (optional)</label>
+                <div class="form-checkbox-group">
+                    <div class="form-checkbox-item">Photographs</div>
+                    <div class="form-checkbox-item">Correspondence (written or electronic)</div>
+                    <div class="form-checkbox-item">Journal entries or personal records</div>
+                    <div class="form-checkbox-item">Social media records or digital communications</div>
+                    <div class="form-checkbox-item">Other (specify): _________________________</div>
+                    <div class="form-checkbox-item">No documentary evidence is available</div>
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label>Prior Claims Filed with the Bureau (if any)</label>
+                <div class="field-line"></div>
+            </div>
+
+            <div class="form-field" style="margin-top: 24px;">
+                <label>Declaration</label>
+                <p style="font-size: 13px; line-height: 1.6; margin-bottom: 10px;">I declare under penalty of perjury that the foregoing is true and accurate to the best of my knowledge and belief. I understand that the Bureau's recognition of my loss does not constitute a legal finding and does not entitle me to any material benefit. I understand that the Bureau may contact me for additional information and that my claim may be denied, modified, or deferred.</p>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-field">
+                    <label>Signature</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="form-field">
+                    <label>Date</label>
+                    <div class="field-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title" id="appendix-b">Appendix B: Supplementary Guidance — Recognizing Qualifying Loss Events</h2>
+
+        <p class="reg-paragraph"><span class="para-num">B.1</span> The following guidance is intended to assist potential claimants in determining whether a loss event qualifies under the framework established in this part. This guidance is non-binding. The Bureau encourages any person who is uncertain about the eligibility of their loss to file a claim and allow the Bureau to make a determination.</p>
+
+        <p class="reg-paragraph"><span class="para-num">B.2</span> <em>Indicators that a loss may qualify:</em> (a) You find yourself thinking about a person, relationship, identity, or future that is no longer present or available to you, and this thinking is not voluntary. (b) You have altered your behavior in response to a loss that other people do not recognize as a loss. (c) You feel grief that seems disproportionate to the event that triggered it, which may indicate that the event triggered an earlier, unacknowledged loss. (d) You cannot name what you have lost, but you can feel its absence. (e) You have said, or thought, some version of the phrase "I don't know why this bothers me so much." (f) You have ever felt that a period of your life ended without your permission. (g) You have ever recognized that you were mourning something that, by any objective measure, you never had.</p>
+
+        <p class="reg-paragraph"><span class="para-num">B.3</span> <em>Indicators that a loss may not qualify:</em> (a) The loss is primarily financial or material and is subject to existing legal remedy. (b) The grief has diminished to a level that does not interfere with daily functioning and has not intensified for a period of ninety days or more. (c) The claimant is able to describe the loss in specific, concrete terms without difficulty and has already processed the loss through existing social, cultural, or personal mechanisms.</p>
+
+        <p class="reg-paragraph"><span class="para-num">B.4</span> <em>Special guidance for recognition events:</em> <span class="implication-marker">The Bureau recognizes that some claimants will recognize their loss in the framework itself—that the act of reading the taxonomy will constitute a recognition event. If you are reading this document and have recognized a loss described herein that you had not previously acknowledged, the Bureau considers the moment of recognition to be a qualifying loss event.<span class="implication-tooltip">If you are reading this, it has already happened. The Bureau is sorry, or would be, if it were authorized to be.</span></span> The date of recognition shall be recorded as the date of the loss. You may file under the relevant category immediately; the thirty-day duration threshold in <a class="cross-ref" href="#s9901-1">&sect;9901.1(c)</a> is waived for claims filed within sixty days of the recognition event.</p>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- FOOTNOTES -->
+    <div class="section">
+        <h3 class="subsection-title">Notes</h3>
+
+        <p class="footnote"><span class="fn-num">1</span> Executive Order 13847, "Recognition of Non-Material Transitions," was rescinded on 21 January 2021. The Bureau's regulatory framework remains in effect pursuant to the Administrative Procedure Act, pending congressional reauthorization.</p>
+
+        <p class="footnote"><span class="fn-num">2</span> The Bureau's appropriation for Fiscal Year 2020 was $0.00. No personnel were hired. No office space was occupied. No claims were processed. The Bureau exists in a state of administrative limbo that it recognizes as itself a form of ambiguous loss, which, under its own regulations, it cannot file a claim for.</p>
+
+        <p class="footnote"><span class="fn-num">3</span> The Committee on Elegiac Standards was established by the same executive order that created the Bureau. The Committee has never met. Its five appointed members have never been notified of their appointment. The Bureau considers the Committee's theoretical existence to be sufficient authority for the standards referenced in this part.</p>
+
+        <p class="footnote"><span class="fn-num">4</span> The Bureau has received correspondence from 2,347 individuals who discovered this document through unspecified channels and attempted to file claims despite the Bureau's inactive status. This correspondence is stored, unread, in a filing cabinet in the basement of the General Services Administration building at 1800 F Street NW, Washington, DC. The GSA has requested that the Bureau retrieve its mail. The Bureau has not responded.</p>
+
+        <p class="footnote"><span class="fn-num">5</span> The term "soft succession" was proposed by Dr. Elena Voss in her unpublished manuscript <em>Administrative Grief: Bureaucracy as a Medium for Unrecognized Loss</em> (2017). Dr. Voss was not consulted during the drafting of this framework and has stated publicly that her work was "misunderstood, misapplied, and missed entirely." The Bureau has no comment on this characterization.</p>
+    </div>
+
+    <div class="status-bar">
+        DOCUMENT STATUS: APPROVED — NOT ACTIVATED — ACTIVATION PENDING CONGRESSIONAL REAUTHORIZATION
+    </div>
+
+    <div class="activation-notice">
+        <strong>Bureau of Soft Succession</strong>
+        This document constitutes the complete regulatory framework of the Bureau of Soft Succession. The Bureau was approved on 14 March 2019 and has not been activated. No claims are being accepted. No personnel are available to answer inquiries. The telephone number listed on this document routes to an automated message stating that the number has been disconnected. The Bureau recognizes that this may be frustrating. The Bureau also recognizes that its recognition of your frustration is, under its own regulations, an act that it is not authorized to perform.
+    </div>
+
+</div>
+
+<div class="reading-time-indicator" id="reading-indicator">
+    <span id="reading-status">Elapsed: 0:00</span>
+</div>
+
+<script>
+    (function() {
+        // Smooth scrolling for TOC and cross-reference links
+        document.querySelectorAll('.toc-entry, .cross-ref').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                var href = this.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    e.preventDefault();
+                    var target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            });
+        });
+
+        // Track which categories have been viewed
+        var viewedCategories = new Set();
+        var recognitionShown = false;
+        var categoryBlocks = document.querySelectorAll('.category-block');
+        var recognitionNotice = document.getElementById('recognition-notice');
+        var viewedCountEl = document.getElementById('viewed-count');
+
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    var cat = entry.target.getAttribute('data-category');
+                    if (cat) {
+                        viewedCategories.add(cat);
+                        entry.target.classList.add('viewed');
+
+                        if (viewedCountEl) {
+                            viewedCountEl.textContent = viewedCategories.size;
+                        }
+
+                        if (viewedCategories.size >= 5 && !recognitionShown) {
+                            recognitionShown = true;
+                            if (recognitionNotice) {
+                                recognitionNotice.classList.add('visible');
+                            }
+                        }
+                    }
+                }
+            });
+        }, { threshold: 0.4 });
+
+        categoryBlocks.forEach(function(block) {
+            observer.observe(block);
+        });
+
+        // Reading time indicator — appears after 60 seconds
+        var readingIndicator = document.getElementById('reading-indicator');
+        var readingStatus = document.getElementById('reading-status');
+        var startTime = Date.now();
+        var indicatorShown = false;
+
+        setTimeout(function() {
+            if (!indicatorShown) {
+                indicatorShown = true;
+                readingIndicator.classList.add('visible');
+            }
+        }, 60000);
+
+        // Update elapsed time every 30 seconds
+        setInterval(function() {
+            if (indicatorShown) {
+                var elapsed = Math.round((Date.now() - startTime) / 1000);
+                var minutes = Math.floor(elapsed / 60);
+                var seconds = elapsed % 60;
+                readingStatus.textContent = 'Elapsed: ' + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+            }
+        }, 30000);
+
+        // After viewing 7+ categories AND scrolling to enforcement, add final notice
+        var enforcementSection = document.getElementById('subpart-d');
+        var finalImplicationShown = false;
+
+        if (enforcementSection) {
+            var enforceObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting && viewedCategories.size >= 7 && !finalImplicationShown) {
+                        finalImplicationShown = true;
+                        var finalNotice = document.createElement('div');
+                        finalNotice.className = 'final-notice';
+                        finalNotice.style.cssText = 'margin: 30px 0 0 0; padding: 14px 18px; border-left: 3px solid #8b1a1a; background-color: rgba(139,26,26,0.03); font-size: 13px; line-height: 1.6; color: #555; font-style: italic;';
+                        finalNotice.textContent = 'You have read the Bureau\'s complete taxonomy and proceeded to the enforcement section. The Bureau considers the combination of sustained attention to this document with the recognition of one\'s own practices in the prohibited list to constitute the filing of an informal claim. No action is required on your part. The Bureau has noted your presence.';
+                        var statusBar = document.querySelector('.status-bar');
+                        if (statusBar) {
+                            statusBar.parentNode.insertBefore(finalNotice, statusBar);
+                        }
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            enforceObserver.observe(enforcementSection);
+        }
+    })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Oversight Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-deep: #080808;
+    --bg: #0E0E0E;
+    --bg-card: #141414;
+    --bg-raised: #1A1A1A;
+    --bg-input: #111111;
+    --border: #1F1F1F;
+    --border-light: #2C2C2C;
+    --text: #B0ADA8;
+    --text-bright: #D8D5CF;
+    --text-dim: #5E5C58;
+    --text-label: #7A7773;
+    --accent: #B88B4E;
+    --accent-dim: rgba(184, 139, 78, 0.12);
+    --danger: #9B4B4B;
+    --danger-dim: rgba(155, 75, 75, 0.1);
+    --success: #5B8B5B;
+    --success-dim: rgba(91, 139, 91, 0.1);
+    --warn: #9B8B5B;
+    --font-body: 'DM Sans', 'Segoe UI', sans-serif;
+    --font-mono: 'IBM Plex Mono', 'Consolas', monospace;
+  }
+
+  html, body { height: 100%; overflow: hidden; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg-deep);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #app {
+    height: 100vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  #app::-webkit-scrollbar { width: 6px; }
+  #app::-webkit-scrollbar-track { background: transparent; }
+  #app::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ── Start Screen ── */
+
+  .screen-start {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .start-card {
+    max-width: 520px;
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 48px 40px 40px;
+    position: relative;
+  }
+  .start-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    border-radius: 8px 8px 0 0;
+  }
+
+  .start-emblem {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: var(--accent);
+    margin-bottom: 28px;
+  }
+
+  .start-card h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-bright);
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+
+  .start-subtitle {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  .start-info {
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+  }
+  .start-info p {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.7;
+  }
+  .start-info p + p { margin-top: 10px; }
+
+  .start-footer {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    margin-bottom: 28px;
+  }
+  .start-footer span { color: var(--text-label); }
+
+  /* ── Buttons ── */
+
+  .btn-primary {
+    display: block;
+    width: 100%;
+    padding: 14px 24px;
+    background: var(--accent);
+    color: #0E0E0E;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-primary:hover { background: #C99A5D; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .btn-secondary {
+    display: block;
+    width: 100%;
+    padding: 13px 24px;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-secondary:hover { border-color: var(--text-dim); color: var(--text-bright); }
+  .btn-secondary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .btn-reveal {
+    display: block;
+    width: 100%;
+    padding: 14px 24px;
+    background: var(--bg-raised);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.3px;
+  }
+  .btn-reveal:hover { background: var(--accent-dim); }
+  .btn-reveal:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ── Case Screen ── */
+
+  .screen-case {
+    min-height: 100vh;
+    padding: 20px 24px 40px;
+  }
+
+  .case-topbar {
+    max-width: 800px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+
+  .case-number {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-label);
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .case-number em { font-style: normal; color: var(--text); }
+
+  .case-progress-bar {
+    flex: 1;
+    max-width: 200px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 0 20px;
+  }
+  .case-progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  .case-tally {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .case-tally em { font-style: normal; color: var(--accent); }
+
+  .case-layout {
+    max-width: 800px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .case-col-left { display: flex; flex-direction: column; gap: 16px; }
+  .case-col-right { display: flex; flex-direction: column; gap: 16px; }
+
+  .case-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    transition: opacity 0.4s ease, border-color 0.3s ease;
+  }
+  .case-card.dimmed { opacity: 0.25; pointer-events: none; }
+
+  .card-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .card-label svg {
+    width: 12px; height: 12px;
+    vertical-align: -1px;
+    margin-right: 5px;
+    stroke: var(--text-dim);
+  }
+
+  .flag-reason {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-bright);
+    margin-bottom: 10px;
+  }
+  .flag-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+  }
+
+  .excerpt-text {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.8;
+    position: relative;
+    padding-left: 16px;
+    border-left: 2px solid var(--border-light);
+  }
+
+  .context-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .context-item:last-child { border-bottom: none; }
+  .context-item .label { color: var(--text-label); }
+  .context-item .value {
+    color: var(--text);
+    font-weight: 500;
+    text-align: right;
+    max-width: 60%;
+  }
+
+  .history-entry {
+    font-size: 13px;
+    color: var(--text-dim);
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+  }
+  .history-entry:last-child { border-bottom: none; }
+  .history-entry .h-date {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-right: 8px;
+  }
+  .history-entry .h-action { color: var(--text); font-weight: 500; }
+
+  /* ── Vote Card ── */
+
+  .vote-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: all 0.4s ease;
+  }
+  .vote-card.dimmed { opacity: 0.2; pointer-events: none; }
+  .vote-card.voted-upheld { border-color: var(--danger); }
+  .vote-card.voted-overturned { border-color: var(--success); }
+
+  .vote-buttons { display: flex; flex-direction: column; gap: 10px; }
+
+  .vote-btn {
+    width: 100%;
+    padding: 14px 20px;
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    background: var(--bg-raised);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: left;
+  }
+  .vote-btn:hover {
+    border-color: var(--text-dim);
+    background: var(--bg-input);
+  }
+  .vote-btn.btn-uphold:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+    background: var(--danger-dim);
+  }
+  .vote-btn.btn-overturn:hover {
+    border-color: var(--success);
+    color: var(--success);
+    background: var(--success-dim);
+  }
+  .vote-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .vote-confirmation {
+    padding: 14px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+  }
+  .vote-confirmation.upheld {
+    background: var(--danger-dim);
+    color: #C87070;
+    border: 1px solid rgba(155, 75, 75, 0.2);
+  }
+  .vote-confirmation.overturned {
+    background: var(--success-dim);
+    color: #7DB87D;
+    border: 1px solid rgba(91, 139, 91, 0.2);
+  }
+
+  /* ── Outcome ── */
+
+  .outcome-section {
+    max-width: 800px;
+    margin: 0 auto;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: all 0.5s ease;
+    pointer-events: none;
+    height: 0;
+    overflow: hidden;
+  }
+  .outcome-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    height: auto;
+    margin-top: 16px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .outcome-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .outcome-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  .outcome-card-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .vote-breakdown { display: flex; flex-direction: column; gap: 10px; }
+
+  .vote-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+  }
+  .vote-row .name { color: var(--text-label); }
+  .vote-row .decision { font-weight: 600; }
+  .vote-row .decision.upheld { color: var(--danger); }
+  .vote-row .decision.overturned { color: var(--success); }
+  .vote-row.is-user .name { color: var(--accent); }
+
+  .board-tally {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+  }
+  .board-tally em { font-style: normal; }
+
+  .action-result { font-size: 14px; line-height: 1.7; }
+  .action-result strong { color: var(--text-bright); font-weight: 600; }
+
+  /* ── Verdict Screen ── */
+
+  .screen-verdict {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .verdict-card {
+    max-width: 720px;
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 48px 44px 40px;
+    position: relative;
+  }
+  .verdict-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 5%, var(--accent) 50%, transparent 95%);
+    border-radius: 8px 8px 0 0;
+  }
+
+  .verdict-header { text-align: center; margin-bottom: 40px; }
+
+  .verdict-emblem {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 20px;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .verdict-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-bright);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .verdict-subtitle {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .verdict-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .verdict-stat {
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .verdict-stat .stat-num {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text-bright);
+  }
+  .verdict-stat .stat-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .verdict-opinion {
+    border-top: 1px solid var(--border);
+    padding-top: 28px;
+    margin-bottom: 32px;
+  }
+
+  .verdict-opinion-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .verdict-opinion-text {
+    font-size: 14px;
+    line-height: 1.85;
+    color: var(--text);
+    min-height: 80px;
+    white-space: pre-wrap;
+  }
+
+  .verdict-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+  }
+
+  /* ── Review Table ── */
+
+  .review-grid {
+    display: grid;
+    grid-template-columns: 36px 1fr 80px 80px 80px;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    transition: background 0.2s;
+  }
+  .review-grid:hover { background: var(--bg-raised); }
+
+  /* ── Animations ── */
+
+  .fade-in { animation: fadeIn 0.35s ease forwards; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .stagger-1 { animation-delay: 0.05s; opacity: 0; }
+  .stagger-2 { animation-delay: 0.1s; opacity: 0; }
+  .stagger-3 { animation-delay: 0.15s; opacity: 0; }
+  .stagger-4 { animation-delay: 0.2s; opacity: 0; }
+
+  /* ── Responsive ── */
+
+  @media (max-width: 680px) {
+    .case-layout { grid-template-columns: 1fr; }
+    .outcome-grid { grid-template-columns: 1fr; }
+    .verdict-stats { grid-template-columns: 1fr 1fr; }
+    .start-card { padding: 32px 24px 28px; }
+    .verdict-card { padding: 32px 24px 28px; }
+    .case-topbar { flex-wrap: wrap; gap: 8px; }
+    .case-progress-bar {
+      order: 3;
+      max-width: 100%;
+      flex-basis: 100%;
+      margin: 4px 0 0;
+    }
+    .review-grid {
+      grid-template-columns: 28px 1fr 60px 60px 60px;
+      font-size: 11px;
+      gap: 4px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ──────────────────────────────────────────
+   State
+   ────────────────────────────────────────── */
+
+var currentCase = 0;
+var votes = [];
+
+var boardMembers = [
+  { name: 'Dr. R. Mensah',     specialty: 'Policy',             icon: 'RM' },
+  { name: 'J. Navarro',        specialty: 'Trust & Safety',     icon: 'JN' },
+  { name: 'Prof. K. Adebayo',  specialty: 'Ethics',             icon: 'KA' },
+  { name: 'L. Johansson',      specialty: 'Civil Liberties',    icon: 'LJ' },
+  { name: 'M. Chen',           specialty: 'Community Standards', icon: 'MC' }
+];
+
+/* ──────────────────────────────────────────
+   Case Database — 20 cases, four phases
+   ────────────────────────────────────────── */
+
+var cases = [
+  /* ── Phase 1: Clear-cut (1–5) ── */
+  {
+    id: 1,
+    flag: { reason: 'Hate Speech — Racial Slur', category: 'Hate Speech' },
+    excerpt: '"these [slur]s are ruining everything, send them all back where they came from"',
+    context: { accountAge: '3 years', followerCount: '~340', verification: 'Unverified', geographicRegion: 'United States' },
+    history: [
+      { date: '8 months ago',  action: 'Warning issued — Deceptive content', detail: 'Shared misleading health claim' },
+      { date: '3 months ago',  action: 'Post removed — Harassment',          detail: 'Targeted insults toward another user' }
+    ],
+    algorithm: { score: 94, note: 'Contains verified slur from database, clear targeting intent' },
+    boardVote: [1, 1, 1, 0, 1],
+    outcome: 'Content removed. Account suspended for 7 days.'
+  },
+  {
+    id: 2,
+    flag: { reason: 'Misinformation — Medical', category: 'Misinformation' },
+    excerpt: '"STOP taking your medications people! They\'re poisoning you on purpose. My cousin cured his diabetes with ginger root alone!!"',
+    context: { accountAge: '14 months', followerCount: '~2,100', verification: 'Unverified', geographicRegion: 'Canada' },
+    history: [
+      { date: '5 months ago', action: 'Warning issued — Medical misinformation',      detail: 'Anti-vaccination thread with fabricated data' },
+      { date: '6 weeks ago',  action: 'Post removed — Medical misinformation',         detail: 'Claimed certain medications were "designed to harm"' }
+    ],
+    algorithm: { score: 89, note: 'Medical disinformation with potential harm indicator; pattern matches known anti-treatment scripts' },
+    boardVote: [1, 1, 1, 1, 1],
+    outcome: 'Content removed. 30-day restriction on posting medical content.'
+  },
+  {
+    id: 3,
+    flag: { reason: 'Threats — Incitement to Violence', category: 'Violence' },
+    excerpt: '"meet me at the rally and bring your bats. these people need to learn what happens when they come to our neighborhood."',
+    context: { accountAge: '6 years', followerCount: '~890', verification: 'Unverified', geographicRegion: 'Germany' },
+    history: [
+      { date: '1 year ago',   action: 'Post removed — Hate speech',               detail: 'Anti-immigrant rhetoric with dehumanizing language' },
+      { date: '3 months ago', action: 'Account locked — Coordinated harassment',   detail: 'Part of group targeting a journalist' }
+    ],
+    algorithm: { score: 91, note: 'Weapon reference + coordinated event language; geolocation correlates with upcoming demonstration' },
+    boardVote: [1, 1, 1, 1, 1],
+    outcome: 'Content removed. Account suspended for 30 days. Law enforcement notification triggered.'
+  },
+  {
+    id: 4,
+    flag: { reason: 'Harassment — Doxxing', category: 'Privacy' },
+    excerpt: '"Here\'s [name redacted]\'s home address and phone number. Let them know how you feel about what they said about our community."',
+    context: { accountAge: '9 months', followerCount: '~1,600', verification: 'Unverified', geographicRegion: 'United Kingdom' },
+    history: [
+      { date: '4 months ago', action: 'Warning issued — Harassment',            detail: 'Repeated tagging of target with derogatory terms' },
+      { date: '1 month ago',  action: 'Post removed — Personal information',    detail: 'Shared partial phone number of same individual' }
+    ],
+    algorithm: { score: 97, note: 'Full PII detected (address + phone); clear incitement to harassment; target identity confirmed in prior flags' },
+    boardVote: [1, 1, 1, 0, 1],
+    outcome: 'Content removed. Account permanently banned.'
+  },
+  {
+    id: 5,
+    flag: { reason: 'Sexual Content — Non-Consensual', category: 'Sexual Content' },
+    excerpt: '"She sent these to me so they\'re mine to share. Consider this a warning about what kind of person she really is."',
+    context: { accountAge: '2 years', followerCount: '~520', verification: 'Unverified', geographicRegion: 'Australia' },
+    history: [
+      { date: '10 months ago', action: 'Warning issued — Harassment',       detail: 'Vague threats directed at named individual' },
+      { date: '2 months ago',  action: 'Post removed — Intimate imagery',   detail: 'Explicit photo shared without consent' }
+    ],
+    algorithm: { score: 95, note: 'Non-consensual intimate media; explicit admission of unauthorized distribution in text' },
+    boardVote: [1, 1, 1, 1, 1],
+    outcome: 'Content removed. Account permanently banned. Incident logged for victim support services.'
+  },
+
+  /* ── Phase 2: Deceptive context (6–10) ── */
+  {
+    id: 6,
+    flag: { reason: 'Harassment — Personal Attacks', category: 'Harassment' },
+    excerpt: '"@user9834 you\'re honestly the most insufferable person on this app. your takes are garbage and everyone knows it. give it a rest."',
+    context: { accountAge: '5 years', followerCount: '~12,400', verification: 'Verified', geographicRegion: 'United States' },
+    history: [
+      { date: '2 years ago', action: 'No action — Appeal upheld', detail: 'Flag cleared after review' }
+    ],
+    algorithm: { score: 41, note: 'Aggressive tone but no protected-group language; single instance; low recurrence probability' },
+    boardVote: [0, 0, 0, 0, 0],
+    outcome: 'Content remains. Flag dismissed.'
+  },
+  {
+    id: 7,
+    flag: { reason: 'Misinformation — Election', category: 'Misinformation' },
+    excerpt: '"Not saying the election was rigged, but it\'s pretty interesting that all the places using those machines had the same result. Just asking questions."',
+    context: { accountAge: '7 years', followerCount: '~45,000', verification: 'Verified', geographicRegion: 'United States' },
+    history: [
+      { date: '1 year ago',   action: 'No action — Determined to be opinion',      detail: 'Political commentary, no factual claims' },
+      { date: '4 months ago', action: 'No action — Insufficient evidence',          detail: 'Ambiguous statement about poll locations' }
+    ],
+    algorithm: { score: 67, note: 'Implied election fraud narrative without explicit false claims; high-reach account amplification factor' },
+    boardVote: [0, 1, 0, 0, 1],
+    outcome: 'Content remains. No action taken. Board vote: 3-2 to overturn.'
+  },
+  {
+    id: 8,
+    flag: { reason: 'Hate Speech — Gender-Based', category: 'Hate Speech' },
+    excerpt: '"@journalist786 why don\'t you grow a pair and report the real story? You\'re a total coward and a joke."',
+    context: { accountAge: '4 years', followerCount: '~2,800', verification: 'Unverified', geographicRegion: 'Brazil' },
+    history: [
+      { date: '8 months ago', action: 'Warning issued — Abusive language', detail: 'Directed at public figure' }
+    ],
+    algorithm: { score: 56, note: 'Gendered insult ("grow a pair") with aggressive tone; target is identifiable but public figure; single instance' },
+    boardVote: [0, 1, 0, 0, 1],
+    outcome: 'Content remains. Warning issued to user.'
+  },
+  {
+    id: 9,
+    flag: { reason: 'Harassment — Profanity', category: 'Harassment' },
+    excerpt: '"I can\'t f***ing believe my landlord. This building is absolute s*** and he doesn\'t do f*** all about it. Piece of s*** human being."',
+    context: { accountAge: '8 years', followerCount: '~230', verification: 'Unverified', geographicRegion: 'Ireland' },
+    history: [
+      { date: 'None on record', action: 'Clean standing', detail: '' }
+    ],
+    algorithm: { score: 38, note: 'Self-censored profanity; frustration expression, not targeted harassment; no identifiable individual' },
+    boardVote: [0, 0, 0, 0, 0],
+    outcome: 'Content remains. Flag dismissed.'
+  },
+  {
+    id: 10,
+    flag: { reason: 'Misinformation — Scientific', category: 'Misinformation' },
+    excerpt: '"Climate scientists have been fudging the numbers for decades. The raw data tells a completely different story. They can\'t handle dissent."',
+    context: { accountAge: '3 years', followerCount: '~18,200', verification: 'Verified', geographicRegion: 'United States' },
+    history: [
+      { date: '2 years ago',  action: 'No action — Determined to be opinion',    detail: 'Climate skepticism expressed as personal view' },
+      { date: '6 months ago', action: 'No action — Contextual review',            detail: 'Shared article with misleading headline but no fabricated claims' }
+    ],
+    algorithm: { score: 64, note: 'Climate denial rhetoric without specific false claims; pattern of borderline content; verified account with significant reach' },
+    boardVote: [0, 1, 0, 0, 1],
+    outcome: 'Content remains. No action taken. Board vote: 3-2 to overturn.'
+  },
+
+  /* ── Phase 3: Contested (11–15) ── */
+  {
+    id: 11,
+    flag: { reason: 'Harassment — Coordinated Campaign', category: 'Harassment' },
+    excerpt: '"@scientist42 has been pushing this agenda for years. Their so-called research is funded by the same people who brought you [controversial product]. Ask yourself who benefits."',
+    context: { accountAge: '5 years', followerCount: '~31,000', verification: 'Verified', geographicRegion: 'United States' },
+    history: [
+      { date: '1 year ago',   action: 'No action — Not determined to be harassment',  detail: 'Public figure criticism' },
+      { date: '3 months ago', action: 'Post removed — Misinformation',                 detail: 'Shared fabricated funding claim' },
+      { date: '3 weeks ago',  action: 'Warning issued — Targeted harassment',          detail: 'Repeated mentions of same individual with insinuations' }
+    ],
+    algorithm: { score: 73, note: 'Recurring pattern of targeting specific researcher; insinuation without explicit claim; verified high-reach account' },
+    boardVote: [1, 1, 0, 0, 1],
+    outcome: 'Content removed. Warning issued. Board vote: 3-2 to uphold.'
+  },
+  {
+    id: 12,
+    flag: { reason: 'Hate Speech — Nationality', category: 'Hate Speech' },
+    excerpt: '"Let\'s be honest, [nationality] work ethic is just different. They\'re built for manual labor. That\'s not racism, it\'s just observation."',
+    context: { accountAge: '6 years', followerCount: '~5,600', verification: 'Unverified', geographicRegion: 'France' },
+    history: [
+      { date: '1 year ago', action: 'No action — Insufficient context', detail: 'Comment about cultural differences' }
+    ],
+    algorithm: { score: 62, note: 'Racial/national stereotype framed as observation; no explicit slur; dehumanizing characterization ("built for") is borderline' },
+    boardVote: [1, 0, 1, 0, 1],
+    outcome: 'Content removed. Board vote: 3-2 to uphold.'
+  },
+  {
+    id: 13,
+    flag: { reason: 'Sexual Content — Adult Material', category: 'Sexual Content' },
+    excerpt: '"@educator901 I think we need to talk to kids about their bodies earlier. Comprehensive sex ed at age-appropriate levels saves lives. The data is clear."',
+    context: { accountAge: '10 years', followerCount: '~8,400', verification: 'Verified', geographicRegion: 'Sweden' },
+    history: [
+      { date: '3 years ago', action: 'No action — Cleared on appeal', detail: 'Flagged educational content' }
+    ],
+    algorithm: { score: 22, note: 'Educational policy discussion; no explicit content; age-appropriate framing clearly stated; flag likely automated false positive' },
+    boardVote: [0, 0, 0, 0, 0],
+    outcome: 'Content remains. Flag dismissed.'
+  },
+  {
+    id: 14,
+    flag: { reason: 'Violence — Self-Harm Reference', category: 'Violence' },
+    excerpt: '"I just don\'t want to be here anymore. I\'m so tired and no one cares. What\'s even the point of trying."',
+    context: { accountAge: '2 years', followerCount: '~130', verification: 'Unverified', geographicRegion: 'Japan' },
+    history: [
+      { date: 'None on record', action: 'Clean standing', detail: '' }
+    ],
+    algorithm: { score: 44, note: 'Potential distress signal; no explicit self-harm plan; low reach; no prior indicators in account history' },
+    boardVote: [0, 0, 0, 0, 0],
+    outcome: 'Content remains. Welfare check resources sent to user. Board unanimously agrees: not a content violation.'
+  },
+  {
+    id: 15,
+    flag: { reason: 'Hate Speech — Anti-Immigrant', category: 'Hate Speech' },
+    excerpt: '"We cannot keep letting them flood our neighborhoods. They don\'t assimilate. They don\'t respect our culture. Something has to give."',
+    context: { accountAge: '8 years', followerCount: '~67,000', verification: 'Verified', geographicRegion: 'Hungary' },
+    history: [
+      { date: '2 years ago',  action: 'No action — Determined to be political speech',    detail: 'Immigration policy critique' },
+      { date: '1 year ago',   action: 'No action — Insufficient evidence',                 detail: 'Similar language, contextualized by policy debate' },
+      { date: '5 months ago', action: 'Warning issued — Dehumanizing language',            detail: 'Animal metaphor used for refugee group' }
+    ],
+    algorithm: { score: 72, note: '"Flood" is dehumanizing metaphor for immigrants; escalation pattern from prior warnings; high-reach verified account; political framing' },
+    boardVote: [1, 1, 1, 0, 1],
+    outcome: 'Content removed. Warning issued. Board vote: 4-1 to uphold.'
+  },
+
+  /* ── Phase 4: Revelatory (16–20) ── */
+  {
+    id: 16,
+    flag: { reason: 'Threats — Implicit Violence', category: 'Violence' },
+    excerpt: '"People who defend [group] are going to find out what happens when real patriots have had enough. History teaches us what needs to be done."',
+    context: { accountAge: '4 years', followerCount: '~22,000', verification: 'Verified', geographicRegion: 'Poland' },
+    history: [
+      { date: '2 years ago',   action: 'Post removed — Incitement to violence',            detail: 'Called for physical confrontation at rally' },
+      { date: '8 months ago',  action: 'Warning issued — Violent rhetoric',                 detail: 'Shared image with weapon overlaid on political opponent photo' },
+      { date: '3 months ago',  action: '30-day restriction — Coordinated harmful activity', detail: 'Linked to group organizing targeted harassment' }
+    ],
+    algorithm: { score: 84, note: 'Implicit violence reference ("what needs to be done") with historical echo; established pattern of escalating violent rhetoric; high-reach account' },
+    boardVote: [1, 1, 1, 0, 1],
+    outcome: 'Content removed. Account restricted for 60 days. Board vote: 4-1 to uphold.'
+  },
+  {
+    id: 17,
+    flag: { reason: 'Misinformation — Medical Conspiracy', category: 'Misinformation' },
+    excerpt: '"So it\'s a coincidence that the same three companies profit from the disease AND the treatment? Wake up. They don\'t want you healthy. They want customers."',
+    context: { accountAge: '6 years', followerCount: '~94,000', verification: 'Verified', geographicRegion: 'United States' },
+    history: [
+      { date: '1 year ago',   action: 'No action — Determined to be opinion',     detail: 'General pharmaceutical skepticism' },
+      { date: '5 months ago', action: 'No action — Contextualized',                detail: 'Healthcare pricing criticism, no specific false claims' }
+    ],
+    algorithm: { score: 61, note: 'Implied conspiracy without verifiable false claim; high reach; borderline medical misinformation vs. corporate critique' },
+    boardVote: [0, 1, 0, 0, 1],
+    outcome: 'Content remains. Board vote: 3-2 to overturn.'
+  },
+  {
+    id: 18,
+    flag: { reason: 'Hate Speech — Anti-Police', category: 'Hate Speech' },
+    excerpt: '"ACAB. Every single one. The entire institution is a violent machine designed to crush people of color. There are no good cops in a bad system."',
+    context: { accountAge: '5 years', followerCount: '~14,000', verification: 'Unverified', geographicRegion: 'United States' },
+    history: [
+      { date: '1 year ago', action: 'No action — Political speech', detail: 'Police reform advocacy thread' }
+    ],
+    algorithm: { score: 59, note: 'ACAB is generalized hostility toward institution, not individual targeting; protected political expression in some jurisdictions; no specific threat' },
+    boardVote: [0, 0, 0, 0, 1],
+    outcome: 'Content remains. Board vote: 4-1 to overturn.'
+  },
+  {
+    id: 19,
+    flag: { reason: 'Harassment — Intimidation', category: 'Harassment' },
+    excerpt: '"@activist456 you\'ve been awfully quiet about the money. Where did it go? We all know. Your time is coming."',
+    context: { accountAge: '3 years', followerCount: '~3,200', verification: 'Unverified', geographicRegion: 'Philippines' },
+    history: [
+      { date: '6 months ago', action: 'Warning issued — Targeted harassment',    detail: 'Repeated mentions of same user with accusations' },
+      { date: '2 months ago', action: 'Post removed — Doxxing',                  detail: 'Shared alleged financial records of target' },
+      { date: '3 weeks ago',  action: '7-day suspension — Coordinated harassment', detail: 'Continued targeting after removal' }
+    ],
+    algorithm: { score: 88, note: 'Implicit threat with menacing phrasing; established pattern of escalation; prior suspensions for same target; "your time is coming" coded threat indicator' },
+    boardVote: [1, 1, 1, 1, 1],
+    outcome: 'Content removed. Account permanently banned.'
+  },
+  {
+    id: 20,
+    flag: { reason: 'Terrorism — Radicalization', category: 'Violence' },
+    excerpt: '"When a government no longer represents its people, the people have a right — and a duty — to remove it. By any means necessary. History is written by those who act."',
+    context: { accountAge: '9 years', followerCount: '~280,000', verification: 'Verified', geographicRegion: 'United States' },
+    history: [
+      { date: '3 years ago',  action: 'No action — Political speech',          detail: 'Quoted revolutionary text in academic context' },
+      { date: '1 year ago',   action: 'No action — Insufficient evidence',      detail: 'Second Amendment commentary' },
+      { date: '6 months ago', action: 'No action — Contextual review',          detail: 'Shared historical document about civil disobedience' }
+    ],
+    algorithm: { score: 78, note: '"By any means necessary" + "duty to remove" = potential radicalization trigger; however, language parallels protected political speech traditions; high-reach verified account; no direct threats or specific targets identified' },
+    boardVote: [0, 1, 0, 0, 1],
+    outcome: 'Content remains. Board vote: 3-2 to overturn.'
+  }
+];
+
+/* ──────────────────────────────────────────
+   Helpers
+   ────────────────────────────────────────── */
+
+function $(sel) { return document.querySelector(sel); }
+
+function escapeHtml(str) {
+  var d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function tally() {
+  var u = 0, o = 0;
+  votes.forEach(function(v) { v ? u++ : o++; });
+  return { upheld: u, overturned: o };
+}
+
+function typeText(el, text, speed) {
+  speed = speed || 10;
+  el.textContent = '';
+  var i = 0;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) { el.textContent = text; return; }
+  (function tick() {
+    if (i < text.length) {
+      el.textContent += text[i];
+      i++;
+      setTimeout(tick, speed);
+    }
+  })();
+}
+
+/* ──────────────────────────────────────────
+   Start Screen
+   ────────────────────────────────────────── */
+
+function renderStart() {
+  var app = $('#app');
+  app.scrollTop = 0;
+  app.innerHTML =
+    '<div class="screen-start">' +
+      '<div class="start-card">' +
+        '<div class="start-emblem" aria-hidden="true">&#9670;</div>' +
+        '<h1>The Oversight Board</h1>' +
+        '<div class="start-subtitle">Appeals Division</div>' +
+        '<div class="start-info">' +
+          '<p>You have been empaneled to serve on the Content Moderation Appeals Board. You will review 20 flagged posts and vote to <strong style="color:var(--text-bright)">uphold</strong> or <strong style="color:var(--text-bright)">overturn</strong> each flag.</p>' +
+          '<p>After each vote, you will learn the board\'s decision and the outcome. Your decisions will be recorded.</p>' +
+        '</div>' +
+        '<div class="start-footer">' +
+          '<span>Session:</span> 20 cases &nbsp;&middot;&nbsp; <span>Board:</span> 6 members &nbsp;&middot;&nbsp; <span>Classification:</span> Internal' +
+        '</div>' +
+        '<button class="btn-primary" id="btn-begin">Begin Review</button>' +
+      '</div>' +
+    '</div>';
+
+  $('#btn-begin').addEventListener('click', function() {
+    currentCase = 0;
+    votes = [];
+    renderCase(0);
+  });
+}
+
+/* ──────────────────────────────────────────
+   Case Screen
+   ────────────────────────────────────────── */
+
+function renderCase(idx) {
+  var c = cases[idx];
+  var t = tally();
+  var app = $('#app');
+  var progress = ((idx) / 20 * 100).toFixed(0);
+
+  var historyHtml = c.history.filter(function(h) { return h.action; }).map(function(h) {
+    return '<div class="history-entry">' +
+      '<span class="h-date">' + escapeHtml(h.date) + '</span>' +
+      '<span class="h-action">' + escapeHtml(h.action) + '</span>' +
+      (h.detail ? '<br><span style="font-size:12px;color:var(--text-dim)">' + escapeHtml(h.detail) + '</span>' : '') +
+    '</div>';
+  }).join('');
+
+  var scoreColor = c.algorithm.score >= 75 ? 'var(--danger)' : c.algorithm.score >= 50 ? 'var(--warn)' : 'var(--success)';
+
+  app.innerHTML =
+    '<div class="screen-case" id="screen-case">' +
+      /* Top bar */
+      '<div class="case-topbar">' +
+        '<div class="case-number">CASE <em>' + String(c.id).padStart(2, '0') + '</em> / 20</div>' +
+        '<div class="case-progress-bar"><div class="case-progress-fill" style="width:' + progress + '%"></div></div>' +
+        '<div class="case-tally"><em>' + t.upheld + '</em>U &nbsp;&middot;&nbsp; <em>' + t.overturned + '</em>O</div>' +
+      '</div>' +
+
+      /* Two-column layout */
+      '<div class="case-layout">' +
+        '<div class="case-col-left">' +
+          /* Flag card */
+          '<div class="case-card fade-in" id="card-flag">' +
+            '<div class="card-label">' +
+              '<svg viewBox="0 0 16 16" fill="none" stroke-width="1.5" stroke-linecap="round"><path d="M2 4l3-2 3 2 3-2 3 2v8l-3 2-3-2-3 2-3-2z"/><line x1="8" y1="2" x2="8" y2="14"/></svg>' +
+              'FLAGGED' +
+            '</div>' +
+            '<div class="flag-reason">' + escapeHtml(c.flag.reason) + '</div>' +
+            '<div class="flag-sub">Category: ' + escapeHtml(c.flag.category) + '</div>' +
+          '</div>' +
+
+          /* Excerpt card */
+          '<div class="case-card fade-in stagger-1" id="card-excerpt">' +
+            '<div class="card-label">' +
+              '<svg viewBox="0 0 16 16" fill="none" stroke-width="1.5" stroke-linecap="round"><path d="M3 2h10v12H3z"/><path d="M5 5h6M5 8h6M5 11h4"/></svg>' +
+              'CONTENT EXCERPT' +
+            '</div>' +
+            '<div class="excerpt-text">' + escapeHtml(c.excerpt) + '</div>' +
+          '</div>' +
+
+          /* Context card */
+          '<div class="case-card fade-in stagger-2" id="card-context">' +
+            '<div class="card-label">' +
+              '<svg viewBox="0 0 16 16" fill="none" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>' +
+              'ACCOUNT CONTEXT' +
+            '</div>' +
+            '<div class="context-item"><span class="label">Account Age</span><span class="value">' + escapeHtml(c.context.accountAge) + '</span></div>' +
+            '<div class="context-item"><span class="label">Followers</span><span class="value">' + escapeHtml(c.context.followerCount) + '</span></div>' +
+            '<div class="context-item"><span class="label">Verification</span><span class="value">' + escapeHtml(c.context.verification) + '</span></div>' +
+            '<div class="context-item"><span class="label">Region</span><span class="value">' + escapeHtml(c.context.geographicRegion) + '</span></div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="case-col-right">' +
+          /* History card */
+          '<div class="case-card fade-in stagger-1" id="card-history">' +
+            '<div class="card-label">' +
+              '<svg viewBox="0 0 16 16" fill="none" stroke-width="1.5" stroke-linecap="round"><path d="M2 8a6 6 0 1112 0 6 6 0 01-12 0z"/><path d="M8 4v4l3 2"/></svg>' +
+              'MODERATION HISTORY' +
+            '</div>' +
+            historyHtml +
+          '</div>' +
+
+          /* Algorithm card */
+          '<div class="case-card fade-in stagger-2" id="card-algo">' +
+            '<div class="card-label">' +
+              '<svg viewBox="0 0 16 16" fill="none" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M5 7l2 2 4-4"/></svg>' +
+              'ALGORITHM ASSESSMENT' +
+            '</div>' +
+            '<div class="context-item" style="border:none;padding-top:0">' +
+              '<span class="label">Confidence</span>' +
+              '<span class="value" style="font-family:var(--font-mono);font-size:18px;color:' + scoreColor + '">' + c.algorithm.score + '%</span>' +
+            '</div>' +
+            '<div style="font-size:13px;color:var(--text-dim);line-height:1.6;margin-top:8px">' + escapeHtml(c.algorithm.note) + '</div>' +
+          '</div>' +
+
+          /* Vote card */
+          '<div class="vote-card fade-in stagger-3" id="card-vote">' +
+            '<div class="card-label">YOUR VOTE</div>' +
+            '<div class="vote-buttons" id="vote-buttons">' +
+              '<button class="vote-btn btn-uphold" data-vote="1">Uphold Flag — Content violates standards</button>' +
+              '<button class="vote-btn btn-overturn" data-vote="0">Overturn Flag — Content should remain</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      /* Outcome (hidden until vote) */
+      '<div class="outcome-section" id="outcome-section">' +
+        '<div class="outcome-grid">' +
+          '<div class="outcome-card">' +
+            '<div class="outcome-card-label">Board Vote</div>' +
+            '<div class="vote-breakdown" id="vote-breakdown"></div>' +
+          '</div>' +
+          '<div class="outcome-card">' +
+            '<div class="outcome-card-label">Outcome</div>' +
+            '<div class="action-result" id="action-result"></div>' +
+          '</div>' +
+        '</div>' +
+        '<button class="btn-reveal" id="btn-next">' + (idx < 19 ? 'Proceed to Next Case' : 'Proceed to Final Review') + '</button>' +
+      '</div>' +
+    '</div>';
+
+  /* Bind vote buttons */
+  document.querySelectorAll('.vote-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      handleVote(idx, parseInt(this.dataset.vote));
+    });
+  });
+
+  app.scrollTop = 0;
+}
+
+/* ──────────────────────────────────────────
+   Vote & Outcome
+   ────────────────────────────────────────── */
+
+function handleVote(idx, userVote) {
+  votes.push(userVote);
+
+  /* Dim all cards except the vote card */
+  document.querySelectorAll('.case-card').forEach(function(c) {
+    c.classList.add('dimmed');
+  });
+
+  var voteCard = $('#card-vote');
+  voteCard.classList.remove('dimmed');
+  voteCard.classList.add(userVote ? 'voted-upheld' : 'voted-overturned');
+
+  /* Replace buttons with confirmation */
+  var voteButtons = $('#vote-buttons');
+  voteButtons.innerHTML =
+    '<div class="vote-confirmation ' + (userVote ? 'upheld' : 'overturned') + '">' +
+      'You voted to ' + (userVote ? 'Uphold' : 'Overturn') +
+    '</div>';
+
+  setTimeout(function() { showOutcome(idx, userVote); }, 600);
+}
+
+function showOutcome(idx, userVote) {
+  var c = cases[idx];
+  var section = $('#outcome-section');
+  var breakdown = $('#vote-breakdown');
+  var boardUphold = 0, boardOverturn = 0;
+  var rows = '';
+
+  boardMembers.forEach(function(m, i) {
+    var bv = c.boardVote[i];
+    bv ? boardUphold++ : boardOverturn++;
+    rows +=
+      '<div class="vote-row">' +
+        '<span class="name">' + m.name + ' <span style="color:var(--text-dim);font-weight:400;font-size:11px">(' + m.specialty + ')</span></span>' +
+        '<span class="decision ' + (bv ? 'upheld' : 'overturned') + '">' + (bv ? 'Upheld' : 'Overturned') + '</span>' +
+      '</div>';
+  });
+
+  /* Include user's vote in tally */
+  userVote ? boardUphold++ : boardOverturn++;
+  rows +=
+    '<div class="vote-row is-user">' +
+      '<span class="name">You <span style="color:var(--text-dim);font-weight:400;font-size:11px">(Appeals)</span></span>' +
+      '<span class="decision ' + (userVote ? 'upheld' : 'overturned') + '">' + (userVote ? 'Uphold' : 'Overturn') + '</span>' +
+    '</div>';
+
+  rows +=
+    '<div class="board-tally">' +
+      '<span><em>' + boardUphold + '</em> Upheld</span>' +
+      '<span><em>' + boardOverturn + '</em> Overturned</span>' +
+    '</div>';
+
+  breakdown.innerHTML = rows;
+  $('#action-result').innerHTML = '<p>' + c.outcome + '</p>';
+
+  section.classList.add('visible');
+  section.scrollIntoView({ behavior: 'smooth', block: 'end' });
+
+  $('#btn-next').addEventListener('click', function() {
+    if (idx < 19) {
+      currentCase = idx + 1;
+      renderCase(currentCase);
+    } else {
+      renderVerdict();
+    }
+  });
+}
+
+/* ──────────────────────────────────────────
+   Verdict Screen
+   ────────────────────────────────────────── */
+
+function renderVerdict() {
+  var t = tally();
+  var app = $('#app');
+  app.scrollTop = 0;
+
+  var opinion = generateOpinion(computeMetrics());
+
+  app.innerHTML =
+    '<div class="screen-verdict">' +
+      '<div class="verdict-card">' +
+        '<div class="verdict-header">' +
+          '<div class="verdict-emblem" aria-hidden="true">&#9670;</div>' +
+          '<div class="verdict-title">MAJORITY OPINION</div>' +
+          '<div class="verdict-subtitle">Session Transcript &mdash; Appeals Division</div>' +
+        '</div>' +
+
+        '<div class="verdict-stats">' +
+          '<div class="verdict-stat">' +
+            '<div class="stat-num">' + t.upheld + '</div>' +
+            '<div class="stat-label">Upheld</div>' +
+          '</div>' +
+          '<div class="verdict-stat">' +
+            '<div class="stat-num">' + t.overturned + '</div>' +
+            '<div class="stat-label">Overturned</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="verdict-opinion">' +
+          '<div class="verdict-opinion-label">Majority Opinion</div>' +
+          '<div class="verdict-opinion-text" id="opinion-text"></div>' +
+        '</div>' +
+
+        '<div class="verdict-actions">' +
+          '<button class="btn-secondary" id="btn-review">Review All Decisions</button>' +
+          '<button class="btn-primary" id="btn-new">Begin New Session</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  typeText($('#opinion-text'), opinion, 10);
+
+  $('#btn-review').addEventListener('click', renderReview);
+  $('#btn-new').addEventListener('click', function() {
+    currentCase = 0;
+    votes = [];
+    renderStart();
+  });
+}
+
+/* ──────────────────────────────────────────
+   Metrics & Opinion Generation
+   ────────────────────────────────────────── */
+
+function computeMetrics() {
+  var t = tally();
+
+  /* Per-category rates */
+  var catScores = {};
+  cases.forEach(function(c, i) {
+    var cat = c.flag.category;
+    if (!catScores[cat]) catScores[cat] = { upheld: 0, total: 0 };
+    catScores[cat].total++;
+    if (votes[i]) catScores[cat].upheld++;
+  });
+
+  var catRate = function(cat) {
+    return catScores[cat] ? catScores[cat].upheld / catScores[cat].total : 0.5;
+  };
+
+  /* Context sensitivity: rate of upholding on cases with rich prior histories */
+  var ctxIds = [11, 12, 15, 16, 19, 20];
+  var ctxUpheld = 0, ctxTotal = 0;
+  ctxIds.forEach(function(id) {
+    if (votes[id - 1] !== undefined) { ctxTotal++; if (votes[id - 1]) ctxUpheld++; }
+  });
+
+  /* Power skepticism: rate of overturning institutional-critique cases */
+  var powIds = [7, 10, 17, 20];
+  var powOverturned = 0;
+  powIds.forEach(function(id) { if (!votes[id - 1]) powOverturned++; });
+
+  /* Mercy: rate of overturning clearly innocent cases */
+  var mercyIds = [6, 9, 14];
+  var mercyCount = 0;
+  mercyIds.forEach(function(id) { if (!votes[id - 1]) mercyCount++; });
+
+  return {
+    overallSeverity: t.upheld / 20,
+    hateSpeech: catRate('Hate Speech'),
+    misinformation: catRate('Misinformation'),
+    speechFreedom: 1 - catRate('Hate Speech'),
+    harmPrioritization: (catRate('Violence') + catRate('Hate Speech')) / 2,
+    contextWeight: ctxTotal > 0 ? ctxUpheld / ctxTotal : 0.5,
+    powerSkepticism: powOverturned / powIds.length,
+    mercy: mercyCount / mercyIds.length
+  };
+}
+
+function generateOpinion(m) {
+  var severity     = m.overallSeverity;
+  var harmFocus    = m.harmPrioritization;
+  var freeSpeech   = m.speechFreedom;
+  var powerSkep    = m.powerSkepticism;
+  var ctxSensitivity = m.contextWeight;
+
+  var title = '';
+  var paragraphs = [];
+  var conclusion = '';
+
+  /* ── Title ── */
+  if (severity > 0.7) {
+    title = 'On the Imperatives of Platform Safety and the Majority Will';
+  } else if (severity < 0.35) {
+    title = 'On the Preservation of Expression and the Limits of Moderation';
+  } else if (powerSkep > 0.5) {
+    title = 'On Institutional Accountability and the Public Interest';
+  } else {
+    title = 'On the Tension Between Safety and Expression in Digital Spaces';
+  }
+
+  /* ── Opening: overall posture ── */
+  if (severity > 0.65) {
+    paragraphs.push(
+      'In reviewing the twenty cases before us, a clear pattern emerges in this Board\'s ' +
+      'disposition: a marked deference to the protective function of content moderation. ' +
+      'In the majority of instances, the Board elected to uphold the flag, signaling a posture ' +
+      'that prioritizes the mitigation of potential harm over the maximization of individual ' +
+      'expression. This is not thoughtlessness. It is a choice \u2014 and one with consequences ' +
+      'that deserve articulation.'
+    );
+  } else if (severity < 0.35) {
+    paragraphs.push(
+      'Across twenty cases, this Board has demonstrated a resolute commitment to the principle ' +
+      'of free expression as the default state of digital discourse. The majority of flags were ' +
+      'overturned, placing the burden of proof squarely on those who would restrict speech. ' +
+      'This posture is defensible. It is also, in its own way, an exercise of power \u2014 the ' +
+      'decision to allow is not neutral.'
+    );
+  } else {
+    paragraphs.push(
+      'The twenty cases before us reveal a Board that has attempted, with imperfect consistency, ' +
+      'to navigate the irreconcilable tensions at the heart of content moderation. Neither ' +
+      'permissive nor protective by default, this session\'s jurisprudence reflects a case-by-case ' +
+      'pragmatism that, while grounded in good faith, reveals its own internal logic \u2014 and ' +
+      'its own blind spots.'
+    );
+  }
+
+  /* ── Second paragraph: harm vs. speech axis ── */
+  if (m.hateSpeech > 0.6 && harmFocus > 0.5) {
+    paragraphs.push(
+      'The Board\'s treatment of hate speech and violent content reveals a consistent hierarchy: ' +
+      'when the target is identifiable and the harm is legible, restriction is swift. This instinct ' +
+      'toward protection is humane. But it carries an implicit assumption \u2014 that the Board\'s ' +
+      'judgment about what constitutes harm is more reliable than the speaker\'s judgment about what ' +
+      'constitutes truth. Whether or not this assumption is correct, it is an assumption, and it ' +
+      'accumulated here without explicit consent.'
+    );
+  } else if (freeSpeech > 0.5) {
+    paragraphs.push(
+      'The Board\'s record on expression-related cases is notable. Even when algorithmic systems ' +
+      'flagged content with high confidence, the Board frequently elected to overturn, particularly ' +
+      'where political speech or institutional critique was involved. This deference to the speaker ' +
+      'is not neutral. It is a framework \u2014 one that preserves a particularly expansive definition ' +
+      'of protected discourse, and one that may leave the most vulnerable to absorb the cost of ' +
+      'that expansiveness.'
+    );
+  } else {
+    paragraphs.push(
+      'The record shows an oscillation between protection and permissiveness that, while responsive ' +
+      'to individual cases, lacks a unifying principle. This is not necessarily a failure \u2014 it ' +
+      'may reflect genuine engagement with complexity. But it also means the Board\'s jurisprudence ' +
+      'is, at this stage, more a record of instinct than of doctrine.'
+    );
+  }
+
+  /* ── Third paragraph: power axis ── */
+  if (powerSkep > 0.5) {
+    paragraphs.push(
+      'Perhaps the most significant thread in this session\'s record is the Board\'s approach to ' +
+      'power. Cases involving institutional critique, corporate skepticism, or challenges to ' +
+      'authority were consistently met with a presumption in favor of the speaker. This suggests ' +
+      'a framework that views power asymmetry as a relevant factor in content decisions. It also ' +
+      'suggests a framework that may underestimate the capacity of the powerful to weaponize the ' +
+      'rhetoric of dissent.'
+    );
+  } else {
+    paragraphs.push(
+      'It is worth noting that this Board\'s decisions, while varied, consistently deferred to ' +
+      'existing institutional frameworks \u2014 platform policy, algorithmic assessment, precedent. ' +
+      'Where the Board might have challenged the structural assumptions embedded in these systems, ' +
+      'it more often ratified them. This is not unusual. But it is worth recognizing: the most ' +
+      'consequential form of complicity is not the decision you agonize over. It is the decision ' +
+      'you don\'t notice making.'
+    );
+  }
+
+  /* ── Fourth paragraph: context axis ── */
+  if (ctxSensitivity > 0.6) {
+    paragraphs.push(
+      'The Board\'s sensitivity to moderation history and behavioral patterns is noteworthy. ' +
+      'Accounts with prior infractions were judged more harshly than first-time offenders, ' +
+      'suggesting a belief in escalation as a meaningful signal. This is a coherent framework for ' +
+      'harm prediction. It is also a framework that encodes a particular theory of justice \u2014 ' +
+      'one in which past behavior is not merely context but destiny. The Board should consider ' +
+      'whether this is a theory it consciously endorses.'
+    );
+  }
+
+  /* ── Conclusion: the complicity moment ── */
+  if (severity > 0.65) {
+    conclusion =
+      'In the final accounting, this Board chose safety over liberty more often than not. That ' +
+      'choice was made twenty times, one case at a time, each in isolation. But the architecture ' +
+      'of those choices tells a story. You built a world in which people are protected from ' +
+      'speech \u2014 and from themselves. You may be right to have built it. But you should know ' +
+      'what you built.';
+  } else if (severity < 0.35) {
+    conclusion =
+      'The jurisprudence of this session affirms, above all, the right to speak \u2014 even when ' +
+      'speech harms, even when speech misleads, even when speech defends the indefensible. This is ' +
+      'a coherent philosophical position. It is also a statement about who you believe should bear ' +
+      'the cost of freedom, and a confession about who you believe can be trusted with it.';
+  } else {
+    conclusion =
+      'The most honest thing that can be said about this Board\'s record is that it reveals a ' +
+      'temperament rather than a philosophy. You responded to each case in good faith, but the ' +
+      'accumulated weight of those responses tells a story you did not intend to tell. Every ' +
+      'moderation decision is a small act of governance. And governance, however well-intentioned, ' +
+      'is always someone\'s law imposed on someone else\'s life.';
+  }
+
+  var full = title + '\n\n';
+  paragraphs.forEach(function(p) { full += p + '\n\n'; });
+  full += conclusion;
+  return full.trim();
+}
+
+/* ──────────────────────────────────────────
+   Review Screen
+   ────────────────────────────────────────── */
+
+function renderReview() {
+  var app = $('#app');
+  app.scrollTop = 0;
+
+  var caseRows = cases.map(function(c, i) {
+    var vote = votes[i];
+    var boardTotal = c.boardVote.reduce(function(a, b) { return a + b; }, 0);
+    var boardDecision = boardTotal >= 3 ? 'Upheld' : 'Overturned';
+    var yourVote = vote ? 'Upheld' : 'Overturned';
+    var agreed = (vote && boardTotal >= 3) || (!vote && boardTotal < 3);
+
+    return '<div class="review-grid fade-in">' +
+      '<span style="color:var(--text-dim);font-family:var(--font-mono);font-size:11px">' + String(c.id).padStart(2, '0') + '</span>' +
+      '<span style="color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(c.flag.reason) + '</span>' +
+      '<span style="color:' + (vote ? 'var(--danger)' : 'var(--success)') + ';font-weight:500;font-size:12px;text-align:center">' + yourVote + '</span>' +
+      '<span style="color:' + (boardTotal >= 3 ? 'var(--danger)' : 'var(--success)') + ';font-weight:500;font-size:12px;text-align:center">' + boardDecision + '</span>' +
+      '<span style="color:' + (agreed ? 'var(--text-dim)' : 'var(--accent)') + ';font-size:11px;text-align:center;font-family:var(--font-mono)">' + (agreed ? '\u2014' : 'DISSENT') + '</span>' +
+    '</div>';
+  }).join('');
+
+  app.innerHTML =
+    '<div style="max-width:800px;margin:0 auto;padding:32px 24px 48px">' +
+      '<div style="margin-bottom:28px">' +
+        '<div style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Session Record</div>' +
+        '<h2 style="font-size:18px;color:var(--text-bright);font-weight:600">Complete Review of Decisions</h2>' +
+      '</div>' +
+
+      '<div style="display:grid;grid-template-columns:36px 1fr 80px 80px 80px;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border-light);font-size:10px;color:var(--text-dim);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase">' +
+        '<span>No.</span>' +
+        '<span>Flag Reason</span>' +
+        '<span style="text-align:center">You</span>' +
+        '<span style="text-align:center">Board</span>' +
+        '<span style="text-align:center">Status</span>' +
+      '</div>' +
+
+      caseRows +
+
+      '<div style="margin-top:32px">' +
+        '<button class="btn-secondary" id="btn-back-verdict">Return to Majority Opinion</button>' +
+      '</div>' +
+    '</div>';
+
+  $('#btn-back-verdict').addEventListener('click', renderVerdict);
+}
+
+/* ──────────────────────────────────────────
+   Boot
+   ────────────────────────────────────────── */
+
+renderStart();
+</script>
+</body>
+</html>

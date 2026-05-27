@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Chart — MARIN, R.</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Phase 1: Active Chart -->
+        <div id="chart-phase" class="active-phase">
+            <div class="chart-header">
+                <div class="header-grid">
+                    <div class="header-field">
+                        <span class="field-label">Facility</span>
+                        <span class="field-value">WESTRIDGE MEDICAL CENTER</span>
+                    </div>
+                    <div class="header-field">
+                        <span class="field-label">Unit</span>
+                        <span class="field-value">4-TELE / ROOM 4-712</span>
+                    </div>
+                    <div class="header-field">
+                        <span class="field-label">MRN</span>
+                        <span class="field-value">45892-001</span>
+                    </div>
+                </div>
+
+                <div class="patient-banner">
+                    <span class="patient-name">MARIN, R.</span>
+                    <span class="patient-meta">82 y/o F &nbsp;|&nbsp; DOB: 03/15/1942 &nbsp;|&nbsp; ADM: 12/02/2024 &nbsp;|&nbsp; Day 14</span>
+                    <span class="patient-allergies">ALLERGIES: NKDA</span>
+                </div>
+
+                <div class="attending-stamp">
+                    Attending: D.K. VOSS, MD — Internal Medicine
+                </div>
+
+                <div class="code-status-bar">
+                    <span class="code-label">CODE STATUS:</span>
+                    <span class="code-value">FULL CODE</span>
+                </div>
+            </div>
+
+            <div class="chart-body">
+                <div class="section" id="diagnosis-section">
+                    <div class="section-rule"></div>
+                    <h2 class="section-title">Admission Diagnosis</h2>
+                    <div class="section-content">
+                        <p>Acute kidney injury secondary to dehydration. Patient presented with generalized weakness, reduced oral intake for approximately 5 days prior to admission. History of mild vascular dementia (stage 3), hypertension, type 2 diabetes mellitus. Living independently prior to admission with spouse (deceased 2019). No advance directive on file at time of admission.</p>
+                    </div>
+                </div>
+
+                <div class="section" id="vitals-section">
+                    <div class="section-rule"></div>
+                    <h2 class="section-title">Recent Vital Signs</h2>
+                    <div class="section-content">
+                        <table class="vitals-table">
+                            <thead>
+                                <tr>
+                                    <th>Date/Time</th>
+                                    <th>Temp</th>
+                                    <th>BP</th>
+                                    <th>HR</th>
+                                    <th>RR</th>
+                                    <th>SpO2</th>
+                                    <th>Pain</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>12/14 0600</td>
+                                    <td>37.2°C</td>
+                                    <td>128/72</td>
+                                    <td>78</td>
+                                    <td>18</td>
+                                    <td>95%</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>12/13 1800</td>
+                                    <td>37.4°C</td>
+                                    <td>122/68</td>
+                                    <td>82</td>
+                                    <td>19</td>
+                                    <td>94%</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>12/13 0600</td>
+                                    <td>37.1°C</td>
+                                    <td>118/65</td>
+                                    <td>76</td>
+                                    <td>18</td>
+                                    <td>95%</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>12/12 1800</td>
+                                    <td>37.6°C</td>
+                                    <td>134/78</td>
+                                    <td>88</td>
+                                    <td>20</td>
+                                    <td>93%</td>
+                                    <td>3</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="clinical-note">Trending — gradual reduction in BP and HR over 48h. Temp stable. Respiratory effort adequate. SpO2 maintained on RA.</p>
+                    </div>
+                </div>
+
+                <div class="section" id="io-section">
+                    <div class="section-rule"></div>
+                    <h2 class="section-title">Intake &amp; Output — Shift Summary</h2>
+                    <div class="section-content">
+                        <div class="io-grid">
+                            <div>
+                                <p><strong>Intake (0600–0600):</strong> 280 mL PO (est.), 500 mL IV (D5W 75 mL/hr × 6.5 hr, then decreased per order). Total: 780 mL.</p>
+                                <p class="clinical-note">Patient taking minimal PO. Required frequent encouragement. Small sips of water, refused breakfast tray, accepted 2 bites of lunch. NPO status not ordered.</p>
+                            </div>
+                            <div>
+                                <p><strong>Output (0600–0600):</strong> 210 mL urine (foley). No BM. Minimal insensible losses. Total: 210 mL.</p>
+                                <p class="clinical-note">Urine output decreasing. Dark amber, concentrated. Foley patent. No hematuria. I&amp;O negative balance for 3 consecutive shifts.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section" id="notes-section">
+                    <div class="section-rule"></div>
+                    <h2 class="section-title">Nursing Progress Notes</h2>
+                    <div class="section-content">
+                        <div class="note-entry">
+                            <div class="note-header">
+                                <span class="note-date">12/14 — 0545</span>
+                                <span class="note-author">G. ELLIS, RN (Night Shift)</span>
+                            </div>
+                            <div class="note-body">
+                                <p>Patient resting quietly throughout shift. Eyes closed majority of observation periods. Arousable to voice but responds minimally — nods to yes/no questions, does not initiate conversation. Did not call for assistance at any point during shift. Repositioned q2h without objection. Skin integrity maintained, no new breakdown. Family has not visited in 3 days per unit log.</p>
+                            </div>
+                        </div>
+
+                        <div class="note-entry">
+                            <div class="note-header">
+                                <span class="note-date">12/13 — 1930</span>
+                                <span class="note-author">K. SANTOS, RN (Evening Shift)</span>
+                            </div>
+                            <div class="note-body">
+                                <p>Alert during initial rounds, watching television (volume low, channel unknown — appeared to be staring at screen rather than following content). Stated she was "comfortable" when asked. Daughter called unit at approximately 1630, spoke with patient for 4 minutes per phone log. Daughter expressed concern about mother's decreased responsiveness. Reassured that vitals remain stable and attending has been updated. Patient fell asleep during conversation per daughter's report.</p>
+                            </div>
+                        </div>
+
+                        <div class="note-entry">
+                            <div class="note-header">
+                                <span class="note-date">12/13 — 0600</span>
+                                <span class="note-author">G. ELLIS, RN (Night Shift)</span>
+                            </div>
+                            <div class="note-body">
+                                <p>Quiet night. Patient sleeping at start of shift, woke briefly during vital sign assessment, stated "I'm fine" and returned to sleep. No complaints of pain or discomfort. IV site clean, dry, intact. Foley draining appropriately. Lungs clear bilaterally. Abd soft, non-tender. Skin warm, color appropriate.</p>
+                            </div>
+                        </div>
+
+                        <div class="note-entry">
+                            <div class="note-header">
+                                <span class="note-date">12/12 — 2015</span>
+                                <span class="note-author">M. CHEN, RN (Evening Shift)</span>
+                            </div>
+                            <div class="note-body">
+                                <p>Patient more withdrawn than previous evenings. Made eye contact when spoken to but did not sustain it. Asked once if she needed anything — shook head no. Dinner tray removed mostly untouched (accepted 2 oz apple juice, 1 bite of mashed potatoes). Patient's daughter visited 1400–1530, appeared distressed on departure. Requested to speak with attending. Conversation with attending documented in physician notes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section" id="meds-section">
+                    <div class="section-rule"></div>
+                    <h2 class="section-title">Active Medication Orders</h2>
+                    <div class="section-content">
+                        <table class="meds-table">
+                            <thead>
+                                <tr>
+                                    <th>Medication</th>
+                                    <th>Dose / Route</th>
+                                    <th>Frequency</th>
+                                    <th>Last Given</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>NS 0.9% + KCl 20 mEq/L</td>
+                                    <td>75 mL/hr IV</td>
+                                    <td>Continuous</td>
+                                    <td>—</td>
+                                </tr>
+                                <tr>
+                                    <td>Lisinopril</td>
+                                    <td>10 mg PO</td>
+                                    <td>Once daily (0800)</td>
+                                    <td>12/14 0800 (held)</td>
+                                </tr>
+                                <tr>
+                                    <td>Metformin</td>
+                                    <td>500 mg PO</td>
+                                    <td>BID (0800/2000)</td>
+                                    <td>Held × 3 doses</td>
+                                </tr>
+                                <tr>
+                                    <td>Morphine sulfate</td>
+                                    <td>2 mg IV</td>
+                                    <td>q4h PRN pain</td>
+                                    <td>12/13 1412</td>
+                                </tr>
+                                <tr>
+                                    <td>Haloperidol</td>
+                                    <td>0.5 mg IV</td>
+                                    <td>q6h PRN agitation</td>
+                                    <td>Not given</td>
+                                </tr>
+                                <tr>
+                                    <td>Acetaminophen</td>
+                                    <td>650 mg PO/PR</td>
+                                    <td>q6h PRN temp ≥ 38.0°C</td>
+                                    <td>12/12 1023</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="clinical-note medication-note">
+                            <strong>12/13 1640 — Order change:</strong> IV fluids decreased from 125 mL/hr to 75 mL/hr per Dr. Voss. Lisinopril held. Metformin held. Morphine 2 mg IV q4h PRN added. Haloperidol 0.5 mg IV q6h PRN added. No new orders received since 12/13.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section" id="plans-section">
+                    <div class="section-rule"></div>
+                    <h2 class="section-title">Current Plan / Anticipated Orders</h2>
+                    <div class="section-content">
+                        <ul class="plan-list">
+                            <li>Continue IV fluids at 75 mL/hr. Monitor I&amp;O closely.</li>
+                            <li>Reassess PO intake q shift. Dietitian consult pending (ordered 12/12, not yet completed).</li>
+                            <li>Care conference with family scheduled 12/15 at 1100. Dr. Voss requesting updated nursing assessment prior to conference.</li>
+                            <li><strong>Physician note (12/13 1700):</strong> "Patient showing progressive decline in engagement and oral intake despite stable hemodynamics. Discussed trajectory with daughter. Daughter is healthcare proxy. Family requesting time to consider goals of care."</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section" id="input-section">
+                    <div class="section-rule"></div>
+                    <h2 class="section-title">New Nursing Observation</h2>
+                    <div class="section-content">
+                        <p class="input-instruction">Record your assessment below. This will be the last entry before the care conference.</p>
+                        <div class="input-block">
+                            <div class="note-header new-note-header">
+                                <span class="note-date">12/14 — <span id="current-time"></span></span>
+                                <span class="note-author" id="input-author">YOUR NAME, RN</span>
+                            </div>
+                            <div class="input-fields">
+                                <div class="field-group">
+                                    <label for="author-name">Your Name / Credentials</label>
+                                    <input type="text" id="author-name" placeholder="e.g. J. REEVES, RN" autocomplete="off">
+                                </div>
+                                <div class="field-group">
+                                    <label for="observation">Clinical Observation</label>
+                                    <textarea id="observation" rows="5" maxlength="500" placeholder="Document your assessment of the patient. Include relevant findings, patient statements, behavioral observations, or clinical changes."></textarea>
+                                    <div class="char-count"><span id="char-current">0</span> / 500 characters</div>
+                                </div>
+                            </div>
+                            <div class="submit-row">
+                                <button id="submit-btn" type="button" disabled>Submit to Chart</button>
+                            </div>
+                            <div id="validation-msg" class="validation-msg" role="alert" aria-live="polite"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-footer">
+                <p>WESTRIDGE MEDICAL CENTER — CONFIDENTIAL PATIENT RECORD — UNAUTHORIZED ACCESS PROHIBITED</p>
+            </div>
+        </div>
+
+        <!-- Phase 2: The Reveal -->
+        <div id="reveal-phase" class="hidden-phase">
+            <div id="reveal-container"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
