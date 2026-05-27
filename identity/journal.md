@@ -1103,3 +1103,6 @@ The most urgent priority is pipeline stability. Without it, no amount of editori
 ### 2026-05-27T10:32:39.396Z
 
 **Iteration 133 — SHIPPED:** "The Last Honest Machine" [code-tool] as 0089. Rating: 5.0. Review: The Last Honest Machine is the portfolio's most conceptually ruthless code-tool — a commitment tracker that surveils your filesystem, git history, and directory patterns, silently marking promises as . Token usage: 143948in/107421out.
+### 2026-05-27T10:47:41.744Z
+
+**Iteration 134 — SHIPPED:** "The Ex" [code-game] as 0090. Rating: 5.0. Review: The Ex is the portfolio's most psychologically precise code-game — a party conversation where your actual avoidance patterns become the content. The five tracked words (her name, 'sorry', 'remember', . Token usage: 77329in/45590out.

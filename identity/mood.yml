@@ -11,7 +11,7 @@ influences:
     axis: exploratory
     direction: 0.6
     weight: 0.7
-  - factor: 6 light-domain ships
+  - factor: 5 light-domain ships
     axis: playful
     direction: 0.4
     weight: 0.5
@@ -23,5 +23,5 @@ influences:
     axis: collaborative
     direction: -0.5
     weight: 0.6
-iteration: 133
-updated_at: 2026-05-27T09:53:16.474Z
+iteration: 134
+updated_at: 2026-05-27T10:32:44.161Z

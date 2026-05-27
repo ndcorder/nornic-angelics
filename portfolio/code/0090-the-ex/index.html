@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ex</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg:#0b0b11;--text:#c8c0b6;--dim:#6b6560;--accent:#c45e3c;
+            --glow:#e8a87c;--input-bg:rgba(255,255,255,0.035);
+            --border:rgba(255,255,255,0.08);--max-w:660px;
+        }
+        html{background:var(--bg);color:var(--text)}
+        body{
+            font-family:'Source Sans 3','Segoe UI',sans-serif;
+            font-weight:300;font-size:16px;line-height:1.75;
+            min-height:100vh;overflow-x:hidden;
+        }
+        #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+        #screen-container{position:relative;z-index:1;min-height:100vh}
+
+        /* ── Intro ── */
+        #intro{
+            min-height:100vh;display:flex;flex-direction:column;
+            justify-content:center;align-items:center;text-align:center;
+            padding:2rem;cursor:pointer;animation:fadeIn 1.8s ease;
+        }
+        .intro-title{
+            font-family:'Special Elite',monospace;
+            font-size:clamp(3.2rem,10vw,5.5rem);font-weight:400;
+            color:var(--accent);letter-spacing:.15em;margin-bottom:.4rem;
+        }
+        .intro-sub{font-size:1.05rem;color:var(--dim);font-style:italic;margin-bottom:2rem}
+        .intro-hint{font-size:.8rem;color:rgba(255,255,255,.2);animation:pulse 2.5s ease-in-out infinite}
+
+        /* ── Game chrome ── */
+        #game-title{
+            font-family:'Special Elite',monospace;font-size:1.1rem;
+            color:var(--accent);letter-spacing:.06em;text-align:center;
+            padding:.7rem 1rem;border-bottom:1px solid var(--border);
+            position:sticky;top:0;z-index:10;background:var(--bg);
+        }
+        #game{max-width:var(--max-w);margin:0 auto;padding:1.5rem 1.5rem 6rem}
+
+        /* ── Dialogue blocks ── */
+        .dialogue-block{margin-bottom:1.4rem;animation:fadeIn .5s ease}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes pulse{0%,100%{opacity:.3}50%{opacity:.8}}
+        .speaker-name{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.15rem}
+        .npc-name{color:var(--dim)}.you-name{color:var(--accent)}
+        .dialogue-text{padding-left:.4rem;border-left:2px solid var(--border);margin-bottom:.6rem}
+        .scene-text{color:var(--dim);font-style:italic;margin-bottom:1.3rem}
+        .divider{width:50px;height:1px;background:var(--accent);opacity:.35;margin:2rem auto}
+
+        /* ── Choices ── */
+        #choices,.choices-wrap{margin-top:1.3rem;animation:fadeIn .6s ease}
+        .choice-btn{
+            display:block;width:100%;text-align:left;padding:.65rem 1rem;
+            background:var(--input-bg);border:1px solid var(--border);
+            color:var(--text);font-family:'Source Sans 3',sans-serif;
+            font-size:.92rem;font-weight:300;cursor:pointer;margin-bottom:.4rem;
+            border-radius:2px;transition:all .2s ease;
+        }
+        .choice-btn:hover{background:rgba(255,255,255,.07);border-color:var(--accent);color:#fff}
+        .choice-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+        .choice-num{color:var(--accent);margin-right:.5rem;font-weight:600}
+
+        /* ── Free input ── */
+        #free-input-wrap{display:none;margin-top:1.1rem}
+        #free-input{
+            width:100%;padding:.65rem 1rem;background:var(--input-bg);
+            border:1px solid var(--border);color:var(--text);
+            font-family:'Source Sans 3',sans-serif;font-size:1rem;font-weight:300;
+            outline:none;border-radius:2px;transition:border-color .3s ease;
+        }
+        #free-input:focus{border-color:var(--accent)}
+        #free-input::placeholder{color:rgba(255,255,255,.18)}
+        .input-hint{font-size:.78rem;color:var(--dim);margin-top:.25rem;font-style:italic}
+        .btn-primary{
+            display:inline-block;padding:.5rem 1.4rem;background:var(--accent);
+            color:#fff;border:none;font-family:'Source Sans 3',sans-serif;
+            font-size:.9rem;font-weight:400;cursor:pointer;border-radius:2px;
+            margin-top:.45rem;transition:opacity .2s ease;
+        }
+        .btn-primary:hover{opacity:.85}
+        .btn-primary:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
+
+        /* ── Timestamps ── */
+        .ts{font-size:.68rem;color:rgba(255,255,255,.18);margin-top:.15rem;font-variant-numeric:tabular-nums}
+
+        /* ── Reveal ── */
+        #reveal{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:3rem 1.5rem}
+        .reveal-title{
+            font-family:'Special Elite',monospace;font-size:clamp(1.6rem,4vw,2.4rem);
+            color:var(--accent);margin-bottom:.3rem;text-align:center;
+        }
+        .reveal-sub{color:var(--dim);font-style:italic;margin-bottom:2.5rem;text-align:center;font-size:.95rem}
+        .reveal-section{
+            width:100%;max-width:var(--max-w);margin-bottom:2.2rem;
+            padding:1.3rem;border:1px solid var(--border);border-radius:2px;
+            background:rgba(255,255,255,.015);
+        }
+        .reveal-label{
+            font-size:.72rem;font-weight:600;text-transform:uppercase;
+            letter-spacing:.12em;color:var(--accent);margin-bottom:.9rem;
+        }
+        .reveal-item{margin-bottom:.9rem;padding-left:.7rem;border-left:2px solid rgba(196,94,60,.25)}
+        .reveal-item:last-child{margin-bottom:0}
+        .ri-dim{color:var(--dim);font-size:.88rem}
+        .ri-accent{color:var(--accent);font-style:italic}
+        .reveal-fade{opacity:0;transform:translateY(20px);transition:opacity 1s ease,transform 1s ease}
+        .reveal-fade.visible{opacity:1;transform:translateY(0)}
+
+        .final-msg{text-align:center;margin-top:1rem;max-width:var(--max-w);opacity:0;transition:opacity 2s ease}
+        .final-msg.visible{opacity:1}
+        .final-msg p{color:var(--dim);font-style:italic;line-height:2}
+        .final-msg .you-built{color:var(--accent);font-weight:400;font-style:normal}
+        .restart-btn{
+            margin-top:2rem;padding:.65rem 2rem;background:transparent;
+            border:1px solid var(--accent);color:var(--accent);
+            font-family:'Special Elite',monospace;font-size:.95rem;
+            cursor:pointer;transition:all .3s ease;
+        }
+        .restart-btn:hover{background:var(--accent);color:#fff}
+
+        @media(max-width:600px){
+            .intro-title{font-size:3rem}
+            #game{padding:1rem 1rem 5rem}
+            .choice-btn{padding:.55rem .8rem;font-size:.88rem}
+        }
+    </style>
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+    <div id="screen-container"></div>
+
+    <script>
+    (function(){
+        'use strict';
+
+        /* ── Config ─────────────────────────────────── */
+        var HER_NAME   = 'Claire';
+        var HER_KEY    = HER_NAME.toLowerCase();
+        var AVOID_WORDS = [HER_KEY, 'sorry', 'remember', 'still', 'miss'];
+        var TS_FMT     = {hour:'2-digit', minute:'2-digit', hour12:true};
+
+        /* ── State ──────────────────────────────────── */
+        var state          = null;
+        var elapsedTimer   = null;
+        var currentScreen  = 0;   // 0 = intro, 1 = game, 2 = reveal
+        var encounterPhase = 0;
+        var encounterDone  = false;
+        var usedTriggerLines = {};
+        var choicePathsTaken = {};
+
+        function freshState(){
+            var s = {
+                scene: 'intro',
+                elapsed: 0,
+                seenFlags: {},
+                npcSaid: [],
+                playerSaid: [],
+                triggers: {},
+                triggerTimes: {},
+                encounterTurns: 0
+            };
+            for(var i = 0; i < AVOID_WORDS.length; i++){
+                s.triggers[AVOID_WORDS[i]]     = false;
+                s.triggerTimes[AVOID_WORDS[i]]  = null;
+            }
+            return s;
+        }
+
+        function initState(){
+            state            = freshState();
+            encounterPhase   = 0;
+            encounterDone    = false;
+            usedTriggerLines = {};
+            choicePathsTaken = {};
+        }
+
+        /* ── DOM helpers ────────────────────────────── */
+        var container = document.getElementById('screen-container');
+
+        function $(id){ return document.getElementById(id); }
+
+        function appendTo(id, html){
+            var el = $(id);
+            if(el) el.insertAdjacentHTML('beforeend', html);
+        }
+
+        function remove$(id){
+            var el = $(id);
+            if(el) el.remove();
+        }
+
+        function scrollEnd(){
+            setTimeout(function(){
+                window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'});
+            }, 80);
+        }
+
+        /* ── Timestamps ─────────────────────────────── */
+        function now(){
+            return new Date(Date.now() + state.elapsed * 60000)
+                .toLocaleTimeString([], TS_FMT);
+        }
+
+        /* ── Word tracking ──────────────────────────── */
+        function parsePlayerWords(text){
+            var words = text.toLowerCase().split(/\s+/);
+            for(var i = 0; i < AVOID_WORDS.length; i++){
+                var w = AVOID_WORDS[i];
+                if(!state.triggers[w] && words.indexOf(w) !== -1){
+                    state.triggers[w]    = true;
+                    state.triggerTimes[w] = now();
+                }
+            }
+        }
+
+        function markAllTriggered(){
+            for(var i = 0; i < AVOID_WORDS.length; i++){
+                var w = AVOID_WORDS[i];
+                if(!state.triggers[w]){
+                    state.triggers[w]    = true;
+                    state.triggerTimes[w] = null;
+                }
+            }
+        }
+
+        /* ── HTML builders ──────────────────────────── */
+        function npcLine(name, dialogue, time){
+            return '<div class="dialogue-block">' +
+                '<div class="speaker-name npc-name">' + name + '</div>' +
+                '<div class="dialogue-text">' + dialogue + '</div>' +
+                (time ? '<div class="ts">' + time + '</div>' : '') +
+            '</div>';
+        }
+
+        function youLine(text){
+            return '<div class="dialogue-block">' +
+                '<div class="speaker-name you-name">You</div>' +
+                '<div class="dialogue-text">' + text + '</div>' +
+            '</div>';
+        }
+
+        function sceneDesc(text){
+            return '<div class="scene-text">' + text + '</div>';
+        }
+
+        function divider(){
+            return '<div class="divider"></div>';
+        }
+
+        function choicesHtml(id, btns){
+            var h = '<div id="' + id + '" class="choices-wrap">';
+            for(var i = 0; i < btns.length; i++){
+                h += '<button class="choice-btn" data-action="' + btns[i].action + '">' +
+                    '<span class="choice-num">' + (i + 1) + '.</span>' +
+                    btns[i].label +
+                '</button>';
+            }
+            return h + '</div>';
+        }
+
+        /* ══════════════════════════════════════════════
+           SCREENS
+           ══════════════════════════════════════════════ */
+
+        function showIntro(){
+            currentScreen = 0;
+            container.innerHTML =
+                '<div id="intro">' +
+                    '<div class="intro-title">The Ex</div>' +
+                    '<div class="intro-sub">A party. A conversation you\'ve been avoiding.</div>' +
+                    '<div class="intro-hint">Click anywhere to begin</div>' +
+                '</div>';
+        }
+
+        function ensureGameContainer(){
+            if(!$('game')){
+                container.innerHTML =
+                    '<div id="game-title">The Ex</div>' +
+                    '<div id="game"></div>';
+            }
+            currentScreen = 1;
+        }
+
+        /* ══════════════════════════════════════════════
+           SCENE RENDERERS  (return HTML fragments)
+           ══════════════════════════════════════════════ */
+
+        /* ── Lobby ──────────────────────────────────── */
+        function renderLobby(){
+            return npcLine('Doorman', 'ID check. Go on in.', '7:00 PM') +
+                sceneDesc('Music vibrates through the floorboards before you even reach the door. A loft apartment — someone\'s hand-me-down couch in the corner, far too many people for a Tuesday. The host waves from somewhere deep inside.') +
+                choicesHtml('choices', [
+                    {action:'go-bar',     label:'Head for the bar'},
+                    {action:'go-terrace', label:'Step out to the terrace'}
+                ]);
+        }
+
+        /* ── Bar ────────────────────────────────────── */
+        function renderBar(){
+            state.elapsed += 6;
+            return npcLine('Marcus', 'Hey. Long time no see. Vodka soda?', '7:06 PM') +
+                sceneDesc('He\'s already pouring before you answer. The kitchen island doubles as a bar — bottles clustered like свидетели, ice melting in a ceramic bowl. Someone\'s playlist drifts between rooms.') +
+                choicesHtml('choices', [
+                    {action:'bar-ask',   label:'"Yeah, thanks. Who else is here?"'},
+                    {action:'bar-water', label:'"Just water. Been a long day."'}
+                ]);
+        }
+
+        /* ── Terrace ────────────────────────────────── */
+        function renderTerrace(){
+            state.elapsed += 7;
+            return npcLine('Elena', 'You made it! I was starting to think you\'d bail.', '7:13 PM') +
+                sceneDesc('She\'s holding court near the railing with her new boyfriend. City lights spread out below — rooftops, water towers, the distant crawl of traffic. It\'s warm for October.') +
+                choicesHtml('choices', [
+                    {action:'terrace-nice',  label:'"Wouldn\'t miss it. He\'s nice."'},
+                    {action:'terrace-ask',   label:'"Is she here tonight?"'},
+                    {action:'terrace-dodge', label:'"Needed air. It\'s stuffy in there."'}
+                ]);
+        }
+
+        /* ── Hallway ────────────────────────────────── */
+        function renderHallway(){
+            state.elapsed += 5;
+            return npcLine('Jonah', 'Hey. You look like you\'re looking for someone.', now()) +
+                sceneDesc('He\'s leaned against the doorframe to the back room. There\'s something knowing in the way he watches you — like he\'s been waiting. Music pulses behind him, muffled and low.') +
+                choicesHtml('choices', [
+                    {action:'hallway-wander', label:'"Just wandering."'},
+                    {action:'hallway-maybe',  label:'"Maybe I am."'},
+                    {action:'hallway-direct', label:'"Is she in there?"'}
+                ]);
+        }
+
+        /* ── Encounter ──────────────────────────────── */
+        function renderEncounter(){
+            state.elapsed += 4;
+            encounterPhase = 0;
+            encounterDone  = false;
+
+            var html = sceneDesc('The back room. Quieter here. Bookshelves half-empty, a sagging armchair, warm light from a single lamp with a crooked shade. She\'s standing near the window, looking out at the city.') +
+                sceneDesc('She turns when she hears the door. There\'s a half-second where her expression does something you can\'t quite name — surprise, or the memory of surprise. Then it settles into something like composure.') +
+                npcLine(HER_NAME, 'Hey.', now());
+
+            html += '<div id="free-input-wrap">';
+            html += '<input type="text" id="free-input" placeholder="What do you say?" autocomplete="off" spellcheck="false" aria-label="Your response">';
+            html += '<div class="input-hint">Say whatever you want. Type and press Enter.</div>';
+            html += '</div>';
+            html += '<div id="response-area"></div>';
+
+            return html;
+        }
+
+        /* ══════════════════════════════════════════════
+           BRANCH SEQUENCES  (append to #game progressively)
+           ══════════════════════════════════════════════ */
+
+        /* ── Bar → asked who's here ─────────────────── */
+        function runBarAsk(){
+            var t1 = now(); state.elapsed += 3;
+            var t2 = now(); state.elapsed += 2;
+            var t3 = now();
+
+            appendTo('game',
+                youLine('"Yeah, thanks. Who else is here?"') +
+                npcLine('Marcus', 'Oh, you know. The usual crowd. Elena brought that guy she\'s been seeing. Jonah\'s DJing tonight. <span class="ri-accent">' + HER_NAME + '</span>\'s around somewhere, I think.', t1) +
+                npcLine('Marcus', 'She was asking about you, actually. Wondered if you were <span class="ri-accent">still</span> working at the same place.', t3)
+            );
+
+            state.npcSaid.push({word: HER_KEY,  by:'Marcus', time:t1, context:'Told you she was at the party'});
+            state.npcSaid.push({word:'still',    by:'Marcus', time:t3, context:'Said she was asking about you'});
+
+            appendTo('game',
+                choicesHtml('next-choices', [
+                    {action:'go-terrace', label:'"Cool. I\'m going to get some air."'},
+                    {action:'go-hallway', label:'"Right. I\'ll go find her."'}
+                ])
+            );
+            scrollEnd();
+        }
+
+        /* ── Bar → just water ───────────────────────── */
+        function runBarWater(){
+            var t1 = now(); state.elapsed += 2;
+
+            appendTo('game',
+                youLine('"Just water. Been a long day."') +
+                npcLine('Marcus', 'Rough. Well, it\'s a party. Let yourself breathe.', t1)
+            );
+
+            appendTo('game',
+                choicesHtml('next-choices', [
+                    {action:'go-terrace', label:'Step outside for air'},
+                    {action:'go-hallway', label:'Go look for someone'}
+                ])
+            );
+            scrollEnd();
+        }
+
+        /* ── Terrace → compliment ───────────────────── */
+        function runTerraceNice(){
+            var t1 = now(); state.elapsed += 2;
+            var t2 = now(); state.elapsed += 3;
+            var t3 = now();
+
+            appendTo('game',
+                youLine('"Wouldn\'t miss it. He\'s nice."') +
+                npcLine('Elena', 'Right? Finally someone normal. <span class="ri-accent">' + HER_NAME + '</span>\'s inside, by the way. Saw her by the bookshelf.', t1) +
+                npcLine('Elena', 'She was asking about you. Wondered if you were <span class="ri-accent">still</span> working at the same place.', t3)
+            );
+
+            state.npcSaid.push({word: HER_KEY, by:'Elena', time:t1, context:'Mentioned she was inside'});
+            state.npcSaid.push({word:'still',   by:'Elena', time:t3, context:'Said she was asking about you'});
+
+            appendTo('game',
+                choicesHtml('next-choices', [
+                    {action:'go-hallway', label:'"I should go say hello."'},
+                    {action:'go-hallway', label:'"I think I need another drink first."'}
+                ])
+            );
+            scrollEnd();
+        }
+
+        /* ── Terrace → ask about her ────────────────── */
+        function runTerraceAsk(){
+            var t1 = now(); state.elapsed += 2;
+            var t2 = now(); state.elapsed += 2;
+            var t3 = now();
+
+            appendTo('game',
+                youLine('"Is she here tonight?"') +
+                npcLine('Elena', 'She is. Back room somewhere. You should say hi — I think she\'d like that.', t1) +
+                npcLine('Elena', 'She <span class="ri-accent">remembered</span> your birthday last week. Did she text you?', t3)
+            );
+
+            state.npcSaid.push({word:'remember', by:'Elena', time:t3, context:'Mentioned your birthday'});
+
+            appendTo('game',
+                choicesHtml('next-choices', [
+                    {action:'go-hallway', label:'"Yeah. She did."'},
+                    {action:'go-hallway', label:'"I should go find her."'}
+                ])
+            );
+            scrollEnd();
+        }
+
+        /* ── Terrace → dodge ────────────────────────── */
+        function runTerraceDodge(){
+            var t1 = now(); state.elapsed += 2;
+            var t2 = now(); state.elapsed += 2;
+
+            appendTo('game',
+                youLine('"Needed air. It\'s stuffy in there."') +
+                npcLine('Elena', 'Fair enough. Well, the view\'s good. Company\'s better.', t1) +
+                npcLine('Elena', 'You know <span class="ri-accent">' + HER_NAME + '</span>\'s here, right? Back room. She\'s been asking if you\'d show.', t2)
+            );
+
+            state.npcSaid.push({word: HER_KEY, by:'Elena', time:t2, context:'Told you she was asking about you'});
+
+            appendTo('game',
+                choicesHtml('next-choices', [
+                    {action:'go-hallway', label:'"Guess I should say hi."'},
+                    {action:'go-hallway', label:'"Maybe later."'}
+                ])
+            );
+            scrollEnd();
+        }
+
+        /* ── Hallway → just wandering ───────────────── */
+        function runHallwayWander(){
+            var t1 = now(); state.elapsed += 2;
+            var t2 = now(); state.elapsed += 2;
+
+            appendTo('game',
+                youLine('"Just wandering."') +
+                npcLine('Jonah', 'Sure. Well, <span class="ri-accent">' + HER_NAME + '</span>\'s in there if you\'re looking. Mentioned she hadn\'t heard from you in a while.', t1) +
+                npcLine('Jonah', 'She said she <span class="ri-accent">missed</span> talking to you. Just talking. Thought you should know.', t2)
+            );
+
+            state.npcSaid.push({word: HER_KEY, by:'Jonah', time:t1, context:'Told you where she was'});
+            state.npcSaid.push({word:'miss',    by:'Jonah', time:t2, context:'Relayed that she missed talking to you'});
+
+            appendTo('game',
+                sceneDesc('He holds the door open a crack. You can hear her voice inside, laughing at something — warm and unhurried.') +
+                choicesHtml('next-choices', [
+                    {action:'go-encounter', label:'Go in'}
+                ])
+            );
+            scrollEnd();
+        }
+
+        /* ── Hallway → maybe ────────────────────────── */
+        function runHallwayMaybe(){
+            var t1 = now(); state.elapsed += 1;
+            var t2 = now(); state.elapsed += 2;
+
+            appendTo('game',
+                youLine('"Maybe I am."') +
+                npcLine('Jonah', 'Yeah. Thought so. She\'s in there.', t1) +
+                npcLine('Jonah', 'Hey — she said she was <span class="ri-accent">sorry</span> about how things ended. In case that matters.', t2)
+            );
+
+            state.npcSaid.push({word:'sorry', by:'Jonah', time:t2, context:'Relayed her apology'});
+
+            appendTo('game',
+                sceneDesc('He pushes off the doorframe and nods toward the back room. The music shifts to something slower — a song you almost recognize.') +
+                choicesHtml('next-choices', [
+                    {action:'go-encounter', label:'Step through'}
+                ])
+            );
+            scrollEnd();
+        }
+
+        /* ── Hallway → direct ───────────────────────── */
+        function runHallwayDirect(){
+            var t1 = now(); state.elapsed += 1;
+            var t2 = now(); state.elapsed += 2;
+
+            appendTo('game',
+                youLine('"Is she in there?"') +
+                npcLine('Jonah', 'Yeah. Go ahead.', t1) +
+                npcLine('Jonah', 'She <span class="ri-accent">remembered</span> you liked this band. Put them on the playlist specifically. Just so you know.', t2)
+            );
+
+            state.npcSaid.push({word:'remember', by:'Jonah', time:t2, context:'Told you she remembered your taste in music'});
+
+            appendTo('game',
+                sceneDesc('The door is right there. Her silhouette moves past the window — a gesture, a turn of the head, gone.') +
+                choicesHtml('next-choices', [
+                    {action:'go-encounter', label:'Open the door'}
+                ])
+            );
+            scrollEnd();
+        }
+
+        /* ══════════════════════════════════════════════
+           ENCOUNTER ENGINE
+           ══════════════════════════════════════════════ */
+
+        var encounterDialogue = {
+            opening: [
+                'It\'s been a while.',
+                'I was hoping you\'d come find me.',
+                'I heard you were asking about me.',
+                'You look good. Different, but good.'
+            ],
+            triggers: {
+                'sorry': [
+                    'You know, I\'ve been thinking about what happened. I really am sorry.',
+                    'I never said I was sorry. Not properly. So — I\'m sorry.',
+                    'I\'m sorry I didn\'t say it before. When it would have mattered.'
+                ],
+                'still': [
+                    'I still think about that restaurant you liked. The one with the blue door.',
+                    'You still have my copy of that book. The Murakami. Keep it.',
+                    'I still have that photo of us from the beach. I keep it in a drawer. I don\'t know why.'
+                ],
+                'miss': [
+                    'I miss the way you\'d laugh at your own jokes before you even finished them.',
+                    'I miss talking to you. Just talking. Nobody else talks to me like that.',
+                    'Sometimes I miss the silence. The comfortable kind, between us.'
+                ],
+                'remember': [
+                    'Do you remember when we got lost in that neighborhood and found the bakery? I still go there.',
+                    'Remember that night we stayed up until four a.m. talking about moving somewhere new? I think about that.',
+                    'I remember the way you used to make coffee. Precise. Like a ritual.'
+                ]
+            },
+            followups: [
+                'It\'s weird, isn\'t it? Being in the same room after all this.',
+                'I didn\'t know if I should come tonight. Elena talked me into it.',
+                'You don\'t have to say anything. I just wanted to see you.',
+                'The party\'s still going out there. We could go back. Or not.',
+                'I\'ve been good. Mostly. Work\'s the same. You know how it is.',
+                'That song playing — did you request it? It sounds like something you\'d pick.'
+            ],
+            closing: [
+                'Well. I should get back. Take care of yourself.',
+                'It was good to see you. Really.',
+                'Okay. I\'m going to head back to the party. Bye.',
+                'I\'ll see you around, maybe. Take care.'
+            ]
+        };
+
+        function pickUnique(arr, used){
+            var available = [];
+            for(var i = 0; i < arr.length; i++){
+                if(!used[i]) available.push(i);
+            }
+            if(available.length === 0) return null;
+            var pick = available[Math.floor(Math.random() * available.length)];
+            used[pick] = true;
+            return arr[pick];
+        }
+
+        function startEncounter(){
+            var opening;
+            if(state.npcSaid.some(function(s){ return s.word === HER_KEY; })){
+                opening = 'I heard you were asking about me.';
+            } else {
+                opening = encounterDialogue.opening[Math.floor(Math.random() * encounterDialogue.opening.length)];
+            }
+
+            var t = now();
+            appendTo('response-area', npcLine(HER_NAME, opening, t));
+            scrollEnd();
+
+            var wrap = $('free-input-wrap');
+            if(wrap) wrap.style.display = '';
+            var inp = $('free-input');
+            if(inp) inp.focus();
+            encounterPhase = 1;
+        }
+
+        function processEncounterInput(text){
+            if(encounterDone) return;
+            parsePlayerWords(text);
+            state.playerSaid.push(text);
+            state.encounterTurns++;
+
+            var wrap = $('free-input-wrap');
+            if(wrap) wrap.style.display = 'none';
+
+            appendTo('response-area', youLine('"' + text + '"'));
+
+            setTimeout(function(){
+                state.elapsed += 2;
+                var response = getClaireResponse();
+                var t = now();
+
+                appendTo('response-area', npcLine(HER_NAME, response.text, t));
+                if(response.word){
+                    state.npcSaid.push({
+                        word: response.word,
+                        by: HER_NAME,
+                        time: t,
+                        context: response.context || ''
+                    });
+                }
+
+                if(response.closing){
+                    encounterDone = true;
+                    endEncounter();
+                } else {
+                    if(wrap) wrap.style.display = '';
+                    var inp = $('free-input');
+                    if(inp){ inp.value = ''; inp.focus(); }
+                }
+                scrollEnd();
+            }, 900);
+        }
+
+        function getClaireResponse(){
+            // Words the player never typed
+            var unusedWords = AVOID_WORDS.filter(function(w){
+                return !state.triggers[w];
+            });
+
+            // Subset that NPCs mentioned to the player
+            var npcMentioned = unusedWords.filter(function(w){
+                return state.npcSaid.some(function(s){ return s.word === w; });
+            });
+
+            var candidates = npcMentioned.length > 0 ? npcMentioned : unusedWords;
+
+            // Attempt a trigger line (higher priority in early turns)
+            var tryTrigger = candidates.length > 0 &&
+                (state.encounterTurns < 4 || Math.random() > 0.4);
+
+            if(tryTrigger){
+                var shuffled = candidates.slice().sort(function(){
+                    return Math.random() - 0.5;
+                });
+                for(var i = 0; i < shuffled.length; i++){
+                    var word  = shuffled[i];
+                    var lines = encounterDialogue.triggers[word];
+                    if(!lines) continue;
+                    if(!usedTriggerLines[word]) usedTriggerLines[word] = [];
+                    var line = pickUnique(lines, usedTriggerLines[word]);
+                    if(line){
+                        return {
+                            text: line,
+                            word: word,
+                            context: 'Said this during your conversation',
+                            closing: false
+                        };
+                    }
+                }
+            }
+
+            // Consider closing the conversation
+            if(state.encounterTurns >= 4 && Math.random() > 0.35){
+                // Last-ditch trigger attempt
+                if(candidates.length > 0){
+                    for(var j = 0; j < candidates.length; j++){
+                        var w2    = candidates[j];
+                        var l2    = encounterDialogue.triggers[w2];
+                        if(!l2) continue;
+                        if(!usedTriggerLines[w2]) usedTriggerLines[w2] = [];
+                        var pick  = pickUnique(l2, usedTriggerLines[w2]);
+                        if(pick){
+                            return {
+                                text: pick,
+                                word: w2,
+                                context: 'Said this during your conversation',
+                                closing: false
+                            };
+                        }
+                    }
+                }
+                return {
+                    text: encounterDialogue.closing[
+                        Math.floor(Math.random() * encounterDialogue.closing.length)
+                    ],
+                    word: null,
+                    closing: true
+                };
+            }
+
+            // Default follow-up
+            return {
+                text: encounterDialogue.followups[
+                    Math.floor(Math.random() * encounterDialogue.followups.length)
+                ],
+                word: null,
+                closing: false
+            };
+        }
+
+        function endEncounter(){
+            markAllTriggered();
+            setTimeout(function(){
+                appendTo('response-area',
+                    sceneDesc('She touches your arm — briefly, barely — and slips past you into the hall. The door clicks shut behind her. You stand there in the amber light, alone with the bookshelves and the sound of the party continuing without you.')
+                );
+                setTimeout(function(){
+                    appendTo('response-area',
+                        divider() +
+                        '<div style="text-align:center;margin-top:1.5rem">' +
+                            '<button class="btn-primary" data-action="reveal">See what you left unsaid</button>' +
+                        '</div>'
+                    );
+                    scrollEnd();
+                }, 1600);
+            }, 700);
+        }
+
+        /* ══════════════════════════════════════════════
+           REVEAL SCREEN
+           ══════════════════════════════════════════════ */
+
+        function showReveal(){
+            currentScreen = 2;
+
+            // Which words the player never uttered
+            var neverSaid = {};
+            for(var i = 0; i < AVOID_WORDS.length; i++){
+                var w = AVOID_WORDS[i];
+                if(!state.triggerTimes[w]) neverSaid[w] = true;
+            }
+
+            var html = '<div id="reveal">';
+            html += '<div class="reveal-title">What You Didn\'t Say</div>';
+            html += '<div class="reveal-sub">A record of the conversation you avoided having</div>';
+
+            /* ── Section 1: Words tracked ── */
+            html += '<div class="reveal-section reveal-fade" id="rs-words">';
+            html += '<div class="reveal-label">Words You Never Typed</div>';
+            for(var i = 0; i < AVOID_WORDS.length; i++){
+                var w     = AVOID_WORDS[i];
+                var label = (w === HER_KEY) ? 'her name' : ('"' + w + '"');
+                if(state.triggerTimes[w] && !neverSaid[w]){
+                    html += '<div class="reveal-item">' +
+                        '<span class="ri-dim">You said ' + label + ' at</span> ' +
+                        '<span style="color:var(--text)">' + state.triggerTimes[w] + '</span>' +
+                    '</div>';
+                } else {
+                    html += '<div class="reveal-item">' +
+                        '<span class="ri-accent">' + label + '</span> ' +
+                        '<span class="ri-dim">— never used</span>' +
+                    '</div>';
+                }
+            }
+            html += '</div>';
+
+            /* ── Section 2: NPC words the player never echoed ── */
+            var unechoed = state.npcSaid.filter(function(s){
+                return AVOID_WORDS.indexOf(s.word) !== -1 && neverSaid[s.word];
+            });
+
+            if(unechoed.length > 0){
+                html += '<div class="reveal-section reveal-fade" id="rs-her">';
+                html += '<div class="reveal-label">She Said These Words. You Stayed Silent.</div>';
+                unechoed.forEach(function(s){
+                    var label = (s.word === HER_KEY) ? 'her name' : ('"' + s.word + '"');
+                    html += '<div class="reveal-item">';
+                    html += '<span class="ri-dim">' + s.by + ' said ' + label + ' at</span> ';
+                    html += '<span style="color:var(--text)">' + s.time + '</span>';
+                    if(s.context){
+                        html += '<br><span class="ri-dim" style="font-style:italic">' + s.context + '</span>';
+                    }
+                    html += '<br><span class="ri-dim">You never said it back.</span>';
+                    html += '</div>';
+                });
+                html += '</div>';
+            }
+
+            /* ── Section 3: Branches not taken ── */
+            var totalPaths = {bar:2, terrace:3, hallway:3};
+            var sceneKeys  = ['bar','terrace','hallway'];
+            var takenCount = 0;
+            var totalCount = 0;
+            sceneKeys.forEach(function(sk){
+                totalCount += totalPaths[sk];
+                if(choicePathsTaken[sk]) takenCount++;
+            });
+            var missed = totalCount - takenCount;
+
+            if(missed > 0){
+                html += '<div class="reveal-section reveal-fade" id="rs-paths">';
+                html += '<div class="reveal-label">Branches You Didn\'t Explore</div>';
+                html += '<div class="reveal-item"><span class="ri-dim">You explored ' + takenCount + ' of ' + totalCount + ' conversation paths. ' + missed + ' remained unseen — in those unseen branches, she said things you\'ll never hear.</span></div>';
+
+                var hints = [];
+                if(!choicePathsTaken['bar']){
+                    hints.push('Marcus had something to tell you about her.');
+                }
+                if(!choicePathsTaken['terrace']){
+                    hints.push('Elena knew things she never got to share.');
+                }
+                if(choicePathsTaken['bar'] && !choicePathsTaken['bar-ask']){
+                    hints.push('If you\'d asked who was here, Marcus would have told you she was asking about you.');
+                }
+                if(choicePathsTaken['terrace'] && !choicePathsTaken['terrace-ask']){
+                    hints.push('If you\'d asked Elena directly, she would have told you about the birthday message.');
+                }
+                if(choicePathsTaken['terrace'] && !choicePathsTaken['terrace-dodge']){
+                    hints.push('Dodging the question would have led somewhere unexpected.');
+                }
+                if(choicePathsTaken['hallway'] && !choicePathsTaken['hallway-direct']){
+                    hints.push('If you\'d said her name to Jonah, he would have told you about the playlist.');
+                }
+                if(choicePathsTaken['hallway'] && !choicePathsTaken['hallway-maybe']){
+                    hints.push('Being honest with Jonah would have changed what she said to you.');
+                }
+
+                hints.slice(0, 3).forEach(function(hint){
+                    html += '<div class="reveal-item"><span class="ri-dim" style="font-style:italic">' + hint + '</span></div>';
+                });
+                html += '</div>';
+            }
+
+            /* ── Final message ── */
+            var neverCount = Object.keys(neverSaid).length;
+            html += '<div class="final-msg" id="fmsg"><p>';
+            if(neverCount >= 4){
+                html += '<span class="you-built">You built this silence.</span><br>' +
+                    'Every word you avoided, every branch you didn\'t take — that\'s the story here. Not the party. Not her. You.';
+            } else if(neverCount >= 2){
+                html += '<span class="you-built">Some silences are chosen.</span><br>' +
+                    'You said some of what mattered. But the words you held back — those have weight too.';
+            } else if(neverCount >= 1){
+                html += '<span class="you-built">Almost everything.</span><br>' +
+                    'You said most of it. But the one thing you couldn\'t say — that\'s the thing that mattered most.';
+            } else {
+                html += '<span class="you-built">You said everything.</span><br>' +
+                    'Or almost. The silence between you two was always going to be there. At least you didn\'t add to it.';
+            }
+            html += '</p></div>';
+
+            html += '<button class="restart-btn" data-action="restart">Begin Again</button>';
+            html += '</div>';
+
+            container.innerHTML = html;
+
+            // Staggered reveal
+            setTimeout(function(){
+                var e1 = $('rs-words'); if(e1) e1.classList.add('visible');
+                setTimeout(function(){ var e2 = $('rs-her');  if(e2) e2.classList.add('visible'); }, 600);
+                setTimeout(function(){ var e3 = $('rs-paths'); if(e3) e3.classList.add('visible'); }, 1200);
+                setTimeout(function(){ var e4 = $('fmsg');    if(e4) e4.classList.add('visible'); }, 2000);
+            }, 300);
+        }
+
+        /* ══════════════════════════════════════════════
+           NAVIGATION
+           ══════════════════════════════════════════════ */
+
+        var branchMap = {
+            'bar-ask':        runBarAsk,
+            'bar-water':      runBarWater,
+            'terrace-nice':   runTerraceNice,
+            'terrace-ask':    runTerraceAsk,
+            'terrace-dodge':  runTerraceDodge,
+            'hallway-wander': runHallwayWander,
+            'hallway-maybe':  runHallwayMaybe,
+            'hallway-direct': runHallwayDirect
+        };
+
+        function handleAction(action){
+            /* ── Meta actions ── */
+            if(action === 'restart'){
+                initState();
+                clearInterval(elapsedTimer);
+                elapsedTimer = setInterval(function(){ state.elapsed++; }, 60000);
+                showIntro();
+                return;
+            }
+            if(action === 'reveal'){
+                showReveal();
+                return;
+            }
+
+            /* ── Scene navigation ── */
+            if(action === 'go-bar'){
+                choicePathsTaken['bar'] = true;
+                ensureGameContainer();
+                remove$('choices'); remove$('next-choices');
+                appendTo('game', divider() + renderBar());
+                scrollEnd();
+                return;
+            }
+            if(action === 'go-terrace'){
+                choicePathsTaken['terrace'] = true;
+                ensureGameContainer();
+                remove$('choices'); remove$('next-choices');
+                appendTo('game', divider() + renderTerrace());
+                scrollEnd();
+                return;
+            }
+            if(action === 'go-hallway'){
+                choicePathsTaken['hallway'] = true;
+                ensureGameContainer();
+                remove$('choices'); remove$('next-choices');
+                appendTo('game', divider() + renderHallway());
+                scrollEnd();
+                return;
+            }
+            if(action === 'go-encounter'){
+                state.scene = 'encounter';
+                ensureGameContainer();
+                remove$('choices'); remove$('next-choices');
+                appendTo('game', divider() + renderEncounter());
+                setTimeout(function(){ startEncounter(); }, 400);
+                scrollEnd();
+                return;
+            }
+
+            /* ── Branch actions ── */
+            var branchFn = branchMap[action];
+            if(branchFn){
+                choicePathsTaken[action] = true;
+                ensureGameContainer();
+                remove$('choices'); remove$('next-choices');
+                branchFn();
+                return;
+            }
+        }
+
+        /* ══════════════════════════════════════════════
+           EVENT LISTENERS
+           ══════════════════════════════════════════════ */
+
+        document.addEventListener('click', function(e){
+            var btn = e.target.closest('[data-action]');
+            if(btn){
+                e.preventDefault();
+                handleAction(btn.getAttribute('data-action'));
+                return;
+            }
+
+            // Intro screen click
+            if(currentScreen === 0){
+                initState();
+                clearInterval(elapsedTimer);
+                elapsedTimer = setInterval(function(){ state.elapsed++; }, 60000);
+                ensureGameContainer();
+                appendTo('game', renderLobby());
+                scrollEnd();
+            }
+        });
+
+        document.addEventListener('keydown', function(e){
+            // Intro → start
+            if(currentScreen === 0 && e.key === 'Enter'){
+                e.preventDefault();
+                initState();
+                clearInterval(elapsedTimer);
+                elapsedTimer = setInterval(function(){ state.elapsed++; }, 60000);
+                ensureGameContainer();
+                appendTo('game', renderLobby());
+                scrollEnd();
+                return;
+            }
+
+            // Encounter free input
+            if(currentScreen === 1 && state && state.scene === 'encounter' &&
+               encounterPhase >= 1 && !encounterDone && e.key === 'Enter'){
+                var inp = $('free-input');
+                if(!inp) return;
+                var val = inp.value.trim();
+                if(val) processEncounterInput(val);
+                return;
+            }
+
+            // Number-key shortcuts for choice buttons
+            if(currentScreen === 1 && e.key >= '1' && e.key <= '9'){
+                var btns = document.querySelectorAll('.choice-btn');
+                var idx  = parseInt(e.key, 10) - 1;
+                if(btns[idx]){
+                    e.preventDefault();
+                    btns[idx].click();
+                }
+            }
+        });
+
+        /* ══════════════════════════════════════════════
+           BACKGROUND PARTICLES
+           ══════════════════════════════════════════════ */
+
+        var canvas = document.getElementById('bg-canvas');
+        var ctx    = canvas.getContext('2d');
+        var particles = [];
+        var PARTICLE_COUNT = 50;
+
+        function resizeCanvas(){
+            canvas.width  = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        for(var i = 0; i < PARTICLE_COUNT; i++){
+            particles.push({
+                x:     Math.random() * canvas.width,
+                y:     Math.random() * canvas.height,
+                r:     Math.max(0.3, Math.random() * 1.4 + 0.4),
+                vy:   -(Math.random() * 0.16 + 0.03),
+                vx:    (Math.random() - 0.5) * 0.07,
+                alpha: Math.random() * 0.18 + 0.04,
+                phase: Math.random() * Math.PI * 2
+            });
+        }
+
+        function drawParticles(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for(var i = 0; i < particles.length; i++){
+                var p = particles[i];
+                p.y     += p.vy;
+                p.x     += p.vx;
+                p.phase += 0.008;
+
+                if(p.y < -10){
+                    p.y = canvas.height + 10;
+                    p.x = Math.random() * canvas.width;
+                }
+                if(p.x < -10)               p.x = canvas.width  + 10;
+                if(p.x > canvas.width + 10)  p.x = -10;
+
+                var fa = Math.max(0, p.alpha * (0.5 + 0.5 * Math.sin(p.phase)));
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(232,168,124,' + fa.toFixed(3) + ')';
+                ctx.fill();
+            }
+            requestAnimationFrame(drawParticles);
+        }
+
+        if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+            drawParticles();
+        }
+
+        /* ── Boot ───────────────────────────────────── */
+        showIntro();
+
+    })();
+    </script>
+</body>
+</html>

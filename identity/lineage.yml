@@ -139,6 +139,10 @@ nodes:
     title: The Last Honest Machine
     domain: code-tool
     rating: 5
+  - id: "0090"
+    title: The Ex
+    domain: code-game
+    rating: 5
   - id: "0007"
     title: Tuning the Room
     domain: essay
@@ -518,6 +522,12 @@ edges:
     strength: 0.26666666666666666
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, code-game, pitch"
+  - from: "0041"
+    to: "0090"
+    relation: thematic
+    strength: 0.3
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, code-game, pitch"
   - from: "0049"
     to: "0057"
     relation: thematic
@@ -530,6 +540,12 @@ edges:
     strength: 0.2903225806451613
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, code-tool, pitch"
+  - from: "0050"
+    to: "0090"
+    relation: thematic
+    strength: 0.26153846153846155
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, code-game, pitch"
   - from: "0052"
     to: "0026"
     relation: technique
@@ -925,4 +941,4 @@ creative_dna:
       to_domain: fiction
       count: 1
   unexplored_territory: []
-updated_at: 2026-05-27T10:32:39.462Z
+updated_at: 2026-05-27T10:47:41.815Z
