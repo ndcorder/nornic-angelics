@@ -1091,3 +1091,6 @@ The most urgent priority is pipeline stability. Without it, no amount of editori
 ### 2026-05-27T08:27:04.484Z
 
 **Iteration 129 — SHIPPED:** "Exfiltration" [code-game] as 0085. Rating: 5.0. Review: Exfiltration is the portfolio's most structurally complete code-game since The Appointment — 32 hand-crafted traveler cases, each a fully realized human portrait with genuine moral complexity, wired i. Token usage: 189010in/125189out.
+### 2026-05-27T08:56:51.662Z
+
+**Iteration 130 — SHIPPED:** "The Absolution Engine" [code-tool] as 0086. Rating: 4.7. Review: The Absolution Engine is the portfolio's most linguistically precise code-tool — a forensic text analyzer that maps an entire grammar of self-exoneration with anthropological specificity. The evasion . Token usage: 125844in/76900out.

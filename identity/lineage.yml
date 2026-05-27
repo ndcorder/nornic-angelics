@@ -123,6 +123,10 @@ nodes:
     title: Exfiltration
     domain: code-game
     rating: 5
+  - id: "0086"
+    title: The Absolution Engine
+    domain: code-tool
+    rating: 4.7
   - id: "0007"
     title: Tuning the Room
     domain: essay
@@ -842,4 +846,4 @@ creative_dna:
       to_domain: worldbuilding
       count: 1
   unexplored_territory: []
-updated_at: 2026-05-27T08:27:04.544Z
+updated_at: 2026-05-27T08:56:51.730Z
