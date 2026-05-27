@@ -1088,3 +1088,6 @@ The most urgent priority is pipeline stability. Without it, no amount of editori
 ### 2026-05-27T07:40:51.859Z
 
 **Iteration 128 — SHIPPED:** "Fever Schedule" [code-tool] as 0084. Rating: 4.9. Review: Fever Schedule delivers on every promise of its revision. The parser is a masterwork of forensic empathy — it doesn't just extract events, it classifies them into a taxonomy of institutional life (sta. Token usage: 62473in/31384out.
+### 2026-05-27T08:27:04.484Z
+
+**Iteration 129 — SHIPPED:** "Exfiltration" [code-game] as 0085. Rating: 5.0. Review: Exfiltration is the portfolio's most structurally complete code-game since The Appointment — 32 hand-crafted traveler cases, each a fully realized human portrait with genuine moral complexity, wired i. Token usage: 189010in/125189out.

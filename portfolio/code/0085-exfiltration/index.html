@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exfiltration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════
+       INTRO SCREEN
+       ═══════════════════════════════════════════════════════ -->
+  <div id="intro-overlay" class="intro-overlay">
+    <div class="intro-text">
+      <h1>Exfiltration</h1>
+      <p>
+        You are a border control agent. Travelers will appear at your station.
+        Review their documents. Approve or deny entry. You have limited time per traveler.
+      </p>
+      <p>
+        The decisions are yours. Make them carefully.
+      </p>
+    </div>
+    <div class="intro-instructions">
+      <kbd>A</kbd> or <kbd>1</kbd> — Approve &nbsp;&nbsp;
+      <kbd>D</kbd> or <kbd>2</kbd> — Deny<br>
+      You have 45 seconds per traveler. If time runs out, entry is denied.
+    </div>
+    <button class="btn-reveal" id="btn-start">BEGIN SHIFT</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       GAME CONTAINER
+       ═══════════════════════════════════════════════════════ -->
+  <div id="game-container" class="game-container" style="display: none;">
+
+    <!-- HEADER -->
+    <header id="header" class="header">
+      <div class="header-title">
+        <span>⬡</span> MERIDIAN BORDER CONTROL — TERMINAL 7
+      </div>
+      <div class="header-meta">
+        <div class="meta-item">
+          <span class="meta-label">SHIFT:</span>
+          <span class="meta-value" id="progress-count">0 / 32</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">TIME:</span>
+          <span class="meta-value" id="timer-display">0:45</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+    </div>
+
+    <!-- MAIN PANEL -->
+    <div class="main-panel">
+
+      <!-- TRAVELER SECTION -->
+      <div id="traveler-section" class="traveler-section">
+        <div class="section-label">Applicant</div>
+
+        <div id="traveler-card" class="traveler-card">
+          <div class="traveler-header">
+            <div class="traveler-identity">
+              <div class="traveler-name" id="traveler-name">—</div>
+              <div class="traveler-demographics" id="traveler-demographics"></div>
+            </div>
+            <div class="traveler-photo" id="traveler-photo">PHOTO</div>
+          </div>
+
+          <div class="traveler-body">
+            <div class="traveler-purpose" id="traveler-purpose"></div>
+            <div class="traveler-story" id="traveler-story"></div>
+            <div class="traveler-observation" id="traveler-observation"></div>
+          </div>
+        </div>
+
+        <!-- DECISION AREA -->
+        <div class="decision-area">
+          <div class="decision-prompt">
+            <span class="prompt-cursor"></span>
+            <span>ADJUDICATE:</span>
+          </div>
+          <div class="decision-buttons">
+            <button class="btn btn-approve" id="btn-approve">
+              APPROVE <span class="decision-shortcut">[A]</span>
+            </button>
+            <button class="btn btn-deny" id="btn-deny">
+              DENY <span class="decision-shortcut">[D]</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOCUMENTS PANEL -->
+      <div class="documents-panel">
+        <div class="documents-header">
+          <span class="section-label" style="border: none; padding: 0;">Documents</span>
+        </div>
+        <div class="documents-list" id="documents-list">
+          <!-- Documents populated by JS -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       REVEAL OVERLAY
+       ═══════════════════════════════════════════════════════ -->
+  <div id="reveal-overlay" class="reveal-overlay">
+    <div id="reveal-content">
+      <!-- Reveal sections populated by JS -->
+    </div>
+  </div>
+
+  <script src="travelers.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
