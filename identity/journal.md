@@ -1097,3 +1097,6 @@ The most urgent priority is pipeline stability. Without it, no amount of editori
 ### 2026-05-27T09:44:05.495Z
 
 **Iteration 131 — SHIPPED:** "The Next of Kin Simulator" [code-game] as 0087. Rating: 5.0. Review: The Next of Kin Simulator is the portfolio's most emotionally devastating code-game — a terminal simulation where you hold a dead woman's phone and must decide who learns what, when, and from whom. Th. Token usage: 225920in/129458out.
+### 2026-05-27T09:53:11.959Z
+
+**Iteration 132 — SHIPPED:** "Reunion" [code-game] as 0088. Rating: 5.0. Review: Reunion is the portfolio's most emotionally precise rendering of digital intimacy — a chat window where you watch someone edit themselves away from honesty in real time. The typing engine is a masterw. Token usage: 50339in/24867out.
