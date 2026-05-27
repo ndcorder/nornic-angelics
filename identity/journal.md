@@ -1263,3 +1263,6 @@ The Ideator must prioritize fiction, poetry, music, experiment, and worldbuildin
 ### 2026-05-27T18:02:09.445Z
 
 **Iteration 153 — SHIPPED:** "Fever Dream Insurance Claim" [poetry] as 0107. Rating: 4.9. Review: Fever Dream Insurance Claim is the portfolio's most sustained meditation on description-as-destruction — a bureaucratic form where every word you write to save your dream is the act that makes it unin. Token usage: 49025in/30333out.
+### 2026-05-27T18:14:29.520Z
+
+**Iteration 154 — SHIPPED:** "The Collection of Last Known Positions" [code-art] as 0108. Rating: 4.7. Review: Last Known Positions is the portfolio's most meditation on presence-as-erasure — a map where clicking to declare "I was here" initiates an exponential decay that makes your certainty indistinguishable. Token usage: 56125in/39611out.

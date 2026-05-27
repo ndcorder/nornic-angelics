@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last Known Positions</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #060606;
+            font-family: 'Space Mono', monospace;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        .leaflet-control-zoom a {
+            background: #0d0d0d !important;
+            color: #5a3a3a !important;
+            border-color: #2a1a1a !important;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .leaflet-control-zoom a:hover {
+            opacity: 1;
+            color: #8a5a5a !important;
+        }
+
+        .leaflet-control-attribution {
+            background: rgba(10, 10, 10, 0.7) !important;
+            color: #3a2a2a !important;
+            font-size: 9px !important;
+        }
+
+        .leaflet-control-attribution a {
+            color: #4a2a2a !important;
+        }
+
+        /* Preamble overlay */
+        #preamble {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #060606;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 2rem;
+            transition: opacity 1.8s ease, visibility 1.8s ease;
+        }
+
+        #preamble.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        #preamble .inner {
+            max-width: 420px;
+            text-align: center;
+            animation: emerge 2.5s ease-out both;
+        }
+
+        @keyframes emerge {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        #preamble h1 {
+            color: #6a4a4a;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        #preamble p {
+            color: #4a3535;
+            font-size: 0.7rem;
+            line-height: 1.9;
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+
+        #preamble .confirm {
+            margin-top: 2.5rem;
+            padding: 0.65rem 2.2rem;
+            background: transparent;
+            border: 1px solid #2a1a1a;
+            color: #5a3a3a;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            animation: emerge 2.5s ease-out 1s both;
+        }
+
+        #preamble .confirm:hover {
+            border-color: #5a3a3a;
+            color: #8a5a5a;
+        }
+
+        #preamble .confirm:focus-visible {
+            outline: 1px solid #6a4a4a;
+            outline-offset: 3px;
+        }
+
+        /* Header */
+        #header {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            z-index: 1000;
+            pointer-events: none;
+            animation: emerge 1.5s ease-out 3.5s both;
+        }
+
+        #header h1 {
+            color: #4a2e2e;
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        #header p {
+            color: #2e1e1e;
+            font-size: 0.55rem;
+            margin-top: 0.3rem;
+            letter-spacing: 0.1em;
+        }
+
+        /* Counter */
+        #counter {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            z-index: 1000;
+            pointer-events: none;
+            color: #2e1e1e;
+            font-size: 0.5rem;
+            letter-spacing: 0.15em;
+            text-transform: lowercase;
+            animation: emerge 1.5s ease-out 4s both;
+        }
+
+        /* Instruction */
+        #instruction {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 1000;
+            pointer-events: none;
+            color: #2a1a1a;
+            font-size: 0.5rem;
+            letter-spacing: 0.12em;
+            animation: emerge 1.5s ease-out 4.5s both;
+        }
+
+        /* Toast notification */
+        #toast {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            background: #0f0f0f;
+            border: 1px solid #1f1f1f;
+            color: #5a4040;
+            padding: 0.7rem 1.4rem;
+            font-size: 0.6rem;
+            font-family: 'Space Mono', monospace;
+            letter-spacing: 0.08em;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            pointer-events: none;
+        }
+
+        #toast.show { opacity: 1; }
+
+        /* Hover tooltip */
+        #tooltip {
+            position: fixed;
+            z-index: 3000;
+            background: #0a0808;
+            border: 1px solid #1a1212;
+            padding: 0.55rem 0.75rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: #5a4a4a;
+            letter-spacing: 0.04em;
+            line-height: 1.6;
+            max-width: 240px;
+            white-space: nowrap;
+        }
+
+        #tooltip.visible { opacity: 0.85; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="preamble">
+        <div class="inner">
+            <h1>Last Known Positions</h1>
+            <p>
+                This map records moments of confirmed existence.
+                Each point marks where someone stood and declared:
+                I was here.
+            </p>
+            <p>
+                Every mark fades with a half-life of seven days,
+                becoming harder to see, never quite vanishing.
+                Looking for the oldest ones is an act of faith.
+            </p>
+            <p style="color: #3a2828; margin-top: 1.2rem;">
+                Your mark will be indistinguishable from all others.
+                This is the point.
+            </p>
+            <button class="confirm" id="begin-btn">Begin</button>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <header id="header">
+        <h1>Last Known Positions</h1>
+        <p>A cartography of presence</p>
+    </header>
+
+    <div id="counter" role="status" aria-live="polite"></div>
+    <div id="instruction">click to mark where you were</div>
+
+    <div id="toast" role="alert" aria-live="polite"></div>
+    <div id="tooltip" role="tooltip"></div>
+
+    <script>
+        /* ============================================
+           Map Initialization
+           ============================================ */
+        const map = L.map('map', {
+            center: [30, 10],
+            zoom: 3,
+            zoomControl: true,
+            attributionControl: true
+        });
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap &copy; CARTO',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(map);
+
+        /* ============================================
+           Constants
+           ============================================ */
+        const HALF_LIFE_MS  = 7 * 24 * 60 * 60 * 1000;
+        const MIN_OPACITY   = 0.025;
+        const MAX_OPACITY   = 0.78;
+        const STORAGE_KEY   = 'last_known_positions_v2';
+
+        /* ============================================
+           State
+           ============================================ */
+        const markers     = [];
+        let mapReady      = false;
+
+        /* ============================================
+           Fading Algorithm
+           Half-life of 7 days. Opacity decays
+           exponentially but never reaches zero.
+           ============================================ */
+        function calculateOpacity(timestamp) {
+            const elapsed = Date.now() - timestamp;
+            const halfLives = elapsed / HALF_LIFE_MS;
+            const raw = 0.5 ** halfLives;
+            return Math.max(MIN_OPACITY, Math.min(MAX_OPACITY, raw * MAX_OPACITY));
+        }
+
+        function formatTimestamp(ts) {
+            const d = new Date(ts);
+            const pad = (n) => String(n).padStart(2, '0');
+            const months = ['Jan','Feb','Mar','Apr','May','Jun',
+                            'Jul','Aug','Sep','Oct','Nov','Dec'];
+            return d.getFullYear() + ' ' +
+                   months[d.getMonth()] + ' ' +
+                   pad(d.getDate()) + ' ' +
+                   pad(d.getHours()) + ':' + pad(d.getMinutes());
+        }
+
+        /* ============================================
+           Persistence
+           Saves the full marker array each time,
+           overwriting previous data — no duplication.
+           ============================================ */
+        function loadMarkers() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return;
+                const data = JSON.parse(raw);
+                if (!Array.isArray(data)) return;
+                data.forEach(m => {
+                    if (typeof m.lat === 'number' &&
+                        typeof m.lng === 'number' &&
+                        typeof m.t  === 'number') {
+                        addToMap(m.lat, m.lng, m.t, false);
+                    }
+                });
+            } catch (e) {
+                /* Silent fail — corrupted storage shouldn't break the map */
+            }
+        }
+
+        function saveMarkers() {
+            try {
+                const payload = markers.map(m => ({ lat: m.lat, lng: m.lng, t: m.t }));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+            } catch (e) {
+                /* Storage full or unavailable — the map continues */
+            }
+        }
+
+        /* ============================================
+           Marker Rendering
+           Each position = outer glow circle + inner core dot.
+           Both layers share hover handlers for the tooltip.
+           ============================================ */
+        function addToMap(lat, lng, timestamp, shouldSave) {
+            const op = calculateOpacity(timestamp);
+
+            const circle = L.circleMarker([lat, lng], {
+                radius: Math.max(3, 6 * op),
+                fillColor: '#8b3a3a',
+                fillOpacity: op * 0.18,
+                stroke: true,
+                color: '#a04444',
+                weight: 0.6,
+                opacity: op * 0.35
+            }).addTo(map);
+
+            const dot = L.circleMarker([lat, lng], {
+                radius: Math.max(1.5, 3.5 * op),
+                fillColor: '#c45e5e',
+                fillOpacity: op,
+                stroke: true,
+                color: '#d47070',
+                weight: 0.5,
+                opacity: op * 0.6
+            }).addTo(map);
+
+            const entry = { lat, lng, t: timestamp, circle, dot };
+            markers.push(entry);
+
+            /* Hover: show timestamp, age, and certainty classification */
+            const showTip = (e) => {
+                const currentOp = calculateOpacity(timestamp);
+                const age = Date.now() - timestamp;
+                const days = Math.floor(age / 86400000);
+                const hrs  = Math.floor((age % 86400000) / 3600000);
+                const ageStr = days > 0 ? days + 'd ' + hrs + 'h ago' : hrs + 'h ago';
+
+                const certainty = currentOp > 0.4  ? 'Confirmed'
+                                : currentOp > 0.15 ? 'Recent'
+                                : currentOp > 0.06 ? 'Fading'
+                                :                    'Uncertain';
+
+                const tt = document.getElementById('tooltip');
+                tt.innerHTML = formatTimestamp(timestamp) +
+                    '<br><span style="color:#3a2a2a">' +
+                    ageStr + ' &middot; ' + certainty + '</span>';
+                tt.classList.add('visible');
+                positionTip(e.containerPoint);
+            };
+
+            const moveTip = (e) => positionTip(e.containerPoint);
+
+            const hideTip = () => {
+                document.getElementById('tooltip').classList.remove('visible');
+            };
+
+            circle.on('mouseover', showTip);
+            circle.on('mousemove', moveTip);
+            circle.on('mouseout',  hideTip);
+            dot.on('mouseover', showTip);
+            dot.on('mousemove', moveTip);
+            dot.on('mouseout',  hideTip);
+
+            if (shouldSave) saveMarkers();
+            updateCounter();
+        }
+
+        function positionTip(pt) {
+            const tt = document.getElementById('tooltip');
+            tt.style.left = (pt.x + 14) + 'px';
+            tt.style.top  = (pt.y - 10) + 'px';
+        }
+
+        /* ============================================
+           Map Click — Place a Mark
+           ============================================ */
+        map.on('click', (e) => {
+            if (!mapReady) return;
+            addToMap(e.latlng.lat, e.latlng.lng, Date.now(), true);
+            showToast('Position recorded. It has begun to fade.');
+        });
+
+        /* ============================================
+           Continuous Fade
+           Re-calculates opacity for all markers
+           on an 8-second interval. The half-life is
+           measured in days — 8s is granular enough.
+           ============================================ */
+        function fadeAll() {
+            markers.forEach(m => {
+                const op = calculateOpacity(m.t);
+                m.circle.setStyle({
+                    fillOpacity: op * 0.18,
+                    opacity: op * 0.35,
+                    radius: Math.max(3, 6 * op)
+                });
+                m.dot.setStyle({
+                    fillOpacity: op,
+                    opacity: op * 0.6,
+                    radius: Math.max(1.5, 3.5 * op)
+                });
+            });
+        }
+
+        setInterval(fadeAll, 8000);
+
+        /* ============================================
+           UI Helpers
+           ============================================ */
+        function updateCounter() {
+            const el = document.getElementById('counter');
+            const n = markers.length;
+            if (n === 0) { el.textContent = ''; return; }
+            const word = n === 1 ? 'position' : 'positions';
+            el.textContent = n + ' ' + word + ' recorded';
+        }
+
+        let toastTimer = null;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+        }
+
+        /* ============================================
+           Preamble Dismiss
+           ============================================ */
+        document.getElementById('begin-btn').addEventListener('click', () => {
+            document.getElementById('preamble').classList.add('hidden');
+            mapReady = true;
+
+            /* Fit map to existing markers after preamble fades */
+            setTimeout(() => {
+                if (markers.length > 0) {
+                    const bounds = L.latLngBounds(markers.map(m => [m.lat, m.lng]));
+                    map.fitBounds(bounds.pad(0.3));
+                }
+            }, 600);
+        });
+
+        /* ============================================
+           Keyboard: Escape closes overlays
+           ============================================ */
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('tooltip').classList.remove('visible');
+                document.getElementById('toast').classList.remove('show');
+            }
+        });
+
+        /* ============================================
+           Init: load stored markers
+           ============================================ */
+        loadMarkers();
+    </script>
+</body>
+</html>
