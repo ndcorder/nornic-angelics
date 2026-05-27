@@ -85,3 +85,4 @@
 | 0081 | The Desk Assignment | fiction | 5.0 | 2026-05-21 | — |
 | 0082 | Sleeper | code-tool | 4.9 | 2026-05-21 | — |
 | 0083 | The Confession Booth | code-game | 5.0 | 2026-05-22 | — |
+| 0084 | Fever Schedule | code-tool | 4.9 | 2026-05-27 | — |
