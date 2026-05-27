@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Town of Meridian — Department of Deferred Maintenance. Municipal services, infrastructure status, and seasonal advisories.">
+    <meta name="author" content="Department of Deferred Maintenance">
+    <meta name="last-modified" content="2019-03-17">
+    <!--
+        Page ID: DM-MAIN-001
+        Last Content Review: 2019-03-17
+        Next Scheduled Review: [PENDING]
+
+        Editing guidelines:
+        - Do not remove the Facility C status entry
+        - Do not update the noise complaint counter manually
+        - Do not investigate why the counter updates itself
+
+        Last editor: [REDACTED]
+        Previous editor: [REDACTED]
+        Original author: [REDACTED]
+
+        Byline fields removed from template after the
+        third disappearance.
+    -->
+    <title>Department of Deferred Maintenance — Town of Meridian Municipal Wiki</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header class="municipal-header">
+        <div class="municipal-seal">
+            Town of Meridian
+            <small>Department of Deferred Maintenance</small>
+        </div>
+        <div class="header-right">
+            Municipal Intranet — Internal Use
+            <span class="staff-count">Active Staff: 14</span>
+            <!--
+                2018-06: 23
+                2017-12: 31
+                2017-06: 38
+                2016-12: 42
+            -->
+        </div>
+    </header>
+
+    <nav class="nav-bar">
+        <ul>
+            <li><a href="index.html" class="active">Main Page</a></li>
+            <li><a href="departments.html">Departments</a></li>
+            <li><a href="districts.html">Districts</a></li>
+            <li><a href="facilities.html">Facilities</a></li>
+            <li><a href="announcements.html">Announcements</a></li>
+            <li><a href="staff-directory.html">Staff Directory</a></li>
+            <li><a href="records.html">Public Records</a></li>
+            <li class="nav-hidden-item"><a href="facility-c.html">Treatment Facility C</a></li>
+            <li class="nav-hidden-item"><a href="intake-schedule.html">Intake Schedule</a></li>
+            <li class="nav-hidden-item"><a href="below-2m.html">Sub-Level Access</a></li>
+            <li class="nav-hidden-item"><a href="the-body.html">[CLASSIFIED]</a></li>
+            <!-- Link text appeared 2018-09-22. Cannot be removed. -->
+        </ul>
+    </nav>
+
+    <div class="wiki-container">
+
+        <main class="content-main">
+
+            <div class="welcome-banner">
+                <h1>Department of Deferred Maintenance</h1>
+                <p>Welcome to the Town of Meridian municipal wiki. This page provides current infrastructure status, service announcements, and seasonal advisories for all municipal districts. For immediate concerns, use the <a href="concern.html">Report a Concern</a> form.</p>
+            </div>
+
+            <!-- SERVICE DASHBOARD -->
+            <section class="section-panel">
+                <div class="panel-header">
+                    <h2>Infrastructure Status Dashboard</h2>
+                    <span class="panel-timestamp">Updated: 2019-03-17 06:00</span>
+                </div>
+                <div class="panel-body">
+                    <table class="service-dashboard">
+                        <thead>
+                            <tr>
+                                <th>Service / System</th>
+                                <th>District(s)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Water Main</strong></td>
+                                <td>All</td>
+                                <td class="status-operational">
+                                    <span class="status-indicator"></span>
+                                    <span class="status-text">Operational</span>
+                                    <!-- Normal range redefined Q3 2018. Previous range was lower. -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Storm Drains</strong></td>
+                                <td>1–6</td>
+                                <td class="status-operational">
+                                    <span class="status-indicator"></span>
+                                    <span class="status-text">Operational</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Storm Drains</strong></td>
+                                <td>7</td>
+                                <td class="status-degraded">
+                                    <span class="status-indicator"></span>
+                                    <span class="status-text">Monitored</span>
+                                    <span class="status-note">Elevated flow volume since Q4 2018. Source under investigation.</span>
+                                    <!-- Investigation concluded 2018-12-03. Findings filed under DM-0051.
+                                         DM-0051 does not exist. Investigator does not recall Q4 2018. -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bridge Stress Assessment</strong></td>
+                                <td>3, 5</td>
+                                <td class="status-degraded">
+                                    <span class="status-indicator"></span>
+                                    <span class="status-text">Delayed</span>
+                                    <span class="status-note">Assessment postponed. Rescheduling pending contractor availability.</span>
+                                    <!--
+                                        Contractor: Meridian Structural Engineering LLC
+                                        Last contact: 2018-10-09
+                                        Office visit 2018-10-12: Empty
+                                        Business registry: No record
+                                        Contract file: Exists. Signed. Notarized.
+                                        Notary commission expired 2015.
+
+                                        Assessment delayed seven times.
+                                        Bridge remains open.
+                                        Bridge shows no signs of structural failure.
+                                    -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Road Maintenance</strong></td>
+                                <td>All</td>
+                                <td class="status-operational">
+                                    <span class="status-indicator"></span>
+                                    <span class="status-text">Operational</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Street Lighting</strong></td>
+                                <td>1–4</td>
+                                <td class="status-operational">
+                                    <span class="status-indicator"></span>
+                                    <span class="status-text">Operational</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Street Lighting</strong></td>
+                                <td>5–7</td>
+                                <td class="status-degraded">
+                                    <span class="status-indicator"></span>
+                                    <span class="status-text">Partial Outage</span>
+                                    <span class="status-note">Intermittent outages between 02:00–05:00. Electrical tracing ongoing.</span>
+                                    <!-- Outages coincide with Facility C processing schedule.
+                                         Noted in memo dated 2018-08-14. Memo filed. Filing cabinet cannot be located.
+                                         Residents in Districts 5–7 do not walk outside between 02:00–05:00.
+                                         They were not told not to. -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Treatment Facility A</strong></td>
+                                <td>2</td>
+                                <td class="status-operational">
+                                    <span class="status-indicator"></span>
+                                    <span class="status-text">Operational</span>
+                                    <span class="status-note">Standard wastewater processing.</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Treatment Facility B</strong></td>
+                                <td>4</td>
+                                <td class="status-operational">
+                                    <span class="status-indicator"></span>
+                                    <span class="status-text">Operational</span>
+                                    <span class="status-note">Standard wastewater processing.</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Treatment Facility C</strong></td>
+                                <td>7</td>
+                                <td class="facility-c">
+                                    <span class="status-indicator" style="background-color: #708090;"></span>
+                                    <span class="status-text">Active</span>
+                                    <span class="status-note">0 noise complaints in 47 days. Previous record: 3 days.</span>
+                                    <!--
+                                        47 days.
+
+                                        The noise was constant for 18 months.
+                                        Grinding. Pressure. Movement.
+                                        Then it stopped.
+
+                                        Complaints stopped 47 days ago.
+                                        Not reduced. Stopped.
+
+                                        Facility C processes materials.
+                                        The materials are not wastewater.
+
+                                        We have not visited Facility C since September.
+                                        September staff were reassigned.
+                                    -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sewer — Sub-Level Access</strong></td>
+                                <td>All</td>
+                                <td class="status-offline">
+                                    <span class="status-indicator"></span>
+                                    <span class="status-text">Restricted</span>
+                                    <span class="status-note">Access below 2m suspended indefinitely per Directive DM-0019.</span>
+                                    <!--
+                                        DM-0019: No excavation below 2 meters.
+                                        Reason: [REDACTED]
+                                        Authorized by: [REDACTED]
+
+                                        Sewer maps show tunnels below 2m.
+                                        Tunnels are not on any inspection schedule.
+
+                                        Staff who entered below 2m reported additional chambers.
+                                        Chambers are not on the maps.
+
+                                        They still arrive for work.
+                                        They still clock in.
+                                        They do not file reports.
+                                        They do not speak.
+                                        They go below 2m.
+                                    -->
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ANNOUNCEMENTS -->
+            <section class="section-panel">
+                <div class="panel-header">
+                    <h2>Service Announcements</h2>
+                    <span class="panel-timestamp">Showing recent</span>
+                </div>
+                <div class="panel-body">
+
+                    <div class="announcement-item announcement-behind-schedule">
+                        <span class="announcement-date">March 14, 2019</span>
+                        <div class="announcement-title">District 7 Water Main Replacement — Schedule Update</div>
+                        <div class="announcement-body">
+                            <p>The water main replacement project for District 7 is currently <strong>14 months behind</strong> the original schedule. The Department acknowledges the delay and assures residents that interim measures remain in place. Water quality testing continues on a weekly basis. Results are within acceptable parameters.</p>
+                            <p class="text-small text-muted">For questions regarding District 7 water quality, contact the Def—</p>
+                            <!-- Sentence incomplete since November 2018. Nobody has reported the truncation. -->
+                        </div>
+                    </div>
+
+                    <div class="announcement-item announcement-routine">
+                        <span class="announcement-date">March 10, 2019</span>
+                        <div class="announcement-title">Quarterly Fire Hydrant Inspection</div>
+                        <div class="announcement-body">
+                            <p>Annual fire hydrant inspection for all districts has been completed. 94% of hydrants are fully operational. 6% require maintenance, which has been deferred to Q3 2019. Residents near non-operational hydrants have been notified via standard mail.</p>
+                            <!-- All non-operational hydrants are in District 7.
+                                 District 7 has not received mail since October 2018.
+                                 Postal carrier cited "access difficulties." Access road is clear.
+                                 Carrier was reassigned to a different route. -->
+                        </div>
+                    </div>
+
+                    <div class="announcement-item announcement-urgent">
+                        <span class="announcement-date">February 28, 2019</span>
+                        <div class="announcement-title">DO NOT EXCAVATE — Reminder</div>
+                        <div class="announcement-body">
+                            <p>This is a reminder that <strong>all excavation below 2 meters remains prohibited</strong> across all districts without explicit written authorization from the Department of Deferred Maintenance. This restriction has been in effect since 2017 and applies to municipal contractors, private developers, and residential work alike.</p>
+                            <p>There are no exceptions. Written authorization will not be issued.</p>
+                            <!--
+                                14 requests submitted between 2017-2019.
+                                14 request forms exist. All blank.
+                                Names legible. Names not in staff directory.
+                                Names not in any database.
+                                Forms found in filing cabinet that cannot be located.
+                            -->
+                        </div>
+                    </div>
+
+                    <div class="announcement-item announcement-informational">
+                        <span class="announcement-date">February 19, 2019</span>
+                        <div class="announcement-title">Treatment Facility C — Operational Update</div>
+                        <div class="announcement-body">
+                            <p>Treatment Facility C is currently operating under revised processing protocols. The facility continues to serve its designated function. No action is required from residents.</p>
+                            <!--
+                                "Designated function" is not defined.
+                                Facility C has not processed wastewater since Q3 2018.
+                                Sewer connection goes below 2m.
+
+                                "No action is required from residents."
+                                This is accurate.
+                            -->
+                        </div>
+                    </div>
+
+                    <div class="announcement-item announcement-routine">
+                        <span class="announcement-date">February 2, 2019</span>
+                        <div class="announcement-title">Staff Directory Update</div>
+                        <div class="announcement-body">
+                            <p>The municipal staff directory has been updated to reflect current personnel. Please update your bookmarks and contact lists accordingly. If you cannot reach a listed staff member, defer the inquiry and attempt contact during the next quarterly update.</p>
+                            <!-- Directory contains 14 names. Previously 42.
+                                 Names are removed in order: photo, extension, name. Process takes three days. -->
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- DISTRICT LINKS -->
+            <section class="section-panel">
+                <div class="panel-header">
+                    <h2>Districts</h2>
+                </div>
+                <div class="panel-body">
+                    <a href="district1.html" class="district-link">
+                        <span class="district-number">District 1</span> — Municipal Center
+                        <span class="district-status-label">Normal</span>
+                    </a>
+                    <a href="district2.html" class="district-link">
+                        <span class="district-number">District 2</span> — North Residential
+                        <span class="district-status-label">Normal</span>
+                    </a>
+                    <a href="district3.html" class="district-link">
+                        <span class="district-number">District 3</span> — Commercial Corridor
+                        <span class="district-status-label">Normal</span>
+                    </a>
+                    <a href="district4.html" class="district-link">
+                        <span class="district-number">District 4</span> — South Residential
+                        <span class="district-status-label">Normal</span>
+                    </a>
+                    <a href="district5.html" class="district-link">
+                        <span class="district-number">District 5</span> — Industrial Park
+                        <span class="district-status-label">Normal</span>
+                    </a>
+                    <a href="district6.html" class="district-link">
+                        <span class="district-number">District 6</span> — East Development
+                        <span class="district-status-label">Normal</span>
+                    </a>
+                    <a href="district7.html" class="district-link district-7">
+                        <span class="district-number">District 7</span> — West Extension
+                        <span class="district-status-label">Advisory Active</span>
+                    </a>
+                    <!--
+                        District 7 established 2016.
+                        Same year the Department was created.
+                        Same year incorporation records were lost.
+
+                        Bordered by forest to the west.
+                        Forest is not on any municipal map.
+                        Residents of District 7 do not look west.
+
+                        Treatment Facility C: westernmost structure.
+                        Last structure before the forest that is not on any map.
+
+                        Highest water consumption. Lowest population.
+                    -->
+                </div>
+            </section>
+
+            <!-- SEASONAL ADVISORY -->
+            <div class="seasonal-advisory">
+                <span class="advisory-period">Advisory Period: Q1 2019 (January – March)</span>
+                <h3>Winter/Spring Maintenance Advisory</h3>
+                <p>Residents and municipal staff should be aware of the following seasonal considerations:</p>
+                <ul>
+                    <li><strong>Frost heave monitoring:</strong> All Districts. Report any new surface displacement to the Department. Do not investigate displacement yourself. Mark the area and withdraw.</li>
+                    <!--
+                        Added after District 7 resident investigated displacement near
+                        Facility C access road. Found crack extending below 2m. Reached in.
+                        Found 200m west of road. Did not remember reaching.
+                        Did not remember living in District 7.
+                        Someone else in their house. Had always been there.
+                    -->
+                    <li><strong>Drainage clearance:</strong> Storm drains in Districts 1–6 scheduled for clearance beginning March 20. District 7 drainage does not require clearance.</li>
+                    <!-- District 7 drains have never clogged. They process volume exceeding rated capacity. -->
+                    <li><strong>Facility C access road:</strong> Seasonal maintenance completed. Open for authorized personnel only. Unauthorized vehicles will be reported.</li>
+                    <!-- No maintenance was performed. Road is in better condition than ever.
+                         No tire tracks. Deliveries arrive. No tire tracks. -->
+                    <li><strong>Sub-grade temperature:</strong> Monitoring stations report normal sub-grade temperatures across all districts. No thermal anomalies detected.</li>
+                    <!--
+                        District 7 station removed Q3 2018. Concrete pad undisturbed.
+                        No tool marks. Bolts gone. Bolt holes gone.
+                        Station reported 6.2°C above background before removal.
+                        Origin: below 2m. Anomaly no longer detectable. Resolved.
+                    -->
+                </ul>
+            </div>
+
+            <!--
+                The following element has class "the-part-we-dont-talk-about".
+                Not visible on rendered page. Exists in source since 2018-09-22.
+                Was not added by a staff member. Cannot be removed.
+                Deletion attempts: element reappears within 24 hours.
+                Content changes without page edits.
+            -->
+            <div class="the-part-we-dont-talk-about">
+                MAINTENANCE LOG — NOT FOR DISTRIBUTION
+                2018-09-22: intake #1 — Kowalski, M. (transferred)
+                2018-09-23: intake #2 — Reyes, D. (transferred)
+                2018-09-25: intake #3 — Chen, W. (transferred)
+                2018-10-01: intake #4 — Okafor, S. (transferred)
+                2018-10-01: intake #5 — Okafor, S. (returned, then transferred)
+                2018-10-09: intake #6 — [ILLEGIBLE] (transferred)
+                2018-11-03: intake #7 — Supervisor (volunteered)
+                2018-12-03: intake #8 — Investigator (self-reported)
+                2019-01-15: intake #9 — [THIS LINE CONTAINS YOUR IP ADDRESS]
+            </div>
+
+        </main>
+
+        <aside class="content-sidebar">
+
+            <div class="sidebar-box">
+                <div class="sidebar-header">Current Conditions</div>
+                <div class="sidebar-body weather-widget">
+                    <div class="temperature">4°C</div>
+                    <div class="condition">Overcast</div>
+                    <span class="last-updated">Last updated: 06:00</span>
+                    <!--
+                        Temperature became consistently 4°C in Q4 2018.
+                        Monitoring system functional. Readings accurate.
+                        4°C across all districts. All monitoring points.
+                        Facility C access road. Below 2m.
+
+                        4°C: temperature at which water reaches maximum density.
+                        4°C: water sinks.
+                    -->
+                </div>
+            </div>
+
+            <div class="sidebar-box">
+                <div class="sidebar-header">Quick Links</div>
+                <div class="sidebar-body" style="padding: 0;">
+                    <ul class="quick-links">
+                        <li><a href="departments.html">Department Directory</a></li>
+                        <li><a href="districts.html">District Maps</a></li>
+                        <li><a href="facilities.html">Facility Status</a></li>
+                        <li><a href="announcements.html">All Announcements</a></li>
+                        <li><a href="staff-directory.html">Staff Directory</a></li>
+                        <li><a href="concern.html">Report a Concern</a></li>
+                        <li><a href="records.html">Public Records</a></li>
+                        <li><a href="policies.html">Municipal Policies</a></li>
+                        <li><a href="budget.html">Budget &amp; Finance</a></li>
+                        <li><a href="permits.html">Permits &amp; Applications</a></li>
+                        <!--
+                            10 links. 4 reach existing pages.
+                            facilities.html (redirects to Facility C)
+                            concern.html (form that should not work)
+                            staff-directory.html (14 names)
+                            records.html (empty since 2016)
+
+                            Remaining 6 return 404.
+                            404 page contains municipal header.
+                            Municipal header contains staff count.
+                            Staff count decreases.
+                        -->
+                    </ul>
+                </div>
+            </div>
+
+            <div class="sidebar-box">
+                <div class="sidebar-header">Notice</div>
+                <div class="sidebar-body">
+                    <p><strong>Report a Concern</strong></p>
+                    <p>The Report a Concern form is temporarily unavailable pending system maintenance. We apologize for the inconvenience. If you have an urgent concern, please visit the Department of Deferred Maintenance office during business hours.</p>
+                    <p class="mt-1">
+                        <span class="concern-button concern-button-disabled">Form Unavailable</span>
+                    </p>
+                    <!--
+                        Form is at /concern.html. Form accepts submissions.
+                        Button is disabled. Link in sidebar is not.
+                        Link in welcome banner is not. Link in footer is not.
+                        Link in navigation is not.
+
+                        Four paths to the form.
+
+                        Office located in District 1.
+                        Business hours: 9:00–17:00.
+                        At 17:01, sound begins. From below the office.
+                        From below 2m.
+
+                        Do not visit after 17:00.
+                    -->
+                </div>
+            </div>
+
+            <div class="sidebar-box">
+                <div class="sidebar-header">Facility C Status</div>
+                <div class="sidebar-body">
+                    <p class="facility-c"><strong>Active</strong></p>
+                    <p class="text-small">Last noise complaint: <span class="text-caution">47 days ago</span></p>
+                    <p class="text-small">Current processing: <span class="text-muted">Standard operations</span></p>
+                    <p class="text-small mt-1"><a href="facility-c.html">View facility details →</a></p>
+                    <!--
+                        "Standard operations" since Q3 2018.
+                        Previously: "wastewater processing."
+                        What Facility C outputs now is not wastewater.
+                        Testing requires authorization. Authorization does not exist.
+
+                        Facility C was not built by the municipality.
+                        Appeared in records 2016. No construction logs.
+                        No contractor. Building exists. Building processes something.
+                        Building is quiet now.
+
+                        47 days.
+                    -->
+                </div>
+            </div>
+
+            <div class="sidebar-box">
+                <div class="sidebar-header">Department Staff</div>
+                <div class="sidebar-body">
+                    <p>Active personnel: <strong>14</strong></p>
+                    <p class="text-small text-muted">Last updated: 2019-03-01</p>
+                    <!--
+                        14 above ground.
+                        Positions are not posted. Work does not decrease.
+                        They do not ask about the missing 28.
+
+                        After reassignment they continue arriving.
+                        They clock in. They do not speak.
+                        They go below 2m.
+
+                        Still on payroll. Not in directory.
+                        Part of the count no longer counted.
+
+                        14 is the number above ground.
+                    -->
+                </div>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <footer class="municipal-footer">
+        <div class="footer-links">
+            <a href="index.html">Main Page</a>
+            <a href="about.html">About</a>
+            <a href="policies.html">Policies</a>
+            <a href="contact.html">Contact</a>
+            <a href="concern.html">Report a Concern</a>
+        </div>
+        <p class="footer-disclaimer">
+            © 2019 Town of Meridian — Department of Deferred Maintenance. All rights reserved. This municipal wiki is intended for internal use. Unauthorized access or modification of content is prohibited. The Department is not responsible for content that appears without authorization. Unauthorized content should be reported via the <a href="concern.html">concern form</a>.
+        </p>
+        <!--
+            Content that appears without authorization:
+            The hidden navigation items.
+            The hidden div.
+            The staff count that updates itself.
+            The Facility C status that changed.
+            The weather that is always 4°C.
+            The sentence that was not completed.
+            The text you are reading now.
+
+            This page was last edited by [REDACTED].
+            This page edits itself.
+
+            The queue is 847 days long.
+            Your concern will be read.
+            Not by us.
+        -->
+    </footer>
+
+</body>
+</html>

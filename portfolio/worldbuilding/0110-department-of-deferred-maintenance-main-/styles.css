@@ -1,0 +1,716 @@
+/*
+ * ============================================================
+ * TOWN OF MERIDIAN — MUNICIPAL INTRANET STYLESHEET
+ * Version 3.2.1 | Last Updated: 2019-03-17
+ * Department of Deferred Maintenance
+ * ============================================================
+ *
+ * CHANGE LOG:
+ *
+ * 2019-02-14 — Complaint form styles. Form works. Should not.
+ *              Left enabled per DM-0047.
+ *              Do not ask about DM-0047.
+ *
+ * 2018-11-03 — .body-recovery-unit added for District 7 intake.
+ *              Color adjusted to match infrastructure tones.
+ *
+ * 2018-09-22 — Removed Facility C from navigation stylesheet.
+ *              Link still renders. We don't know how.
+ *
+ * 2018-06-15 — Seasonal palette updated.
+ *              Added .do-not-excavate-below-2m per Site Supervisor.
+ *              "Below 2m is not ours." — Supervisor
+ *              Not seen since 06-12.
+ *
+ * 2018-03-01 — Migration from v2 stylesheet. Several class names
+ *              could not be changed without breaking intake systems:
+ *              .muffling-chamber
+ *              .long-term-storage
+ *              .no-dig-zone
+ *              .the-part-we-dont-talk-about
+ *
+ * 2017-12-08 — Old stylesheet deleted. This was probably fine.
+ *
+ * ============================================================
+ */
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    font-family: Verdana, Geneva, sans-serif;
+    color: #2c2c2c;
+    background-color: #dcdcdc;
+    line-height: 1.65;
+    background-image:
+        linear-gradient(to bottom, #dcdcdc 0%, #d4d4d4 100%);
+    min-height: 100vh;
+}
+
+a { color: #005580; text-decoration: underline; }
+a:hover { color: #003d5c; }
+a:visited { color: #3d3d5c; }
+a:focus { outline: 2px solid #0077b6; outline-offset: 1px; }
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: Verdana, Geneva, sans-serif;
+    font-weight: bold;
+    line-height: 1.25;
+}
+
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1.05rem; }
+
+p { margin-bottom: 0.85em; }
+ul, ol { margin: 0.75em 0; padding-left: 2em; }
+li { margin-bottom: 0.4em; }
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.municipal-header {
+    background-color: #1a1a2e;
+    color: #dcdcdc;
+    padding: 14px 24px;
+    border-bottom: 4px solid #c6a355;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.municipal-header .municipal-seal {
+    font-size: 1.1rem;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.municipal-header .municipal-seal small {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: normal;
+    color: #8888a0;
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+}
+
+.municipal-header .header-right {
+    font-size: 0.75rem;
+    color: #8888a0;
+    text-align: right;
+}
+
+.municipal-header .header-right .staff-count {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.7rem;
+    color: #55556e;
+}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.nav-bar {
+    background-color: #28284a;
+    padding: 0;
+    border-bottom: 2px solid #3a3a5c;
+}
+
+.nav-bar ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-bar li { margin: 0; }
+
+.nav-bar a {
+    display: block;
+    padding: 9px 16px;
+    color: #c0c0d0;
+    text-decoration: none;
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
+    border-right: 1px solid #3a3a5c;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-bar a:hover {
+    background-color: #3a3a5c;
+    color: #ffffff;
+}
+
+.nav-bar a.active {
+    background-color: #c6a355;
+    color: #1a1a2e;
+    font-weight: bold;
+}
+
+.nav-hidden-item {
+    display: none;
+}
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
+
+.wiki-container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    grid-template-rows: auto auto;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .wiki-container { grid-template-columns: 1fr; }
+}
+
+/* =========================================================
+   CONTENT AREA
+   ========================================================= */
+
+.content-main {
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+}
+
+.welcome-banner {
+    background-color: #ffffff;
+    border: 1px solid #b8b8b8;
+    border-left: 5px solid #005580;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+}
+
+.welcome-banner h1 {
+    margin-bottom: 6px;
+    color: #1a1a2e;
+}
+
+.welcome-banner p {
+    font-size: 0.88rem;
+    color: #4a4a4a;
+    margin-bottom: 0;
+}
+
+/* =========================================================
+   SECTION PANELS
+   ========================================================= */
+
+.section-panel {
+    background-color: #ffffff;
+    border: 1px solid #b8b8b8;
+    margin-bottom: 16px;
+}
+
+.section-panel .panel-header {
+    background-color: #e8e8e8;
+    border-bottom: 1px solid #b8b8b8;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.section-panel .panel-header h2 {
+    font-size: 0.95rem;
+    color: #1a1a2e;
+    margin: 0;
+}
+
+.section-panel .panel-header .panel-timestamp {
+    font-size: 0.7rem;
+    color: #888888;
+}
+
+.section-panel .panel-body {
+    padding: 16px 20px;
+    font-size: 0.88rem;
+}
+
+.section-panel .panel-body p:last-child { margin-bottom: 0; }
+
+/* =========================================================
+   SERVICE DASHBOARD
+   ========================================================= */
+
+.service-dashboard {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+}
+
+.service-dashboard th {
+    text-align: left;
+    background-color: #e0e0e0;
+    padding: 8px 12px;
+    font-weight: bold;
+    color: #1a1a2e;
+    border-bottom: 2px solid #b8b8b8;
+}
+
+.service-dashboard td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: middle;
+}
+
+.service-dashboard tr:last-child td { border-bottom: none; }
+.service-dashboard tr:hover { background-color: #f5f5f5; }
+
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.status-operational .status-indicator { background-color: #2e8b57; }
+.status-degraded .status-indicator { background-color: #daa520; }
+.status-offline .status-indicator { background-color: #b22222; }
+
+.status-unknown .status-indicator {
+    background-color: #708090;
+}
+
+.status-text { font-size: 0.78rem; }
+
+.status-note {
+    display: block;
+    font-size: 0.7rem;
+    color: #888888;
+    margin-top: 2px;
+    font-style: italic;
+}
+
+/* =========================================================
+   ANNOUNCEMENTS
+   ========================================================= */
+
+.announcement-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.announcement-item:last-child { border-bottom: none; }
+
+.announcement-date {
+    font-size: 0.7rem;
+    color: #888888;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.announcement-title {
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin: 4px 0 2px 0;
+}
+
+.announcement-body {
+    font-size: 0.82rem;
+    color: #4a4a4a;
+}
+
+.announcement-urgent {
+    border-left: 4px solid #b22222;
+    padding-left: 12px;
+    background-color: #fff5f5;
+}
+
+.announcement-urgent .announcement-title { color: #b22222; }
+
+.announcement-routine {
+    border-left: 4px solid #2e8b57;
+    padding-left: 12px;
+}
+
+.announcement-informational {
+    border-left: 4px solid #005580;
+    padding-left: 12px;
+}
+
+.announcement-behind-schedule {
+    border-left: 4px solid #daa520;
+    padding-left: 12px;
+    background-color: #fffdf5;
+}
+
+/* =========================================================
+   SEASONAL ADVISORY
+   ========================================================= */
+
+.seasonal-advisory {
+    background-color: #fffdf5;
+    border: 1px solid #d4b96a;
+    border-left: 5px solid #c6a355;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+}
+
+.seasonal-advisory h3 {
+    color: #8b6914;
+    margin-bottom: 6px;
+}
+
+.seasonal-advisory p,
+.seasonal-advisory ul {
+    font-size: 0.85rem;
+    color: #5a5a3a;
+}
+
+.seasonal-advisory .advisory-period {
+    font-size: 0.72rem;
+    color: #8b8b5a;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* =========================================================
+   DISTRICT LINKS
+   ========================================================= */
+
+.district-link {
+    display: block;
+    padding: 10px 14px;
+    background-color: #f5f5f5;
+    border: 1px solid #d4d4d4;
+    margin-bottom: 8px;
+    text-decoration: none;
+    color: #005580;
+    font-size: 0.85rem;
+    border-radius: 2px;
+    transition: background-color 0.15s;
+}
+
+.district-link:hover {
+    background-color: #e8e8e8;
+    color: #003d5c;
+}
+
+.district-link .district-number {
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+.district-link .district-status-label {
+    float: right;
+    font-size: 0.7rem;
+    color: #888888;
+    padding: 2px 6px;
+    background-color: #e0e0e0;
+    border-radius: 2px;
+}
+
+.district-link.district-7 {
+    border-left: 4px solid #daa520;
+    background-color: #fffdf5;
+}
+
+.district-link.district-7 .district-status-label {
+    background-color: #f0e6c0;
+    color: #8b6914;
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.content-sidebar {
+    grid-column: 2 / 3;
+    grid-row: 1 / 3;
+}
+
+.sidebar-box {
+    background-color: #ffffff;
+    border: 1px solid #b8b8b8;
+    margin-bottom: 16px;
+}
+
+.sidebar-box .sidebar-header {
+    background-color: #e8e8e8;
+    border-bottom: 1px solid #b8b8b8;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #1a1a2e;
+}
+
+.sidebar-box .sidebar-body {
+    padding: 12px 14px;
+    font-size: 0.8rem;
+    color: #4a4a4a;
+}
+
+.sidebar-box .sidebar-body p:last-child { margin-bottom: 0; }
+
+.quick-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.quick-links li {
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.quick-links li:last-child { border-bottom: none; }
+
+.quick-links a {
+    display: block;
+    padding: 7px 14px;
+    font-size: 0.8rem;
+    color: #005580;
+    text-decoration: none;
+    transition: background-color 0.15s;
+}
+
+.quick-links a:hover { background-color: #f0f0f0; }
+
+/* =========================================================
+   WEATHER WIDGET
+   ========================================================= */
+
+.weather-widget {
+    text-align: center;
+    padding: 16px;
+}
+
+.weather-widget .temperature {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #1a1a2e;
+}
+
+.weather-widget .condition {
+    font-size: 0.78rem;
+    color: #666666;
+    margin-top: 4px;
+}
+
+.weather-widget .last-updated {
+    font-size: 0.65rem;
+    color: #999999;
+    margin-top: 8px;
+    display: block;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.municipal-footer {
+    background-color: #1a1a2e;
+    color: #8888a0;
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+    font-size: 0.75rem;
+    border-top: 3px solid #c6a355;
+}
+
+.municipal-footer a {
+    color: #a0a0c0;
+    text-decoration: underline;
+}
+
+.municipal-footer a:hover { color: #ffffff; }
+
+.municipal-footer .footer-links { margin-bottom: 12px; }
+.municipal-footer .footer-links a { margin: 0 10px; }
+
+.municipal-footer .footer-disclaimer {
+    font-size: 0.65rem;
+    color: #55556e;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   CONCERN BUTTON
+   ========================================================= */
+
+.concern-button {
+    display: inline-block;
+    background-color: #005580;
+    color: #ffffff;
+    padding: 10px 24px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: bold;
+    border-radius: 3px;
+    letter-spacing: 0.03em;
+    transition: background-color 0.2s;
+}
+
+.concern-button:hover {
+    background-color: #003d5c;
+    color: #ffffff;
+}
+
+.concern-button-disabled {
+    background-color: #808080;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+/* =========================================================
+   INTERNAL USE — DO NOT MODIFY
+   ========================================================= */
+
+.intake-processing { display: none; }
+
+.intake-received {
+    background-color: #f0fff0;
+    border: 1px solid #2e8b57;
+    padding: 20px;
+    text-align: center;
+    color: #2e8b57;
+    font-weight: bold;
+}
+
+.muffling-chamber { display: none; }
+.long-term-storage { display: none; }
+
+.no-dig-zone {
+    /* Do not excavate below 2m without authorization.
+       Authorization has never existed. */
+    display: none;
+}
+
+.the-part-we-dont-talk-about { display: none; }
+
+.body-recovery-unit {
+    /* Not related to a body.
+       There is no body. */
+    display: none;
+}
+
+/* =========================================================
+   FACILITY STATUS CLASSES
+   ========================================================= */
+
+.facility-operational { color: #2e8b57; }
+.facility-maintenance { color: #daa520; }
+
+.facility-c {
+    color: #708090;
+}
+
+.facility-decommissioned {
+    color: #b22222;
+    text-decoration: line-through;
+}
+
+/* =========================================================
+   UTILITY CLASSES
+   ========================================================= */
+
+.text-muted { color: #888888; }
+.text-small { font-size: 0.75rem; }
+.text-warning { color: #b22222; }
+.text-caution { color: #8b6914; }
+.text-normal { color: #2c2c2c; }
+
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+
+.bold { font-weight: bold; }
+.italic { font-style: italic; }
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+    .municipal-header,
+    .nav-bar,
+    .concern-button,
+    .the-part-we-dont-talk-about {
+        display: none !important;
+    }
+
+    body {
+        background-color: #ffffff;
+        color: #000000;
+        font-size: 12pt;
+    }
+
+    .wiki-container {
+        max-width: 100%;
+        grid-template-columns: 1fr;
+    }
+
+    .content-sidebar { display: none; }
+
+    .section-panel {
+        border: 1px solid #000000;
+        page-break-inside: avoid;
+    }
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 600px) {
+    .municipal-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .municipal-header .header-right { text-align: center; }
+
+    .nav-bar ul { flex-direction: column; }
+
+    .nav-bar a {
+        border-right: none;
+        border-bottom: 1px solid #3a3a5c;
+    }
+
+    .wiki-container { padding: 12px; }
+
+    .service-dashboard { font-size: 0.75rem; }
+
+    .service-dashboard th,
+    .service-dashboard td { padding: 6px 8px; }
+}
+
+/* =========================================================
+   ANIMATIONS — Minimal. Municipal websites do not animate.
+   ========================================================= */
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in { animation: fade-in 0.3s ease-in; }

@@ -435,6 +435,10 @@ nodes:
     title: "The Bureau of Soft Succession: Regulatory Framework"
     domain: worldbuilding
     rating: 5
+  - id: "0110"
+    title: "Department of Deferred Maintenance: Main Page"
+    domain: worldbuilding
+    rating: 5
 edges:
   - from: "0005"
     to: "0002"
@@ -527,6 +531,12 @@ edges:
     strength: 0.3050847457627119
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, code-tool, pitch"
+  - from: "0015"
+    to: "0110"
+    relation: thematic
+    strength: 0.2542372881355932
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, report"
   - from: "0023"
     to: "0089"
     relation: thematic
@@ -623,6 +633,12 @@ edges:
     strength: 0.26785714285714285
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, code-art, pitch"
+  - from: "0040"
+    to: "0110"
+    relation: thematic
+    strength: 0.2857142857142857
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, each"
   - from: "0041"
     to: "0050"
     relation: thematic
@@ -749,6 +765,12 @@ edges:
     strength: 0.25806451612903225
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, pitch, data"
+  - from: "0085"
+    to: "0110"
+    relation: thematic
+    strength: 0.26582278481012656
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, reviewing"
   - from: "0087"
     to: "0032"
     relation: thematic
@@ -761,6 +783,12 @@ edges:
     strength: 0.2692307692307692
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, pitch, each"
+  - from: "0089"
+    to: "0110"
+    relation: thematic
+    strength: 0.25806451612903225
+    detected_by: semantic
+    notes: "Shared vocabulary: last, ideas, title, domain, pitch"
   - from: "0100"
     to: "0001"
     relation: thematic
@@ -779,12 +807,24 @@ edges:
     strength: 0.25675675675675674
     detected_by: semantic
     notes: "Shared vocabulary: last, ideas, title, domain, pitch"
+  - from: "0108"
+    to: "0110"
+    relation: thematic
+    strength: 0.2702702702702703
+    detected_by: semantic
+    notes: "Shared vocabulary: last, ideas, title, domain, pitch"
   - from: "0019"
     to: "0035"
     relation: thematic
     strength: 0.25806451612903225
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, essay, pitch"
+  - from: "0035"
+    to: "0110"
+    relation: thematic
+    strength: 0.25806451612903225
+    detected_by: semantic
+    notes: "Shared vocabulary: schedule, ideas, title, domain, pitch"
   - from: "0036"
     to: "0037"
     relation: thematic
@@ -815,6 +855,12 @@ edges:
     strength: 0.3269230769230769
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, pitch, each"
+  - from: "0094"
+    to: "0110"
+    relation: thematic
+    strength: 0.25925925925925924
+    detected_by: semantic
+    notes: "Shared vocabulary: assessment, ideas, title, domain, pitch"
   - from: "0024"
     to: "0045"
     relation: thematic
@@ -833,6 +879,12 @@ edges:
     strength: 0.25757575757575757
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, pitch, doesn"
+  - from: "0024"
+    to: "0110"
+    relation: thematic
+    strength: 0.30303030303030304
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, service"
   - from: "0027"
     to: "0045"
     relation: thematic
@@ -917,6 +969,18 @@ edges:
     strength: 0.2692307692307692
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, pitch, through"
+  - from: "0001"
+    to: "0110"
+    relation: thematic
+    strength: 0.28846153846153844
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, fiction, pitch"
+  - from: "0009"
+    to: "0110"
+    relation: thematic
+    strength: 0.273972602739726
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, fiction, pitch"
   - from: "0029"
     to: "0028"
     relation: thematic
@@ -929,6 +993,12 @@ edges:
     strength: 0.25925925925925924
     detected_by: semantic
     notes: "Shared vocabulary: recognizing, ideas, title, domain, pitch"
+  - from: "0098"
+    to: "0110"
+    relation: thematic
+    strength: 0.2631578947368421
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, fiction, pitch"
   - from: "0104"
     to: "0109"
     relation: thematic
@@ -941,6 +1011,12 @@ edges:
     strength: 0.25757575757575757
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, pitch, becomes"
+  - from: "0104"
+    to: "0110"
+    relation: thematic
+    strength: 0.25757575757575757
+    detected_by: semantic
+    notes: "Shared vocabulary: maintenance, ideas, title, domain, fiction"
   - from: "0010"
     to: "0013"
     relation: thematic
@@ -983,6 +1059,12 @@ edges:
     strength: 0.2537313432835821
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, music, pitch"
+  - from: "0103"
+    to: "0110"
+    relation: thematic
+    strength: 0.2537313432835821
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, exists"
   - from: "0003"
     to: "0008"
     relation: thematic
@@ -1031,6 +1113,12 @@ edges:
     strength: 0.2903225806451613
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, poetry, pitch"
+  - from: "0008"
+    to: "0110"
+    relation: thematic
+    strength: 0.25806451612903225
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, each"
   - from: "0014"
     to: "0020"
     relation: thematic
@@ -1067,6 +1155,12 @@ edges:
     strength: 0.2894736842105263
     detected_by: semantic
     notes: "Shared vocabulary: intake, ideas, title, domain, poetry"
+  - from: "0079"
+    to: "0110"
+    relation: thematic
+    strength: 0.27631578947368424
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, pitch, medical"
   - from: "0025"
     to: "0026"
     relation: thematic
@@ -1083,6 +1177,12 @@ edges:
     to: "0064"
     relation: thematic
     strength: 0.2839506172839506
+    detected_by: semantic
+    notes: "Shared vocabulary: ideas, title, domain, worldbuilding, pitch"
+  - from: "0064"
+    to: "0110"
+    relation: thematic
+    strength: 0.25925925925925924
     detected_by: semantic
     notes: "Shared vocabulary: ideas, title, domain, worldbuilding, pitch"
 constellations:
@@ -1133,9 +1233,18 @@ creative_dna:
       count: 10
     - from_domain: fiction
       to_domain: worldbuilding
-      count: 5
+      count: 9
+    - from_domain: code-art
+      to_domain: worldbuilding
+      count: 4
+    - from_domain: poetry
+      to_domain: worldbuilding
+      count: 4
     - from_domain: essay
       to_domain: fiction
+      count: 3
+    - from_domain: code-tool
+      to_domain: worldbuilding
       count: 3
     - from_domain: experiment
       to_domain: fiction
@@ -1143,20 +1252,11 @@ creative_dna:
     - from_domain: fiction
       to_domain: poetry
       count: 3
+    - from_domain: music
+      to_domain: worldbuilding
+      count: 2
     - from_domain: code-art
       to_domain: fiction
       count: 2
-    - from_domain: code-art
-      to_domain: music
-      count: 2
-    - from_domain: code-art
-      to_domain: poetry
-      count: 2
-    - from_domain: code-art
-      to_domain: worldbuilding
-      count: 2
-    - from_domain: code-game
-      to_domain: experiment
-      count: 2
   unexplored_territory: []
-updated_at: 2026-05-27T18:22:08.221Z
+updated_at: 2026-05-27T18:34:40.550Z
